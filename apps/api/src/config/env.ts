@@ -3,7 +3,7 @@ import z from 'zod';
 
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'stage', 'production', 'test']),
-  PORT: z.coerce.number(),
+  API_PORT: z.coerce.number(),
 
   JWT_ACCESS_SECRET: z.string(),
   JWT_REFRESH_SECRET: z.string(),
