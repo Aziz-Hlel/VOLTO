@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  WAITER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum Gender {
+  M
+  F
+}
+
+enum Tier {
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  username    String
+  role        Role     @default(USER)
+  phoneNumber String?
+  gender      Gender   @default(M)
+  tier        Tier     @default(SILVER)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Worker {
+  id         Int      @id @default(autoincrement())
+  name       String
+  occupation String
+  ranking    Int      @default(0) // positive number, default 0
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum EntityType {
+  USER
+  PRODUCT
+  ARTICLE
+  EVENT
+  GALLERY
+}
+
+enum MediaStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum MediaPurpose {
+  AVATAR
+  IMAGE
+  THUMBNAIL
+  VIDEO
+}
+
+model Media {
+  s3Key        String      @id
+  originalName String
+  fileType     String
+  mimeType     String
+  fileSize     Int?
+  status       MediaStatus @default(PENDING)
+
+  entityType   EntityType
+  entityId     String?
+  mediaPurpose MediaPurpose // 'avatar', 'gallery', 'thumbnail'
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  confirmedAt DateTime?
+
+  @@unique([entityType, entityId, mediaPurpose])
+  @@index([entityType, entityId])
+  @@index([entityType, entityId, mediaPurpose])
+}
+
+enum EventType {
+  WEEKLY
+  SPECIAL
+}
+
+model Event {
+  id            String    @id @default(uuid())
+  name          String    @unique
+  type          EventType
+  description   String?
+  startDate     DateTime?
+  endDate       DateTime?
+  cronStartDate String?
+  cronEndDate   String?
+  isLadiesNight Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isLadiesNight])
+}
+
+enum EventAssiciated {
+  LadiesNight
+  SpinnigWheel
+}
+
+model Stats {
+  id                String          @id @default(uuid())
+  event             EventAssiciated
+  date              DateTime
+  totalParticipants Int
+  drinksConsumed    Int
+  quota             Int
+}
+
+model SpinningWheel {
+  id        String   @id @default(cuid())
+  name      String?
+  isActive  Boolean  @default(false)
+  startDate DateTime
+  endDate   DateTime
+
+  rewardList SpinningWheelReward[]
+
+  @@map("spinning_wheel_events")
+}
+
+model SpinningWheelReward {
+  id      String        @id @default(cuid())
+  name    String
+  wheelId String
+  event   SpinningWheel @relation(fields: [wheelId], references: [id], onDelete: Cascade)
+
+  @@map("spinning_wheel_rewards")
+}
+
+enum GalleryTags {
+  SPECIAL_EVENTS
+  VIBES
+  FOOD
+  LADIES_NIGHT
+}
+
+model Gallery {
+  id  String      @id @default(cuid())
+  tag GalleryTags
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
