@@ -1,0 +1,78 @@
+import type { Item22 } from "@/types/items";
+
+const wineItems: Item22[] = [
+  {
+    id: "as",
+    image: "img/menu/wine/1.jpg",
+    title: "Riscos Malbec",
+    price: "25.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Full, Redcurrant, Spice, Chile"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/2.jpg",
+    title: "Dom Perignon",
+    price: "30.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Stylish, Premium, Iconic, Champagne"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/3.jpg",
+    title: "Amarone Classico",
+    price: "20.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Intense, Rich, Spice, Italy"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/4.jpg",
+    title: "Valle Berta Gavi",
+    price: "45.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Clean, Soft, Honeysuckle, Italy"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/3.jpg",
+    title: "Amarone Classico",
+    price: "20.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Intense, Rich, Spice, Italy"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/4.jpg",
+    title: "Valle Berta Gavi",
+    price: "45.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Clean, Soft, Honeysuckle, Italy"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/1.jpg",
+    title: "Riscos Malbec",
+    price: "25.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Full, Redcurrant, Spice, Chile"
+  },
+  {
+    id: "as",
+    image: "img/menu/wine/2.jpg",
+    title: "Dom Perignon",
+    price: "30.00$ /30ML | 90.00$ /Bottle",
+    categrory: "drinks",
+    subCategory: "wine",
+    description: "Stylish, Premium, Iconic, Champagne"
+  }
+]
+
+export default wineItems;
