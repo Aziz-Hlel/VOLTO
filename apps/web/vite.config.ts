@@ -11,6 +11,8 @@ export default defineConfig({
     react(), tailwindcss(),
   ],
   server: {
+    port: Number(process.env.WEB_PORT) || 3001,
+    host: "0.0.0.0", // allow external access (needed in Docker)
     allowedHosts:["foreign-inch-control-notifications.trycloudflare.com"]
   },
   resolve: {

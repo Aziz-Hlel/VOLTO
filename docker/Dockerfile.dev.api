@@ -5,18 +5,17 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY ./shared/ ./shared/
+COPY ./apps/api/package.json ./apps/api/pnpm-lock.yaml ./apps/api/
 
-
+WORKDIR /app/apps/api
 RUN pnpm install --frozen-lockfile
 
+COPY ./apps/api .
 
-COPY . .
-
-RUN  pnpm prisma generate
-
+# RUN  pnpm prisma generate
 
 # RUN pnpm run seed
 
-
 CMD ["pnpm", "run", "start:dev"] 
+

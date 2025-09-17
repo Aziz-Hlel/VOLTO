@@ -15,7 +15,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // const configService = app.get(ConfigService);
 
-  const PORT = ENV.PORT;
+  const PORT = ENV.API_PORT;
 
   app.useGlobalPipes(gloabalValidationPipe);
 
