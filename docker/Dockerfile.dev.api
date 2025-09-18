@@ -19,5 +19,5 @@ RUN  pnpm prisma generate
 
 # RUN pnpm run seed
 
-CMD ["sh", "-c", "pnpm prisma migrate dev && pnpm prisma generate && pnpm run start:dev"]
+CMD ["sh", "-c", "pnpm prisma migrate dev && pnpm prisma generate && pnpm run seed && pnpm run start:dev"]
 
