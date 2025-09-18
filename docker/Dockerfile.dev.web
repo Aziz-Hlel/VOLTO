@@ -6,7 +6,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 COPY ./shared/ ./shared/
-COPY ./apps/web/package.json ./apps/web/package-lock.json ./apps/web/
+COPY ./apps/web/package.json ./apps/web/pnpm-lock.yaml ./apps/web/
 
 WORKDIR /app/apps/web
 RUN pnpm install

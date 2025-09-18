@@ -1,7 +1,7 @@
 
 services:
 
-  volto-web :
+  web :
     build:
       context: ..
       dockerfile: ./docker/Dockerfile.dev.web
@@ -16,37 +16,34 @@ services:
     #   - WATCHPACK_POLLING= true
 
     ports:
-      - '${WEB_PORT:-3001}:${WEB_PORT:-3001}'
+      - '${WEB_PORT:-4000}:${WEB_PORT:-3001}'
 
-    networks:
-      - volto-dev-network
 
-  volto-api :
+  api :
     build:
       context: ..
       dockerfile: ./docker/Dockerfile.dev.api
+      
 
     env_file:
       - ../config/.env.dev
       - ../.env.local
       - ../.env
-
+    
     ports:
       - '${API_PORT:-3000}:${API_PORT:-3000}'
 
     depends_on:
-      volto-postgres:
-        condition: service_started
-      volto-redis:
+      db:
+        condition: service_healthy
+      redis:
         condition: service_started
 
     volumes:
       - ../apps/api/src:/app/apps/api/src
       - ../apps/api/prisma:/app/apps/api/prisma
-    networks:
-      - volto-dev-network
 
-  volto-postgres:
+  db:
     image: postgres:latest
   
     env_file:
@@ -56,12 +53,18 @@ services:
 
     ports:
       - '${DB_PORT:-5432}:${DB_PORT:-5432}'
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - volto-dev-network
 
-  volto-redis:
+
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "user"]
+      interval: 5s
+      retries: 10
+      timeout: 5s
+
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+
+  redis:
     image: redis:latest
 
     ports:
@@ -72,10 +75,8 @@ services:
     
     command: ['redis-server', '--appendonly', 'yes'] # enables persistence
 
-    networks:
-      - volto-dev-network
 
-  volto-minio:
+  minio:
     image: quay.io/minio/minio:latest
     
     ports:
@@ -92,14 +93,12 @@ services:
     
     command: server /data --console-address ":9001"
     
-    networks:
-      - volto-dev-network
     
 
-  volto-minio-init:
+  minio-init:
     image: minio/mc
     depends_on:
-      volto-minio:
+      minio:
         condition: service_started
 
     env_file:
@@ -113,26 +112,25 @@ services:
 
     entrypoint: ['/bin/sh', '/init_minio_client.sh']
 
-    networks:
-      - volto-dev-network
 
 volumes:
-  db_data:
+  db_data_dev:
     driver: local
   redis_data:
     driver: local
   minio_data:
     driver: local
 
-networks:
-  volto-dev-network:
-    driver: bridge
-    enable_ipv6: false
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+# networks:
+#   dev-network:
+#     driver: bridge
+#     # ! all this shit below is due to wsl and networking issues, idk rlly but fck docker anyway
+#     enable_ipv6: false
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.20.0.0/16
+#           gateway: 172.20.0.1
 
 
 
