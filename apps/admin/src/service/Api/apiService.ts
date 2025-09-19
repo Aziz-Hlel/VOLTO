@@ -1,4 +1,4 @@
-import type { AxiosInstance, AxiosRequestConfig } from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
 import ENV from "../../utils/env.variables";
 import { jwtTokenManager } from "../token/JwtTokenManager.class";
@@ -11,6 +11,7 @@ export interface ApiResponse<T = any> {
     error?: string | { [key: string]: string };
 }
 
+// interface CoreApiResponse <T = any> 
 
 const creatAxiosInstance = (): AxiosInstance => {
 
@@ -127,21 +128,29 @@ class ApiService {
     }
 
 
-    // Wrapper methods with error handling
-    async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
+    handleApiSuccess<T>(response: AxiosResponse<T, any, {}>): ApiResponse<T> {
+        return { data: response.data, status: response.status, success: true };
+    }
 
-            const response = await this.api.get<ApiResponse<T>>(url, config);
-            return { data: response.data.data, status: response.status, success: true };
-
-        } catch (error: any) {
-
+    handleApiError<T>(error: any): ApiResponse<T> {
             const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
 
             const status = error.response?.status
             if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
 
             return { error: apiErrorMessage, data: {} as any, status, success: false };
+    }
+
+    // Wrapper methods with error handling
+    async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+        try {
+
+            const response = await this.api.get<T>(url, config);
+            return this.handleApiSuccess(response);
+
+        } catch (error: any) {
+
+            return this.handleApiError(error);
         }
     }
 
@@ -149,118 +158,67 @@ class ApiService {
     async getThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
 
-            const response = await this.api.get<ApiResponse<T>>(url, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.get<T>(url, config);
+            return this.handleApiSuccess(response);
 
         } catch (error: any) {
 
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-
-            if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            throw { error: apiErrorMessage, data: {} as any, status, success: false };
+            return this.handleApiError(error);
+                
         }
     }
 
     async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.post<ApiResponse<T>>(url, data, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.post<T>(url, data, config);
+            return this.handleApiSuccess(response);
         } catch (error: any) {
-
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-            console.log("error : ", error)
-            console.log("status from the try catch : ", status)
-            // if (status !== 201 || status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            return { error: apiErrorMessage, data: {} as any, status: status ?? 401, success: false };
-
+            return this.handleApiError(error);
         }
     }
 
     async postThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.post<ApiResponse<T>>(url, data, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.post<T>(url, data, config);
+            return this.handleApiSuccess(response);
         } catch (error: any) {
-
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-
-            if (status !== 201 || status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            throw { error: apiErrorMessage, data: {} as any, status, success: false };
-
+            return this.handleApiError(error);
         }
     }
 
     async put<T>(url: string, data: any, config?: AxiosRequestConfig,): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.put<ApiResponse<T>>(url, data, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.put<T>(url, data, config);
+            return this.handleApiSuccess(response);
         } catch (error: any) {
-
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-
-            if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            return { error: apiErrorMessage, data: {} as any, status, success: false };
-
+            return this.handleApiError(error);
         }
     }
 
     async putThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.put<ApiResponse<T>>(url, data, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.put<T>(url, data, config);
+            return this.handleApiSuccess(response);
         } catch (error: any) {
-
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-
-            if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            throw { error: apiErrorMessage, data: {} as any, status, success: false };
+            return this.handleApiError(error);
         }
     }
 
     async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.delete<ApiResponse<T>>(url, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.delete<T>(url, config);
+            return this.handleApiSuccess(response);
         } catch (error: any) {
-
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-
-            if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            return { error: apiErrorMessage, data: {} as any, status, success: false };
+            return this.handleApiError(error);
         }
     }
 
     async deleteThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.delete<ApiResponse<T>>(url, config);
-            return { data: response.data.data, status: response.status, success: true };
+            const response = await this.api.delete<T>(url, config);
+            return this.handleApiSuccess(response);
         } catch (error: any) {
-
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-            const status = error.response?.status
-
-            if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-            return { error: apiErrorMessage, data: {} as any, status, success: false };
+            return this.handleApiError(error);
         }
     }
 
