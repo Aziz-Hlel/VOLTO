@@ -26,8 +26,7 @@ docker-dev-up:
 	@echo "${YELLOW}🚀 Starting Docker in Dev Env..."
 	@cd $(ROOT) 
 	@set -a && . $(ENV_DEV) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
-	@docker compose \
-	  -f $(DOCKER_ROOT)/compose.dev.yml up --build
+	@docker compose -f $(DOCKER_ROOT)/compose.dev.yml up --build
 	@echo "${GREEN}✅ "
 
 

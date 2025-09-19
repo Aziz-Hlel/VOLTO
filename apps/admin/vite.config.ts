@@ -18,6 +18,7 @@ export default defineConfig({
     },
 
     server: {
-      port: 8081
-    }
+      port: Number(process.env.VITE_ADMIN_PORT),
+      host: "0.0.0.0", // allow external access (needed in Docker)
+      allowedHosts:["*"]}
   })

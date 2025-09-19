@@ -1,24 +1,6 @@
 
 services:
 
-  web :
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile.dev.web
-      
-    env_file:
-      - ../config/.env.dev
-      - ../.env.local
-      - ../.env
-    
-    # environment:
-    #   - CHOKIDAR_USEPOLLING= true
-    #   - WATCHPACK_POLLING= true
-
-    ports:
-      - '${WEB_PORT:-4000}:${WEB_PORT:-3001}'
-
-
   api :
     build:
       context: ..
@@ -33,6 +15,10 @@ services:
     ports:
       - '${API_PORT:-3000}:${API_PORT:-3000}'
 
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+
     depends_on:
       db:
         condition: service_healthy
@@ -43,6 +29,49 @@ services:
       - ../apps/api/src:/app/apps/api/src
       - ../apps/api/prisma:/app/apps/api/prisma
 
+
+  web :
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.dev.web
+      
+    env_file:
+      - ../config/.env.dev
+      - ../.env.local
+      - ../.env
+    
+    environment:
+      CHOKIDAR_USEPOLLING : true
+      WATCHPACK_POLLING : true
+
+    ports:
+      - '${VITE_WEB_PORT:-3001}:${VITE_WEB_PORT:-3001}'
+
+
+  admin :
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.dev.admin
+      
+    env_file:
+      - ../config/.env.dev
+      - ../.env.local
+      - ../.env
+
+    environment:
+      CHOKIDAR_USEPOLLING : true
+      WATCHPACK_POLLING : true
+
+    ports:
+      - '${VITE_ADMIN_PORT:-3002}:${VITE_ADMIN_PORT:-3002}'
+    
+    volumes:
+      - ../apps/admin/src:/app/apps/admin/src
+      - ../apps/admin/prisma:/app/apps/admin/prisma
+      - ../apps/admin/public:/app/apps/admin/public
+      
+
+
   db:
     image: postgres:latest
   
@@ -52,7 +81,7 @@ services:
     - ../.env
 
     ports:
-      - '${DB_PORT:-5432}:${DB_PORT:-5432}'
+    - '${DB_PORT:-5432}:${DB_PORT:-5432}'
 
 
     healthcheck:

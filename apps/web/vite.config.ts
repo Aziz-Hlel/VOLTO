@@ -7,11 +7,14 @@ import path from "path"
 
 // https://vite.dev/config/
 export default defineConfig({
+
+  envPrefix: 'VITE_',
+
   plugins: [
     react(), tailwindcss(),
   ],
   server: {
-    port: Number(process.env.WEB_PORT) || 3001,
+    port: Number(process.env.VITE_WEB_PORT),
     host: "0.0.0.0", // allow external access (needed in Docker)
     allowedHosts:["foreign-inch-control-notifications.trycloudflare.com"]
   },
@@ -20,4 +23,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  
 })

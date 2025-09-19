@@ -6,8 +6,8 @@ import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
-import { LoginForm } from "./components/login-form";
-import Login from "./pages/Login";
+import { LoginForm } from "./components/Login/login-form";
+import Login from "./components/Login/Login";
 
 
 const queryClient = new QueryClient();
@@ -23,7 +23,7 @@ function App() {
           <Router>
             <Routes>
 
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Login /> } />
 
               <Route element={<AuthenticatedRoutes />}>
                 <Route path="/" element={<Home />} />

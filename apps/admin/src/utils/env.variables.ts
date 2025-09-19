@@ -11,12 +11,12 @@ const ENV = {
 
 
 
-// (Object.keys(ENV) as Array<keyof typeof ENV>).forEach((key) => {
-//     if (!ENV[key] || ENV[key] === "") {
-//         alert(`${key} is not defined in the environment variables`);
-//         throw new Error(`${key} is not defined in the environment variables`);
-//     }
-// })
+(Object.keys(ENV) as Array<keyof typeof ENV>).forEach((key) => {
+    if (!ENV[key] || ENV[key] === "") {
+        alert(`${key} is not defined in the environment variables`);
+        throw new Error(`${key} is not defined in the environment variables`);
+    }
+})
 
 console.log("✅   ENV is valid")
 
