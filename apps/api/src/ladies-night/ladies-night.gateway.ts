@@ -178,12 +178,12 @@ export class LadiesNightGateway {
   }
 
 
-  @SubscribeMessage('refresh_token')
-  async handleTokenRefresh(@ConnectedSocket() socket: AuthenticatedSocket, @MessageBody() data: { newToken: string }) {
+  @SubscribeMessage('refresh')
+  async handleTokenRefresh(@ConnectedSocket() socket: AuthenticatedSocket, @MessageBody() data: { accessToken: string }) {
     try {
-      const payload = this.jwtService.verify(data.newToken);
+      const payload = this.jwtService.verify(data.accessToken);
       // Update the stored token without disconnecting
-      socket.data.token = data.newToken;
+      socket.data.token = data.accessToken;
 
       socket.user = {
         id: payload.sub,
