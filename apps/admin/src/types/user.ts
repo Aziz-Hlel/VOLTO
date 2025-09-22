@@ -1,9 +1,12 @@
+import type { Role } from "./Roles";
+import type { Tier } from "./Tier";
 
 
 export type User = {
-
-    name: string;
+    id: string;
+    username: string;
     email: string;
-    role: string;
-
+    role: Role;
+    gender: "M" | "F";
+    tier: Tier;
 };

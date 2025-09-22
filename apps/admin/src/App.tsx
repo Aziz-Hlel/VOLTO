@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 import { LoginForm } from "./components/Login/login-form";
 import Login from "./components/Login/Login";
+import { Sidebar } from "./components/SideBar/sidebar";
 
 
 const queryClient = new QueryClient();
@@ -21,18 +22,25 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>
+           
+            
             <Routes>
-
-              <Route path="/login" element={<Login /> } />
+              <Route path="/login" element={<Login />} />
+          
 
               <Route element={<AuthenticatedRoutes />}>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<Home />} >
+                
+                
+                
+              <Route path="*" element={<NotFound />} />
+                
+                </Route>
 
               </Route>
 
 
 
-              <Route path="*" element={<NotFound />} />
 
 
             </Routes>

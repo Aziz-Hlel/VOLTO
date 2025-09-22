@@ -7,10 +7,10 @@ const apiGateway = {
     baseUrl: ENV.BASE_URL,
 
     auth: {
-        me: () => "/user/me" as const, 
+        me: () => "/auth/me" as const, 
         login: () => "/auth/login" as const,
         refresh: () => "/auth/refresh" as const,
-        signUp: () => "/users/" as const,
+        signUp: () => "/auth/register/" as const,
     },
 
     services: {

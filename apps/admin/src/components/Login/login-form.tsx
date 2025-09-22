@@ -38,7 +38,7 @@ export function LoginForm({
     try {
       const response = await login({ email, password });
       if (response.success)
-        navigate("/protected")
+        navigate("/")
 
       if (!response.success && response.status === 401) setErrors({ email: "Invalid email or password" });
 

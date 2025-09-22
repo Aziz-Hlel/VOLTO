@@ -7,6 +7,8 @@ const AuthenticatedRoutes = () => {
 
     const { authState } = useAuth();
 
+    console.log('t5l lel auth route')
+    console.log({ authState });
 
     if (authState.status === 'loading')
         return <LoadingSpinner />;
