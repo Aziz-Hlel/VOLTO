@@ -38,7 +38,7 @@ export class LadiesNightGateway {
   constructor(
     private readonly ladiesNightService: LadiesNightService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   private readonly logger = new Logger(LadiesNightGateway.name);
 
   @WebSocketServer()
@@ -150,7 +150,7 @@ export class LadiesNightGateway {
 
       const code = await this.ladiesNightService.getCode(userId);
 
-      socket.emit('get-code', { code: code  , success: true });
+      socket.emit('get-code', { code: code, success: true });
     } catch (error) {
       socket.emit('get-code', { code: null, success: false, error: error.message });
     }
@@ -161,7 +161,7 @@ export class LadiesNightGateway {
   @SubscribeMessage('consume-drink')
   async consumeDrink(
     @ConnectedSocket() socket: authSocket,
-    @MessageBody() payload:{code:string},
+    @MessageBody() payload: { code: string },
   ) {
     try {
       if (!payload.code) throw new WsException('No code provided');
@@ -174,6 +174,25 @@ export class LadiesNightGateway {
         this.server.to(response.userSocketId).emit('drink-consumed', response);
     } catch (error) {
       socket.emit('drink-consumed', { success: false, error: error.message });
+    }
+  }
+
+
+  @SubscribeMessage('refresh_token')
+  async handleTokenRefresh(@ConnectedSocket() socket: AuthenticatedSocket, @MessageBody() data: { newToken: string }) {
+    try {
+      const payload = this.jwtService.verify(data.newToken);
+      // Update the stored token without disconnecting
+      socket.data.token = data.newToken;
+
+      socket.user = {
+        id: payload.sub,
+        ...payload,
+      };
+
+      socket.emit('token_refreshed');
+    } catch (error) {
+      socket.emit('token_refresh_failed');
     }
   }
 }

@@ -1,14 +1,29 @@
+import ENV from "../utils/env.variables";
 
 
 
 const apiRoutes = {
 
-    gallery :{
-        list: '/gallery/',
-    }
+    baseUrl: ENV.BASE_URL,
+
+    auth: {
+        me: () => "/auth/me" as const,
+        login: () => "/auth/login" as const,
+        refresh: () => "/auth/refresh" as const,
+        signUp: () => "/auth/register/" as const,
+    },
+
+    gallery: {
+        list: '/gallery/' as const,
+    },
 
 
-} as const;
+    images: ENV.BASE_URL + "/images/",
+
+    getSignedUrl: ENV.BASE_URL + "/images/getSignedUrl",
+
+}
+
 
 
 

@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     port: Number(process.env.VITE_WEB_PORT),
     host: "0.0.0.0", // allow external access (needed in Docker)
-    allowedHosts:["foreign-inch-control-notifications.trycloudflare.com"]
+    allowedHosts:["rhode-flyer-zus-advisor.trycloudflare.com"]
   },
   resolve: {
     alias: {
