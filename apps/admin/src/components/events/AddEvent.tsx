@@ -61,6 +61,8 @@ import { toast } from "sonner"
 import { CalendarForm } from "../ui/CalendarForm"
 import { Calendar24 } from "../ui/Calendar24"
 import RangeEventDate from "./RangeEventDate"
+import DatePickerAndTimeRangePicker from "./SingleDayEventForm"
+import WeeklyEventForm from "./WeeklyEventForm"
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -74,6 +76,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+// ! none of the Dates suport edit yet
 export default function EventAddForm() {
 
   const [files, setFiles] = useState<File[] | null>(null);
@@ -106,6 +109,8 @@ export default function EventAddForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
 
+        <WeeklyEventForm />
+        <DatePickerAndTimeRangePicker startDateFieldName="startDate" endDateFieldName="endDate" />
         <RangeEventDate startDateFieldName="startDate" endDateFieldName="endDate" />
 
         <FormField
