@@ -1,7 +1,8 @@
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
-import ENV from "../../utils/env.variables";
-import { jwtTokenManager } from "../token/JwtTokenManager.class";
+import ENV from "../utils/env.variables";
+import { jwtTokenManager } from "./JwtTokenManager.class";
+import apiRoutes from "./routes";
 
 
 export interface ApiResponse<T = any> {
@@ -119,7 +120,7 @@ class ApiService {
             throw new Error('No refresh token available');
         }
 
-        const response = await axios.post(`${this.api.defaults.baseURL}/user/refresh`, {
+        const response = await axios.post(`${this.api.defaults.baseURL}${apiRoutes.auth.refresh()}`, {
             refreshToken,
         });
 
@@ -133,12 +134,12 @@ class ApiService {
     }
 
     handleApiError<T>(error: any): ApiResponse<T> {
-            const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
+        const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
 
-            const status = error.response?.status
-            if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
+        const status = error.response?.status
+        if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
 
-            return { error: apiErrorMessage, data: {} as any, status, success: false };
+        return { error: apiErrorMessage, data: {} as any, status, success: false };
     }
 
     // Wrapper methods with error handling
@@ -164,7 +165,7 @@ class ApiService {
         } catch (error: any) {
 
             return this.handleApiError(error);
-                
+
         }
     }
 

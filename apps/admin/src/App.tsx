@@ -9,6 +9,9 @@ import { AuthProvider } from "./context/AuthContext";
 import { LoginForm } from "./components/Login/login-form";
 import Login from "./components/Login/Login";
 import { Sidebar } from "./components/SideBar/sidebar";
+import Events from "./pages/Events";
+import EventMainContent from "./components/events/EventMainContent";
+import EventAddForm from "./components/events/AddEvent";
 
 
 const queryClient = new QueryClient();
@@ -22,19 +25,30 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>
-           
-            
+
+
             <Routes>
               <Route path="/login" element={<Login />} />
-          
+
 
               <Route element={<AuthenticatedRoutes />}>
                 <Route path="/" element={<Home />} >
-                
-                
-                
-              <Route path="*" element={<NotFound />} />
-                
+
+                  <Route index element={<Dashboard />} />
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="events/" element={<Events />} >
+                  <Route index element={<EventMainContent />} />
+                  <Route path="create" element={<EventAddForm />} />
+
+
+                  </Route>
+
+
+
+
+
+                  <Route path="*" element={<NotFound />} />
+
                 </Route>
 
               </Route>

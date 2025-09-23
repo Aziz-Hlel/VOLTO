@@ -13,15 +13,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import { WsJwtGuard } from 'src/auth/guards/WsJwtGuard.guard';
 import { LadiesNightService } from './ladies-night.service';
 import type { authSocket } from 'src/events/types/authSocket';
 import { JwtService } from '@nestjs/jwt';
 import ENV from 'src/config/env';
-import REDIS_KEYS from 'src/redis/redisKeys';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { WsRolesGuard } from 'src/auth/guards/roles.ws.guard';
 
 export interface AuthenticatedSocket extends Socket {
   user?: any;
@@ -32,7 +30,7 @@ interface BaseEventResponse {
   error_message?: string;
 }
 
-// @UseGuards(LadiesNightActiveGuard)
+
 @WebSocketGateway({ cors: true, namespace: '/ladies-night' })
 export class LadiesNightGateway {
   constructor(
@@ -129,7 +127,6 @@ export class LadiesNightGateway {
     console.log(`Client disconnected: ${client.id}`);
   }
 
-  @UseGuards(WsJwtGuard)
   @SubscribeMessage('get-quota')
   async getQuota(@ConnectedSocket() socket: authSocket) {
     try {
@@ -156,7 +153,7 @@ export class LadiesNightGateway {
     }
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(WsRolesGuard)
   @Roles(Role.WAITER)
   @SubscribeMessage('consume-drink')
   async consumeDrink(
@@ -178,21 +175,5 @@ export class LadiesNightGateway {
   }
 
 
-  @SubscribeMessage('refresh')
-  async handleTokenRefresh(@ConnectedSocket() socket: AuthenticatedSocket, @MessageBody() data: { accessToken: string }) {
-    try {
-      const payload = this.jwtService.verify(data.accessToken);
-      // Update the stored token without disconnecting
-      socket.data.token = data.accessToken;
 
-      socket.user = {
-        id: payload.sub,
-        ...payload,
-      };
-
-      socket.emit('token_refreshed');
-    } catch (error) {
-      socket.emit('token_refresh_failed');
-    }
-  }
 }

@@ -45,7 +45,7 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 
 ### Get Event By Id
-# @name getEvent
+# @name getOneEvent
 GET     {{baseUrl}}/events/b6d1e3f4-5a7c-4f2b-8e1a-9c3b2d4f5a6e
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
@@ -54,7 +54,16 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 
 ### Get All Events
-# @name getEvents
+# @name getAllEvents
 GET     {{baseUrl}}/events?eventType=WEEKLY
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
+
+
+
+
+### Get List Of Events
+# @name getListOfEvents
+GET     {{baseUrl}}/events/list?page=1&limit=4
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}

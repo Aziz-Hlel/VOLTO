@@ -6,13 +6,15 @@ const Home = () => {
     const navigate = useNavigate();
 
     return (
-        <>
+        <div className="flex h-screen ">
 
             <Sidebar />
 
-            <Outlet />
+            <div className=" w-full  overflow-y-scroll h-full">
+                <Outlet />
+            </div>
 
-        </>
+        </div>
     )
 }
 

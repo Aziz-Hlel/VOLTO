@@ -1,13 +1,13 @@
 
 import type { sigInSchema } from '@/schemas/signInSchema';
 import type { signUpSchema } from '@/schemas/signUpSchema';
-import API from '@/service/Api/ApiFunctions/API';
-import type { ApiResponse } from '@/service/Api/apiService';
-import { jwtTokenManager } from '@/service/token/JwtTokenManager.class';
-import type { sigInApiResponse, signUpApiResponse } from '@/types/Apis/auth';
+import type { ApiResponse } from '@/Api/apiService';
+import { jwtTokenManager } from '@/Api/JwtTokenManager.class';
+import type { sigInApiResponse, signUpApiResponse } from '@/types/auth/auth';
 import type { User } from '@/types/user';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, type FC } from 'react'
+import authService from '@/Api/services/auth.service';
 
 
 type AuthState =
@@ -41,7 +41,7 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
 
     const { data: authData, isLoading } = useQuery<ApiResponse<User>>({
         queryKey: AUTH_QUERY_KEY,
-        queryFn: API.fetchAuth.me,
+        queryFn: authService.me,
         enabled: !!jwtTokenManager.getAccessToken(),
         // Remove initialData and select, handle mapping below
     });
@@ -63,7 +63,7 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
 
     console.log('auth state : ', authState)
     const signUpMutation = useMutation({
-        mutationFn: API.fetchAuth.signUp,
+        mutationFn: authService.signUp,
         onSuccess: async (response) => {
             if (!response.success) return;
             jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
@@ -73,7 +73,7 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
 
 
     const loginMuation = useMutation({
-        mutationFn: API.fetchAuth.login,
+        mutationFn: authService.login,
         onSuccess: async (response) => {
             console.log("response of api : ", response)
             if (!response.success) return;
@@ -125,7 +125,7 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
             return
         };
 
-        const response = await API.fetchAuth.refresh(refreshToken);
+        const response = await authService.refresh(refreshToken);
 
         console.log("response of refresh : ", response)
         if (response.success) {

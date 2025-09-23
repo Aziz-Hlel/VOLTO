@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import Redis from 'ioredis';
 import { HASHES } from 'src/redis/hashes';
 import { GetAllEventsDto } from './dto/get-all-events';
+import { GetEventsPageDto } from './dto/get-evets-page.dto';
 
 @Injectable()
 export class EventsService {
@@ -14,7 +15,7 @@ export class EventsService {
     private prisma: PrismaService,
     private readonly mediaService: MediaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
-  ) {}
+  ) { }
 
   async create(createEventDto: CreateEventDto) {
     const { thumbnailKey, videoKey, ...eventDto } = createEventDto;
@@ -88,6 +89,48 @@ export class EventsService {
     return Promise.all(eventWithMedia);
   }
 
+  async findPage(query: GetEventsPageDto) {
+
+    const galleries = this.prisma.event.findMany({
+      skip: (query.page - 1) * query.limit,
+      take: query.limit,
+      orderBy: {
+        createdAt: 'desc'
+      },
+
+    });
+    const total = this.prisma.event.count({});
+
+    const [response, count] = await this.prisma.$transaction([galleries, total]);
+
+
+
+    const eventsWithMedia = response.map(async (gallery) => {
+      const thumbnail = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.EVENT,
+        entityId: gallery.id,
+        mediaPurpose: MediaPurpose.THUMBNAIL,
+      });
+
+      const video = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.EVENT,
+        entityId: gallery.id,
+        mediaPurpose: MediaPurpose.VIDEO,
+      });
+
+      return { ...gallery, thumbnail, video };
+    });
+
+    const galleriesWithMedia = await Promise.all(eventsWithMedia);
+
+    return {
+      payload: galleriesWithMedia,
+      count
+    }
+
+
+  }
+
   update = async (updateEventDto: UpdateEventDto) => {
     // ! not solid when a user updates a media there s lot of bugs , @@unique([entityType, entityId, mediaPurpose]) put in the db will make it crash if you add another media since the new media will have the same values and you need to delete and changes the states of the old media once the new one is confirmed
     const { thumbnailKey, videoKey, ...eventDto } = updateEventDto;
@@ -98,8 +141,8 @@ export class EventsService {
       throw new Error(`Event with ID ${updateEventDto.id} not found`);
 
 
-    
-    if (existingEvent.thumbnail.s3Key !== thumbnailKey){
+
+    if (existingEvent.thumbnail.s3Key !== thumbnailKey) {
 
       await this.mediaService.confirmPendingMedia(
         thumbnailKey,
@@ -107,7 +150,7 @@ export class EventsService {
       );
 
     }
-    if (existingEvent.video.s3Key !== videoKey){
+    if (existingEvent.video.s3Key !== videoKey) {
 
       await this.mediaService.confirmPendingMedia(
         updateEventDto.videoKey,
@@ -126,28 +169,28 @@ export class EventsService {
       await this.redis.del(HASHES.LADIES_NIGHT.DATE.HASH());
     }
 
-    if (existingEvent.isLadiesNight &&( existingEvent.cronStartDate !== updatedEvent.cronStartDate || existingEvent.cronEndDate !== updatedEvent.cronEndDate)) {
-     await this.deleteUserHashes();
+    if (existingEvent.isLadiesNight && (existingEvent.cronStartDate !== updatedEvent.cronStartDate || existingEvent.cronEndDate !== updatedEvent.cronEndDate)) {
+      await this.deleteUserHashes();
     }
 
     return updatedEvent;
   };
 
 
-    async deleteUserHashes() {
-      const pattern = HASHES.LADIES_NIGHT.USER.ALL_HASH();
-      let cursor = '0';
-      
-      do {
-        const [newCursor, keys] = await this.redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
-        cursor = newCursor;
+  async deleteUserHashes() {
+    const pattern = HASHES.LADIES_NIGHT.USER.ALL_HASH();
+    let cursor = '0';
 
-        if (keys.length > 0) {
-          await this.redis.del(...keys); // delete all found keys
-        }
-      } while (cursor !== '0');
+    do {
+      const [newCursor, keys] = await this.redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+      cursor = newCursor;
 
-    } 
+      if (keys.length > 0) {
+        await this.redis.del(...keys); // delete all found keys
+      }
+    } while (cursor !== '0');
+
+  }
 
   remove(id: string) {
     return `This action removes a #${id} event`;

@@ -9,6 +9,7 @@ import {
   BadRequestException,
   UseGuards,
   Query,
+  Res,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -18,10 +19,13 @@ import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { GetAllEventsDto } from './dto/get-all-events';
+import { GetEventsPageDto } from './dto/get-evets-page.dto';
+import type { Response } from 'express';
+
 
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(private readonly eventsService: EventsService) { }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -49,13 +53,25 @@ export class EventsController {
   }
 
   @Get()
-  findAll(@Query() query: GetAllEventsDto) {
-    return this.eventsService.findAll(query);
+  async findAll(@Query() query: GetAllEventsDto) {
+    return await this.eventsService.findAll(query);
   }
 
+  @Get('list')
+  async findPage(@Query() query: GetEventsPageDto, @Res({ passthrough: true }) response: Response) {
+
+    const data = await this.eventsService.findPage(query);
+
+
+    response.setHeader('X-Total-Count', data.count.toString());
+
+    return data.payload;
+  }
+
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventsService.getById(id);
+  async findOne(@Param('id') id: string) {
+    return await this.eventsService.getById(id);
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -77,12 +93,12 @@ export class EventsController {
       throw new BadRequestException(
         'cronStartDate and cronEndDate are required for weekly events',
       );
-try{
-  return await this.eventsService.update(updateEventDto);
+    try {
+      return await this.eventsService.update(updateEventDto);
 
-}catch(e){
-  console.log(e);
-}
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)

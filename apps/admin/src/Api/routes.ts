@@ -17,6 +17,10 @@ const apiRoutes = {
         list: '/gallery/' as const,
     },
 
+    events:{
+        list: '/events/list' as const,
+    },
+
 
     images: ENV.BASE_URL + "/images/",
 

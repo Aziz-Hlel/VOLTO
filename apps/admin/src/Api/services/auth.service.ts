@@ -1,12 +1,12 @@
 import type { sigInSchema } from "@/schemas/signInSchema";
-import apiRoutes from "../../../Api/routes";
+import apiRoutes from "../routes";
 import { apiService } from "../apiService";
-import type { sigInApiResponse, signUpApiResponse } from "@/types/Apis/auth";
+import type { sigInApiResponse, signUpApiResponse } from "@/types/auth/auth";
 import type { signUpSchema } from "@/schemas/signUpSchema";
 import type { User } from "@/types/user";
 
 
-const fetchAuth = {
+const authService = {
 
     login: (data: sigInSchema) => apiService.postThrowable<sigInApiResponse>(apiRoutes.auth.login(), data),
 
@@ -19,4 +19,4 @@ const fetchAuth = {
 
 } as const;
 
-export default fetchAuth;
+export default authService;

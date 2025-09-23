@@ -44,28 +44,28 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Contents",
       menus: [
         {
-          href: "",
-          label: "Posts",
+          href: "/events",
+          label: "Events",
           icon: SquarePen,
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts"
-            },
-            {
-              href: "/posts/new",
-              label: "New Post"
-            }
-          ]
+          // submenus: [
+          //   {
+          //     href: "/posts",
+          //     label: "All Posts"
+          //   },
+          //   {
+          //     href: "/posts/new",
+          //     label: "New Post"
+          //   }
+          // ]
         },
         {
-          href: "/categories",
-          label: "Categories",
+          href: "/Gallery",
+          label: "Gallery",
           icon: Bookmark
         },
         {
-          href: "/tags",
-          label: "Tags",
+          href: "/spinning-wheel",
+          label: "Spinning Wheel",
           icon: Tag
         }
       ]
