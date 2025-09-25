@@ -105,7 +105,7 @@ model Event {
   id            String    @id @default(uuid())
   name          String    @unique
   type          EventType
-  description   String?
+  description   String
   startDate     DateTime?
   endDate       DateTime?
   cronStartDate String?

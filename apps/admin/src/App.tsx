@@ -40,7 +40,7 @@ function App() {
                   <Route path="events/" element={<Events />} >
                     <Route index element={<EventMainContent />} />
                     <Route path="create" element={<EventAddForm />} />
-
+                    <Route path="edit/:eventId" element={<EventAddForm />} />
 
                   </Route>
 

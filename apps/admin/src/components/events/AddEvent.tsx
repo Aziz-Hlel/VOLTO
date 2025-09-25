@@ -31,11 +31,14 @@ import RangeEventDate from "./RangeEventDate"
 import WeeklyEventForm from "./WeeklyEventForm"
 import { Textarea } from "../ui/textarea"
 import ImageUpload from "./ImageUpload"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import eventService from "@/Api/services/event.service"
-import type { EventType } from "@/types/events/EventType"
+import VideoUpload from "./VideoUpload"
+import useFetchEditEvent from "./hooks/use-fetch-edit-event"
+import { useEffect } from "react"
 
 const formSchema = z.object({
+  id: z.string().optional(),
   name: z.string({ message: "Name is required" }).min(1),
   description: z.string({ message: "Description is required" })
     .min(1, "Description must be at least 1 character long"),
@@ -57,35 +60,46 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-// ! none of the Dates suport edit yet
+
 export default function EventAddForm() {
 
 
+  const { eventId } = useParams();
+
+  const { payload: data, isLoading } = useFetchEditEvent({ eventId });
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "aa",
-      description: "bb",
-      video: {
-        s3Key: "aa",
-        url: "aa",
-      },
-      type: "SPECIAL" as EventType,
-      startDate: new Date(),
-      endDate: new Date(),
-    },
-
   })
+
+
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  useEffect(() => {
+    if (data) {
+      form.setValue("id", data.id)
+      form.setValue("name", data.name)
+      form.setValue("description", data.description)
+      form.setValue("type", data.type)
+      form.setValue("startDate", data.startDate ?? undefined)
+      form.setValue("endDate", data.endDate ?? undefined)
+      form.setValue("thumbnail", data.thumbnail)
+      form.setValue("video", data.video)
+    }
+  }, [data, form])
 
   const eventType = form.watch("type")
 
   const onSubmit = async (values: FormData) => {
     try {
-      if(values.type === "WEEKLY"){
+      if (values.type === "WEEKLY") {
         delete values.startDate
         delete values.endDate
       }
-      if(values.type === "SPECIAL"){
+      if (values.type === "SPECIAL") {
         delete values.cronStartDate
         delete values.cronEndDate
       }
@@ -122,8 +136,8 @@ export default function EventAddForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormDescription>Type the event's description</FormDescription>
+              <FormLabel>Event Name</FormLabel>
+              <FormDescription>Type the event's name</FormDescription>
               <FormControl>
                 <Input
                   placeholder="Ladies Night"
@@ -140,8 +154,8 @@ export default function EventAddForm() {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Name</FormLabel>
-              <FormDescription>Type the event's name</FormDescription>
+              <FormLabel>Description</FormLabel>
+              <FormDescription>Type the event's description</FormDescription>
               <FormControl>
                 <Textarea
                   placeholder="Event's description"
@@ -203,7 +217,7 @@ export default function EventAddForm() {
 
           <div className="col-span-6">
 
-            <ImageUpload imgKeyFieldName="video.s3Key" imgUrlFieldName="video.url" entityType="EVENT" imgPurpose="VIDEO" />
+            <VideoUpload videoKeyFieldName="video.s3Key" videoUrlFieldName="video.url" entityType="EVENT" videoPurpose="VIDEO" />
 
 
           </div>

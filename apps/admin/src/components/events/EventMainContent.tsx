@@ -1,7 +1,6 @@
 import { apiRoutes } from '@/Api';
 import useApiQuery from '@/hooks/useApiQuery';
 import type { EventResponseDto } from '@/types/events/eventResponse.dto';
-import React from 'react'
 import { EventsDataTable } from './EventsDataTable';
 import { Button } from '../ui/button';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { Link } from 'react-router-dom';
 const EventMainContent = () => {
 
     const { data } = useApiQuery<EventResponseDto[]>({
-        url: apiRoutes.events.list,
+        url: apiRoutes.events.list(),
         queryParams: { page: 1, limit: 50 },
         queryKey: ['events'],
         options: { enabled: true, config: { params: { page: 1, limit: 50 } } },

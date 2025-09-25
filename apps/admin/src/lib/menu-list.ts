@@ -5,7 +5,10 @@ import {
   Bookmark,
   SquarePen,
   LayoutGrid,
-  type LucideIcon
+  type LucideIcon,
+  CalendarDays,
+  Images,
+  LifeBuoy
 } from "lucide-react";
 
 type Submenu = {
@@ -46,7 +49,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/events",
           label: "Events",
-          icon: SquarePen,
+          icon: CalendarDays,
           // submenus: [
           //   {
           //     href: "/posts",
@@ -61,12 +64,12 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/Gallery",
           label: "Gallery",
-          icon: Bookmark
+          icon: Images 
         },
         {
           href: "/spinning-wheel",
           label: "Spinning Wheel",
-          icon: Tag
+          icon: LifeBuoy
         }
       ]
     },

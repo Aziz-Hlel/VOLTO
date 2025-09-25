@@ -14,19 +14,20 @@ const apiRoutes = {
     },
 
     gallery: {
-        list: '/gallery/' as const,
+        list: () => '/gallery/' as const,
     },
 
     events: {
-        create: '/events/' as const,
-        list: '/events/list' as const,
+        create: () => '/events/' as const,
+        list: () => '/events/list' as const,
+        get: (eventId: string) => `/events/${eventId}`,
     },
 
     media: {
-        presignedUrl: '/media/presigned-url' as const,
+        presignedUrl: () => '/media/presigned-url' as const,
     },
 
-    images: ENV.BASE_URL + "/images/",
+    images: () => ENV.BASE_URL + "/images/",
 
 
 }

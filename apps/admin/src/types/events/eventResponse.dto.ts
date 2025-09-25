@@ -3,7 +3,20 @@ import type { EventType } from "./EventType";
 
 
 export type EventResponseDto = {
-    
+
+    id: string;
+    name: string;
+    description: string;
+    type: EventType;
+    startDate: Date | null;
+    endDate: Date | null;
+    cronStartDate: string | null;
+    cronEndDate: string | null;
+    isLadiesNight: boolean;
+
+    createdAt: Date;
+    updatedAt: Date;
+
     thumbnail: {
         s3Key: string;
         url: string;
@@ -12,15 +25,5 @@ export type EventResponseDto = {
         s3Key: string;
         url: string;
     };
-    name: string;
-    type: EventType;
-    description: string | null;
-    startDate: Date | null;
-    endDate: Date | null;
-    cronStartDate: string | null;
-    cronEndDate: string | null;
-    id: string;
-    isLadiesNight: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+
 }

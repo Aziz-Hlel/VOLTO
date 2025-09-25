@@ -2,18 +2,18 @@ import { CloudUpload } from 'lucide-react'
 import { FileInput, FileUploader } from '@/components/ui/file-upload'
 import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { useFormContext } from 'react-hook-form'
-import Cropper from 'react-easy-crop';
 import { Button } from '../ui/button'
 import type { MediaPurpose } from '@/types/enums/MediaPurpose'
 import type { EntityType } from '@/types/enums/EntityType'
 import CircularProgressBar from './CircularProgressBar '
 import type { DropzoneOptions } from 'react-dropzone'
-import useImageUpload from './hooks/use-Image-Upload copy';
+import useVideoUpload from './hooks/use-Video-Upload';
 
 
-const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType }: { imgKeyFieldName: string, imgUrlFieldName: string, imgPurpose: MediaPurpose, entityType: EntityType }) => {
+const VideoUpload = ({ videoKeyFieldName, videoUrlFieldName, videoPurpose, entityType }: { videoKeyFieldName: string, videoUrlFieldName: string, videoPurpose: MediaPurpose, entityType: EntityType }) => {
 
-    const maxSizeInMB = 4
+    const maxSizeInMB = 5
+    const videoMaxDuration = 45
 
     const maxSizeInBytes = maxSizeInMB * 1024 * 1024
 
@@ -22,7 +22,7 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
         maxFiles: 1,
         maxSize: maxSizeInBytes,
         accept: {
-            "image/*": [".jpg", ".jpeg", ".png", ".webp", ".gif"],
+            "video/*": [".mp4", ".mov", ".avi"],
         },
         multiple: false,
     };
@@ -30,27 +30,22 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
 
     const { getFieldState } = useFormContext();
 
-    const fieldErrorMessage = getFieldState(imgKeyFieldName).error?.message
+    const fieldErrorMessage = getFieldState(videoKeyFieldName).error?.message
 
     const {
         currentDisplayed,
         file,
-        img,
+        video,
         progress,
-        zoom,
-        crop,
-        Crop_OptimizeImage,
+        optimizeVideo,
         rollBackToInitImage,
-        handleCancel,
-        onZoomChange,
-        onCropChange,
-        onCropComplete,
         onFileChange,
-    } = useImageUpload({
-        imgUrlFieldName: imgUrlFieldName,
-        imgKeyFieldName: imgKeyFieldName,
-        entityType: entityType,
-        imgPurpose: imgPurpose
+    } = useVideoUpload({
+        videoUrlFieldName,
+        videoKeyFieldName,
+        entityType,
+        videoPurpose,
+        maxDuration: videoMaxDuration
     })
 
     return (
@@ -59,8 +54,8 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
 
                 {currentDisplayed === "fileUpload" &&
                     <FormItem className=''>
-                        <FormLabel>Thumbnail</FormLabel>
-                        <FormDescription>Select an image to upload.</FormDescription>
+                        <FormLabel>Video</FormLabel>
+                        <FormDescription>Select a video to upload.</FormDescription>
                         <FormControl>
                             <FileUploader
                                 value={file}
@@ -71,7 +66,6 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                             >
                                 {!file && <FileInput
                                     className="outline-dashed outline-1 outline-slate-500"
-
                                 >
                                     <div className="flex items-center justify-center flex-col p-8 w-full ">
                                         <CloudUpload className='text-gray-500 min-h-56 size-16' />
@@ -80,17 +74,12 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                                             &nbsp; or drag and drop
                                         </p>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                                            SVG, PNG, JPG or GIF
+                                            MP4, MOV, AVI
                                         </p>
                                     </div>
-                                </FileInput>}
+                                </FileInput>
+                                }
 
-                                {/* {file &&
-                                <FileUploaderItem index={0} >
-                                    <Paperclip className="h-4 w-4 stroke-current" />
-                                    <span>{file.name}</span>
-                                </FileUploaderItem>
-                            } */}
                             </FileUploader>
 
                         </FormControl>
@@ -98,54 +87,37 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                     </FormItem>
                 }
 
-                {currentDisplayed === "copper" &&
-                    <div className='relative w-full h-full flex flex-col justify-center items-center mr-auto '>
-                        <div className=' text-sm text-left w-full font-semibold mb-1'>Thumbnail</div>
+                {currentDisplayed === "preUpload" &&
+                    <div className='relative w-full h-full flex flex-col justify-start '>
+                        <div className=' text-sm text-left w-full font-semibold mb-1'>Video</div>
                         <div className=' text-sm text-left w-full text-gray-600 font-light mb-4'>
-                            Crop Image to 9:16
+                            Confirm Uploaded Video
                         </div>
 
                         <div className='border border-black rounded-lg border-dashed h-full w-full p-2 '>
 
-                            <div className=' relative w-full h-60   '>
+                            {/* <img src={img} className=' mx-auto  h-60 object-contain rounded-lg' /> */}
+                            <video
+                                src={URL.createObjectURL(file as Blob)}
+                                className=' mx-auto  h-60 w-full object-contain rounded-lg'
+                                controls
+                            />
 
-                                <div className='bg-white'>
-                                    <Cropper
-                                        image={file ? URL.createObjectURL(file) : ""}
-                                        crop={crop}
-                                        zoom={zoom}
-
-                                        aspect={9 / 16}
-                                        onCropChange={onCropChange}
-                                        onCropComplete={onCropComplete}
-                                        classes={{
-                                            containerClassName: "fixed  w-full h-full ",
-                                        }}
-
-                                    />
-                                </div>
-                            </div>
-
-                            <div className=" w-full mr-auto">
-                                <input
-                                    type="range"
-                                    value={zoom}
-                                    min={1}
-                                    max={3}
-                                    step={0.1}
-                                    aria-labelledby="Zoom"
-
-                                    onChange={(e) => onZoomChange(e.target.valueAsNumber)}
-                                    className=" w-full"
-                                />
-                            </div>
-                            <div className=' w-full mr-auto flex justify-end gap-4'>
-                                <Button onClick={handleCancel} variant="outline" className='cursor-pointer'>Cancel</Button>
-                                <Button onClick={Crop_OptimizeImage} variant="default" className='cursor-pointer'>Confirm</Button>
+                            <div className='flex justify-end gap-2 px-4 pt-4'>
+                                <Button onClick={rollBackToInitImage} variant="outline" className='cursor-pointer'>Cancel</Button>
+                                <FileUploader
+                                    value={file}
+                                    onValueChange={onFileChange}
+                                    maxImageSize={maxSizeInBytes}
+                                    dropzoneOptions={dropZoneConfig}
+                                    className=" w-fit"
+                                >
+                                </FileUploader>
+                                <Button onClick={optimizeVideo} variant="default" className=' cursor-pointer'>Confirm</Button>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
 
                 }
 
@@ -158,20 +130,18 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                         </div>
 
                     </div>
-
-
                 }
 
                 {currentDisplayed === "imgDisplayed" &&
                     <div className='relative w-full h-full flex flex-col justify-start '>
-                        <div className=' text-sm text-left w-full font-semibold mb-1'>Thumbnail</div>
+                        <div className=' text-sm text-left w-full font-semibold mb-1'>Video</div>
                         <div className=' text-sm text-left w-full text-gray-600 font-light mb-4'>
-                            Uploaded Image
+                            Uploaded Video
                         </div>
 
                         <div className='border border-black rounded-lg border-dashed h-full w-full p-2 '>
 
-                            <img src={img} className=' mx-auto  h-60 object-contain rounded-lg' />
+                            <img src={video} className=' mx-auto  h-60 object-contain rounded-lg' />
 
                             <div className='flex justify-end gap-4 px-4 pt-4'>
                                 <Button onClick={rollBackToInitImage} variant="outline" className='cursor-pointer'>Cancel</Button>
@@ -183,7 +153,7 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                                     className=" w-fit"
                                 >
                                     <FileInput>
-                                        <Button onClick={Crop_OptimizeImage} variant="default" className='cursor-pointer'>Change</Button>
+                                        <Button onClick={optimizeVideo} variant="default" className='cursor-pointer'>Change</Button>
                                     </FileInput>
                                 </FileUploader>
                             </div>
@@ -201,4 +171,4 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
     )
 }
 
-export default ImageUpload
+export default VideoUpload;

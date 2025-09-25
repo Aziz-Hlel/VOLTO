@@ -18,7 +18,6 @@ export class CreateEventDto {
   @IsEnum(EventType)
   type: EventType;
 
-  @IsOptional()
   @IsString()
   description: string;
 

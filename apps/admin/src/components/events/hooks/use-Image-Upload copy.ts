@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import type { DropzoneOptions } from "react-dropzone";
 import type { Area, Point } from "react-easy-crop";
 import { useFormContext } from "react-hook-form";
 import getCroppedImg from "../cropImg.func";
@@ -12,7 +11,6 @@ import type { MediaPurpose } from "@/types/enums/MediaPurpose";
 
 
 type IuseImageUpload = {
-    dropZoneConfig: DropzoneOptions;
     imgUrlFieldName: string;
     imgKeyFieldName: string;
     entityType: EntityType;
@@ -20,7 +18,7 @@ type IuseImageUpload = {
 
 }
 
-const useImageUpload = ({ dropZoneConfig, imgUrlFieldName, imgKeyFieldName, entityType, imgPurpose }: IuseImageUpload) => {
+const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpose }: IuseImageUpload) => {
 
 
     const { watch, setValue } = useFormContext();
@@ -66,7 +64,7 @@ const useImageUpload = ({ dropZoneConfig, imgUrlFieldName, imgKeyFieldName, enti
 
 
 
-    const showCroppedImage = async () => {
+    const Crop_OptimizeImage = async () => {
         if (!croppedAreaPixels || !file) {
             return
         }
@@ -83,13 +81,14 @@ const useImageUpload = ({ dropZoneConfig, imgUrlFieldName, imgKeyFieldName, enti
             if (!croppedImage) return
 
             const optimizedImg = await prepareImageForUpload(croppedImage);
+            const fileName = file.name.split(".")[0];
 
             setProgress(10)
             setFile(null)
 
             const s3Key = await uploadImageToS3_SIMULATOR({
                 uploadedImg: optimizedImg.blob,
-                name: "optimizedImg.blob.name",
+                name: fileName,
                 entityType: entityType,
                 purpose: imgPurpose,
                 setProgress: (progress: any) => { setProgress(progress) }
@@ -123,9 +122,8 @@ const useImageUpload = ({ dropZoneConfig, imgUrlFieldName, imgKeyFieldName, enti
         onZoomChange,
         onCropComplete,
         onFileChange,
-        dropZoneConfig,
         handleCancel,
-        showCroppedImage,
+        Crop_OptimizeImage,
         rollBackToInitImage
     }
 }

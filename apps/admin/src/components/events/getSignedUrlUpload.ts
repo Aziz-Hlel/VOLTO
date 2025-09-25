@@ -10,8 +10,6 @@ import axios from "axios";
 
 export const getSignedUrlUpload = async ({ fileName, mimeType, fileType, entityType, fileSize, purpose }: { fileName: string, mimeType: string, fileType: IMimeType, entityType: EntityType, fileSize: number, purpose: MediaPurpose }) => {
 
-    console.log("dirrab om filetpye", fileType)
-
     const response = await mediaService.presignedUrl({
         mimeType: mimeType,
         fileSize,
