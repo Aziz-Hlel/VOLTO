@@ -15,43 +15,79 @@ import {
 import { useFormContext } from "react-hook-form"
 import useTimeHook from "./hooks/use-time-hook"
 import { Input } from "../ui/input"
+import { useEffect, useState } from "react"
 
 export default function RangeEventDate({ startDateFieldName, endDateFieldName }: { startDateFieldName: string, endDateFieldName: string }) {
 
-  const { setValue } = useFormContext() // grab form context
-  const [range, setRange] = React.useState<DateRange | undefined>({ from: new Date(), to: new Date() })
+  const { setValue, watch } = useFormContext() // grab form context
+
+  const _1hour = 1000 * 60 * 60
+  const startDate = watch(startDateFieldName) ? new Date(watch(startDateFieldName)) : new Date()
+  const endDate = watch(endDateFieldName) ? new Date(watch(endDateFieldName)) : new Date(startDate.getTime() + 8 * _1hour)
+  const initStartTimeDayPeriod = startDate.getHours() >= 12 ? 'PM' : 'AM'
+  const initEndTimeDayPeriod = endDate.getHours() >= 12 ? 'PM' : 'AM'
+
+  const [range, setRange] = useState<DateRange>({ from: startDate, to: endDate })
+
+
 
   const {
-    startingHour,
-    amPM,
-    duration,
-    handleStartingHourChange,
-    handleAMPMChange,
-    handleDuration
-  } = useTimeHook();
+    startTime,
+    StartTimeDayPeriod,
+    endTime,
+    endTimeDayPeriod,
+    handleStartTimeChange,
+    handleEndTimeChange,
+    handleStartTimeDayPeriod,
+    handleEndTimeDayPeriod
+  } = useTimeHook({
+    initStartingHour: startDate.getHours() % 12 === 0 ? 12 : startDate.getHours() % 12,
+    initEndingHour: endDate.getHours() % 12 === 0 ? 12 : endDate.getHours() % 12,
+    initStartTimeDayPeriod: initStartTimeDayPeriod,
+    initEndTimeDayPeriod: initEndTimeDayPeriod
+  });
 
 
   const handleRangeDateChange = (selectedRange: DateRange | undefined) => {
 
-    if (!selectedRange) return
+    if (!selectedRange || !selectedRange.from || !selectedRange.to) return
     setRange(selectedRange)
 
-    // Push values into form
-    setValue(startDateFieldName, selectedRange?.from ?? null, {
-      shouldValidate: true,
-    })
-    setValue(endDateFieldName, selectedRange?.to ?? null, {
-      shouldValidate: true,
-    })
   }
+
+
+  const updateFormFields = () => {
+    if (!range.from || !range.to) return
+
+    const newStartDate = new Date(range.from)
+    newStartDate.setHours(StartTimeDayPeriod === 'PM' ? startTime + 12 : startTime)
+    newStartDate.setMinutes(0)
+    newStartDate.setSeconds(0)
+
+    const newEndDate = new Date(range.to)
+    newEndDate.setHours(endTimeDayPeriod === 'PM' ? endTime + 12 : endTime)
+    newEndDate.setMinutes(0)
+    newEndDate.setSeconds(0)
+
+
+    setValue(startDateFieldName, newStartDate)
+    setValue(endDateFieldName, newEndDate)
+
+    console.log("newStartDate : ", newStartDate, " newEndDate : ", newEndDate)
+  }
+
+  useEffect(() => {
+    updateFormFields()
+  }, [range, startTime, StartTimeDayPeriod, endTime, endTimeDayPeriod])
 
   return (
 
-    <div className='flex gap-6'>
+    <div className='flex gap-6 items-start'>
 
       <div className="flex flex-col gap-3">
-        <Label htmlFor="dates" className="px-1">
+        <Label htmlFor="dates" className="px-1 flex ">
           Select Event's Days
+          <span className="text-xs  siz font-thin">* Double click to select one day</span>
         </Label>
         <Popover>
           <PopoverTrigger asChild>
@@ -91,10 +127,10 @@ export default function RangeEventDate({ startDateFieldName, endDateFieldName }:
               min={0}
               max={12}
               className='bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none'
-              value={startingHour}
-              onChange={handleStartingHourChange}
+              value={startTime}
+              onChange={handleStartTimeChange}
             />
-            <select value={amPM} onChange={handleAMPMChange} className='bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
+            <select value={StartTimeDayPeriod} onChange={handleStartTimeDayPeriod} className='bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
               <option value='AM'>AM</option>
               <option value='PM'>PM</option>
             </select>
@@ -102,26 +138,30 @@ export default function RangeEventDate({ startDateFieldName, endDateFieldName }:
 
         </div>
       </div>
-      <div className='flex flex-col gap-3'>
-        <Label htmlFor='time-to' className='px-1 '>
-          Duration
-        </Label>
 
-        <div className='flex gap-2 justify-center items-center'>
-          <Input
-            type='number'
-            id='time-to'
-            step='1'
-            className=' w-20 bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none'
-            value={duration}
-            onChange={handleDuration}
-            min={1}
-            max={20}
-          />
-          <div>Hours</div>
+      <div className='flex flec gap-4'>
+        <div className='flex flex-col gap-3'>
+          <Label htmlFor='time-from' className='px-1'>
+            Ending at
+          </Label>
+
+          <div className='flex gap-2 justify-center items-center'>
+            <Input
+              type='number'
+              min={0}
+              max={12}
+              className='bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none'
+              value={endTime}
+              onChange={handleEndTimeChange}
+            />
+            <select value={endTimeDayPeriod} onChange={handleEndTimeDayPeriod} className='bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
+              <option value='AM'>AM</option>
+              <option value='PM'>PM</option>
+            </select>
+          </div>
+
         </div>
       </div>
-
     </div>
 
 

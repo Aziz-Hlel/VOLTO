@@ -12,6 +12,7 @@ import { Sidebar } from "./components/SideBar/sidebar";
 import Events from "./pages/Events";
 import EventMainContent from "./components/events/EventMainContent";
 import EventAddForm from "./components/events/AddEvent";
+import { Toaster } from "sonner";
 
 
 const queryClient = new QueryClient();
@@ -25,7 +26,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>
-
+            <Toaster />
 
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -37,8 +38,8 @@ function App() {
                   <Route index element={<Dashboard />} />
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="events/" element={<Events />} >
-                  <Route index element={<EventMainContent />} />
-                  <Route path="create" element={<EventAddForm />} />
+                    <Route index element={<EventMainContent />} />
+                    <Route path="create" element={<EventAddForm />} />
 
 
                   </Route>

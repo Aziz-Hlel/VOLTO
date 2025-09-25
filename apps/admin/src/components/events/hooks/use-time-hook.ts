@@ -2,41 +2,41 @@ import { useState } from "react"
 
 
 
-const useTimeHook = () => {
+const useTimeHook = ({ initStartingHour, initEndingHour, initStartTimeDayPeriod, initEndTimeDayPeriod }: { initStartingHour: number, initEndingHour: number, initStartTimeDayPeriod: 'AM' | 'PM', initEndTimeDayPeriod: 'AM' | 'PM' }) => {
 
+    console.log(" useTimeHook called with: ", { initStartingHour, initAmPM: initStartTimeDayPeriod })
+    const [startTime, setStartTime] = useState<number>(initStartingHour ?? 8);
+    const [endTime, setEndHour] = useState<number>(initEndingHour ?? 4);
+    const [StartTimeDayPeriod, setStartTimeDayPeriod] = useState<'AM' | 'PM'>(initStartTimeDayPeriod ?? 'PM');
+    const [endTimeDayPeriod, setEndTimeDayPeriod] = useState<'AM' | 'PM'>(initEndTimeDayPeriod ?? 'AM');
 
-    const [startingHour, setStartingHour] = useState<number>(7)
-    const [amPM, setAMPM] = useState<'AM' | 'PM'>('PM')
-    const [duration, setDuration] = useState<number>(8)
+    const handleStartTimeDayPeriod = (e: React.ChangeEvent<HTMLSelectElement>) => setStartTimeDayPeriod(e.currentTarget.value as 'AM' | 'PM');
+    const handleEndTimeDayPeriod = (e: React.ChangeEvent<HTMLSelectElement>) => setEndTimeDayPeriod(e.currentTarget.value as 'AM' | 'PM');
 
-
-    const handleStartingHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) return
         const hour = parseInt(e.target.value, 10)
-        setStartingHour(hour)
+        setStartTime(hour)
     }
 
-    const handleAMPMChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value as 'AM' | 'PM'
-        setAMPM(value)
-    }
-
-    const handleDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) return
-        const newDuration = parseInt(e.target.value, 10)
-        setDuration(newDuration)
-
-
+        const hour = parseInt(e.target.value, 10)
+        setEndHour(hour)
     }
+
+
 
 
     return {
-        startingHour,
-        amPM,
-        duration,
-        handleStartingHourChange,
-        handleAMPMChange,
-        handleDuration
+        startTime,
+        endTime,
+        StartTimeDayPeriod,
+        endTimeDayPeriod,
+        handleStartTimeDayPeriod,
+        handleEndTimeDayPeriod,
+        handleStartTimeChange,
+        handleEndTimeChange,
     }
 
 

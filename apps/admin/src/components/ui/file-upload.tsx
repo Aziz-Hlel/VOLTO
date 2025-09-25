@@ -20,7 +20,6 @@ import {
 import { toast } from "sonner";
 import { Trash2 as RemoveIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { max } from "date-fns";
 
 type DirectionOptions = "rtl" | "ltr" | undefined;
 
@@ -46,9 +45,10 @@ export const useFileUpload = () => {
 };
 
 type FileUploaderProps = {
-    value: File[] | null;
+    value: File | null;
     reSelect?: boolean;
-    onValueChange: (value: File[] | null) => void;
+    onValueChange: (value: File | null) => void;
+    maxImageSize: number;
     dropzoneOptions: DropzoneOptions;
     orientation?: "horizontal" | "vertical";
 };
@@ -70,6 +70,7 @@ export const FileUploader = forwardRef<
             reSelect = false,
             orientation = "vertical",
             children,
+            maxImageSize,
             dir,
             ...props
         },
@@ -82,78 +83,22 @@ export const FileUploader = forwardRef<
             accept = {
                 "image/*": [".jpg", ".jpeg", ".png", ".gif"],
             },
-            maxFiles = 0,
-            maxSize = 4 * 1024 * 1024,
-            multiple = true,
+            maxFiles = 1,
+            maxSize = maxImageSize,
+            multiple = false,
         } = dropzoneOptions;
 
         const reSelectAll = maxFiles === 1 ? true : reSelect;
         const direction: DirectionOptions = dir === "rtl" ? "rtl" : "ltr";
 
         const removeFileFromSet = useCallback(
-            (i: number) => {
-                if (!value) return;
-                const newFiles = value.filter((_, index) => index !== i);
-                onValueChange(newFiles);
+            () => {
+                onValueChange(null);
             },
             [value, onValueChange],
         );
 
-        const handleKeyDown = useCallback(
-            (e: React.KeyboardEvent<HTMLDivElement>) => {
-                e.preventDefault();
-                e.stopPropagation();
 
-                if (!value) return;
-
-                const moveNext = () => {
-                    const nextIndex = activeIndex + 1;
-                    setActiveIndex(nextIndex > value.length - 1 ? 0 : nextIndex);
-                };
-
-                const movePrev = () => {
-                    const nextIndex = activeIndex - 1;
-                    setActiveIndex(nextIndex < 0 ? value.length - 1 : nextIndex);
-                };
-
-                const prevKey =
-                    orientation === "horizontal"
-                        ? direction === "ltr"
-                            ? "ArrowLeft"
-                            : "ArrowRight"
-                        : "ArrowUp";
-
-                const nextKey =
-                    orientation === "horizontal"
-                        ? direction === "ltr"
-                            ? "ArrowRight"
-                            : "ArrowLeft"
-                        : "ArrowDown";
-
-                if (e.key === nextKey) {
-                    moveNext();
-                } else if (e.key === prevKey) {
-                    movePrev();
-                } else if (e.key === "Enter" || e.key === "Space") {
-                    if (activeIndex === -1) {
-                        dropzoneState.inputRef.current?.click();
-                    }
-                } else if (e.key === "Delete" || e.key === "Backspace") {
-                    if (activeIndex !== -1) {
-                        removeFileFromSet(activeIndex);
-                        if (value.length - 1 === 0) {
-                            setActiveIndex(-1);
-                            return;
-                        }
-                        movePrev();
-                    }
-                } else if (e.key === "Escape") {
-                    setActiveIndex(-1);
-                }
-            },
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            [value, activeIndex, removeFileFromSet],
-        );
 
         const onDrop = useCallback(
             (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
@@ -164,23 +109,7 @@ export const FileUploader = forwardRef<
                     return;
                 }
 
-                const newValues: File[] = value ? [...value] : [];
-
-                if (reSelectAll) {
-                    newValues.splice(0, newValues.length);
-                }
-
-                files.forEach((file) => {
-                    if (maxFiles > 0) {
-                        if (newValues.length < maxFiles) {
-                            newValues.push(file);
-                        }
-                    } else {
-                        newValues.push(file);
-                    }
-                });
-
-                onValueChange(newValues);
+                onValueChange(files[0]);
 
                 if (rejectedFiles.length > 0) {
                     for (let i = 0; i < rejectedFiles.length; i++) {
@@ -201,14 +130,7 @@ export const FileUploader = forwardRef<
             [reSelectAll, value],
         );
 
-        useEffect(() => {
-            if (!value) return;
-            if (value.length === maxFiles && maxFiles > 0 && multiple) {
-                setIsLOF(true);
-                return;
-            }
-            setIsLOF(false);
-        }, [value, maxFiles]);
+
 
         const opts = dropzoneOptions
             ? dropzoneOptions
@@ -237,12 +159,12 @@ export const FileUploader = forwardRef<
                 <div
                     ref={ref}
                     tabIndex={0}
-                    onKeyDownCapture={handleKeyDown}
+                    // onKeyDownCapture={handleKeyDown}
                     className={cn(
                         "grid w-full focus:outline-none overflow-hidden ",
                         className,
                         {
-                            "gap-2": value && value.length > 0,
+                            "gap-2": value,
                         },
                     )}
                     dir={dir}

@@ -1,5 +1,5 @@
-import type { Role } from "./Roles";
-import type { Tier } from "./Tier";
+import type { Role } from "./enums/Roles";
+import type { Tier } from "./enums/Tier";
 
 
 export type User = {

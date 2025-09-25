@@ -21,10 +21,12 @@ const apiRoutes = {
         list: '/events/list' as const,
     },
 
+    media: {
+        presignedUrl: '/media/presigned-url' as const,
+    },
 
     images: ENV.BASE_URL + "/images/",
 
-    getSignedUrl: ENV.BASE_URL + "/images/getSignedUrl",
 
 }
 

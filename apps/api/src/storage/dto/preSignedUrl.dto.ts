@@ -21,10 +21,9 @@ export class PreSignedUrlRequest {
   fileSize: number;
 
   @IsEnum(FileType, {
-    message:
-      'fileType must be one of .jpg, .jpeg, .png, .mp4, .mov, .avi, .gif',
+    message: 'fileType must be one of webp jpg, jpeg, png, mp4, mov, avi, gif',
   })
-  fileType: '.jpg' | '.jpeg' | '.png' | '.mp4' | '.mov' | '.avi' | '.gif';
+  fileType: FileType;
 
   @IsString()
   @MinLength(1)
