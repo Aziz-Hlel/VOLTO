@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, MoreHorizontal, Search } from 'lucide-react';
 import {
   DropdownMenu,
@@ -25,7 +24,7 @@ import { EventType } from '@/types/events/EventType';
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
-  onEdit: (admin: EventResponseDto) => void;
+  onEdit: (id: string) => void;
   onDelete: (admin: EventResponseDto) => void;
 }
 
@@ -141,7 +140,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-white">
                           <DropdownMenuItem
-                            onClick={() => onEdit(event)}
+                            onClick={() => onEdit(event.id)}
                             className="flex items-center gap-2 hover:bg-gray-100"
                           >
                             <Edit className="h-4 w-4" />

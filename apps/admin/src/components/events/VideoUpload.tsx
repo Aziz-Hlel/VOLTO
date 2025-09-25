@@ -141,7 +141,11 @@ const VideoUpload = ({ videoKeyFieldName, videoUrlFieldName, videoPurpose, entit
 
                         <div className='border border-black rounded-lg border-dashed h-full w-full p-2 '>
 
-                            <img src={video} className=' mx-auto  h-60 object-contain rounded-lg' />
+                            <video
+                                src={video}
+                                controls
+                                className='  w-full  h-60 object-contain rounded-lg'
+                            />
 
                             <div className='flex justify-end gap-4 px-4 pt-4'>
                                 <Button onClick={rollBackToInitImage} variant="outline" className='cursor-pointer'>Cancel</Button>

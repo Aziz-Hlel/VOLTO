@@ -86,6 +86,7 @@ const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpo
             setProgress(10)
             setFile(null)
 
+            console.log('ouslililili')
             const s3Key = await uploadImageToS3_SIMULATOR({
                 uploadedImg: optimizedImg.blob,
                 name: fileName,

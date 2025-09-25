@@ -8,7 +8,7 @@ import type { MediaPurpose } from '@/types/enums/MediaPurpose'
 import type { EntityType } from '@/types/enums/EntityType'
 import CircularProgressBar from './CircularProgressBar '
 import type { DropzoneOptions } from 'react-dropzone'
-import useImageUpload from './hooks/use-Image-Upload copy';
+import useImageUpload from './hooks/use-Image-Upload';
 
 
 const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType }: { imgKeyFieldName: string, imgUrlFieldName: string, imgPurpose: MediaPurpose, entityType: EntityType }) => {
@@ -141,7 +141,7 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                             </div>
                             <div className=' w-full mr-auto flex justify-end gap-4'>
                                 <Button onClick={handleCancel} variant="outline" className='cursor-pointer'>Cancel</Button>
-                                <Button onClick={Crop_OptimizeImage} variant="default" className='cursor-pointer'>Confirm</Button>
+                                <Button onClick={async () => await Crop_OptimizeImage()} variant="default" className='cursor-pointer'>Confirm</Button>
                             </div>
                         </div>
                     </div>

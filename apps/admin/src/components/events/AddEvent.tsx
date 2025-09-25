@@ -65,6 +65,7 @@ export default function EventAddForm() {
 
 
   const { eventId } = useParams();
+  const editMode = !!eventId
 
   const { payload: data, isLoading } = useFetchEditEvent({ eventId });
 
@@ -74,9 +75,7 @@ export default function EventAddForm() {
 
 
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
+
 
   useEffect(() => {
     if (data) {
@@ -86,6 +85,8 @@ export default function EventAddForm() {
       form.setValue("type", data.type)
       form.setValue("startDate", data.startDate ?? undefined)
       form.setValue("endDate", data.endDate ?? undefined)
+      form.setValue("cronStartDate", data.cronStartDate ?? undefined)
+      form.setValue("cronEndDate", data.cronEndDate ?? undefined)
       form.setValue("thumbnail", data.thumbnail)
       form.setValue("video", data.video)
     }
@@ -125,6 +126,10 @@ export default function EventAddForm() {
 
 
   console.log("from errors : ", form.formState.errors)
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <Form {...form}>

@@ -3,9 +3,11 @@ import useApiQuery from '@/hooks/useApiQuery';
 import type { EventResponseDto } from '@/types/events/eventResponse.dto';
 import { EventsDataTable } from './EventsDataTable';
 import { Button } from '../ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const EventMainContent = () => {
+
+    const navigate = useNavigate()
 
     const { data } = useApiQuery<EventResponseDto[]>({
         url: apiRoutes.events.list(),
@@ -23,8 +25,8 @@ const EventMainContent = () => {
     if (!events) return <>loading ...</>
 
 
-    function setEditingAdmin(admin: EventResponseDto): void {
-        throw new Error('Function not implemented.');
+    function setEditingAdmin(id: string): void {
+        navigate(`edit/${id}`)
     }
 
     function setDeletingAdmin(admin: EventResponseDto): void {
