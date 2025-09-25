@@ -17,7 +17,8 @@ const apiRoutes = {
         list: '/gallery/' as const,
     },
 
-    events:{
+    events: {
+        create: '/events/' as const,
         list: '/events/list' as const,
     },
 

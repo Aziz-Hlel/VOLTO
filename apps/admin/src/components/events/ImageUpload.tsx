@@ -1,115 +1,72 @@
 import { CloudUpload } from 'lucide-react'
-import React, { useMemo, useState } from 'react'
 import { FileInput, FileUploader } from '@/components/ui/file-upload'
 import { FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form'
 import { useFormContext } from 'react-hook-form'
 import Cropper, { type Area, type Point } from 'react-easy-crop';
 import { Button } from '../ui/button'
-import getCroppedImg from './cropImg.func'
-import prepareImageForUpload from './prepareImageForUpload'
-import { toast } from "sonner";
-import { uploadImageToS3_SIMULATOR } from './getSignedUrlUpload'
 import type { MediaPurpose } from '@/types/enums/MediaPurpose'
 import type { EntityType } from '@/types/enums/EntityType'
+import CircularProgressBar from './CircularProgressBar '
+import type { DropzoneOptions } from 'react-dropzone'
+import useImageUpload from './hooks/use-Image-Upload';
 
 
-const ImageUpload = ({ imgFieldName, imgPurpose, entityType }: { imgFieldName: string, imgPurpose: MediaPurpose, entityType: EntityType }) => {
+const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType }: { imgKeyFieldName: string, imgUrlFieldName: string, imgPurpose: MediaPurpose, entityType: EntityType }) => {
 
-    const _1MB = 1024 * 1024
-    const maxSize = 4 * _1MB
+    const maxSizeInMB = 4
 
-    const dropZoneConfig = {
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024
+
+
+    const dropZoneConfig: DropzoneOptions = {
         maxFiles: 1,
-        maxSize: maxSize,
-        // accept: "image/*",
+        maxSize: maxSizeInBytes,
+        accept: {
+            "image/*": [".jpg", ".jpeg", ".png", ".webp", ".gif"],
+        },
         multiple: false,
     };
 
 
-    const { watch, setValue } = useFormContext();
-    const img = watch(imgFieldName) as string | undefined;
-    const setImage = (img: string) => setValue(imgFieldName, img);
+    const { getFieldState } = useFormContext();
 
-    const [file, setFile] = React.useState<File | null>(null);
-    const [uploadedImg, setUploadedImg] = useState<string | undefined>(img);
+    const fieldErrorMessage = getFieldState(imgKeyFieldName).error?.message
 
-    const currentDisplayed: "fileUpload" | "copper" | "imgDisplayed" = useMemo(() => {
-        if (file) return "copper"
-        if (img) return "imgDisplayed"
-        return "fileUpload"
-    }, [file, img])
-
-
-    const [zoom, setZoom] = useState(1);
-
-    const [crop, setCrop] = useState({ x: 0, y: 0 })
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
-    const [progress, setProgress] = useState(0);
-
-    const onCropComplete = (_: Point, croppedAreaPixels: Area) => {
-        setCroppedAreaPixels(croppedAreaPixels)
-    }
-
-    const handleCancel = () => {
-        setFile(null);
-    }
-
-
-    const showCroppedImage = async () => {
-        if (!croppedAreaPixels || !file) {
-            return
-        }
-
-        try {
-            // handleDelete(0) // logic to delete previous image from s3 n all
-            // setProgress(5)
-            const croppedImage = await getCroppedImg(
-                URL.createObjectURL(file),
-                file.name,
-                croppedAreaPixels,
-            )
-            if (!croppedImage) return
-            setImage(URL.createObjectURL(croppedImage))
-            console.log('t5l 2 croppedImage type :', typeof croppedImage);
-            console.log("file name ::", croppedImage.name);
-
-            const optimizedImg = await prepareImageForUpload(croppedImage);
-            // setProgress(10)
-            console.log('t5l 3 ');
-            // console.log(optimizedImg.blob.name);
-            setFile(null)
-            uploadImageToS3_SIMULATOR({
-                uploadedImg: optimizedImg.blob,
-                name: "optimizedImg.blob.name",
-                entityType: entityType,
-                purpose: imgPurpose,
-                setProgress: (progress: any) => { setProgress(progress) }
-            });
-            console.log('donee', { croppedImage })
-        } catch (e) {
-            console.error(e)
-            toast("Something Went Wrong", {
-                description: "Unable to upload image, if the issue persists please contact support",
-                action: {
-                    label: "Ok",
-                    onClick: () => "",
-                },
-            })
-        }
-    }
+    const {
+        currentDisplayed,
+        file,
+        img,
+        progress,
+        zoom,
+        crop,
+        showCroppedImage,
+        rollBackToInitImage,
+        handleCancel,
+        onZoomChange,
+        onCropChange,
+        onCropComplete,
+        onFileChange,
+    } = useImageUpload({
+        dropZoneConfig: dropZoneConfig,
+        imgUrlFieldName: imgUrlFieldName,
+        imgKeyFieldName: imgKeyFieldName,
+        entityType: entityType,
+        imgPurpose: imgPurpose
+    })
 
     return (
         <>
-            <div className=' h-96'>
+            <div className=' h-96 '>
 
                 {currentDisplayed === "fileUpload" &&
                     <FormItem className=''>
                         <FormLabel>Thumbnail</FormLabel>
+                        <FormDescription>Select an image to upload.</FormDescription>
                         <FormControl>
                             <FileUploader
                                 value={file}
-                                onValueChange={setFile}
-                                maxImageSize={maxSize}
+                                onValueChange={onFileChange}
+                                maxImageSize={maxSizeInBytes}
                                 dropzoneOptions={dropZoneConfig}
                                 className="relative  bg-background rounded-lg p-2"
                             >
@@ -118,7 +75,7 @@ const ImageUpload = ({ imgFieldName, imgPurpose, entityType }: { imgFieldName: s
 
                                 >
                                     <div className="flex items-center justify-center flex-col p-8 w-full ">
-                                        <CloudUpload className='text-gray-500 min-h-44' />
+                                        <CloudUpload className='text-gray-500 min-h-56 size-16' />
                                         <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
                                             <span className="font-semibold">Click to upload</span>
                                             &nbsp; or drag and drop
@@ -138,74 +95,108 @@ const ImageUpload = ({ imgFieldName, imgPurpose, entityType }: { imgFieldName: s
                             </FileUploader>
 
                         </FormControl>
-                        <FormDescription>Select an image to upload.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 }
 
                 {currentDisplayed === "copper" &&
-                    <div className='relative w-full h-full flex flex-col justify-center items-center mr-auto p-2 border border-black rounded-lg border-dashed'>
-                        <div>crop image</div>
-                        <div className=' relative w-full h-full'>
+                    <div className='relative w-full h-full flex flex-col justify-center items-center mr-auto '>
+                        <div className=' text-sm text-left w-full font-semibold mb-1'>Thumbnail</div>
+                        <div className=' text-sm text-left w-full text-gray-600 font-light mb-4'>
+                            Crop Image to 9:16
+                        </div>
 
-                            <div className='    bg-white m-4  '>
-                                <Cropper
-                                    image={file ? URL.createObjectURL(file) : ""}
-                                    crop={crop}
-                                    zoom={zoom}
+                        <div className='border border-black rounded-lg border-dashed h-full w-full p-2 '>
 
-                                    aspect={9 / 16}
-                                    onCropChange={setCrop}
-                                    onCropComplete={onCropComplete}
-                                    classes={{
-                                        containerClassName: "fixed  w-full h-full ",
-                                    }}
+                            <div className=' relative w-full h-60   '>
 
+                                <div className='bg-white'>
+                                    <Cropper
+                                        image={file ? URL.createObjectURL(file) : ""}
+                                        crop={crop}
+                                        zoom={zoom}
+
+                                        aspect={9 / 16}
+                                        onCropChange={onCropChange}
+                                        onCropComplete={onCropComplete}
+                                        classes={{
+                                            containerClassName: "fixed  w-full h-full ",
+                                        }}
+
+                                    />
+                                </div>
+                            </div>
+
+                            <div className=" w-full mr-auto">
+                                <input
+                                    type="range"
+                                    value={zoom}
+                                    min={1}
+                                    max={3}
+                                    step={0.1}
+                                    aria-labelledby="Zoom"
+
+                                    onChange={(e) => onZoomChange(e.target.valueAsNumber)}
+                                    className=" w-full"
                                 />
                             </div>
+                            <div className=' w-full mr-auto flex justify-end gap-4'>
+                                <Button onClick={handleCancel} variant="outline">Cancel</Button>
+                                <Button onClick={showCroppedImage} variant="default">Confirm</Button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                }
+
+                {currentDisplayed === "loading" &&
+                    <div className='relative w-full h-full rounded-lg border border-black border-dashed flex flex-col justify-center '>
+
+                        <div className='flex justify-center mx-auto gap-2'>
+                            <span className=' -translate-y-0.5'>Loading</span>
+                            <CircularProgressBar progress={progress} />
                         </div>
 
-                        <div className=" w-full mr-auto">
-                            <input
-                                type="range"
-                                value={zoom}
-                                min={1}
-                                max={3}
-                                step={0.1}
-                                aria-labelledby="Zoom"
-
-                                onChange={(e) => {
-                                    setZoom(Number(e.target.value))
-                                }}
-                                className=" w-full"
-                            />
-                        </div>
-                        <div className=' w-full mr-auto flex justify-end gap-4'>
-                            <Button onClick={handleCancel} variant="outline">Cancel</Button>
-                            <Button onClick={showCroppedImage} variant="default">Confirm</Button>
-                        </div>
                     </div>
 
 
                 }
 
                 {currentDisplayed === "imgDisplayed" &&
-                    <div className='relative w-full h-full rounded-lg border border-black border-dashed mx-auto flex flex-col '>
-
-                            <div className=' mx-auto'>Image :</div>
-                            <img src={img} className=' mx-auto  h-80 object-contain' />
-
-                        <div className='  flex justify-end gap-4 p-4'>
-                            <Button onClick={handleCancel} variant="outline">Cancel</Button>
-                            <Button onClick={showCroppedImage} variant="default">Confirm</Button>
+                    <div className='relative w-full h-full flex flex-col justify-start '>
+                        <div className=' text-sm text-left w-full font-semibold mb-1'>Thumbnail</div>
+                        <div className=' text-sm text-left w-full text-gray-600 font-light mb-4'>
+                            Uploaded Image
                         </div>
+
+                        <div className='border border-black rounded-lg border-dashed h-full w-full p-2 '>
+
+                            <img src={img} className=' mx-auto  h-60 object-contain rounded-lg' />
+
+                            <div className='flex justify-end gap-4 px-4 pt-4'>
+                                <Button onClick={rollBackToInitImage} variant="outline">Cancel</Button>
+                                <FileUploader
+                                    value={file}
+                                    onValueChange={onFileChange}
+                                    maxImageSize={maxSizeInBytes}
+                                    dropzoneOptions={dropZoneConfig}
+                                    className=" w-fit"
+                                >
+                                    <FileInput>
+                                        <Button onClick={showCroppedImage} variant="default">Change</Button>
+                                    </FileInput>
+                                </FileUploader>
+                            </div>
+                        </div>
+
                     </div>
 
 
                 }
 
             </div>
-
+            <div className="text-red-500">{fieldErrorMessage}</div>
         </>
 
     )

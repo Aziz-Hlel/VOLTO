@@ -11,7 +11,7 @@ import type { PreSignedUrlResponse } from "@/types/media/PreSignedUrlResponse";
 const mediaService = {
 
     presignedUrl: async (preSignedUrlDto: PreSignedUrlRequest) => await apiService.postThrowable<PreSignedUrlResponse>(apiRoutes.media.presignedUrl, preSignedUrlDto),
-
+    
 
 }
 

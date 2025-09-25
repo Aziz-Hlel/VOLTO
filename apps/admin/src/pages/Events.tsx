@@ -9,11 +9,11 @@ import { Outlet } from 'react-router-dom'
 const Events = () => {
     return (
         <ContentLayout>
-            <HeaderLayout groupLabel="Events"/>
+            <HeaderLayout groupLabel="Events" />
             <MainContentLayout>
 
-<Outlet />
-            
+                <Outlet />
+
 
             </MainContentLayout>
         </ContentLayout>

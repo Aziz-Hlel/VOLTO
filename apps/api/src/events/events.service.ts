@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EntityType, Event, MediaPurpose } from '@prisma/client';
@@ -18,7 +18,7 @@ export class EventsService {
   ) { }
 
   async create(createEventDto: CreateEventDto) {
-    const { thumbnailKey, videoKey, ...eventDto } = createEventDto;
+    const { thumbnail, video, ...eventDto } = createEventDto;
 
     const createdEvent: Event = await this.prisma.event.create({
       data: {
@@ -27,16 +27,23 @@ export class EventsService {
       },
     });
 
-    const confirmThumbnail = this.mediaService.confirmPendingMedia(
-      thumbnailKey,
-      createdEvent.id,
-    );
-    const confirmVideo = this.mediaService.confirmPendingMedia(
-      videoKey,
-      createdEvent.id,
-    );
+    try {
 
-    await Promise.all([confirmThumbnail, confirmVideo]);
+      const confirmThumbnail = this.mediaService.confirmPendingMedia(
+        thumbnail.s3Key,
+        createdEvent.id,
+      );
+      const confirmVideo = this.mediaService.confirmPendingMedia(
+        video.s3Key,
+        createdEvent.id,
+      );
+      await Promise.all([confirmThumbnail, confirmVideo]);
+
+    } catch (e) {
+      await this.prisma.event.delete({ where: { id: createdEvent.id } });
+      throw new BadRequestException(e.message);
+    }
+
 
     return createdEvent;
   }
@@ -133,7 +140,7 @@ export class EventsService {
 
   update = async (updateEventDto: UpdateEventDto) => {
     // ! not solid when a user updates a media there s lot of bugs , @@unique([entityType, entityId, mediaPurpose]) put in the db will make it crash if you add another media since the new media will have the same values and you need to delete and changes the states of the old media once the new one is confirmed
-    const { thumbnailKey, videoKey, ...eventDto } = updateEventDto;
+    const { thumbnail, video, ...eventDto } = updateEventDto;
 
     const existingEvent = await this.getById(updateEventDto.id);
 
@@ -142,18 +149,18 @@ export class EventsService {
 
 
 
-    if (existingEvent.thumbnail.s3Key !== thumbnailKey) {
+    if (existingEvent.thumbnail.s3Key !== thumbnail.s3Key) {
 
       await this.mediaService.confirmPendingMedia(
-        thumbnailKey,
+        thumbnail.s3Key,
         updateEventDto.id,
       );
 
     }
-    if (existingEvent.video.s3Key !== videoKey) {
+    if (existingEvent.video.s3Key !== video.s3Key) {
 
       await this.mediaService.confirmPendingMedia(
-        updateEventDto.videoKey,
+        updateEventDto.video.s3Key,
         updateEventDto.id,
       );
 

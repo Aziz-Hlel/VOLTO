@@ -1,15 +1,17 @@
 import { EventType } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
-  IsBoolean,
   IsDate,
   IsEnum,
   IsOptional,
   IsString,
   Matches,
+  ValidateNested,
 } from 'class-validator';
+import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateEventDto {
+
   @IsString()
   name: string;
 
@@ -50,9 +52,12 @@ export class CreateEventDto {
   )
   cronEndDate?: string;
 
-  @IsString()
-  thumbnailKey: string;
+  @ValidateNested()
+  @Type(() => CreateObjectWithMediaRequestDto)
+  thumbnail: CreateObjectWithMediaRequestDto;
 
-  @IsString()
-  videoKey: string;
+  @ValidateNested()
+  @Type(() => CreateObjectWithMediaRequestDto)
+  video: CreateObjectWithMediaRequestDto;
+
 }

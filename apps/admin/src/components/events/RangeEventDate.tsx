@@ -1,6 +1,3 @@
-"use client"
-
-import * as React from "react"
 import { ChevronDownIcon } from "lucide-react"
 import { type DateRange } from "react-day-picker"
 

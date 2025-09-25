@@ -42,11 +42,11 @@ const EventMainContent = () => {
                 </div>
 
                 {/* <AddAdminDialog /> */}
-                <Button className="flex items-center gap-2">
-                    <Link to={"/events/create"}>
-                        Add Admin
-                    </Link>
-                </Button>
+                <Link to={"/events/create"}>
+                    <Button className="flex items-center gap-2 cursor-pointer">
+                        Add Event +
+                    </Button>
+                </Link>
 
             </div>
 
