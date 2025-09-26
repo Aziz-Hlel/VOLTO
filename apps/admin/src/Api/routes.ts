@@ -18,9 +18,10 @@ const apiRoutes = {
     },
 
     events: {
-        create: () => '/events/' as const,
         list: () => '/events/list' as const,
-        get: (eventId: string) => `/events/${eventId}`,
+        get: (eventId: string) => `/events/${eventId}` as const,
+        create: () => '/events/' as const,
+        update: (eventId: string) => `/events/${eventId}` as const,
     },
 
     media: {

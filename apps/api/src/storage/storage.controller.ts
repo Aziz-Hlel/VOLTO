@@ -17,8 +17,9 @@ import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('storage')
 export class StorageController {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(private readonly storageService: StorageService) { }
 
+  // ! you work with media/presigned-url not this one
   @Post('presigned-url')
   @HttpCode(200)
   @UseGuards(JwtAccessGuard)
@@ -29,27 +30,32 @@ export class StorageController {
   }
 
   @Post()
-  create(@Body() createS3Dto: CreateS3Dto) {
-    return this.storageService.create(createS3Dto);
+  async create(@Body() createS3Dto: CreateS3Dto) {
+    const response = await this.storageService.create(createS3Dto);
+    return response;
   }
 
   @Get()
-  findAll() {
-    return this.storageService.findAll();
+  async findAll() {
+    const response = await this.storageService.findAll();
+    return response;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.storageService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const response = await this.storageService.findOne(+id);
+    return response;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateS3Dto: UpdateS3Dto) {
-    return this.storageService.update(+id, updateS3Dto);
+  async update(@Param('id') id: string, @Body() updateS3Dto: UpdateS3Dto) {
+    const response = await this.storageService.update(+id, updateS3Dto);
+    return response;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storageService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const response = await this.storageService.remove(+id);
+    return response;
   }
 }

@@ -31,11 +31,12 @@ import RangeEventDate from "./RangeEventDate"
 import WeeklyEventForm from "./WeeklyEventForm"
 import { Textarea } from "../ui/textarea"
 import ImageUpload from "./ImageUpload"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import eventService from "@/Api/services/event.service"
 import VideoUpload from "./VideoUpload"
-import useFetchEditEvent from "./hooks/use-fetch-edit-event"
-import { useEffect } from "react"
+import type { EventResponseDto } from "@/types/events/eventResponse.dto"
+import type { ApiResponse } from "@/Api/apiService"
+import { useQueries, useQueryClient } from "@tanstack/react-query"
 
 const formSchema = z.object({
   id: z.string().optional(),
@@ -61,36 +62,30 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 
-export default function EventAddForm() {
+export default function EventAddForm({ event }: { event: EventResponseDto | undefined; }) {
 
+  const editMode = !!event
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const { eventId } = useParams();
-  const editMode = !!eventId
-
-  const { payload: data, isLoading } = useFetchEditEvent({ eventId });
+  const formDefaultValue: FormData | undefined = !event ? undefined : {
+    id: event.id,
+    name: event.name,
+    description: event.description,
+    type: event.type,
+    startDate: event.startDate ?? undefined,
+    endDate: event.endDate ?? undefined,
+    cronStartDate: event.cronStartDate ?? undefined,
+    cronEndDate: event.cronEndDate ?? undefined,
+    thumbnail: event.thumbnail,
+    video: event.video,
+  }
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: formDefaultValue
   })
 
-
-
-
-
-  useEffect(() => {
-    if (data) {
-      form.setValue("id", data.id)
-      form.setValue("name", data.name)
-      form.setValue("description", data.description)
-      form.setValue("type", data.type)
-      form.setValue("startDate", data.startDate ?? undefined)
-      form.setValue("endDate", data.endDate ?? undefined)
-      form.setValue("cronStartDate", data.cronStartDate ?? undefined)
-      form.setValue("cronEndDate", data.cronEndDate ?? undefined)
-      form.setValue("thumbnail", data.thumbnail)
-      form.setValue("video", data.video)
-    }
-  }, [data, form])
 
   const eventType = form.watch("type")
 
@@ -104,10 +99,17 @@ export default function EventAddForm() {
         delete values.cronStartDate
         delete values.cronEndDate
       }
-      const response = await eventService.create(values);
+      let response: ApiResponse<EventResponseDto>
+
+      editMode ? response = await eventService.update(event!.id, values)
+        : response = await eventService.create(values)
 
       if (response.success) {
-        toast.success("Event created successfully");
+        if (editMode) toast.success("Event Updated successfully");
+        if (!editMode) toast.success("Event Created successfully");
+        queryClient.invalidateQueries({ queryKey: ['events'], exact: false })
+        navigate("..")
+
       }
 
       console.log(values);
@@ -127,9 +129,7 @@ export default function EventAddForm() {
 
   console.log("from errors : ", form.formState.errors)
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
+
 
   return (
     <Form {...form}>

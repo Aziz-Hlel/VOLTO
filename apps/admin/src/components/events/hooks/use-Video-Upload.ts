@@ -77,7 +77,8 @@ const useVideoUpload = ({ videoUrlFieldName, videoKeyFieldName: imgKeyFieldName,
 
 
 
-    const rollBackToInitImage = () => {
+    const rollBackToInitImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
         setFile(null);
         setImageUrl(initImg);
     }
@@ -99,15 +100,15 @@ const useVideoUpload = ({ videoUrlFieldName, videoKeyFieldName: imgKeyFieldName,
             const fileName = file.name.split(".")[0];
 
             setProgress(10)
-            
+
             const s3Key = await uploadImage({
                 uploadedImg: file,
                 name: fileName,
                 entityType: entityType,
                 purpose: videoPurpose,
-                setProgress: (progress: any) =>  setProgress(progress) 
+                setProgress: (progress: any) => setProgress(progress)
             });
-            
+
             setImageUrl(URL.createObjectURL(file))
             setFile(null)
             setImageKey(s3Key)

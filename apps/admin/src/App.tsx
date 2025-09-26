@@ -13,6 +13,7 @@ import Events from "./pages/Events";
 import EventMainContent from "./components/events/EventMainContent";
 import EventAddForm from "./components/events/AddEvent";
 import { Toaster } from "sonner";
+import AddEventWrapper from "./components/events/AddEventWrapper";
 
 
 const queryClient = new QueryClient();
@@ -39,8 +40,8 @@ function App() {
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="events/" element={<Events />} >
                     <Route index element={<EventMainContent />} />
-                    <Route path="create" element={<EventAddForm />} />
-                    <Route path="edit/:eventId" element={<EventAddForm />} />
+                    <Route path="create" element={<AddEventWrapper />} />
+                    <Route path="edit/:eventId" element={<AddEventWrapper />} />
 
                   </Route>
 

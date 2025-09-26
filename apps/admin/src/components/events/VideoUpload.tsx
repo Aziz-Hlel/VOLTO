@@ -28,9 +28,11 @@ const VideoUpload = ({ videoKeyFieldName, videoUrlFieldName, videoPurpose, entit
     };
 
 
-    const { getFieldState } = useFormContext();
+    const { getFieldState, getValues } = useFormContext();
 
-    const fieldErrorMessage = getFieldState(videoKeyFieldName).error?.message
+    const fieldErrorMessage = getFieldState(videoKeyFieldName).error?.message   
+    console.log("fieldErrorMessage : ", fieldErrorMessage)
+    console.log("videoKeyFieldName : ", getValues(videoKeyFieldName))
 
     const {
         currentDisplayed,
@@ -157,7 +159,7 @@ const VideoUpload = ({ videoKeyFieldName, videoUrlFieldName, videoPurpose, entit
                                     className=" w-fit"
                                 >
                                     <FileInput>
-                                        <Button onClick={optimizeVideo} variant="default" className='cursor-pointer'>Change</Button>
+                                        <Button onClick={(e) => e.preventDefault()} variant="default" className='cursor-pointer'>Change</Button>
                                     </FileInput>
                                 </FileUploader>
                             </div>

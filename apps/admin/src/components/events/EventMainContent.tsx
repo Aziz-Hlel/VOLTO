@@ -26,7 +26,7 @@ const EventMainContent = () => {
 
 
     function setEditingAdmin(id: string): void {
-        navigate(`edit/${id}`)
+        navigate(`edit/${id}`) 
     }
 
     function setDeletingAdmin(admin: EventResponseDto): void {

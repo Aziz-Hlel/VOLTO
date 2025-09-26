@@ -31,7 +31,7 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
     const { getFieldState } = useFormContext();
 
     const fieldErrorMessage = getFieldState(imgKeyFieldName).error?.message
-
+    console.log("imgUrlFieldName : ", imgUrlFieldName)
     const {
         currentDisplayed,
         file,
@@ -183,7 +183,7 @@ const ImageUpload = ({ imgKeyFieldName, imgUrlFieldName, imgPurpose, entityType 
                                     className=" w-fit"
                                 >
                                     <FileInput>
-                                        <Button onClick={Crop_OptimizeImage} variant="default" className='cursor-pointer'>Change</Button>
+                                        <Button onClick={(e) => { e.preventDefault(); }} variant="default" className='cursor-pointer'>Change</Button>
                                     </FileInput>
                                 </FileUploader>
                             </div>

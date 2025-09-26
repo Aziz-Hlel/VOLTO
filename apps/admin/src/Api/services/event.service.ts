@@ -9,8 +9,9 @@ import type { CreateEventDto } from "@/types/events/CreateEventRequest.dto";
 const eventService = {
 
     list: (queryParams: Pageable) => apiService.getThrowable<EventResponseDto[]>(apiRoutes.events.list(), { data: queryParams }),
+    get: (id: string) => apiService.getThrowable<EventResponseDto>(apiRoutes.events.get(id), { data: id }),
     create: (payload: CreateEventDto) => apiService.postThrowable<EventResponseDto>(apiRoutes.events.create(), payload),
-    get: (id: string) => apiService.getThrowable<EventResponseDto>(apiRoutes.events.get(id), { data: id })
+    update: (id: string, payload: CreateEventDto) => apiService.patchThrowable<EventResponseDto>(apiRoutes.events.update(id), payload),
 
 }
 

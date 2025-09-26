@@ -139,7 +139,7 @@ export class EventsService {
   }
 
   update = async (updateEventDto: UpdateEventDto) => {
-    // ! not solid when a user updates a media there s lot of bugs , @@unique([entityType, entityId, mediaPurpose]) put in the db will make it crash if you add another media since the new media will have the same values and you need to delete and changes the states of the old media once the new one is confirmed
+
     const { thumbnail, video, ...eventDto } = updateEventDto;
 
     const existingEvent = await this.getById(updateEventDto.id);
@@ -147,40 +147,48 @@ export class EventsService {
     if (!existingEvent)
       throw new Error(`Event with ID ${updateEventDto.id} not found`);
 
+    return await this.prisma.$transaction(async (tx) => {
 
+      if (existingEvent.thumbnail.s3Key !== thumbnail.s3Key) {
 
-    if (existingEvent.thumbnail.s3Key !== thumbnail.s3Key) {
+        await this.mediaService.updateEntityMedia({
+          entityId: updateEventDto.id,
+          entityType: EntityType.EVENT,
+          mediaPurpose: MediaPurpose.THUMBNAIL,
+          newMediaS3Key: updateEventDto.thumbnail.s3Key,
+        });
 
-      await this.mediaService.confirmPendingMedia(
-        thumbnail.s3Key,
-        updateEventDto.id,
-      );
+      }
+      if (existingEvent.video.s3Key !== video.s3Key) {
 
-    }
-    if (existingEvent.video.s3Key !== video.s3Key) {
+        await this.mediaService.updateEntityMedia({
+          entityId: updateEventDto.id,
+          entityType: EntityType.EVENT,
+          mediaPurpose: MediaPurpose.VIDEO,
+          newMediaS3Key: updateEventDto.video.s3Key,
+        });
 
-      await this.mediaService.confirmPendingMedia(
-        updateEventDto.video.s3Key,
-        updateEventDto.id,
-      );
+      }
 
-    }
-    const updatedEvent: Event = await this.prisma.event.update({
-      where: { id: updateEventDto.id },
-      data: {
-        ...eventDto,
-      },
+      const updatedEvent: Event = await this.prisma.event.update({
+        where: { id: updateEventDto.id },
+        data: {
+          ...eventDto,
+        },
+      });
+
+      if (existingEvent.isLadiesNight) {
+        await this.redis.del(HASHES.LADIES_NIGHT.DATE.HASH());
+      }
+
+      if (existingEvent.isLadiesNight && (existingEvent.cronStartDate !== updatedEvent.cronStartDate || existingEvent.cronEndDate !== updatedEvent.cronEndDate)) {
+        await this.deleteUserHashes();
+      }
+
+      return updatedEvent;
+
     });
 
-    if (existingEvent.isLadiesNight) {
-      await this.redis.del(HASHES.LADIES_NIGHT.DATE.HASH());
-    }
-
-    if (existingEvent.isLadiesNight && (existingEvent.cronStartDate !== updatedEvent.cronStartDate || existingEvent.cronEndDate !== updatedEvent.cronEndDate)) {
-      await this.deleteUserHashes();
-    }
-
-    return updatedEvent;
   };
 
 

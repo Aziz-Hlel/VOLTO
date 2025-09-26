@@ -91,7 +91,7 @@ model Media {
   updatedAt   DateTime  @updatedAt
   confirmedAt DateTime?
 
-  @@unique([entityType, entityId, mediaPurpose])
+  // @@unique([entityType, entityId, mediaPurpose])
   @@index([entityType, entityId])
   @@index([entityType, entityId, mediaPurpose])
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { MediaIdentifier } from './types/MediaIndetifier';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PreSignedUrlRequest } from 'src/storage/dto/preSignedUrl.dto';
@@ -11,7 +11,7 @@ export class MediaService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) {}
+  ) { }
 
   async createPendingMedia(
     preSignedUrlDto: PreSignedUrlRequest,
@@ -23,8 +23,9 @@ export class MediaService {
         s3Key: fileKey,
         entityType: preSignedUrlDto.entityType,
         mimeType: preSignedUrlDto.mimeType,
+        fileSize: preSignedUrlDto.fileSize,
         entityId: null,
-        mediaPurpose: preSignedUrlDto.mediaPurpose ,
+        mediaPurpose: preSignedUrlDto.mediaPurpose,
         fileType: preSignedUrlDto.fileType,
         status: MediaStatus.PENDING,
       },
@@ -77,7 +78,7 @@ export class MediaService {
       where: {
         entityType: identifier.entityType,
         entityId: identifier.entityId,
-        mediaPurpose: identifier.mediaPurpose ,
+        mediaPurpose: identifier.mediaPurpose,
       },
     });
 
@@ -102,4 +103,59 @@ export class MediaService {
   remove(id: number) {
     return `This action removes a #${id} media`;
   }
+
+
+  async removeCurrentEntityMedia({ entityId, entityType, mediaPurpose }: MediaIdentifier) {
+    return await this.prisma.media.deleteMany({
+      where: {
+        entityId,
+        entityType,
+        mediaPurpose
+      },
+    });
+  }
+
+
+  async updateEntityMedia({ entityId, entityType, mediaPurpose, newMediaS3Key }: MediaIdentifier & { newMediaS3Key: string }) {
+
+    return await this.prisma.$transaction(async (tx) => {
+
+      // removeCurrentEntityMedia
+      tx.media.deleteMany({
+        where: {
+          entityId,
+          entityType,
+          mediaPurpose,
+          status: MediaStatus.CONFIRMED
+        },
+      });
+
+      // assaignNewMedia to entity
+      await tx.media.update({
+        where: {
+          s3Key: newMediaS3Key,
+          entityType: entityType,
+          mediaPurpose: mediaPurpose
+        },
+        data: {
+          entityId: entityId,
+          status: MediaStatus.CONFIRMED,
+        }
+      }).catch((error) => {
+        if (error.code === "P2025") {
+          throw new BadRequestException("Media associated with entity not found in database");
+        }
+        throw error; // rethrow unexpected errors
+
+      });
+
+
+
+    })
+
+
+  }
+
+
+
 }

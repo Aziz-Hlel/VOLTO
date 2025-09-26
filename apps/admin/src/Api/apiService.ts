@@ -4,7 +4,7 @@ import ENV from "../utils/env.variables";
 import { jwtTokenManager } from "./JwtTokenManager.class";
 import apiRoutes from "./routes";
 
-
+// TODO : hedhi 9assmha l zouz types w7da b success fasle w w7da b success true bch kek keni false rahou data type undefined mouch T, for more type safety
 export interface ApiResponse<T = any> {
     status: number;
     success: boolean;
@@ -26,7 +26,7 @@ const creatAxiosInstance = (): AxiosInstance => {
 }
 
 class ApiService {
-    private api: AxiosInstance;
+    private axiosInstance: AxiosInstance;
     private isRefreshing = false;
     private failedQueue: Array<{
         resolve: (token: string) => void;
@@ -35,14 +35,14 @@ class ApiService {
 
     constructor() {
 
-        this.api = creatAxiosInstance();
+        this.axiosInstance = creatAxiosInstance();
 
         this.setupInterceptors();
     }
 
     private setupInterceptors(): void {
         // Request interceptor - add auth header
-        this.api.interceptors.request.use(
+        this.axiosInstance.interceptors.request.use(
             (config) => {
                 const token = jwtTokenManager.getAccessToken();
                 if (token) {
@@ -54,7 +54,7 @@ class ApiService {
         );
 
         // Response interceptor - handle token refresh
-        this.api.interceptors.response.use(
+        this.axiosInstance.interceptors.response.use(
             (response) => response,
             async (error) => {
                 const originalRequest = error.config;
@@ -65,7 +65,7 @@ class ApiService {
                             this.failedQueue.push({
                                 resolve: (token: string) => {
                                     originalRequest.headers.Authorization = `Bearer ${token}`;
-                                    resolve(this.api(originalRequest));
+                                    resolve(this.axiosInstance(originalRequest));
                                 },
                                 reject,
                             });
@@ -79,7 +79,7 @@ class ApiService {
                         const newAccessToken = await this.refreshAccessToken();
                         this.processQueue(null, newAccessToken);
                         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                        return this.api(originalRequest);
+                        return this.axiosInstance(originalRequest);
                     } catch (refreshError) {
                         this.processQueue(refreshError);
                         jwtTokenManager.clearTokens();
@@ -120,7 +120,7 @@ class ApiService {
             throw new Error('No refresh token available');
         }
 
-        const response = await axios.post(`${this.api.defaults.baseURL}${apiRoutes.auth.refresh()}`, {
+        const response = await axios.post(`${this.axiosInstance.defaults.baseURL}${apiRoutes.auth.refresh()}`, {
             refreshToken,
         });
 
@@ -146,7 +146,7 @@ class ApiService {
     async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
 
-            const response = await this.api.get<T>(url, config);
+            const response = await this.axiosInstance.get<T>(url, config);
             return this.handleApiSuccess(response);
 
         } catch (error: any) {
@@ -159,19 +159,17 @@ class ApiService {
     async getThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
 
-            const response = await this.api.get<T>(url, config);
+            const response = await this.axiosInstance.get<T>(url, config);
             return this.handleApiSuccess(response);
 
         } catch (error: any) {
-
-            return this.handleApiError(error);
-
+            throw this.handleApiError(error);
         }
     }
 
     async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.post<T>(url, data, config);
+            const response = await this.axiosInstance.post<T>(url, data, config);
             return this.handleApiSuccess(response);
         } catch (error: any) {
             return this.handleApiError(error);
@@ -180,16 +178,16 @@ class ApiService {
 
     async postThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.post<T>(url, data, config);
+            const response = await this.axiosInstance.post<T>(url, data, config);
             return this.handleApiSuccess(response);
         } catch (error: any) {
-            return this.handleApiError(error);
+            throw this.handleApiError(error);
         }
     }
 
     async put<T>(url: string, data: any, config?: AxiosRequestConfig,): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.put<T>(url, data, config);
+            const response = await this.axiosInstance.put<T>(url, data, config);
             return this.handleApiSuccess(response);
         } catch (error: any) {
             return this.handleApiError(error);
@@ -198,16 +196,36 @@ class ApiService {
 
     async putThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.put<T>(url, data, config);
+            const response = await this.axiosInstance.put<T>(url, data, config);
+            return this.handleApiSuccess(response);
+        } catch (error: any) {
+            throw this.handleApiError(error);
+        }
+    }
+
+
+    async patch<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+        try {
+            const response = await this.axiosInstance.patch<T>(url, data, config);
             return this.handleApiSuccess(response);
         } catch (error: any) {
             return this.handleApiError(error);
+        }
+
+    };
+
+    async patchThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+        try {
+            const response = await this.axiosInstance.patch<T>(url, data, config);
+            return this.handleApiSuccess(response);
+        } catch (error: any) {
+            throw this.handleApiError(error);
         }
     }
 
     async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.delete<T>(url, config);
+            const response = await this.axiosInstance.delete<T>(url, config);
             return this.handleApiSuccess(response);
         } catch (error: any) {
             return this.handleApiError(error);
@@ -216,10 +234,10 @@ class ApiService {
 
     async deleteThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
         try {
-            const response = await this.api.delete<T>(url, config);
+            const response = await this.axiosInstance.delete<T>(url, config);
             return this.handleApiSuccess(response);
         } catch (error: any) {
-            return this.handleApiError(error);
+            throw this.handleApiError(error);
         }
     }
 

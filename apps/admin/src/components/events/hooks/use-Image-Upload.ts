@@ -21,12 +21,15 @@ type IuseImageUpload = {
 const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpose }: IuseImageUpload) => {
 
 
-    const { watch, setValue } = useFormContext();
+    const { watch, setValue, getValues } = useFormContext();
 
 
-    const img = watch(imgUrlFieldName) as string | undefined;
+    const initImgUrl = getValues(imgUrlFieldName) as string | undefined;
+    const initImgKey = getValues(imgKeyFieldName) as string | undefined;
 
-    const initImg = useMemo(() => img, [])
+    const initImg = useMemo(() => initImgUrl, [])
+    console.log("initImg : ", initImg)
+    console.log("zabbourom niti url img value : ", initImgUrl)
     const setImageUrl = (img?: string) => setValue(imgUrlFieldName, img);
     const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
 
@@ -43,9 +46,9 @@ const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpo
     const currentDisplayed: "fileUpload" | "copper" | "loading" | "imgDisplayed" = useMemo(() => {
         if (progress > 0 && progress < 100) return "loading"
         if (file) return "copper"
-        if (img) return "imgDisplayed"
+        if (initImgUrl) return "imgDisplayed"
         return "fileUpload"
-    }, [file, img, progress])
+    }, [file, initImgUrl, progress])
 
     const onZoomChange = (zoom: number) => setZoom(zoom);
     const onCropChange = (point: Point) => setCrop(point);
@@ -55,13 +58,16 @@ const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpo
 
 
 
-    const rollBackToInitImage = () => {
+    const rollBackToInitImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        console.log("initImgKey : ", initImgKey, " initImgUrl : ", initImgUrl)
+        e.preventDefault();
         setFile(null);
         setImageUrl(initImg);
+        setImageKey(initImgKey);
     }
 
 
-
+    console.log("currentDisplayed : ", currentDisplayed)
 
 
     const Crop_OptimizeImage = async () => {
@@ -115,7 +121,7 @@ const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpo
     return {
         file,
         progress,
-        img,
+        img: initImgUrl,
         crop,
         zoom,
         currentDisplayed,

@@ -7,7 +7,7 @@ import type { GalleryResponseDto } from "@/types/gallery/get-gallery.response.dt
 
 const galleryService = {
 
-    list: (page: GalleryQueryParams) => apiService.getThrowable<GalleryResponseDto>(apiRoutes.gallery.list, { data: page }),
+    list: (page: GalleryQueryParams) => apiService.getThrowable<GalleryResponseDto>(apiRoutes.gallery.list(), { data: page }),
 
 
 } 

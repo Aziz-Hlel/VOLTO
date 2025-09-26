@@ -14,7 +14,7 @@ const useFetchEditEvent = ({ eventId }: { eventId?: string }) => {
     // const apiFunc = (eventId: string) => eventService.get(eventId);
 
     const { data, isLoading, } = useQuery({
-        queryKey: ['event', eventId],
+        queryKey: ['events', eventId],
         queryFn: () => eventService.get(eventId!),
         enabled: !!eventId
     })

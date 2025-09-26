@@ -23,9 +23,11 @@ export class MediaController {
   async getPresignedUrl(
     @Body() preSignedUrlDto: PreSignedUrlRequest,
   ): Promise<PreSignedUrlResponse> {
+
     const response = await this.mediaService.getPresignedUrl(preSignedUrlDto);
 
     return response;
+
   }
 
 
