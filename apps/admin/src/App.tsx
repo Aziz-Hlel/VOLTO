@@ -14,6 +14,8 @@ import EventMainContent from "./components/events/EventMainContent";
 import EventAddForm from "./components/events/AddEvent";
 import { Toaster } from "sonner";
 import AddEventWrapper from "./components/events/AddEventWrapper";
+import Staff from "./pages/Staff";
+import StaffMainContent from "./components/Staff/StaffMainContent";
 
 
 const queryClient = new QueryClient();
@@ -40,6 +42,13 @@ function App() {
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="events/" element={<Events />} >
                     <Route index element={<EventMainContent />} />
+                    <Route path="create" element={<AddEventWrapper />} />
+                    <Route path="edit/:eventId" element={<AddEventWrapper />} />
+
+                  </Route>
+
+                  <Route path="staff/" element={<Staff />} >
+                    <Route index element={<StaffMainContent />} />
                     <Route path="create" element={<AddEventWrapper />} />
                     <Route path="edit/:eventId" element={<AddEventWrapper />} />
 

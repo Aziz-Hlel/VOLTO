@@ -1,40 +1,38 @@
 import { apiRoutes } from '@/Api';
 import useApiQuery from '@/hooks/useApiQuery';
-import type { EventResponseDto } from '@/types/events/eventResponse.dto';
-import { EventsDataTable } from './EventsDataTable';
-import { Button } from '../ui/button';
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { DeleteConfirmationDialog } from './DeleteConfirmationDialog';
+import { Button } from '../ui/button';
+import type { StaffResponseDto } from '@/types/staff/StaffResponseDto';
+import StaffDataTable from './StaffDataTable';
 
-
-const EventMainContent = () => {
+const StaffMainContent = () => {
 
     const navigate = useNavigate()
-    
-    const { data } = useApiQuery<EventResponseDto[]>({
-        url: apiRoutes.events.list(),
+
+    const { data } = useApiQuery<StaffResponseDto[]>({
+        url: apiRoutes.staff.list(),
         queryParams: { page: 1, limit: 50 },
         queryKey: ['events'],
         options: { enabled: true, config: { params: { page: 1, limit: 50 } } },
     });
-    
-    
-    const [selectedEventToDelete, setSelectedEventToDelete] = useState<EventResponseDto | null>(null);
-    const events = data?.data
-    
-    
+
+
+    const [selectedEventToDelete, setSelectedEventToDelete] = useState<StaffResponseDto | null>(null);
+    const staff = data?.data
+
+
     function handleEditingEvent(id: string): void {
         navigate(`edit/${id}`)
     }
 
 
-    const setEventForDeletion = (event?: EventResponseDto) => {
+    const setEventForDeletion = (event?: StaffResponseDto) => {
         setSelectedEventToDelete(event ?? null);
     };
 
 
-    if (!events) return <>loading ...</>
+    if (!staff) return <>loading ...</>
 
 
 
@@ -49,30 +47,30 @@ const EventMainContent = () => {
 
                 <Link to={"/events/create"}>
                     <Button className="flex items-center gap-2 cursor-pointer">
-                        Add Event +
+                        Add Staff Member +
                     </Button>
                 </Link>
 
             </div>
 
-            <EventsDataTable
-                data={events}
+            <StaffDataTable
+                data={staff}
                 setEventForEdit={handleEditingEvent}
                 setEventForDeletion={setEventForDeletion}
             />
 
-            {selectedEventToDelete &&
+            {/* {selectedEventToDelete &&
                 < DeleteConfirmationDialog
                     title='Delete Event'
                     description={`Are you sure you want to delete the event "${selectedEventToDelete.name}"?`}
                     removeObjectFromDeletion={setEventForDeletion}
                     objectId={selectedEventToDelete.id}
 
-                />}
+                />} */}
 
 
         </div>
     )
 }
 
-export default EventMainContent
+export default StaffMainContent;

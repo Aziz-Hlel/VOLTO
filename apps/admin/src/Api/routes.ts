@@ -12,6 +12,10 @@ const apiRoutes = {
         refresh: () => "/auth/refresh" as const,
         signUp: () => "/auth/register/" as const,
     },
+    staff: {
+        list: () => '/users/staff' as const,
+
+    },
 
     gallery: {
         list: () => '/gallery/' as const,
@@ -22,6 +26,7 @@ const apiRoutes = {
         get: (eventId: string) => `/events/${eventId}` as const,
         create: () => '/events/' as const,
         update: (eventId: string) => `/events/${eventId}` as const,
+        delete: (eventId: string) => `/events/${eventId}` as const,
     },
 
     media: {

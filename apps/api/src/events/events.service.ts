@@ -1,7 +1,7 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { EntityType, Event, MediaPurpose } from '@prisma/client';
+import { EntityType, Event, MediaPurpose, Prisma } from '@prisma/client';
 import { MediaService } from 'src/media/media.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import Redis from 'ioredis';
@@ -207,7 +207,45 @@ export class EventsService {
 
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} event`;
+  async remove(eventId: string) {
+
+    return await this.prisma.$transaction(async (tx) => {
+
+      try {
+
+        const event = await this.prisma.event.findUnique({
+          where: {
+            id: eventId,
+          },
+        });
+
+        if (!event) {
+          throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+
+        if (event.isLadiesNight) {
+          throw new BadRequestException('Cannot delete ladies night event');
+        }
+
+        const deleteEvent = this.prisma.event.delete({
+          where: {
+            id: eventId,
+          },
+        });
+
+        const deleteAssociatedMedias = this.mediaService.removeMany({ entityId: eventId, entityType: EntityType.EVENT });
+
+        await Promise.all([deleteEvent, deleteAssociatedMedias]);
+
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+          throw new NotFoundException(`Event with ID ${eventId} not found`);
+        }
+        throw e;
+      }
+    })
+
+
+
   }
 }

@@ -92,14 +92,18 @@ export class EventsController {
       throw new BadRequestException(
         'cronStartDate and cronEndDate are required for weekly events',
       );
-  
-      return await this.eventsService.update(updateEventDto);
+
+    return await this.eventsService.update(updateEventDto);
 
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.eventsService.remove(id);
+  async remove(@Param('id') id: string) {
+    
+    if(!id) throw new BadRequestException('id is required');
+
+    const response = await this.eventsService.remove(id);
+    return response;
   }
 }

@@ -4,10 +4,11 @@ import { CreateUserDto } from 'src/users/Dto/create-user';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerDto } from './Dto/create-customer';
 import { Role } from '@prisma/client';
+import { UserMapper } from './Mapper/usersMapper';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   findAll() {
     return this.prisma.user.findMany();
@@ -24,13 +25,13 @@ export class UsersService {
   }
 
   async createUser(dto: CreateUserDto, hashedPassword: string) {
-  return await this.prisma.user.create({
-    data: {
-      ...dto,
-      password: hashedPassword,
-    },
-  });
-}
+    return await this.prisma.user.create({
+      data: {
+        ...dto,
+        password: hashedPassword,
+      },
+    });
+  }
 
   async registerCustomer(dto: CreateCustomerDto) {
     const existingUser = await this.findByEmail(dto.email);
@@ -61,5 +62,19 @@ export class UsersService {
 
   findById(id: string) {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+
+  async getStaff() {
+    const staff = await this.prisma.user.findMany({
+      where: {
+        role: {
+          in: [Role.ADMIN, Role.WAITER, Role.SUPER_ADMIN],
+        },
+      },
+    });
+
+    const staffDto = staff.map(user => UserMapper.toResponse2(user))
+    return staffDto;
   }
 }

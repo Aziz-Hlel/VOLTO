@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PreSignedUrlRequest } from 'src/storage/dto/preSignedUrl.dto';
 import { StorageService } from 'src/storage/storage.service';
 import { StorageMapper } from 'src/storage/mapper/StorageMapper';
-import { Media, MediaStatus } from '@prisma/client';
+import { EntityType, Media, MediaStatus } from '@prisma/client';
 
 @Injectable()
 export class MediaService {
@@ -100,8 +100,13 @@ export class MediaService {
     return { s3Key: media.s3Key, url };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} media`;
+  async removeMany({ entityId, entityType, }: { entityId: string, entityType: EntityType }) {
+    await this.prisma.media.deleteMany({
+      where: {
+        entityId,
+        entityType,
+      },
+    });
   }
 
 

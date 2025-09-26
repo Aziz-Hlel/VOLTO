@@ -64,7 +64,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/Gallery",
           label: "Gallery",
-          icon: Images 
+          icon: Images
         },
         {
           href: "/spinning-wheel",
@@ -77,8 +77,8 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Settings",
       menus: [
         {
-          href: "/users",
-          label: "Users",
+          href: "/staff",
+          label: "Staff",
           icon: Users
         },
         {

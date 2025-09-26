@@ -12,7 +12,8 @@ const eventService = {
     get: (id: string) => apiService.getThrowable<EventResponseDto>(apiRoutes.events.get(id), { data: id }),
     create: (payload: CreateEventDto) => apiService.postThrowable<EventResponseDto>(apiRoutes.events.create(), payload),
     update: (id: string, payload: CreateEventDto) => apiService.patchThrowable<EventResponseDto>(apiRoutes.events.update(id), payload),
+    delete: (id: string) => apiService.deleteThrowable<EventResponseDto>(apiRoutes.events.delete(id)),
 
-}
+} as const;
 
 export default eventService;

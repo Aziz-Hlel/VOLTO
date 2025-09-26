@@ -24,14 +24,14 @@ import { EventType } from '@/types/events/EventType';
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
-  onEdit: (id: string) => void;
-  onDelete: (admin: EventResponseDto) => void;
+  setEventForEdit: (id: string) => void;
+  setEventForDeletion: (event: EventResponseDto) => void;
 }
 
 export const EventsDataTable: React.FC<EventsDataTableProps> = ({
   data,
-  onEdit,
-  onDelete,
+  setEventForEdit,
+  setEventForDeletion
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<keyof EventResponseDto>('name');
@@ -78,13 +78,18 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
       return event.cronEndDate ? cronstrue.toString(event.cronEndDate) : 'N/A';
   }
 
+
+
+
+
+
   return (
     <div className="space-y-4">
       <div className="flex items-center space-x-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search admins..."
+            placeholder="Search events..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-8"
@@ -140,14 +145,14 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-white">
                           <DropdownMenuItem
-                            onClick={() => onEdit(event.id)}
+                            onClick={() => setEventForEdit(event.id)}
                             className="flex items-center gap-2 hover:bg-gray-100"
                           >
                             <Edit className="h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => onDelete(event)}
+                            onClick={() => setEventForDeletion(event)}
                             className="flex items-center gap-2 text-destructive hover:bg-destructive/10"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -163,6 +168,9 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
           </Table>
         </div>
       </div>
+
+
+
     </div>
   );
 };
