@@ -5,6 +5,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerDto } from './Dto/create-customer';
 import { Role } from '@prisma/client';
 import { UserMapper } from './Mapper/usersMapper';
+import { CreateStaffDto } from './Dto/create-staff.dto';
+import { UpdateStaffDto } from './Dto/update-staff.dto';
 
 @Injectable()
 export class UsersService {
@@ -85,5 +87,33 @@ export class UsersService {
     });
     if (!staff) throw new NotFoundException('Staff not found');
     return staff;
+  }
+
+
+
+  async createStaff(dto: CreateStaffDto) {
+    const existingUser = await this.findByEmail(dto.email);
+    if (existingUser) throw new UnauthorizedException('Email already exists');
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const savedUser = await this.createUser(dto, hashedPassword);
+    return savedUser;
+  }
+
+
+  async updateStaff(id: string, dto: UpdateStaffDto){
+
+    const existingUser = await this.findById(id);
+    if (!existingUser) throw new NotFoundException('User not found');
+
+    const savedUser = await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...dto,
+      },
+    });
+    return savedUser;
+
+    
   }
 }

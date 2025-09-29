@@ -4,21 +4,19 @@ import { IsEmail, IsEnum, IsOptional, IsString, ValidateNested } from "class-val
 import { CreateObjectWithMediaRequestDto } from "src/media/dto/MediaRequest.dto";
 
 
-export class StaffRequestDto {
+export class CreateStaffDto {
 
     @IsString()
-    name: string;
+    username: string;
 
     @IsEmail()
     email: string;
 
-    @IsOptional()
     @IsString()
-    password?: string;
+    password: string;
 
-    @IsOptional()
     @IsString()
-    confirmPassowrd?: string;
+    confirmPassowrd: string;
     
     @IsEnum(Role, { message: 'Invalid Role' })
     role: Role;
@@ -26,13 +24,12 @@ export class StaffRequestDto {
     @IsOptional()
     @IsString()
     phoneNumber?: string;
-    
+
     @IsEnum(Gender, { message: 'Gender must be either M or F' })
     gender: Gender;
 
     @IsEnum(Tier, { message: 'Invalid Tier' })
     tier: Tier = Tier.SILVER;
-
 
     @ValidateNested()
     @Type(() => CreateObjectWithMediaRequestDto)
