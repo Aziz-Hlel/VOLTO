@@ -1,21 +1,18 @@
 import { Sidebar } from "@/components/SideBar/sidebar";
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  return (
+    <div className="flex h-screen ">
+      <Sidebar />
 
-    return (
-        <div className="flex h-screen ">
+      <div className=" w-full  overflow-y-scroll h-full">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
 
-            <Sidebar />
-
-            <div className=" w-full  overflow-y-scroll h-full">
-                <Outlet />
-            </div>
-
-        </div>
-    )
-}
-
-export default Home
+export default Home;

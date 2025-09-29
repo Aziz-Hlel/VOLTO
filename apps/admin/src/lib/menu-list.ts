@@ -8,7 +8,7 @@ import {
   type LucideIcon,
   CalendarDays,
   Images,
-  LifeBuoy
+  LifeBuoy,
 } from "lucide-react";
 
 type Submenu = {
@@ -39,9 +39,9 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           icon: LayoutGrid,
-          submenus: []
-        }
-      ]
+          submenus: [],
+        },
+      ],
     },
     {
       groupLabel: "Contents",
@@ -64,14 +64,14 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/Gallery",
           label: "Gallery",
-          icon: Images
+          icon: Images,
         },
         {
           href: "/spinning-wheel",
           label: "Spinning Wheel",
-          icon: LifeBuoy
-        }
-      ]
+          icon: LifeBuoy,
+        },
+      ],
     },
     {
       groupLabel: "Settings",
@@ -79,14 +79,14 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/staff",
           label: "Staff",
-          icon: Users
+          icon: Users,
         },
         {
           href: "/account",
           label: "Account",
-          icon: Settings
-        }
-      ]
-    }
+          icon: Settings,
+        },
+      ],
+    },
   ];
 }

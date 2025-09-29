@@ -5,18 +5,19 @@ import type { sigInApiResponse, signUpApiResponse } from "@/types/auth/auth";
 import type { signUpSchema } from "@/schemas/signUpSchema";
 import type { User } from "@/types/user";
 
-
 const authService = {
+  login: (data: sigInSchema) =>
+    apiService.postThrowable<sigInApiResponse>(apiRoutes.auth.login(), data),
 
-    login: (data: sigInSchema) => apiService.postThrowable<sigInApiResponse>(apiRoutes.auth.login(), data),
+  signUp: (data: signUpSchema) =>
+    apiService.postThrowable<signUpApiResponse>(apiRoutes.auth.signUp(), data),
 
-    signUp: (data: signUpSchema) => apiService.postThrowable<signUpApiResponse>(apiRoutes.auth.signUp(), data),
+  me: () => apiService.get<User>(apiRoutes.auth.me()),
 
-    me: () => apiService.get<User>(apiRoutes.auth.me()),
-
-    refresh: (refreshToken: string) => apiService.post<{ accessToken: string, refreshToken: string }>(apiRoutes.auth.refresh(), { refreshToken }),
-
-
+  refresh: (refreshToken: string) =>
+    apiService.post<{ accessToken: string; refreshToken: string }>(apiRoutes.auth.refresh(), {
+      refreshToken,
+    }),
 } as const;
 
 export default authService;

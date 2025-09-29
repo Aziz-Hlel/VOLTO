@@ -2,4 +2,10 @@
     "material-icon-theme.folders.associations": {
         "makefiles": "rules"
     },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+
 }

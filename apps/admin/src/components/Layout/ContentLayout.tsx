@@ -1,15 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const ContentLayout = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <>
-            <div className="min-h-screen bg-background w-full">
+  return (
+    <>
+      <div className="min-h-screen bg-background w-full">{children}</div>
+    </>
+  );
+};
 
-                {children}
-
-            </div>
-        </>
-    )
-}
-
-export default ContentLayout
+export default ContentLayout;

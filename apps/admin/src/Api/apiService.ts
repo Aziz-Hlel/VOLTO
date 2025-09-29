@@ -6,244 +6,244 @@ import apiRoutes from "./routes";
 
 // TODO : hedhi 9assmha l zouz types w7da b success fasle w w7da b success true bch kek keni false rahou data type undefined mouch T, for more type safety
 export interface ApiResponse<T = any> {
-    status: number;
-    success: boolean;
-    data: T;
-    error?: string | { [key: string]: string };
+  status: number;
+  success: boolean;
+  data: T;
+  error?: string | { [key: string]: string };
 }
 
-// interface CoreApiResponse <T = any> 
+// interface CoreApiResponse <T = any>
 
 const creatAxiosInstance = (): AxiosInstance => {
-
-    return axios.create({
-        baseURL: ENV.BASE_URL,
-        timeout: 10000,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-}
+  return axios.create({
+    baseURL: ENV.BASE_URL,
+    timeout: 10000,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
 
 class ApiService {
-    private axiosInstance: AxiosInstance;
-    private isRefreshing = false;
-    private failedQueue: Array<{
-        resolve: (token: string) => void;
-        reject: (error: any) => void;
-    }> = [];
+  private axiosInstance: AxiosInstance;
+  private isRefreshing = false;
+  private failedQueue: Array<{
+    resolve: (token: string) => void;
+    reject: (error: any) => void;
+  }> = [];
 
-    constructor() {
+  constructor() {
+    this.axiosInstance = creatAxiosInstance();
 
-        this.axiosInstance = creatAxiosInstance();
+    this.setupInterceptors();
+  }
 
-        this.setupInterceptors();
-    }
+  private setupInterceptors(): void {
+    // Request interceptor - add auth header
+    this.axiosInstance.interceptors.request.use(
+      (config) => {
+        const token = jwtTokenManager.getAccessToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error),
+    );
 
-    private setupInterceptors(): void {
-        // Request interceptor - add auth header
-        this.axiosInstance.interceptors.request.use(
-            (config) => {
-                const token = jwtTokenManager.getAccessToken();
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
+    // Response interceptor - handle token refresh
+    this.axiosInstance.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
 
-        // Response interceptor - handle token refresh
-        this.axiosInstance.interceptors.response.use(
-            (response) => response,
-            async (error) => {
-                const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          if (this.isRefreshing) {
+            return new Promise((resolve, reject) => {
+              this.failedQueue.push({
+                resolve: (token: string) => {
+                  originalRequest.headers.Authorization = `Bearer ${token}`;
+                  resolve(this.axiosInstance(originalRequest));
+                },
+                reject,
+              });
+            });
+          }
 
-                if (error.response?.status === 401 && !originalRequest._retry) {
-                    if (this.isRefreshing) {
-                        return new Promise((resolve, reject) => {
-                            this.failedQueue.push({
-                                resolve: (token: string) => {
-                                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                                    resolve(this.axiosInstance(originalRequest));
-                                },
-                                reject,
-                            });
-                        });
-                    }
+          originalRequest._retry = true;
+          this.isRefreshing = true;
 
-                    originalRequest._retry = true;
-                    this.isRefreshing = true;
-
-                    try {
-                        const newAccessToken = await this.refreshAccessToken();
-                        this.processQueue(null, newAccessToken);
-                        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                        return this.axiosInstance(originalRequest);
-                    } catch (refreshError) {
-                        this.processQueue(refreshError);
-                        jwtTokenManager.clearTokens();
-                        window.location.href = '/login';
-                        return Promise.reject(refreshError);
-                    } finally {
-                        this.isRefreshing = false;
-                    }
-                }
-
-                return Promise.reject(error);
-            }
-        );
-    }
-
-    // Process failed request queue
-    private processQueue(error: any, token: string | null = null): void {
-        this.failedQueue.forEach(({ resolve, reject }) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(token!);
-            }
-        });
-
-        this.failedQueue = [];
-    }
-
-    private throwErrorAlert = (statusCode: number, error: string) => {
-        alert(`Request failed with status ${statusCode} - error message: ${error}`);
-    }
-
-    // Refresh access token
-    private async refreshAccessToken(): Promise<string> {
-        const refreshToken = jwtTokenManager.getRefreshToken();
-
-        if (!refreshToken) {
-            throw new Error('No refresh token available');
+          try {
+            const newAccessToken = await this.refreshAccessToken();
+            this.processQueue(null, newAccessToken);
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return this.axiosInstance(originalRequest);
+          } catch (refreshError) {
+            this.processQueue(refreshError);
+            jwtTokenManager.clearTokens();
+            window.location.href = "/login";
+            return Promise.reject(refreshError);
+          } finally {
+            this.isRefreshing = false;
+          }
         }
 
-        const response = await axios.post(`${this.axiosInstance.defaults.baseURL}${apiRoutes.auth.refresh()}`, {
-            refreshToken,
-        });
+        return Promise.reject(error);
+      },
+    );
+  }
 
-        jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
-        return response.data.accessToken;
+  // Process failed request queue
+  private processQueue(error: any, token: string | null = null): void {
+    this.failedQueue.forEach(({ resolve, reject }) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(token!);
+      }
+    });
+
+    this.failedQueue = [];
+  }
+
+  private throwErrorAlert = (statusCode: number, error: string) => {
+    alert(`Request failed with status ${statusCode} - error message: ${error}`);
+  };
+
+  // Refresh access token
+  private async refreshAccessToken(): Promise<string> {
+    const refreshToken = jwtTokenManager.getRefreshToken();
+
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
     }
 
+    const response = await axios.post(
+      `${this.axiosInstance.defaults.baseURL}${apiRoutes.auth.refresh()}`,
+      {
+        refreshToken,
+      },
+    );
 
-    handleApiSuccess<T>(response: AxiosResponse<T, any, {}>): ApiResponse<T> {
-        return { data: response.data, status: response.status, success: true };
+    jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
+    return response.data.accessToken;
+  }
+
+  handleApiSuccess<T>(response: AxiosResponse<T, any, {}>): ApiResponse<T> {
+    return { data: response.data, status: response.status, success: true };
+  }
+
+  handleApiError<T>(error: any): ApiResponse<T> {
+    const apiErrorMessage = error.response?.data?.error || error.message || "Request failed";
+
+    const status = error.response?.status;
+    if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
+
+    return { error: apiErrorMessage, data: {} as any, status, success: false };
+  }
+
+  // Wrapper methods with error handling
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.get<T>(url, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      return this.handleApiError(error);
     }
+  }
 
-    handleApiError<T>(error: any): ApiResponse<T> {
-        const apiErrorMessage = error.response?.data?.error || error.message || 'Request failed'
-
-        const status = error.response?.status
-        if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);
-
-        return { error: apiErrorMessage, data: {} as any, status, success: false };
+  async getThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.get<T>(url, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      throw this.handleApiError(error);
     }
+  }
 
-    // Wrapper methods with error handling
-    async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-
-            const response = await this.axiosInstance.get<T>(url, config);
-            return this.handleApiSuccess(response);
-
-        } catch (error: any) {
-
-            return this.handleApiError(error);
-        }
+  async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.post<T>(url, data, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      return this.handleApiError(error);
     }
+  }
 
-
-    async getThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-
-            const response = await this.axiosInstance.get<T>(url, config);
-            return this.handleApiSuccess(response);
-
-        } catch (error: any) {
-            throw this.handleApiError(error);
-        }
+  async postThrowable<T>(
+    url: string,
+    data: any,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.post<T>(url, data, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      throw this.handleApiError(error);
     }
+  }
 
-    async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.post<T>(url, data, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            return this.handleApiError(error);
-        }
+  async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.put<T>(url, data, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      return this.handleApiError(error);
     }
+  }
 
-    async postThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.post<T>(url, data, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            throw this.handleApiError(error);
-        }
+  async putThrowable<T>(
+    url: string,
+    data: any,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.put<T>(url, data, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      throw this.handleApiError(error);
     }
+  }
 
-    async put<T>(url: string, data: any, config?: AxiosRequestConfig,): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.put<T>(url, data, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            return this.handleApiError(error);
-        }
+  async patch<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.patch<T>(url, data, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      return this.handleApiError(error);
     }
+  }
 
-    async putThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.put<T>(url, data, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            throw this.handleApiError(error);
-        }
+  async patchThrowable<T>(
+    url: string,
+    data: any,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.patch<T>(url, data, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      throw this.handleApiError(error);
     }
+  }
 
-
-    async patch<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.patch<T>(url, data, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            return this.handleApiError(error);
-        }
-
-    };
-
-    async patchThrowable<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.patch<T>(url, data, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            throw this.handleApiError(error);
-        }
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.delete<T>(url, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      return this.handleApiError(error);
     }
+  }
 
-    async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.delete<T>(url, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            return this.handleApiError(error);
-        }
+  async deleteThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.axiosInstance.delete<T>(url, config);
+      return this.handleApiSuccess(response);
+    } catch (error: any) {
+      throw this.handleApiError(error);
     }
-
-    async deleteThrowable<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-        try {
-            const response = await this.axiosInstance.delete<T>(url, config);
-            return this.handleApiSuccess(response);
-        } catch (error: any) {
-            throw this.handleApiError(error);
-        }
-    }
-
-
-
+  }
 }
 
 export const apiService = new ApiService();
-

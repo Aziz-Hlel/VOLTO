@@ -6,24 +6,15 @@ import { ChevronDown, Dot, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger
-} from "@/components/ui/collapsible";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider
-} from "@/components/ui/tooltip";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 
@@ -46,24 +37,17 @@ export function CollapseMenuButton({
   label,
   active,
   submenus,
-  isOpen
+  isOpen,
 }: CollapseMenuButtonProps) {
-  const pathname = "" // ! usePathname();
+  const pathname = ""; // ! usePathname();
   const isSubmenuActive = submenus.some((submenu) =>
-    submenu.active === undefined ? submenu.href === pathname : submenu.active
+    submenu.active === undefined ? submenu.href === pathname : submenu.active,
   );
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
 
   return isOpen ? (
-    <Collapsible
-      open={isCollapsed}
-      onOpenChange={setIsCollapsed}
-      className="w-full"
-    >
-      <CollapsibleTrigger
-        className="[&[data-state=open]>div>div>svg]:rotate-180 mb-1"
-        asChild
-      >
+    <Collapsible open={isCollapsed} onOpenChange={setIsCollapsed} className="w-full">
+      <CollapsibleTrigger className="[&[data-state=open]>div>div>svg]:rotate-180 mb-1" asChild>
         <Button
           variant={isSubmenuActive ? "secondary" : "ghost"}
           className="w-full justify-start h-10"
@@ -76,9 +60,7 @@ export function CollapseMenuButton({
               <p
                 className={cn(
                   "max-w-[150px] truncate",
-                  isOpen
-                    ? "translate-x-0 opacity-100"
-                    : "-translate-x-96 opacity-0"
+                  isOpen ? "translate-x-0 opacity-100" : "-translate-x-96 opacity-0",
                 )}
               >
                 {label}
@@ -87,15 +69,10 @@ export function CollapseMenuButton({
             <div
               className={cn(
                 "whitespace-nowrap",
-                isOpen
-                  ? "translate-x-0 opacity-100"
-                  : "-translate-x-96 opacity-0"
+                isOpen ? "translate-x-0 opacity-100" : "-translate-x-96 opacity-0",
               )}
             >
-              <ChevronDown
-                size={18}
-                className="transition-transform duration-200"
-              />
+              <ChevronDown size={18} className="transition-transform duration-200" />
             </div>
           </div>
         </Button>
@@ -104,11 +81,7 @@ export function CollapseMenuButton({
         {submenus.map(({ href, label, active }, index) => (
           <Button
             key={index}
-            variant={
-              (active === undefined && pathname === href) || active
-                ? "secondary"
-                : "ghost"
-            }
+            variant={(active === undefined && pathname === href) || active ? "secondary" : "ghost"}
             className="w-full justify-start h-10 mb-1"
             asChild
           >
@@ -119,9 +92,7 @@ export function CollapseMenuButton({
               <p
                 className={cn(
                   "max-w-[170px] truncate",
-                  isOpen
-                    ? "translate-x-0 opacity-100"
-                    : "-translate-x-96 opacity-0"
+                  isOpen ? "translate-x-0 opacity-100" : "-translate-x-96 opacity-0",
                 )}
               >
                 {label}
@@ -149,7 +120,7 @@ export function CollapseMenuButton({
                     <p
                       className={cn(
                         "max-w-[200px] truncate",
-                        isOpen === false ? "opacity-0" : "opacity-100"
+                        isOpen === false ? "opacity-0" : "opacity-100",
                       )}
                     >
                       {label}
@@ -165,16 +136,13 @@ export function CollapseMenuButton({
         </Tooltip>
       </TooltipProvider>
       <DropdownMenuContent side="right" sideOffset={25} align="start">
-        <DropdownMenuLabel className="max-w-[190px] truncate">
-          {label}
-        </DropdownMenuLabel>
+        <DropdownMenuLabel className="max-w-[190px] truncate">{label}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {submenus.map(({ href, label, active }, index) => (
           <DropdownMenuItem key={index} asChild>
             <Link
               className={`cursor-pointer ${
-                ((active === undefined && pathname === href) || active) &&
-                "bg-secondary"
+                ((active === undefined && pathname === href) || active) && "bg-secondary"
               }`}
               to={href}
             >

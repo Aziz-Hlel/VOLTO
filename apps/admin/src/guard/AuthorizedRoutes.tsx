@@ -1,10 +1,3 @@
+const AuthorizedRoutes = () => {};
 
-
-
-
-const AuthorizedRoutes = () => {
-   
-    
-}
-
-export default AuthorizedRoutes
+export default AuthorizedRoutes;

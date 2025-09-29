@@ -1,30 +1,28 @@
-import type { Area } from "react-easy-crop"
+import type { Area } from "react-easy-crop";
 
 export const createImage = (url: string) =>
   new Promise((resolve, reject) => {
-    const image = new Image()
-    image.addEventListener('load', () => resolve(image))
-    image.addEventListener('error', (error) => reject(error))
-    image.setAttribute('crossOrigin', 'anonymous') // needed to avoid cross-origin issues on CodeSandbox
-    image.src = url
-  })
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.addEventListener("error", (error) => reject(error));
+    image.setAttribute("crossOrigin", "anonymous"); // needed to avoid cross-origin issues on CodeSandbox
+    image.src = url;
+  });
 
 export function getRadianAngle(degreeValue: number) {
-  return (degreeValue * Math.PI) / 180
+  return (degreeValue * Math.PI) / 180;
 }
 
 /**
  * Returns the new bounding area of a rotated rectangle.
  */
 export function rotateSize(width: number, height: number, rotation: number) {
-  const rotRad = getRadianAngle(rotation)
+  const rotRad = getRadianAngle(rotation);
 
   return {
-    width:
-      Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
-    height:
-      Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
-  }
+    width: Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
+    height: Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
+  };
 }
 
 /**
@@ -35,19 +33,15 @@ export default async function getCroppedImg(
   imageName: string,
   pixelCrop: Area,
   rotation = 0,
-  flip = { horizontal: false, vertical: false }
+  flip = { horizontal: false, vertical: false },
 ): Promise<File | null> {
   const image = (await createImage(imageSrc)) as HTMLImageElement;
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
   const rotRad = getRadianAngle(rotation);
-  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
-    image.width,
-    image.height,
-    rotation
-  );
+  const { width: bBoxWidth, height: bBoxHeight } = rotateSize(image.width, image.height, rotation);
 
   canvas.width = bBoxWidth;
   canvas.height = bBoxHeight;
@@ -58,8 +52,8 @@ export default async function getCroppedImg(
   ctx.translate(-image.width / 2, -image.height / 2);
   ctx.drawImage(image, 0, 0);
 
-  const croppedCanvas = document.createElement('canvas');
-  const croppedCtx = croppedCanvas.getContext('2d');
+  const croppedCanvas = document.createElement("canvas");
+  const croppedCtx = croppedCanvas.getContext("2d");
   if (!croppedCtx) return null;
 
   croppedCanvas.width = pixelCrop.width;
@@ -74,15 +68,14 @@ export default async function getCroppedImg(
     0,
     0,
     pixelCrop.width,
-    pixelCrop.height
+    pixelCrop.height,
   );
 
   return new Promise((resolve) => {
     croppedCanvas.toBlob((blob) => {
       if (!blob) return resolve(null);
-      const file = new File([blob], imageName, { type: 'image/jpeg' });
+      const file = new File([blob], imageName, { type: "image/jpeg" });
       resolve(file);
-    }, 'image/jpeg');
+    }, "image/jpeg");
   });
 }
-

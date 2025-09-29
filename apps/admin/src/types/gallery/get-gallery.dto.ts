@@ -1,10 +1,9 @@
 import type { GalleryTags } from "./GalleryTags";
 
 export type GetGalleryDto = {
+  page: number;
 
-    page: number;
+  limit: number;
 
-    limit: number;
-
-    tag: GalleryTags;
-}
+  tag: GalleryTags;
+};

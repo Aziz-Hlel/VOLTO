@@ -1,3 +1,1 @@
-
-
-export type EntityType = "USER" | "PRODUCT" | "ARTICLE" | "EVENT" | "GALLERY" ;
+export type EntityType = "USER" | "PRODUCT" | "ARTICLE" | "EVENT" | "GALLERY";

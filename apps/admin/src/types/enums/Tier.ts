@@ -1,3 +1,1 @@
-
-
-export type Tier = "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND"
+export type Tier = "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND";

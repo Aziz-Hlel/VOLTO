@@ -8,132 +8,124 @@ import { toast } from "sonner";
 import type { EntityType } from "@/types/enums/EntityType";
 import type { MediaPurpose } from "@/types/enums/MediaPurpose";
 
-
-
 type IuseImageUpload = {
-    imgUrlFieldName: string;
-    imgKeyFieldName: string;
-    entityType: EntityType;
-    imgPurpose: MediaPurpose;
+  imgUrlFieldName: string;
+  imgKeyFieldName: string;
+  entityType: EntityType;
+  imgPurpose: MediaPurpose;
+};
 
-}
+const useImageUpload = ({
+  imgUrlFieldName,
+  imgKeyFieldName,
+  entityType,
+  imgPurpose,
+}: IuseImageUpload) => {
+  const { watch, setValue, getValues } = useFormContext();
 
-const useImageUpload = ({ imgUrlFieldName, imgKeyFieldName, entityType, imgPurpose }: IuseImageUpload) => {
+  const initImgUrl = getValues(imgUrlFieldName) as string | undefined;
+  const initImgKey = getValues(imgKeyFieldName) as string | undefined;
 
+  const initImg = useMemo(() => initImgUrl, []);
+  console.log("initImg : ", initImg);
+  console.log("zabbourom niti url img value : ", initImgUrl);
+  const setImageUrl = (img?: string) => setValue(imgUrlFieldName, img);
+  const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
 
-    const { watch, setValue, getValues } = useFormContext();
+  const [file, setFile] = useState<File | null>(null);
+  const onFileChange = (value: File | null) => setFile(value);
 
+  const [zoom, setZoom] = useState(1);
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-    const initImgUrl = getValues(imgUrlFieldName) as string | undefined;
-    const initImgKey = getValues(imgKeyFieldName) as string | undefined;
+  const [progress, setProgress] = useState(0);
 
-    const initImg = useMemo(() => initImgUrl, [])
-    console.log("initImg : ", initImg)
-    console.log("zabbourom niti url img value : ", initImgUrl)
-    const setImageUrl = (img?: string) => setValue(imgUrlFieldName, img);
-    const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
+  const currentDisplayed: "fileUpload" | "copper" | "loading" | "imgDisplayed" = useMemo(() => {
+    if (progress > 0 && progress < 100) return "loading";
+    if (file) return "copper";
+    if (initImgUrl) return "imgDisplayed";
+    return "fileUpload";
+  }, [file, initImgUrl, progress]);
 
-    const [file, setFile] = useState<File | null>(null);
-    const onFileChange = (value: File | null) => setFile(value);
+  const onZoomChange = (zoom: number) => setZoom(zoom);
+  const onCropChange = (point: Point) => setCrop(point);
+  const onCropComplete = (_: Point, croppedAreaPixels: Area) =>
+    setCroppedAreaPixels(croppedAreaPixels);
 
-    const [zoom, setZoom] = useState(1);
-    const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
+  const handleCancel = () => setFile(null);
 
+  const rollBackToInitImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    console.log("initImgKey : ", initImgKey, " initImgUrl : ", initImgUrl);
+    e.preventDefault();
+    setFile(null);
+    setImageUrl(initImg);
+    setImageKey(initImgKey);
+  };
 
-    const [progress, setProgress] = useState(0);
+  console.log("currentDisplayed : ", currentDisplayed);
 
-    const currentDisplayed: "fileUpload" | "copper" | "loading" | "imgDisplayed" = useMemo(() => {
-        if (progress > 0 && progress < 100) return "loading"
-        if (file) return "copper"
-        if (initImgUrl) return "imgDisplayed"
-        return "fileUpload"
-    }, [file, initImgUrl, progress])
-
-    const onZoomChange = (zoom: number) => setZoom(zoom);
-    const onCropChange = (point: Point) => setCrop(point);
-    const onCropComplete = (_: Point, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
-
-    const handleCancel = () => setFile(null);
-
-
-
-    const rollBackToInitImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        console.log("initImgKey : ", initImgKey, " initImgUrl : ", initImgUrl)
-        e.preventDefault();
-        setFile(null);
-        setImageUrl(initImg);
-        setImageKey(initImgKey);
+  const Crop_OptimizeImage = async () => {
+    if (!croppedAreaPixels || !file) {
+      return;
     }
 
+    try {
+      setProgress(5);
 
-    console.log("currentDisplayed : ", currentDisplayed)
+      const croppedImage = await getCroppedImg(
+        URL.createObjectURL(file),
+        file.name,
+        croppedAreaPixels,
+      );
+      if (!croppedImage) return;
 
+      const optimizedImg = await prepareImageForUpload(croppedImage);
+      const fileName = file.name.split(".")[0];
 
-    const Crop_OptimizeImage = async () => {
-        if (!croppedAreaPixels || !file) {
-            return
-        }
+      setProgress(10);
+      setFile(null);
 
-        try {
+      console.log("ouslililili");
+      const s3Key = await uploadImageToS3_SIMULATOR({
+        uploadedImg: optimizedImg.blob,
+        name: fileName,
+        entityType: entityType,
+        purpose: imgPurpose,
+        setProgress: (progress: any) => {
+          setProgress(progress);
+        },
+      });
 
-            setProgress(5)
-
-            const croppedImage = await getCroppedImg(
-                URL.createObjectURL(file),
-                file.name,
-                croppedAreaPixels,
-            )
-            if (!croppedImage) return
-
-            const optimizedImg = await prepareImageForUpload(croppedImage);
-            const fileName = file.name.split(".")[0];
-
-            setProgress(10)
-            setFile(null)
-
-            console.log('ouslililili')
-            const s3Key = await uploadImageToS3_SIMULATOR({
-                uploadedImg: optimizedImg.blob,
-                name: fileName,
-                entityType: entityType,
-                purpose: imgPurpose,
-                setProgress: (progress: any) => { setProgress(progress) }
-            });
-
-            setImageUrl(URL.createObjectURL(croppedImage))
-            setImageKey(s3Key)
-
-        } catch (e) {
-            console.error(e)
-            toast("Something Went Wrong", {
-                description: "Unable to upload image, if the issue persists please contact support",
-                action: {
-                    label: "Ok",
-                    onClick: () => "",
-                },
-            })
-        }
+      setImageUrl(URL.createObjectURL(croppedImage));
+      setImageKey(s3Key);
+    } catch (e) {
+      console.error(e);
+      toast("Something Went Wrong", {
+        description: "Unable to upload image, if the issue persists please contact support",
+        action: {
+          label: "Ok",
+          onClick: () => "",
+        },
+      });
     }
+  };
 
-
-
-    return {
-        file,
-        progress,
-        img: initImgUrl,
-        crop,
-        zoom,
-        currentDisplayed,
-        onCropChange,
-        onZoomChange,
-        onCropComplete,
-        onFileChange,
-        handleCancel,
-        Crop_OptimizeImage,
-        rollBackToInitImage
-    }
-}
-
+  return {
+    file,
+    progress,
+    img: initImgUrl,
+    crop,
+    zoom,
+    currentDisplayed,
+    onCropChange,
+    onZoomChange,
+    onCropComplete,
+    onFileChange,
+    handleCancel,
+    Crop_OptimizeImage,
+    rollBackToInitImage,
+  };
+};
 
 export default useImageUpload;

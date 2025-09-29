@@ -1,5 +1,4 @@
-
 export type PreSignedUrlResponse = {
-    url: string;
-    s3Key: string;
-}
+  url: string;
+  s3Key: string;
+};

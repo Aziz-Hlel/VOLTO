@@ -1,8 +1,4 @@
-
-
-
 export type Pageable = {
-    page: number,
-    limit: number,
-
-}
+  page: number;
+  limit: number;
+};

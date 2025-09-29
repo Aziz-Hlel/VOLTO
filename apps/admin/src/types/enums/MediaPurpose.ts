@@ -1,2 +1,1 @@
-
-export type MediaPurpose = "AVATAR" | "IMAGE" | "THUMBNAIL" | "VIDEO"; 
+export type MediaPurpose = "AVATAR" | "IMAGE" | "THUMBNAIL" | "VIDEO";

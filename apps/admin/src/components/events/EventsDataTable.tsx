@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,20 +6,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Edit, Trash2, MoreHorizontal, Search } from 'lucide-react';
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Edit, Trash2, MoreHorizontal, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { EventResponseDto } from '@/types/events/eventResponse.dto';
-import cronstrue from 'cronstrue';
-import { EventType } from '@/types/events/EventType';
-
+} from "@/components/ui/dropdown-menu";
+import type { EventResponseDto } from "@/types/events/eventResponse.dto";
+import cronstrue from "cronstrue";
+import { EventType } from "@/types/events/EventType";
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
@@ -31,23 +29,23 @@ interface EventsDataTableProps {
 export const EventsDataTable: React.FC<EventsDataTableProps> = ({
   data,
   setEventForEdit,
-  setEventForDeletion
+  setEventForDeletion,
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<keyof EventResponseDto>('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<keyof EventResponseDto>("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  const filteredData = data.filter(event =>
-    event.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data.filter(
+    (event) => event.name.toLowerCase().includes(searchTerm.toLowerCase()),
     // ||
-    // event.email.toLowerCase().includes(searchTerm.toLowerCase()) 
+    // event.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const sortedData = [...filteredData].sort((a, b) => {
     const aValue = a[sortBy];
     const bValue = b[sortBy];
 
-    if (sortOrder === 'asc') {
+    if (sortOrder === "asc") {
       return (aValue as any) < (bValue as any) ? -1 : (aValue as any) > (bValue as any) ? 1 : 0;
     } else {
       return (aValue as any) > (bValue as any) ? -1 : (aValue as any) < (bValue as any) ? 1 : 0;
@@ -56,32 +54,26 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
 
   const handleSort = (column: keyof EventResponseDto) => {
     if (sortBy === column) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
       setSortBy(column);
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
   };
 
-
   const getdisplayedStartDate = (event: EventResponseDto) => {
     if (event.type === EventType.SPECIAL)
-      return event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A';
+      return event.startDate ? new Date(event.startDate).toLocaleDateString() : "N/A";
     if (event.type === EventType.WEEKLY)
-      return event.cronStartDate ? cronstrue.toString(event.cronStartDate) : 'N/A';
-  }
+      return event.cronStartDate ? cronstrue.toString(event.cronStartDate) : "N/A";
+  };
 
   const getdisplayedEndtDate = (event: EventResponseDto) => {
     if (event.type === EventType.SPECIAL)
-      return event.endDate ? new Date(event.endDate).toLocaleDateString() : 'N/A';
+      return event.endDate ? new Date(event.endDate).toLocaleDateString() : "N/A";
     if (event.type === EventType.WEEKLY)
-      return event.cronEndDate ? cronstrue.toString(event.cronEndDate) : 'N/A';
-  }
-
-
-
-
-
+      return event.cronEndDate ? cronstrue.toString(event.cronEndDate) : "N/A";
+  };
 
   return (
     <div className="space-y-4">
@@ -101,18 +93,18 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow >
+              <TableRow>
                 <TableHead
                   className="min-w-[150px] cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleSort('name')}
+                  onClick={() => handleSort("name")}
                 >
-                  Full Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  Full Name {sortBy === "name" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
                 <TableHead
                   className="min-w-[200px] cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleSort('type')}
+                  onClick={() => handleSort("type")}
                 >
-                  Email {sortBy === 'type' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  Email {sortBy === "type" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
                 <TableHead className="hidden lg:table-cell">Start Date</TableHead>
                 <TableHead className="hidden lg:table-cell">End Date</TableHead>
@@ -128,13 +120,11 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                 </TableRow>
               ) : (
                 sortedData.map((event) => (
-                  <TableRow key={event.id} className=' hover:cursor-default'>
+                  <TableRow key={event.id} className=" hover:cursor-default">
                     <TableCell className="font-medium">{event.name}</TableCell>
                     <TableCell className="text-sm">{event.description}</TableCell>
                     <TableCell className="text-sm">{getdisplayedStartDate(event)}</TableCell>
                     <TableCell className="text-sm">{getdisplayedEndtDate(event)}</TableCell>
-
-
 
                     <TableCell>
                       <DropdownMenu>
@@ -168,9 +158,6 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
           </Table>
         </div>
       </div>
-
-
-
     </div>
   );
 };

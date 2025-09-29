@@ -4,10 +4,10 @@ import type { User } from "../user";
 type Prettify<T> = { [K in keyof T]: T[K] };
 
 type loginAndResigterApiResponse = {
-    accessToken: string;
-    refreshToken: string;
-    user: User;
-}
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+};
 
 export type signUpApiResponse = Prettify<loginAndResigterApiResponse>;
 

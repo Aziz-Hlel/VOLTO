@@ -2,19 +2,16 @@ import type { EntityType } from "../enums/EntityType";
 import type { MediaPurpose } from "../enums/MediaPurpose";
 import type { IMimeType } from "./IMimeType";
 
-
 export type PreSignedUrlRequest = {
+  mimeType: string;
 
-    mimeType: string;
+  fileSize: number;
 
-    fileSize: number;
+  fileType: IMimeType;
 
-    fileType: IMimeType;
+  originalName: string;
 
-    originalName: string;
+  entityType: EntityType;
 
-    entityType: EntityType;
-
-    mediaPurpose: MediaPurpose;
-
-}
+  mediaPurpose: MediaPurpose;
+};

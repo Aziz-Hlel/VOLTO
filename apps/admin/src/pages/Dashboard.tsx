@@ -1,10 +1,10 @@
-import { useAuth } from "@/context/AuthContext"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { BarChart3, Users, TrendingUp, Settings } from "lucide-react"
+import { useAuth } from "@/context/AuthContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { BarChart3, Users, TrendingUp, Settings } from "lucide-react";
 
 const Dashboard = () => {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuth();
 
   const stats = [
     {
@@ -31,7 +31,7 @@ const Dashboard = () => {
       description: "+201 since last hour",
       icon: Settings,
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-background w-full">
@@ -52,23 +52,19 @@ const Dashboard = () => {
       <main className="p-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => {
-            const Icon = stat.icon
+            const Icon = stat.icon;
             return (
               <Card key={stat.title}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {stat.title}
-                  </CardTitle>
+                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
                   <Icon className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {stat.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{stat.description}</p>
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
 
@@ -87,25 +83,19 @@ const Dashboard = () => {
           <Card className="col-span-3">
             <CardHeader>
               <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>
-                You made 265 sales this month.
-              </CardDescription>
+              <CardDescription>You made 265 sales this month.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-8">
                 {[...Array(4)].map((_, i) => (
                   <div key={i} className="flex items-center">
                     <div className="ml-4 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        Activity {i + 1}
-                      </p>
+                      <p className="text-sm font-medium leading-none">Activity {i + 1}</p>
                       <p className="text-sm text-muted-foreground">
                         Description for activity {i + 1}
                       </p>
                     </div>
-                    <div className="ml-auto font-medium">
-                      +$1,999
-                    </div>
+                    <div className="ml-auto font-medium">+$1,999</div>
                   </div>
                 ))}
               </div>
@@ -114,7 +104,7 @@ const Dashboard = () => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

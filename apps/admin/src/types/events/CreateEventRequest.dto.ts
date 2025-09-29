@@ -1,30 +1,27 @@
 import type { EventType } from "./EventType";
 
-
 export type CreateEventDto = {
+  name: string;
 
-    name: string;
+  type: EventType;
 
-    type: EventType;
+  description: string;
 
-    description: string;
+  startDate?: Date;
 
-    startDate?: Date;
+  endDate?: Date;
 
-    endDate?: Date;
+  cronStartDate?: string;
 
-    cronStartDate?: string;
+  cronEndDate?: string;
 
-    cronEndDate?: string;
+  thumbnail: {
+    s3Key: string;
+    url?: string;
+  };
 
-    thumbnail:{
-        s3Key: string;
-        url?: string;
-    }
-
-    video: {
-        s3Key: string;
-        url?: string;
-    }
-
-}
+  video: {
+    s3Key: string;
+    url?: string;
+  };
+};
