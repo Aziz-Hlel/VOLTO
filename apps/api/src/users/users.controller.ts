@@ -10,35 +10,6 @@ export class UsersController {
 
     constructor(private usersService: UsersService) {}
 
-    @UseGuards(JwtAccessGuard, RolesGuard)
-    @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-    @HttpCode(200)
-    @Get('staff')
-    async getStaff() {
-      
-        const response = await this.usersService.getStaff();
-        return response;
-        
-    };
-
-
-
-    @UseGuards(JwtAccessGuard, RolesGuard)
-    @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-    @HttpCode(200)
-    @Get('staff/:id')
-    async getStaffById() {
-      
-        const response = await this.usersService.getStaff();
-        return response;
-        
-    };
-
-
-
-
-
-
 
 
 

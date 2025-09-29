@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { LadiesNightService } from './ladies-night.service';
-import type { authSocket } from 'src/events/types/authSocket';
+import type { authSocket } from 'src/ladies-night/types/authSocket';
 import { JwtService } from '@nestjs/jwt';
 import ENV from 'src/config/env';
 import { Roles } from 'src/auth/decorators/roles.decorator';

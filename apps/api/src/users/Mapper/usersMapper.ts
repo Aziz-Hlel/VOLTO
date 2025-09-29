@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { jwtUserToken } from '../Dto/jwtUserToken';
 import { UserResponseDto } from '../Dto/userResponse';
-import { StaffResponseDto } from '../Dto/userResponse2';
+import { StaffResponseDto } from '../Dto/staff-response.dto';
 
 export class UserMapper {
   // Convert full User DB object to API response
