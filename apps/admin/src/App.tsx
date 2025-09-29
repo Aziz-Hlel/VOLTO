@@ -16,6 +16,7 @@ import { Toaster } from "sonner";
 import AddEventWrapper from "./components/events/AddEventWrapper";
 import Staff from "./pages/Staff";
 import StaffMainContent from "./components/Staff/StaffMainContent";
+import AddStaffWrapper from "./components/Staff/AddStaffWrapper";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/" element={<Home />}>
                   <Route index element={<Dashboard />} />
                   <Route path="dashboard" element={<Dashboard />} />
+
                   <Route path="events/" element={<Events />}>
                     <Route index element={<EventMainContent />} />
                     <Route path="create" element={<AddEventWrapper />} />
@@ -42,8 +44,8 @@ function App() {
 
                   <Route path="staff/" element={<Staff />}>
                     <Route index element={<StaffMainContent />} />
-                    <Route path="create" element={<AddEventWrapper />} />
-                    <Route path="edit/:eventId" element={<AddEventWrapper />} />
+                    <Route path="create" element={<AddStaffWrapper />} />
+                    <Route path="edit/:staffId" element={<AddStaffWrapper />} />
                   </Route>
 
                   <Route path="*" element={<NotFound />} />

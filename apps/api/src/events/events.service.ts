@@ -53,7 +53,7 @@ export class EventsService {
       where: { id },
     });
 
-    if (!event) throw new Error(`Event with ID ${id} not found`);
+    if (!event) throw new NotFoundException(`Event with ID ${id} not found`);
 
     const thumbnail = await this.mediaService.getMediaKeyAndUrl({
       entityType: EntityType.EVENT,

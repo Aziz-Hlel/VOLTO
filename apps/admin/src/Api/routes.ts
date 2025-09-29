@@ -11,6 +11,10 @@ const apiRoutes = {
   },
   staff: {
     list: () => "/users/staff" as const,
+    get: (staffId: string) => `/users/staff/${staffId}` as const,
+    create: () => "/users/staff/" as const,
+    update: (staffId: string) => `/users/staff/${staffId}` as const,
+    delete: (staffId: string) => `/users/staff/${staffId}` as const,
   },
 
   gallery: {

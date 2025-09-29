@@ -2,18 +2,19 @@ import type { Gender } from "../enums/Gender";
 import type { Roles } from "../enums/Roles";
 import type { Tier } from "../enums/Tier";
 
-export type StaffResponseDto = {
-  id: string;
+export type StaffRequestDto = {
   email: string;
   username: string;
-  role: Roles;
+  role: "WAITER" | "ADMIN" | "SUPER_ADMIN";
   phoneNumber?: string;
   gender: Gender;
   tier: Tier;
-  avatar: {
-    s3Key: string;
-    url: string;
-  } | null;
-  createdAt: Date;
-  updatedAt: Date;
+  password?: string;
+  repeatPassword?: string;
+  avatar?:
+    | {
+        s3Key: string;
+        url: string;
+      }
+    | undefined;
 };

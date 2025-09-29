@@ -23,7 +23,16 @@ export class UsersController {
 
 
 
-    
+    @UseGuards(JwtAccessGuard, RolesGuard)
+    @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+    @HttpCode(200)
+    @Get('staff/:id')
+    async getStaffById() {
+      
+        const response = await this.usersService.getStaff();
+        return response;
+        
+    };
 
 
 

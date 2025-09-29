@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/Dto/create-user';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -76,5 +76,14 @@ export class UsersService {
 
     const staffDto = staff.map(user => UserMapper.toResponse2(user))
     return staffDto;
+  }
+
+
+  async getStaffById(id: string) {
+    const staff = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!staff) throw new NotFoundException('Staff not found');
+    return staff;
   }
 }

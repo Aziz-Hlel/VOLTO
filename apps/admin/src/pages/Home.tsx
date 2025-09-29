@@ -1,14 +1,12 @@
 import { Sidebar } from "@/components/SideBar/sidebar";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 const Home = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="flex h-screen ">
+    <div className="flex h-screen fixed inset-0 overflow-hidden ">
       <Sidebar />
 
-      <div className=" w-full  overflow-y-scroll h-full">
+      <div className=" w-full  overflow-y-scroll max-h-screen">
         <Outlet />
       </div>
     </div>

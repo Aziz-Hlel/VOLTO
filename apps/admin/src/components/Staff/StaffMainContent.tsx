@@ -12,19 +12,19 @@ const StaffMainContent = () => {
   const { data } = useApiQuery<StaffResponseDto[]>({
     url: apiRoutes.staff.list(),
     queryParams: { page: 1, limit: 50 },
-    queryKey: ["events"],
+    queryKey: ["staff"],
     options: { enabled: true, config: { params: { page: 1, limit: 50 } } },
   });
 
-  const [selectedEventToDelete, setSelectedEventToDelete] = useState<StaffResponseDto | null>(null);
+  const [selectedStaffToDelete, setSelectedStaffToDelete] = useState<StaffResponseDto | null>(null);
   const staff = data?.data;
 
-  function handleEditingEvent(id: string): void {
+  function handleEditingStaff(id: string): void {
     navigate(`edit/${id}`);
   }
 
-  const setEventForDeletion = (event?: StaffResponseDto) => {
-    setSelectedEventToDelete(event ?? null);
+  const setStaffForDeletion = (event?: StaffResponseDto) => {
+    setSelectedStaffToDelete(event ?? null);
   };
 
   if (!staff) return <>loading ...</>;
@@ -33,18 +33,18 @@ const StaffMainContent = () => {
     <div className="space-y-4 lg:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl lg:text-2xl font-bold">Events table</h2>
+          <h2 className="text-xl lg:text-2xl font-bold">Staff table</h2>
         </div>
 
-        <Link to={"/events/create"}>
+        <Link to={"/staff/create"}>
           <Button className="flex items-center gap-2 cursor-pointer">Add Staff Member +</Button>
         </Link>
       </div>
 
       <StaffDataTable
         data={staff}
-        setEventForEdit={handleEditingEvent}
-        setEventForDeletion={setEventForDeletion}
+        setEventForEdit={handleEditingStaff}
+        setEventForDeletion={setStaffForDeletion}
       />
 
       {/* {selectedEventToDelete &&

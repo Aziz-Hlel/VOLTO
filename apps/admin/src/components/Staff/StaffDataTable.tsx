@@ -34,7 +34,7 @@ export const StaffDataTable: React.FC<StaffDataTableProps> = ({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const filteredData = data.filter(
-    (event) => event.username.toLowerCase().includes(searchTerm.toLowerCase()),
+    (staff) => staff.username.toLowerCase().includes(searchTerm.toLowerCase()),
     // ||
     // event.email.toLowerCase().includes(searchTerm.toLowerCase())
   );

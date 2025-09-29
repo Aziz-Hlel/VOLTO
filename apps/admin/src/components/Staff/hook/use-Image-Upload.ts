@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import type { Area, Point } from "react-easy-crop";
 import { useFormContext } from "react-hook-form";
-import getCroppedImg from "../cropImg.func";
-import prepareImageForUpload from "../prepareImageForUpload";
-import { uploadImageToS3_SIMULATOR } from "../getSignedUrlUpload";
 import { toast } from "sonner";
 import type { EntityType } from "@/types/enums/EntityType";
 import type { MediaPurpose } from "@/types/enums/MediaPurpose";
+import getCroppedImg from "@/components/events/cropImg.func";
+import prepareImageForUpload from "@/components/events/prepareImageForUpload";
+import { uploadImageToS3_SIMULATOR } from "@/components/events/getSignedUrlUpload";
 
 type IuseImageUpload = {
   imgUrlFieldName: string;

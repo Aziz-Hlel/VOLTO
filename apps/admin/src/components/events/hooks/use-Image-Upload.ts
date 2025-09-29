@@ -21,7 +21,7 @@ const useImageUpload = ({
   entityType,
   imgPurpose,
 }: IuseImageUpload) => {
-  const { watch, setValue, getValues } = useFormContext();
+  const { setValue, getValues } = useFormContext();
 
   const initImgUrl = getValues(imgUrlFieldName) as string | undefined;
   const initImgKey = getValues(imgKeyFieldName) as string | undefined;

@@ -114,7 +114,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-8">
         <FormField
           control={form.control}
           name="name"
@@ -151,6 +151,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>Event Type</FormLabel>
+              <FormDescription>Select event's type</FormDescription>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
@@ -170,7 +171,6 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
                   ))}
                 </RadioGroup>
               </FormControl>
-              <FormDescription>Select event's type</FormDescription>
               <FormMessage />
             </FormItem>
           )}
