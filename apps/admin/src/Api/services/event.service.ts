@@ -12,7 +12,7 @@ const eventService = {
   create: (payload: CreateEventDto) =>
     apiService.postThrowable<EventResponseDto>(apiRoutes.events.create(), payload),
   update: (id: string, payload: CreateEventDto) =>
-    apiService.patchThrowable<EventResponseDto>(apiRoutes.events.update(id), payload),
+    apiService.putThrowable<EventResponseDto>(apiRoutes.events.update(id), payload),
   delete: (id: string) => apiService.deleteThrowable<EventResponseDto>(apiRoutes.events.delete(id)),
 } as const;
 

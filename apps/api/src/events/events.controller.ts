@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   BadRequestException,
@@ -75,7 +75,7 @@ export class EventsController {
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @Patch(':id')
+  @Put(':id')
   async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     if (
       updateEventDto.type === EventType.SPECIAL &&

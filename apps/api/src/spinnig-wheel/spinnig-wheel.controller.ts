@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -61,7 +61,7 @@ export class SpinnigWheelController {
   @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN,Role.SUPER_ADMIN)
   @HttpCode(200)
-  @Patch('admin/instance')
+  @Put('admin/instance')
   async update(
     @Param('id') id: string,
     @Body() updateSpinnigWheelDto: UpdateSpinnigWheelDto,

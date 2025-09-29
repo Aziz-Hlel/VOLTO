@@ -12,7 +12,7 @@ const staffService = {
     apiService.postThrowable<StaffResponseDto>(apiRoutes.staff.create(), payload),
 
   update: (id: string, payload: StaffRequestDto) =>
-    apiService.patchThrowable<StaffResponseDto>(apiRoutes.staff.update(id), payload),
+    apiService.putThrowable<StaffResponseDto>(apiRoutes.staff.update(id), payload),
 
   delete: (id: string) => apiService.deleteThrowable<StaffResponseDto>(apiRoutes.staff.delete(id)),
 };

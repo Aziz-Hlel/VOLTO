@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   UseGuards,
@@ -29,7 +29,7 @@ export class SpinnigWheelRewardController {
 
   @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
-  @Patch()
+  @Put()
   async update(
     @Body() updateSpinnigWheelRewardDto: UpdateSpinnigWheelRewardDto,
   ) {

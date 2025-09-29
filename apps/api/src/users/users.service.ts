@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/Dto/create-user';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -106,13 +106,20 @@ export class UsersService {
     const existingUser = await this.findById(id);
     if (!existingUser) throw new NotFoundException('User not found');
 
-    const savedUser = await this.prisma.user.update({
-      where: { id },
-      data: {
-        ...dto,
-      },
-    });
-    return savedUser;
+    try{
+
+      const savedUser = await this.prisma.user.update({
+        where: { id },
+        data: {
+          ...dto,
+        },
+      });
+      return savedUser;
+    }
+    catch(e){
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
 
     
   }

@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -47,7 +47,7 @@ export class StorageController {
     return response;
   }
 
-  @Patch(':id')
+  @Put(':id')
   async update(@Param('id') id: string, @Body() updateS3Dto: UpdateS3Dto) {
     const response = await this.storageService.update(+id, updateS3Dto);
     return response;

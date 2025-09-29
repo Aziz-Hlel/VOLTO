@@ -24,7 +24,7 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 ### Update Ladies Night
 # @name updateLadiesNightEvent
-PATCH     {{baseUrl}}/events/5e3b7f1c-2d4a-4f6e-9a8b-1c2d3e4f5a6b
+PUT     {{baseUrl}}/events/5e3b7f1c-2d4a-4f6e-9a8b-1c2d3e4f5a6b
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
