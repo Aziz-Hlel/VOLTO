@@ -16,10 +16,19 @@ import { SpinnigWheelModule } from 'src/spinnig-wheel/spinnig-wheel.module';
 import { GalleryModule } from 'src/gallery/gallery.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     AppConfigModule,
+
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'public'), // path to your public folder
+      useGlobalPrefix: true,
+      serveRoot: '/public', // optional, the URL prefix
+    }),
+
     PrismaModule,
     RedisModule,
     UsersModule,

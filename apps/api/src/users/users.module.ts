@@ -4,9 +4,10 @@ import { MediaModule } from 'src/media/media.module';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { StaffController } from './staff.controller';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
-  imports: [PrismaModule, MediaModule],
+  imports: [PrismaModule, MediaModule,EmailModule],
   providers: [UsersService],
   exports: [UsersService],
   controllers: [UsersController, StaffController],

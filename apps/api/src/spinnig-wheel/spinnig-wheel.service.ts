@@ -19,7 +19,7 @@ import { RedeemCodeResponseDto } from './dto/RedeemCodeResponse.dto';
 export class SpinnigWheelService {
   constructor(
     @Inject(forwardRef(() => SpinnigWheelRewardService))
-    private readonly spinnigWheelRewardService: SpinnigWheelRewardService, 
+    private readonly spinnigWheelRewardService: SpinnigWheelRewardService,
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
@@ -175,7 +175,7 @@ export class SpinnigWheelService {
       include: { rewardList: true },
     });
 
-    await  this.redis.del(HASHES.SPINNING_WHEEL.DATE.HASH());
+    await this.redis.del(HASHES.SPINNING_WHEEL.DATE.HASH());
     await this.spinnigWheelRewardService.updateRewardsCache(updatedWheel.rewardList);
     if (
       spinnigWheel.startDate !== updatedWheel.startDate ||

@@ -30,6 +30,12 @@ export const envSchema = z.object({
 
   REDIS_HOST: z.string(),
   REDIS_PORT: z.coerce.number(),
+
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.string().transform((value) => parseInt(value)),
+  SMTP_SECURE: z.string().transform((value) => value === 'true'),
+  SMTP_USER: z.string(),
+  SMTP_PASS: z.string(),
 });
 
 const validatedEnv = envSchema.safeParse(process.env);

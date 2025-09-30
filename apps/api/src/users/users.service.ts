@@ -13,12 +13,16 @@ import { CreateCustomerDto } from './Dto/create-customer';
 import { UserMapper } from './Mapper/usersMapper';
 import { CreateStaffDto } from './Dto/create-staff.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
+import { EmailService } from 'src/email/email.service';
+import crypto from "crypto";
+
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private mediaService: MediaService,
+    private emailService: EmailService,
   ) {}
 
   findAll() {
@@ -154,4 +158,23 @@ export class UsersService {
 
     return response;
   }
+
+
+
+  async sendResetEmail(email: string) {
+    const user = await this.findByEmail(email);
+    if (!user) throw new NotFoundException('User not found');
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const hash = crypto.createHash("sha256").update(token).digest("hex");
+
+    await this.emailService.sendResetPasswordEmail({
+      recipient: email,
+      token:token,
+    });
+    return token;
+
+  }
+
+
 }
