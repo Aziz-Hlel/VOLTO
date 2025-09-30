@@ -46,7 +46,9 @@ export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> =
       // const err = error as ApiResponse<any>;
       console.log(error);
       if (typeof error === "object" && error !== null && "message" in error) {
-        toast.error("Error deleting staff member : " + String((error as { message: unknown }).message));
+        toast.error(
+          "Error deleting staff member : " + String((error as { message: unknown }).message),
+        );
       } else {
         toast.error("Error deleting staff member ");
       }

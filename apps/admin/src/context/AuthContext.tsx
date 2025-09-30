@@ -5,7 +5,7 @@ import { jwtTokenManager } from "@/Api/JwtTokenManager.class";
 import type { sigInApiResponse, signUpApiResponse } from "@/types/auth/auth";
 import type { User } from "@/types/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { createContext, useCallback, useContext, useEffect, useMemo, type FC } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
 import authService from "@/Api/services/auth.service";
 
 type AuthState =
@@ -26,7 +26,7 @@ const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 const AUTH_QUERY_KEY = ["auth", "user"] as const;
 
-export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
 
   const { data: authData, isLoading } = useQuery<ApiResponse<User>>({
@@ -36,12 +36,8 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
     // Remove initialData and select, handle mapping below
   });
 
-  console.log("access token : ", jwtTokenManager.getAccessToken());
-
-  console.log("authdata t3 zibi : ", authData);
   // Map the query result to AuthState
   const authState: AuthState = useMemo(() => {
-    console.log("t5l authState : ", { isLoading, authData });
     if (isLoading) {
       return { status: "loading", user: null };
     }
@@ -51,7 +47,6 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
     return { status: "unauthenticated", user: null };
   }, [isLoading, authData]);
 
-  console.log("auth state : ", authState);
   const signUpMutation = useMutation({
     mutationFn: authService.signUp,
     onSuccess: async (response) => {
@@ -64,7 +59,6 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
   const loginMuation = useMutation({
     mutationFn: authService.login,
     onSuccess: async (response) => {
-      console.log("response of api : ", response);
       if (!response.success) return;
       jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
       await queryClient.setQueryData(AUTH_QUERY_KEY, response);
@@ -110,11 +104,9 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
 
     const response = await authService.refresh(refreshToken);
 
-    console.log("response of refresh : ", response);
     if (response.success) {
-      console.log("t5l l refetch queries");
       jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
-      queryClient.refetchQueries({ queryKey: AUTH_QUERY_KEY });
+      await queryClient.refetchQueries({ queryKey: AUTH_QUERY_KEY });
     } else {
       jwtTokenManager.clearTokens();
       queryClient.setQueryData(AUTH_QUERY_KEY, null);
@@ -125,7 +117,9 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
     const a = async () => {
       await initializeAuth();
     };
-    a();
+    a()
+      .then(() => {})
+      .catch(() => {});
   }, [initializeAuth]);
 
   const contextValue = useMemo<IAuthContext>(
@@ -141,7 +135,7 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
-};
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

@@ -14,6 +14,7 @@ export class LadiesNightService {
   ) {}
 
   static DRINK_QUOTA = 3;
+
   static msInHours = 1000 * 60 * 60;
 
   async storeLadiesNightTimeStamps() {

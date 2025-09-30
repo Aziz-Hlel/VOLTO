@@ -1,4 +1,4 @@
-import type { Event} from '@prisma/client';
+import type { Event } from '@prisma/client';
 import { EventType } from '@prisma/client';
 
 export const createEventRequestBody: IcreateEventRequestBody = {

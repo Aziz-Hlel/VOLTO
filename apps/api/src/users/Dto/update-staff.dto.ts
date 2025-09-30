@@ -1,5 +1,5 @@
 import { IsOptional, IsString } from 'class-validator';
-import { PartialType , OmitType } from '@nestjs/mapped-types';
+import { PartialType, OmitType } from '@nestjs/mapped-types';
 
 import { CreateStaffDto } from './create-staff.dto';
 

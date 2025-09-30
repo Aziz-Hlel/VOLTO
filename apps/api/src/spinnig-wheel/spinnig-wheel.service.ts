@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  forwardRef,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -17,9 +18,10 @@ import { RedeemCodeResponseDto } from './dto/RedeemCodeResponse.dto';
 @Injectable()
 export class SpinnigWheelService {
   constructor(
+    @Inject(forwardRef(() => SpinnigWheelRewardService))
+    private readonly spinnigWheelRewardService: SpinnigWheelRewardService, 
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
-    private readonly spinnigWheelRewardService: SpinnigWheelRewardService,
   ) {}
 
   async updateWheelCache(): Promise<IsSpinningWheelAvailableResponse> {
@@ -173,13 +175,13 @@ export class SpinnigWheelService {
       include: { rewardList: true },
     });
 
-    this.redis.del(HASHES.SPINNING_WHEEL.DATE.HASH());
-    this.spinnigWheelRewardService.updateRewardsCache(updatedWheel.rewardList);
+    await  this.redis.del(HASHES.SPINNING_WHEEL.DATE.HASH());
+    await this.spinnigWheelRewardService.updateRewardsCache(updatedWheel.rewardList);
     if (
       spinnigWheel.startDate !== updatedWheel.startDate ||
       spinnigWheel.endDate !== updatedWheel.endDate
     )
-      this.deleteUserHashes();
+      await this.deleteUserHashes();
 
     return updatedWheel;
   };

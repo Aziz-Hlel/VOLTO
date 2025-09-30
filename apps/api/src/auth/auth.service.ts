@@ -18,6 +18,7 @@ export class AuthService {
   ) {}
 
   static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '15m' : '1m';
+
   static refreshExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '7d' : '30d';
 
   async registerCustomer(dto: CreateCustomerDto) {

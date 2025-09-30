@@ -1,4 +1,4 @@
-import type { Media} from '@prisma/client';
+import type { Media } from '@prisma/client';
 import { EntityType, MediaPurpose, MediaStatus, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -109,7 +109,8 @@ export const newYearEveVideo = (entityId: string): IMediaType => ({
   entityId,
 });
 
-export const seedMedia = async (media: IMediaType) => prisma.media.upsert({
+export const seedMedia = async (media: IMediaType) =>
+  prisma.media.upsert({
     where: { s3Key: media.s3Key },
     update: media,
     create: media,

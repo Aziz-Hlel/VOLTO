@@ -25,7 +25,7 @@ export class StorageService {
 
   async getPresignedUrl(preSignedUrlDto: PreSignedUrlRequest) {
     const fileKey = this.generateFileKey(preSignedUrlDto.originalName, preSignedUrlDto.entityType);
-    const {mimeType} = preSignedUrlDto;
+    const { mimeType } = preSignedUrlDto;
     const expiresIn = 3600;
 
     const signedUrl = await this.storageService.generatePresignedUrl({

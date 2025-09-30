@@ -31,6 +31,7 @@ export class LadiesNightGateway {
     private readonly ladiesNightService: LadiesNightService,
     private jwtService: JwtService,
   ) {}
+
   private readonly logger = new Logger(LadiesNightGateway.name);
 
   @WebSocketServer()

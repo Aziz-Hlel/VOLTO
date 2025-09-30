@@ -142,7 +142,7 @@ export class UsersService {
       throw new UnauthorizedException('You do not have permission to delete this user');
     }
 
-    this.mediaService.removeCurrentEntityMedia({
+    await this.mediaService.removeCurrentEntityMedia({
       entityId: id,
       entityType: EntityType.USER,
       mediaPurpose: MediaPurpose.AVATAR,

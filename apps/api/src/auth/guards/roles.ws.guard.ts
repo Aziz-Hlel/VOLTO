@@ -16,7 +16,7 @@ export class WsRolesGuard implements CanActivate {
 
     // Switch from HTTP to WebSocket context
     const socket = context.switchToWs().getClient();
-    const {user} = socket;
+    const { user } = socket;
 
     if (!user) return false;
     return requiredRoles.includes(user.role);

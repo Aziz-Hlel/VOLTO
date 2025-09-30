@@ -13,7 +13,9 @@ export class BullmqService2 implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(BullmqService2.name);
 
   static queueName = 'stats-scheduler';
+
   private statsQueue: Queue;
+
   private statsWorker: Worker;
 
   private initStatsQueue = () => {

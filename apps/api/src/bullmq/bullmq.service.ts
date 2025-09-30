@@ -20,6 +20,7 @@ export class BullmqService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(BullmqService.name);
 
   private eventQueue: Queue<EventJobData>;
+
   private eventWorker: Worker<EventJobData>;
 
   public constructor(

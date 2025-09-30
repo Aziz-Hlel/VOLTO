@@ -1,4 +1,4 @@
-import type { Event, Media} from '@prisma/client';
+import type { Event, Media } from '@prisma/client';
 import { EntityType, EventType, MediaStatus, PrismaClient } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import {

@@ -1,6 +1,6 @@
 import type { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from 'bcrypt';
-import type { IregisterTestUser} from '../vars/testUser';
+import type { IregisterTestUser } from '../vars/testUser';
 import { registerTestUser } from '../vars/testUser';
 
 interface TcreateUser {
