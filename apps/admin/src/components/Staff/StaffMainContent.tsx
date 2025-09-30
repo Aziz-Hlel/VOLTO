@@ -23,8 +23,8 @@ const StaffMainContent = () => {
     navigate(`edit/${id}`);
   }
 
-  const setStaffForDeletion = (event?: StaffResponseDto) => {
-    setSelectedStaffToDelete(event ?? null);
+  const setStaffForDeletion = (staff?: StaffResponseDto) => {
+    setSelectedStaffToDelete(staff ?? null);
   };
 
   if (!staff) return <>loading ...</>;
@@ -43,8 +43,8 @@ const StaffMainContent = () => {
 
       <StaffDataTable
         data={staff}
-        setEventForEdit={handleEditingStaff}
-        setEventForDeletion={setStaffForDeletion}
+        setStaffForEdit={handleEditingStaff}
+        setStaffForDeletion={setStaffForDeletion}
       />
 
       {/* {selectedEventToDelete &&

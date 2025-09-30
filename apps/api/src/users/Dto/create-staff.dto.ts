@@ -1,23 +1,24 @@
 import { Gender, Role, Tier } from "@prisma/client";
 import { Type } from "class-transformer";
-import { IsEmail, IsEnum, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsEmail, IsEnum, IsOptional, IsString, Max, MaxLength, MinLength, ValidateNested } from "class-validator";
 import { CreateObjectWithMediaRequestDto } from "src/media/dto/MediaRequest.dto";
 
 
 export class CreateStaffDto {
 
     @IsString()
+    @MinLength(2)
+    @MaxLength(30)
     username: string;
 
     @IsEmail()
     email: string;
 
     @IsString()
+    @MinLength(8)
+    @MaxLength(30)
     password: string;
 
-    @IsString()
-    confirmPassowrd: string;
-    
     @IsEnum(Role, { message: 'Invalid Role' })
     role: Role;
 

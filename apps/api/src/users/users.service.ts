@@ -7,13 +7,14 @@ import { Role } from '@prisma/client';
 import { UserMapper } from './Mapper/usersMapper';
 import { CreateStaffDto } from './Dto/create-staff.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService,private mediaService: MediaService) { }
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany(); 
   }
 
   async createCustomer(dto: CreateCustomerDto, hashedPassword: string) {
@@ -95,9 +96,21 @@ export class UsersService {
     const existingUser = await this.findByEmail(dto.email);
     if (existingUser) throw new UnauthorizedException('Email already exists');
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-    const savedUser = await this.createUser(dto, hashedPassword);
-    return savedUser;
+    try{
+
+      
+      const hashedPassword = await bcrypt.hash(dto.password, 10);
+      const savedUser = await this.createUser(dto, hashedPassword);
+      if(dto.avatar?.s3Key){
+      await  this.mediaService.confirmPendingMedia(dto.avatar?.s3Key,savedUser.id)
+      }
+
+      return savedUser;
+      
+    } catch(e){
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
   }
 
 

@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
-import type { EventResponseDto } from "@/types/events/eventResponse.dto";
 import type { ApiResponse } from "@/Api/apiService";
 import { useQueryClient } from "@tanstack/react-query";
 import { Gender } from "@/types/enums/Gender";
@@ -28,7 +27,7 @@ import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Command, CommandGroup, CommandItem } from "../ui/command";
 import staffService from "@/Api/services/staff.service";
 import { ChevronsUpDown } from "lucide-react";
-import type { StaffRequestDto } from "@/types/staff/StaffRequestDto";
+
 
 const formSchema = z
   .object({
@@ -105,16 +104,18 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
   const onSubmit = async (values: FormData) => {
     try {
       let response: ApiResponse<StaffResponseDto>;
+      
+      const { confirmPassword, ...payload  } = values;
 
       editMode
-        ? (response = await staffService.update(staff!.id, values))
-        : (response = await staffService.create(values));
+        ? (response = await staffService.update(staff!.id, payload))
+        : (response = await staffService.create(payload));
 
       if (response.success) {
         if (editMode) toast.success("Staff Updated successfully");
         if (!editMode) toast.success("Staff Created successfully");
         queryClient.invalidateQueries({ queryKey: ["staff"], exact: false });
-        navigate("..");
+        navigate(".."); 
       }
 
       console.log(values);
@@ -133,7 +134,7 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto h-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto h-full py-8">
         <FormField
           control={form.control}
           name="username"
@@ -208,7 +209,7 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
                     <Button variant="outline" role="combobox" className="w-[200px] justify-between">
                       {field.value
                         ? Object.values(Roles).find((value) => value === field.value)
-                        : "Select framework..."}
+                        : "Select Role..."}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>

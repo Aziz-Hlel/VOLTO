@@ -22,7 +22,7 @@ export class CreateCustomerDto {
 
   @IsOptional()
   @Matches(/^[0-9]+$/, { message: 'Phone number must contain only numbers' })
-  phoneNumber: string;
+  phoneNumber?: string;
 
   @IsString()
   @MinLength(6)

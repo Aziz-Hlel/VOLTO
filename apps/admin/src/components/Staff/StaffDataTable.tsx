@@ -20,14 +20,14 @@ import type { StaffResponseDto } from "@/types/staff/StaffResponseDto";
 
 interface StaffDataTableProps {
   data: StaffResponseDto[];
-  setEventForEdit: (id: string) => void;
-  setEventForDeletion: (event: StaffResponseDto) => void;
+  setStaffForEdit: (id: string) => void;
+  setStaffForDeletion: (event: StaffResponseDto) => void;
 }
 
 export const StaffDataTable: React.FC<StaffDataTableProps> = ({
   data,
-  setEventForEdit,
-  setEventForDeletion,
+  setStaffForEdit,
+  setStaffForDeletion,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<keyof StaffResponseDto>("username");
@@ -129,14 +129,14 @@ export const StaffDataTable: React.FC<StaffDataTableProps> = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-white">
                           <DropdownMenuItem
-                            onClick={() => setEventForEdit(staffMember.id)}
+                            onClick={() => setStaffForEdit(staffMember.id)}
                             className="flex items-center gap-2 hover:bg-gray-100"
                           >
                             <Edit className="h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setEventForDeletion(staffMember)}
+                            onClick={() => setStaffForDeletion(staffMember)}
                             className="flex items-center gap-2 text-destructive hover:bg-destructive/10"
                           >
                             <Trash2 className="h-4 w-4" />

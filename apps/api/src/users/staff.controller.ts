@@ -15,13 +15,14 @@ export class StaffController {
 
     @UseGuards(JwtAccessGuard, RolesGuard)
     @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-    @HttpCode(200)
+    @HttpCode(201)
     @Post(['','/'])
     async createStaff(@Body() createStaffDto: CreateStaffDto) {
       
         const response = await this.usersService.createStaff(createStaffDto);
+
         return response;
-        
+
     };
 
 
@@ -62,6 +63,10 @@ export class StaffController {
         return response;
         
     };
+
+
+
+
 
 
 
