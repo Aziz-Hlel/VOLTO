@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
+import type { INestApplication} from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app/app.module';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
 import ENV from './config/env';
 
 const globalPrefix = 'api';
@@ -11,22 +12,16 @@ const gloabalValidationPipe = new ValidationPipe({
   transform: true, // transforms payloads to DTO classes
 });
 
-
-function enableCors(app:INestApplication<any>) {
-
-  const allowedOrigins = [ENV.VITE_ADMIN_PORT, ENV.VITE_WEB_PORT,];
+function enableCors(app: INestApplication<any>) {
+  const allowedOrigins = [ENV.VITE_ADMIN_PORT, ENV.VITE_WEB_PORT];
 
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization','X-total-count'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-total-count'],
     allowedOrigins,
     credentials: true, // if you need cookies/authorization headers
-
-  })
-
-
-
+  });
 }
 
 async function bootstrap() {

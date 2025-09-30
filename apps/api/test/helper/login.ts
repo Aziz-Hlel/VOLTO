@@ -1,15 +1,10 @@
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { IloginTestUser, loginTestUser } from './../vars/testUser';
+import type { IloginTestUser} from "../vars/testUser";
+import { loginTestUser } from "../vars/testUser";
 
-const login = async (
-  app: INestApplication,
-  user: IloginTestUser = loginTestUser,
-) => {
-  const response = await request(app.getHttpServer())
-    .post('/auth/login')
-    .send(user)
-    .expect(200);
+const login = async (app: INestApplication, user: IloginTestUser = loginTestUser) => {
+  const response = await request(app.getHttpServer()).post('/auth/login').send(user).expect(200);
 
   // Check response
   expect(response.body).toHaveProperty('accessToken');

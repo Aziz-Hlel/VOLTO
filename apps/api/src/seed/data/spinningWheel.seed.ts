@@ -1,4 +1,5 @@
-import { PrismaClient, SpinningWheel } from '@prisma/client';
+import type { SpinningWheel } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 

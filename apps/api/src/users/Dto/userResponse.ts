@@ -1,4 +1,4 @@
-import { Gender, Role, Tier } from '@prisma/client';
+import type { Gender, Role, Tier } from '@prisma/client';
 
 export class UserResponseDto {
   id: string;

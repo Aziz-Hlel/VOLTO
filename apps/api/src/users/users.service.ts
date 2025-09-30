@@ -1,24 +1,32 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/Dto/create-user';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { EntityType, MediaPurpose, Role } from '@prisma/client';
+import { MediaService } from 'src/media/media.service';
 import { CreateCustomerDto } from './Dto/create-customer';
-import { Role } from '@prisma/client';
 import { UserMapper } from './Mapper/usersMapper';
 import { CreateStaffDto } from './Dto/create-staff.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
-import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService,private mediaService: MediaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private mediaService: MediaService,
+  ) {}
 
   findAll() {
-    return this.prisma.user.findMany(); 
+    return this.prisma.user.findMany();
   }
 
   async createCustomer(dto: CreateCustomerDto, hashedPassword: string) {
-    return await this.prisma.user.create({
+    return this.prisma.user.create({
       data: {
         ...dto,
         role: Role.USER,
@@ -28,7 +36,7 @@ export class UsersService {
   }
 
   async createUser(dto: CreateUserDto, hashedPassword: string) {
-    return await this.prisma.user.create({
+    return this.prisma.user.create({
       data: {
         ...dto,
         password: hashedPassword,
@@ -48,7 +56,6 @@ export class UsersService {
   }
 
   async registerUser(dto: CreateUserDto) {
-
     const existingUser = await this.findByEmail(dto.email);
 
     if (existingUser) throw new UnauthorizedException('Email already exists');
@@ -67,8 +74,7 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-
-  async getStaff() {
+  async getAllStaff() {
     const staff = await this.prisma.user.findMany({
       where: {
         role: {
@@ -77,10 +83,9 @@ export class UsersService {
       },
     });
 
-    const staffDto = staff.map(user => UserMapper.toResponse2(user))
+    const staffDto = staff.map((user) => UserMapper.toResponse2(user));
     return staffDto;
   }
-
 
   async getStaffById(id: string) {
     const staff = await this.prisma.user.findUnique({
@@ -90,37 +95,29 @@ export class UsersService {
     return staff;
   }
 
-
-
   async createStaff(dto: CreateStaffDto) {
     const existingUser = await this.findByEmail(dto.email);
     if (existingUser) throw new UnauthorizedException('Email already exists');
 
-    try{
+    try {
+      const { avatar, ...newStaffData } = dto;
+      const hashedPassword = await bcrypt.hash(newStaffData.password, 10);
+      const savedUser = await this.createUser(newStaffData, hashedPassword);
 
-      
-      const hashedPassword = await bcrypt.hash(dto.password, 10);
-      const savedUser = await this.createUser(dto, hashedPassword);
-      if(dto.avatar?.s3Key){
-      await  this.mediaService.confirmPendingMedia(dto.avatar?.s3Key,savedUser.id)
-      }
+      if (avatar?.s3Key) await this.mediaService.confirmPendingMedia(avatar?.s3Key, savedUser.id);
 
       return savedUser;
-      
-    } catch(e){
+    } catch (e) {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);
     }
   }
 
-
-  async updateStaff(id: string, dto: UpdateStaffDto){
-
+  async updateStaff(id: string, dto: UpdateStaffDto) {
     const existingUser = await this.findById(id);
     if (!existingUser) throw new NotFoundException('User not found');
 
-    try{
-
+    try {
       const savedUser = await this.prisma.user.update({
         where: { id },
         data: {
@@ -128,12 +125,33 @@ export class UsersService {
         },
       });
       return savedUser;
-    }
-    catch(e){
+    } catch (e) {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);
     }
+  }
 
-    
+  async deleteStaff(id: string, userRole: Role) {
+    const userToDelete = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!userToDelete) throw new NotFoundException('User not found');
+
+    if (userToDelete.role === Role.SUPER_ADMIN && userRole !== Role.SUPER_ADMIN) {
+      throw new UnauthorizedException('You do not have permission to delete this user');
+    }
+
+    this.mediaService.removeCurrentEntityMedia({
+      entityId: id,
+      entityType: EntityType.USER,
+      mediaPurpose: MediaPurpose.AVATAR,
+    });
+
+    const response = await this.prisma.user.delete({
+      where: { id },
+    });
+
+    return response;
   }
 }

@@ -1,10 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
@@ -50,15 +44,11 @@ export class BullmqService2 implements OnModuleInit, OnModuleDestroy {
     );
 
     this.statsWorker.on('completed', (job) => {
-      this.logger.log(
-        `✅ Event job completed: ${job.data.eventName} ${job.data.action}`,
-      );
+      this.logger.log(`✅ Event job completed: ${job.data.eventName} ${job.data.action}`);
     });
 
     this.statsWorker.on('failed', (job, err) => {
-      this.logger.error(
-        `❌ Event job failed: ${job?.data?.eventName} - ${err.message}`,
-      );
+      this.logger.error(`❌ Event job failed: ${job?.data?.eventName} - ${err.message}`);
     });
 
     this.statsWorker.on('error', (err) => {

@@ -1,7 +1,7 @@
-import { EntityType, MediaPurpose } from '@prisma/client';
+import type { EntityType, MediaPurpose } from '@prisma/client';
 
-export type MediaIdentifier = {
+export interface MediaIdentifier {
   entityId: string;
   entityType: EntityType;
   mediaPurpose: MediaPurpose;
-};
+}

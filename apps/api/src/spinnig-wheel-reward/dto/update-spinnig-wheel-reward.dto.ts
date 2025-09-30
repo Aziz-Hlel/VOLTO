@@ -1,13 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateSpinnigWheelRewardDto } from './create-spinnig-wheel-reward.dto';
-import {
-  ArrayMaxSize,
-  ArrayMinSize,
-  IsArray,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { CreateSpinnigWheelRewardDto } from './create-spinnig-wheel-reward.dto';
 
 export class UpdateSignleSpinnigWheelRewardDto extends CreateSpinnigWheelRewardDto {
   @IsString()

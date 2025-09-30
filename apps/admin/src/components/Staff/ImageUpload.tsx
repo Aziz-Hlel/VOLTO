@@ -15,6 +15,7 @@ import type { EntityType } from "@/types/enums/EntityType";
 import type { DropzoneOptions } from "react-dropzone";
 import useImageUpload from "./hook/use-Image-Upload";
 import CircularProgressBar from "../events/CircularProgressBar ";
+import { useMemo } from "react";
 
 const ImageUpload = ({
   imgKeyFieldName,
@@ -30,7 +31,7 @@ const ImageUpload = ({
   const maxSizeInMB = 4;
 
   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-  const aspectRatio: string | undefined = undefined;
+  const aspectRatio: number | undefined = 1;
 
   const dropZoneConfig: DropzoneOptions = {
     maxFiles: 1,
@@ -65,6 +66,11 @@ const ImageUpload = ({
     entityType: entityType,
     imgPurpose: imgPurpose,
   });
+
+  const imgUrl: string | undefined = useMemo(
+    () => (file ? URL.createObjectURL(file) : undefined),
+    [file],
+  );
 
   return (
     <>
@@ -122,7 +128,7 @@ const ImageUpload = ({
               <div className=" relative w-full h-60   ">
                 <div className="bg-white">
                   <Cropper
-                    image={file ? URL.createObjectURL(file) : ""}
+                    image={imgUrl}
                     crop={crop}
                     zoom={zoom}
                     aspect={aspectRatio}

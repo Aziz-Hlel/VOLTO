@@ -28,8 +28,7 @@ export class SpinningWheelInitService implements OnApplicationBootstrap {
         name: 'Spinnig Wheel',
       });
 
-    const spinnigWheelRewards =
-      await this.prisma.spinningWheelReward.findMany();
+    const spinnigWheelRewards = await this.prisma.spinningWheelReward.findMany();
 
     while (spinnigWheelRewards.length < 5) {
       const newReward = await this.spinnigWheelRewardService.create({
@@ -39,10 +38,6 @@ export class SpinningWheelInitService implements OnApplicationBootstrap {
     }
 
     this.spinnigWheelRewardService.updateRewardsCache(spinnigWheelRewards);
-
-    
-
-
 
     this.logger.log('Spinning Wheel Initialized');
   }

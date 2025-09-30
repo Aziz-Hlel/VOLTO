@@ -1,11 +1,7 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-} from '@nestjs/common';
-import { LadiesNightService } from '../ladies-night.service';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { WsException } from '@nestjs/websockets';
+import { LadiesNightService } from '../ladies-night.service';
 
 @Injectable()
 export class LadiesNightActiveGuard implements CanActivate {
@@ -16,15 +12,14 @@ export class LadiesNightActiveGuard implements CanActivate {
     const eventName = context.switchToWs().getPattern();
 
     const returnEvent = {
-      "consume-drink": "drink-consumed",
-      "get-quota": "drink-quota",
-      "generate-code": "get-code",
-    }
+      'consume-drink': 'drink-consumed',
+      'get-quota': 'drink-quota',
+      'generate-code': 'get-code',
+    };
 
-    const isLadiesNightActive =
-      await this.ladiesNightService.isLadiesNightActive2();
+    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive2();
 
-    if (!isLadiesNightActive){
+    if (!isLadiesNightActive) {
       client.emit(returnEvent[eventName], {
         success: false,
         error: 'Ladies Night is not active1',

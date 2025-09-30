@@ -6,7 +6,6 @@ export const envSchema = z.object({
   API_PORT: z.coerce.number(),
   VITE_WEB_PORT: z.coerce.number(),
   VITE_ADMIN_PORT: z.coerce.number(),
-  
 
   JWT_ACCESS_SECRET: z.string(),
   JWT_REFRESH_SECRET: z.string(),

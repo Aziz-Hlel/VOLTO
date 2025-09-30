@@ -1,4 +1,5 @@
-import { Event, EventType } from '@prisma/client';
+import type { Event} from '@prisma/client';
+import { EventType } from '@prisma/client';
 
 export const createEventRequestBody: IcreateEventRequestBody = {
   name: 'Test Event',
@@ -11,7 +12,7 @@ export const createEventRequestBody: IcreateEventRequestBody = {
   videoKey: 'test-video-key',
 };
 
-export type IcreateEventRequestBody = Omit<
-  Event,
-  'id' | 'createdAt' | 'updatedAt'
-> & { thumbnailKey: string; videoKey: string };
+export type IcreateEventRequestBody = Omit<Event, 'id' | 'createdAt' | 'updatedAt'> & {
+  thumbnailKey: string;
+  videoKey: string;
+};

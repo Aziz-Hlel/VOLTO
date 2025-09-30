@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { SpinnigWheelRewardController } from './spinnig-wheel-reward.controller';
 import { SpinnigWheelRewardService } from './spinnig-wheel-reward.service';
 
@@ -11,9 +12,7 @@ describe('SpinnigWheelRewardController', () => {
       providers: [SpinnigWheelRewardService],
     }).compile();
 
-    controller = module.get<SpinnigWheelRewardController>(
-      SpinnigWheelRewardController,
-    );
+    controller = module.get<SpinnigWheelRewardController>(SpinnigWheelRewardController);
   });
 
   it('should be defined', () => {

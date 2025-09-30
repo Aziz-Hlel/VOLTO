@@ -1,13 +1,12 @@
-import { Gender, PrismaClient, Role, Tier, User } from '@prisma/client';
+import type { User } from '@prisma/client';
+import { Gender, PrismaClient, Role, Tier } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 type IUserSeeds = Omit<User, 'createdAt' | 'updatedAt'>;
 
-const hashPassword = async (rawPassword: string): Promise<string> => {
-  return await bcrypt.hash(rawPassword, 10);
-};
+const hashPassword = async (rawPassword: string): Promise<string> => bcrypt.hash(rawPassword, 10);
 
 const userSeeds = async (): Promise<IUserSeeds[]> => [
   {

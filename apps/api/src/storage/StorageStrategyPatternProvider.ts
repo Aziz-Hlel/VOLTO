@@ -1,5 +1,5 @@
 import ENV from 'src/config/env';
-import { IStorageProvider } from './interfaces/storage.interface';
+import type { IStorageProvider } from './interfaces/storage.interface';
 import { MinioStorage } from './minioStorage.service';
 import { AwsS3Storage } from './awsS3Storage.service';
 

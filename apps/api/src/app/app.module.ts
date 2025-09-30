@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AppConfigModule } from 'src/config/config.module';
 import { WorkersModule } from 'src/workers/workers.module';
 import { AuthModule } from 'src/auth/auth.module';
@@ -16,6 +14,8 @@ import { StartupModuleModule } from 'src/startup-module/startup-module.module';
 import { SpinnigWheelRewardModule } from 'src/spinnig-wheel-reward/spinnig-wheel-reward.module';
 import { SpinnigWheelModule } from 'src/spinnig-wheel/spinnig-wheel.module';
 import { GalleryModule } from 'src/gallery/gallery.module';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [

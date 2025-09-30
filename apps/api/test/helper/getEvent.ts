@@ -1,11 +1,11 @@
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
-type TgetEvent = {
+interface TgetEvent {
   app: INestApplication;
   accessToken: string;
   id: string;
-};
+}
 
 const getEvent = async ({ app, id, accessToken }: TgetEvent) => {
   const response = await request(app.getHttpServer())

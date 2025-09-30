@@ -1,9 +1,9 @@
 import ENV from 'src/config/env';
-import { IStorageProvider } from './interfaces/storage.interface';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { GeneratePresignedUrlParams } from './types/generatePresignedUrlParams';
 import { Injectable } from '@nestjs/common';
+import { GeneratePresignedUrlParams } from './types/generatePresignedUrlParams';
+import { IStorageProvider } from './interfaces/storage.interface';
 
 @Injectable()
 export class AwsS3Storage implements IStorageProvider {
@@ -16,8 +16,8 @@ export class AwsS3Storage implements IStorageProvider {
   readonly s3Client = new S3Client({
     region: ENV.AWS_REGION,
     // credentials: {
-      // accessKeyId: ENV.AWS_ACCESS_KEY_ID,
-      // secretAccessKey: ENV.AWS_SECRET_ACCESS_KEY,
+    // accessKeyId: ENV.AWS_ACCESS_KEY_ID,
+    // secretAccessKey: ENV.AWS_SECRET_ACCESS_KEY,
     // },
   });
 

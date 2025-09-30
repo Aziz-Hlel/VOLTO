@@ -17,28 +17,23 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV)
-    ? '15m'
-    : '1m';
-  static refreshExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV)
-    ? '7d'
-    : '30d';
+  static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '15m' : '1m';
+  static refreshExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '7d' : '30d';
 
   async registerCustomer(dto: CreateCustomerDto) {
     const user = await this.usersService.registerCustomer(dto);
 
-    const {accessToken, refreshToken} = this.getTokens(user);
+    const { accessToken, refreshToken } = this.getTokens(user);
 
     const userDto = UserMapper.toResponse(user);
 
-    return {accessToken, refreshToken, user: userDto};
+    return { accessToken, refreshToken, user: userDto };
   }
 
   async login(email: string, password: string) {
-
     const validatedUser = await this.validateUser(email, password);
 
-    const {accessToken, refreshToken} = this.getTokens(validatedUser);
+    const { accessToken, refreshToken } = this.getTokens(validatedUser);
 
     const userDto = UserMapper.toResponse(validatedUser);
 
@@ -47,12 +42,9 @@ export class AuthService {
 
   async refresh(refreshToken: string) {
     try {
-      const payload: { sub: string } = await this.jwtService.verify(
-        refreshToken,
-        {
-          secret: ENV.JWT_REFRESH_SECRET,
-        },
-      );
+      const payload: { sub: string } = await this.jwtService.verify(refreshToken, {
+        secret: ENV.JWT_REFRESH_SECRET,
+      });
 
       const user = await this.usersService.findById(payload.sub);
       if (!user) throw new UnauthorizedException('User not found');

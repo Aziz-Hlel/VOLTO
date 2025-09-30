@@ -1,24 +1,16 @@
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import {
-  createEventRequestBody,
-  IcreateEventRequestBody,
-} from '../vars/testEvent';
+import type { IcreateEventRequestBody } from '../vars/testEvent';
+import { createEventRequestBody } from '../vars/testEvent';
 
-type TcreateEvent = {
+interface TcreateEvent {
   app: INestApplication;
   body?: IcreateEventRequestBody;
   accessToken: string;
-};
+}
 
-const createEvent = async ({
-  app,
-  body = createEventRequestBody,
-}: TcreateEvent) => {
-  const response = await request(app.getHttpServer())
-    .post('/events')
-    .send(body)
-    .expect(200);
+const createEvent = async ({ app, body = createEventRequestBody }: TcreateEvent) => {
+  const response = await request(app.getHttpServer()).post('/events').send(body).expect(200);
 
   expect(response.status).toBe(201);
 

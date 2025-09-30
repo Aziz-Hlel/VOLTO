@@ -1,22 +1,15 @@
 // src/auth/auth.controller.ts
-import {
-  Body,
-  Controller,
-  Post,
-  UseGuards,
-  Get,
-  HttpCode,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, HttpCode } from '@nestjs/common';
+import { AuthUser } from 'src/users/Dto/AuthUser';
+import { Role } from '@prisma/client';
+import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/Dto/create-user';
 import { JwtAccessGuard } from './guards/jwt.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Roles } from './decorators/roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { LoginRequestDto } from './dto/loginRequestDto';
-import { Role } from '@prisma/client';
-import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 
 @Controller('auth')
 export class AuthController {
@@ -36,7 +29,7 @@ export class AuthController {
   async adminRegister(@Body() dto: CreateUserDto) {
     const payload = await this.authService.registerCustomer(dto);
 
-    return payload; 
+    return payload;
   }
 
   @HttpCode(200)
@@ -67,7 +60,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN,Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @HttpCode(200)
   @Get('test')
   test(@CurrentUser() user: AuthUser) {

@@ -1,10 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
@@ -68,15 +62,11 @@ export class BullmqService implements OnModuleInit, OnModuleDestroy {
     );
 
     this.eventWorker.on('completed', (job) => {
-      this.logger.log(
-        `✅ Event job completed: ${job.data.eventName} ${job.data.action}`,
-      );
+      this.logger.log(`✅ Event job completed: ${job.data.eventName} ${job.data.action}`);
     });
 
     this.eventWorker.on('failed', (job, err) => {
-      this.logger.error(
-        `❌ Event job failed: ${job?.data?.eventName} - ${err.message}`,
-      );
+      this.logger.error(`❌ Event job failed: ${job?.data?.eventName} - ${err.message}`);
     });
 
     this.eventWorker.on('error', (err) => {
@@ -85,10 +75,8 @@ export class BullmqService implements OnModuleInit, OnModuleDestroy {
   }
 
   ladiesNightJobsExists = async () => {
-    const ladiesNightJobStart =
-      await this.eventQueue.getJobScheduler('ladiesNight:START');
-    const ladiesNightJobEnd =
-      await this.eventQueue.getJobScheduler('ladiesNight:END');
+    const ladiesNightJobStart = await this.eventQueue.getJobScheduler('ladiesNight:START');
+    const ladiesNightJobEnd = await this.eventQueue.getJobScheduler('ladiesNight:END');
 
     if (ladiesNightJobStart?.pattern && ladiesNightJobEnd?.pattern) return true;
 
@@ -113,12 +101,9 @@ export class BullmqService implements OnModuleInit, OnModuleDestroy {
       },
     });
 
-    if (!ladiesNightEvent)
-      throw new Error('Ladies Night event does not exist in the database');
+    if (!ladiesNightEvent) throw new Error('Ladies Night event does not exist in the database');
 
-    const startDateCron = this.generateCronExpression(
-      ladiesNightEvent.startDate ?? new Date(),
-    );
+    const startDateCron = this.generateCronExpression(ladiesNightEvent.startDate ?? new Date());
     await this.eventQueue.add(
       'events-scheduler',
       {
@@ -137,9 +122,7 @@ export class BullmqService implements OnModuleInit, OnModuleDestroy {
     );
     console.log('dirrab l start cron = ', startDateCron);
 
-    const endDateCron = this.generateCronExpression(
-      ladiesNightEvent.endDate ?? new Date(),
-    ); // ! added new Date() just to go pass the error
+    const endDateCron = this.generateCronExpression(ladiesNightEvent.endDate ?? new Date()); // ! added new Date() just to go pass the error
     await this.eventQueue.add(
       'events-scheduler',
       {

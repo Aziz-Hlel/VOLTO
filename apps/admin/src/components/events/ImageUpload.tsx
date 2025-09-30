@@ -15,6 +15,7 @@ import type { EntityType } from "@/types/enums/EntityType";
 import CircularProgressBar from "./CircularProgressBar ";
 import type { DropzoneOptions } from "react-dropzone";
 import useImageUpload from "./hooks/use-Image-Upload";
+import { useMemo } from "react";
 
 const ImageUpload = ({
   imgKeyFieldName,
@@ -65,6 +66,11 @@ const ImageUpload = ({
     imgPurpose: imgPurpose,
   });
 
+  const imgUrl: string | undefined = useMemo(
+    () => (file ? URL.createObjectURL(file) : undefined),
+    [file],
+  );
+
   return (
     <>
       <div className=" h-96 ">
@@ -94,13 +100,6 @@ const ImageUpload = ({
                     </div>
                   </FileInput>
                 )}
-
-                {/* {file &&
-                                <FileUploaderItem index={0} >
-                                    <Paperclip className="h-4 w-4 stroke-current" />
-                                    <span>{file.name}</span>
-                                </FileUploaderItem>
-                            } */}
               </FileUploader>
             </FormControl>
             <FormMessage />
@@ -118,7 +117,7 @@ const ImageUpload = ({
               <div className=" relative w-full h-60   ">
                 <div className="bg-white">
                   <Cropper
-                    image={file ? URL.createObjectURL(file) : ""}
+                    image={imgUrl}
                     crop={crop}
                     zoom={zoom}
                     aspect={9 / 16}

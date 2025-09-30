@@ -32,7 +32,7 @@ export const HASHES = {
   },
 
   SPINNING_WHEEL: {
-    USER:{
+    USER: {
       HASH: (userId: string) => `spinning_wheel:user:${userId}`,
       ALL_HASH: () => 'spinning_wheel:user:*',
       USER_CODE: () => 'user_code',
@@ -43,14 +43,14 @@ export const HASHES = {
       HASH: () => 'spinning_wheel:date',
       START_DATE: () => 'start_date',
       END_DATE: () => 'end_date',
-      NAME : () => 'name',
+      NAME: () => 'name',
     },
 
-    CODES : () => 'spinning_wheel:codes',
+    CODES: () => 'spinning_wheel:codes',
 
-    REWARDS : {
+    REWARDS: {
       REWARD_NAME: () => `spinning_wheel:rewards`,
-    }
+    },
   },
 } as const;
 

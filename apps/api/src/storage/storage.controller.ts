@@ -9,15 +9,15 @@ import {
   HttpCode,
   UseGuards,
 } from '@nestjs/common';
+import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { StorageService } from './storage.service';
 import { CreateS3Dto } from './dto/create-s3.dto';
 import { UpdateS3Dto } from './dto/update-s3.dto';
 import { PreSignedUrlRequest } from './dto/preSignedUrl.dto';
-import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('storage')
 export class StorageController {
-  constructor(private readonly storageService: StorageService) { }
+  constructor(private readonly storageService: StorageService) {}
 
   // ! you work with media/presigned-url not this one
   @Post('presigned-url')

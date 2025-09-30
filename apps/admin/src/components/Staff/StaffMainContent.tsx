@@ -1,14 +1,18 @@
 import { apiRoutes } from "@/Api";
 import useApiQuery from "@/hooks/useApiQuery";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import type { StaffResponseDto } from "@/types/staff/StaffResponseDto";
 import StaffDataTable from "./StaffDataTable";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 
 const StaffMainContent = () => {
   const navigate = useNavigate();
 
+  const { user } = useAuth();
   const { data } = useApiQuery<StaffResponseDto[]>({
     url: apiRoutes.staff.list(),
     queryParams: { page: 1, limit: 50 },
@@ -19,11 +23,20 @@ const StaffMainContent = () => {
   const [selectedStaffToDelete, setSelectedStaffToDelete] = useState<StaffResponseDto | null>(null);
   const staff = data?.data;
 
-  function handleEditingStaff(id: string): void {
-    navigate(`edit/${id}`);
+  function handleEditingStaff(staff: StaffResponseDto): void {
+    if (staff.role === "SUPER_ADMIN" && user?.role !== "SUPER_ADMIN") {
+      toast.error("You don't have permission to edit this staff member");
+      return;
+    }
+
+    navigate(`edit/${staff.id}`);
   }
 
   const setStaffForDeletion = (staff?: StaffResponseDto) => {
+    if (staff?.role === "SUPER_ADMIN" && user?.role !== "SUPER_ADMIN") {
+      toast.error("You don't have permission to delete this staff member");
+      return;
+    }
     setSelectedStaffToDelete(staff ?? null);
   };
 
@@ -47,14 +60,14 @@ const StaffMainContent = () => {
         setStaffForDeletion={setStaffForDeletion}
       />
 
-      {/* {selectedEventToDelete &&
-                < DeleteConfirmationDialog
-                    title='Delete Event'
-                    description={`Are you sure you want to delete the event "${selectedEventToDelete.name}"?`}
-                    removeObjectFromDeletion={setEventForDeletion}
-                    objectId={selectedEventToDelete.id}
-
-                />} */}
+      {selectedStaffToDelete && (
+        <DeleteConfirmationDialog
+          title="Delete Staff Member"
+          description={`Are you sure you want to delete the event "${selectedStaffToDelete.username}"?`}
+          removeObjectFromDeletion={setStaffForDeletion}
+          objectId={selectedStaffToDelete.id}
+        />
+      )}
     </div>
   );
 };

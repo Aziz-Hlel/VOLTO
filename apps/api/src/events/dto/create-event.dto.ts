@@ -1,17 +1,9 @@
 import { EventType } from '@prisma/client';
 import { Type } from 'class-transformer';
-import {
-  IsDate,
-  IsEnum,
-  IsOptional,
-  IsString,
-  Matches,
-  ValidateNested,
-} from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString, Matches, ValidateNested } from 'class-validator';
 import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateEventDto {
-
   @IsString()
   name: string;
 
@@ -33,22 +25,16 @@ export class CreateEventDto {
 
   @IsOptional()
   @IsString()
-  @Matches(
-    /^(\*|[0-5]?\d) (\*|[0-2]?\d) (\*|[1-3]?\d) (\*|[1-12]) (\*|[0-6])$/,
-    {
-      message: 'cronStartDate must be a valid cron expression',
-    },
-  )
+  @Matches(/^(\*|[0-5]?\d) (\*|[0-2]?\d) (\*|[1-3]?\d) (\*|[1-12]) (\*|[0-6])$/, {
+    message: 'cronStartDate must be a valid cron expression',
+  })
   cronStartDate?: string;
 
   @IsOptional()
   @IsString()
-  @Matches(
-    /^(\*|[0-5]?\d) (\*|[0-2]?\d) (\*|[1-3]?\d) (\*|[1-12]) (\*|[0-6])$/,
-    {
-      message: 'cronStartDate must be a valid cron expression',
-    },
-  )
+  @Matches(/^(\*|[0-5]?\d) (\*|[0-2]?\d) (\*|[1-3]?\d) (\*|[1-12]) (\*|[0-6])$/, {
+    message: 'cronStartDate must be a valid cron expression',
+  })
   cronEndDate?: string;
 
   @ValidateNested()
@@ -58,5 +44,4 @@ export class CreateEventDto {
   @ValidateNested()
   @Type(() => CreateObjectWithMediaRequestDto)
   video: CreateObjectWithMediaRequestDto;
-
 }

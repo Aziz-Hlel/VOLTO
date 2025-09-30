@@ -1,11 +1,12 @@
-import { PrismaService } from 'src/prisma/prisma.service';
+import type { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from 'bcrypt';
-import { IregisterTestUser, registerTestUser } from '../vars/testUser';
+import type { IregisterTestUser} from '../vars/testUser';
+import { registerTestUser } from '../vars/testUser';
 
-type TcreateUser = {
+interface TcreateUser {
   prisma: PrismaService;
   user?: IregisterTestUser;
-};
+}
 
 const createUser = async ({ prisma, user = registerTestUser }: TcreateUser) => {
   const payload = await prisma.user.create({

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWorkerDto } from './dto/create-worker.dto';
 import { WorkerMapper } from './mappers/worker.mapper';
 import { WorkerResponseDto } from './dto/WorkerResponseDto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class WorkersService {

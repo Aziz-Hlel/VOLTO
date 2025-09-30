@@ -1,13 +1,6 @@
-import {
-  IsEnum,
-  IsOptional,
-  IsPositive,
-  IsString,
-  Max,
-  MinLength,
-} from 'class-validator';
-import { FileType } from '../types/fileType';
+import { IsEnum, IsOptional, IsPositive, IsString, Max, MinLength } from 'class-validator';
 import { EntityType, MediaPurpose } from '@prisma/client';
+import { FileType } from '../types/fileType';
 
 export class PreSignedUrlRequest {
   static oneMb = 1024 * 1024;

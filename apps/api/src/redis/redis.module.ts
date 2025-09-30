@@ -7,13 +7,11 @@ import ENV from 'src/config/env';
   providers: [
     {
       provide: 'REDIS_CLIENT',
-      useFactory: () => {
-        return new Redis({
+      useFactory: () => new Redis({
           host: ENV.REDIS_HOST,
           port: ENV.REDIS_PORT,
           maxRetriesPerRequest: null,
-        });
-      },
+        }),
     },
   ],
   exports: ['REDIS_CLIENT'],

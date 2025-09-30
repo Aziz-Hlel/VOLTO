@@ -1,11 +1,7 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { ROLES_KEY } from '../decorators/roles.decorator';
 
 @Injectable()
 export class WsRolesGuard implements CanActivate {
@@ -20,7 +16,7 @@ export class WsRolesGuard implements CanActivate {
 
     // Switch from HTTP to WebSocket context
     const socket = context.switchToWs().getClient();
-    const user = (socket as any).user;
+    const {user} = socket;
 
     if (!user) return false;
     return requiredRoles.includes(user.role);

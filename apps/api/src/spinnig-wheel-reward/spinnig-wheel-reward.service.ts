@@ -6,12 +6,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateSpinnigWheelRewardDto } from './dto/create-spinnig-wheel-reward.dto';
-import { UpdateSpinnigWheelRewardDto } from './dto/update-spinnig-wheel-reward.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SpinnigWheelService } from 'src/spinnig-wheel/spinnig-wheel.service';
 import Redis from 'ioredis';
 import { HASHES } from 'src/redis/hashes';
+import { UpdateSpinnigWheelRewardDto } from './dto/update-spinnig-wheel-reward.dto';
+import { CreateSpinnigWheelRewardDto } from './dto/create-spinnig-wheel-reward.dto';
 
 @Injectable()
 export class SpinnigWheelRewardService {
@@ -36,9 +36,7 @@ export class SpinnigWheelRewardService {
       );
 
     if (spinnigWheel.rewardList.length === 5)
-      throw new BadRequestException(
-        'Number of rewards reached the maximus which is 5.',
-      );
+      throw new BadRequestException('Number of rewards reached the maximus which is 5.');
 
     const createdAward = await this.prisma.spinningWheelReward.create({
       data: { ...createSpinnigWheelRewardDto, wheelId: spinnigWheel.id },
@@ -48,29 +46,27 @@ export class SpinnigWheelRewardService {
   };
 
   findAll = async () => {
-    const rewardsList = await this.prisma.spinningWheelReward.findMany({ take: 5 });
+    const rewardsList = await this.prisma.spinningWheelReward.findMany({
+      take: 5,
+    });
 
-    return {rewardsList};
+    return { rewardsList };
   };
 
-
-
   update = async (updateSpinningWheelRewardDto: UpdateSpinnigWheelRewardDto) => {
-
-    const rewardIds = updateSpinningWheelRewardDto.rewards.map(r => r.id);
+    const rewardIds = updateSpinningWheelRewardDto.rewards.map((r) => r.id);
 
     const existingRewards = await this.prisma.spinningWheelReward.findMany({
-    where: { id: { in: rewardIds } },
-    select: { id: true },
-  });
+      where: { id: { in: rewardIds } },
+      select: { id: true },
+    });
 
-    const existingIds = existingRewards.map(r => r.id);
-    const invalidIds = rewardIds.filter(id => !existingIds.includes(id));
+    const existingIds = existingRewards.map((r) => r.id);
+    const invalidIds = rewardIds.filter((id) => !existingIds.includes(id));
 
     if (invalidIds.length > 0) {
       throw new BadRequestException(`Invalid reward IDs: ${invalidIds.join(', ')}`);
     }
-
 
     try {
       const awards = await this.prisma.$transaction(
@@ -87,35 +83,26 @@ export class SpinnigWheelRewardService {
       await this.updateRewardsCache(awards);
 
       return awards;
-
     } catch (err) {
       throw new Error(err);
     }
   };
 
+  async getRewardById(
+    rewardId: string,
+  ): Promise<{ exist: false } | { exist: true; rewardName: string }> {
+    const rewardName = await this.redis.hget(HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), rewardId);
 
+    if (!rewardName) return { exist: false };
 
-
-  async getRewardById(rewardId: string):Promise<{exist:false,} | {exist:true,rewardName:string} > {
-
-
-   const rewardName =await this.redis.hget(HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),rewardId);
-
-    if(!rewardName) return {exist: false};
-
-    return {exist:true, rewardName}
-
+    return { exist: true, rewardName };
   }
 
+  async updateRewardsCache(rewardsList: { id: string; name: string }[]) {
+    const dic: Record<string, string> = {};
 
-  async updateRewardsCache(rewardsList: {id:string; name: string}[]){
+    rewardsList.map((reward) => (dic[reward.id] = reward.name));
 
-    const dic : Record<string, string>= {};
-
-    rewardsList.map(reward => dic[reward.id] = reward.name);
-
-    await this.redis.hmset(HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),dic);
-
+    await this.redis.hmset(HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), dic);
   }
-
 }

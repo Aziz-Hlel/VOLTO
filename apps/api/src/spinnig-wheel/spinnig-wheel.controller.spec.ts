@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { SpinnigWheelController } from './spinnig-wheel.controller';
 import { SpinnigWheelService } from './spinnig-wheel.service';
 

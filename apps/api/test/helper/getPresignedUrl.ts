@@ -1,15 +1,13 @@
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import {
-  getPresignedUrlRequestBody,
-  IgetPresignedUrlRequestBody,
-} from '../vars/testMedia';
+import type { IgetPresignedUrlRequestBody } from '../vars/testMedia';
+import { getPresignedUrlRequestBody } from '../vars/testMedia';
 
-type TgetPresignedUrl = {
+interface TgetPresignedUrl {
   app: INestApplication;
   body?: IgetPresignedUrlRequestBody;
   accessToken: string;
-};
+}
 
 const getPresignedUrl = async ({
   app,

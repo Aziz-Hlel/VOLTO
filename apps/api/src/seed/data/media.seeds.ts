@@ -1,4 +1,5 @@
-import { EntityType, Media, MediaPurpose, MediaStatus, PrismaClient } from '@prisma/client';
+import type { Media} from '@prisma/client';
+import { EntityType, MediaPurpose, MediaStatus, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,7 @@ export const LadiesNightThumbnail = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.THUMBNAIL,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const LadiesNightVideo = (entityId: string): IMediaType => ({
@@ -27,7 +28,7 @@ export const LadiesNightVideo = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.VIDEO,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const hookasNightThumbnail = (entityId: string): IMediaType => ({
@@ -40,7 +41,7 @@ export const hookasNightThumbnail = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.THUMBNAIL,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const hookasNightVideo = (entityId: string): IMediaType => ({
@@ -53,7 +54,7 @@ export const hookasNightVideo = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.VIDEO,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const fridayBrunchThumbnail = (entityId: string): IMediaType => ({
@@ -66,7 +67,7 @@ export const fridayBrunchThumbnail = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.THUMBNAIL,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const fridayBrunchVideo = (entityId: string): IMediaType => ({
@@ -79,7 +80,7 @@ export const fridayBrunchVideo = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.VIDEO,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const newYearEveThumbnail = (entityId: string): IMediaType => ({
@@ -92,7 +93,7 @@ export const newYearEveThumbnail = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.THUMBNAIL,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
 export const newYearEveVideo = (entityId: string): IMediaType => ({
@@ -105,13 +106,11 @@ export const newYearEveVideo = (entityId: string): IMediaType => ({
   mediaPurpose: MediaPurpose.VIDEO,
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
-  entityId: entityId,
+  entityId,
 });
 
-export const seedMedia = async (media: IMediaType) => {
-return  await prisma.media.upsert({
+export const seedMedia = async (media: IMediaType) => prisma.media.upsert({
     where: { s3Key: media.s3Key },
     update: media,
     create: media,
   });
-};

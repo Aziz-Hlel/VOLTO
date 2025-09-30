@@ -1,11 +1,5 @@
-import {
-  EntityType,
-  Event,
-  EventType,
-  Media,
-  MediaStatus,
-  PrismaClient,
-} from '@prisma/client';
+import type { Event, Media} from '@prisma/client';
+import { EntityType, EventType, MediaStatus, PrismaClient } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import {
   fridayBrunchThumbnail,
@@ -19,7 +13,7 @@ import {
   seedMedia,
 } from './media.seeds';
 
-  const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 type IMediaType = Omit<Media, 'id' | 'createdAt' | 'updatedAt'>;
 

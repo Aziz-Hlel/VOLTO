@@ -4,9 +4,9 @@ import * as fs from 'fs';
 import axios from 'axios';
 // import img from './img.jpg'; // Removed because TypeScript cannot import image files without proper configuration
 
-type IuploadFile = {
+interface IuploadFile {
   presignedUrl: string;
-};
+}
 
 const uploadFile = async ({ presignedUrl }: IuploadFile) => {
   const filePath = path.join(__dirname, 'assets', 'img.jpg');

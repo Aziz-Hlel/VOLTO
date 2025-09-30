@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
-import { jwtUserToken } from '../Dto/jwtUserToken';
-import { UserResponseDto } from '../Dto/userResponse';
+import type { User } from '@prisma/client';
+import type { jwtUserToken } from '../Dto/jwtUserToken';
+import type { UserResponseDto } from '../Dto/userResponse';
 import { StaffResponseDto } from '../Dto/staff-response.dto';
 
 export class UserMapper {
@@ -22,9 +22,7 @@ export class UserMapper {
     };
   }
 
-
   static toResponse2(user: User): StaffResponseDto {
-
     return new StaffResponseDto(user);
   }
 }

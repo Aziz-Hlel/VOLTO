@@ -1,12 +1,12 @@
 import { Body, HttpCode, Inject, Injectable } from '@nestjs/common';
+import ENV from 'src/config/env';
+import path from 'path';
+import { EntityType } from '@prisma/client';
 import { CreateS3Dto } from './dto/create-s3.dto';
 import { UpdateS3Dto } from './dto/update-s3.dto';
 import { PreSignedUrlRequest } from './dto/preSignedUrl.dto';
 
-import ENV from 'src/config/env';
-import path from 'path';
 import type { IStorageProvider } from './interfaces/storage.interface';
-import { EntityType } from '@prisma/client';
 
 @Injectable()
 export class StorageService {
@@ -24,8 +24,8 @@ export class StorageService {
   }
 
   async getPresignedUrl(preSignedUrlDto: PreSignedUrlRequest) {
-    const fileKey = this.generateFileKey(preSignedUrlDto.originalName,preSignedUrlDto.entityType);
-    const mimeType = preSignedUrlDto.mimeType;
+    const fileKey = this.generateFileKey(preSignedUrlDto.originalName, preSignedUrlDto.entityType);
+    const {mimeType} = preSignedUrlDto;
     const expiresIn = 3600;
 
     const signedUrl = await this.storageService.generatePresignedUrl({
@@ -41,8 +41,7 @@ export class StorageService {
     let objectUrl = '';
     if (ENV.NODE_ENV === 'development' || ENV.NODE_ENV === 'test') {
       objectUrl = `http://localhost:${ENV.MINIO_PORT}/${ENV.MINIO_BUCKET}/${fileKey}`;
-    } else
-      objectUrl = `https://${ENV.AWS_CLOUDFRONT_URL}/${fileKey}`;
+    } else objectUrl = `https://${ENV.AWS_CLOUDFRONT_URL}/${fileKey}`;
 
     return objectUrl;
   }

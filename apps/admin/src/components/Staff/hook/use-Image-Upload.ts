@@ -21,14 +21,13 @@ const useImageUpload = ({
   entityType,
   imgPurpose,
 }: IuseImageUpload) => {
-  const { watch, setValue, getValues } = useFormContext();
+  const { setValue, getValues } = useFormContext();
 
-  const initImgUrl = getValues(imgUrlFieldName) as string | undefined;
-  const initImgKey = getValues(imgKeyFieldName) as string | undefined;
+  const currentImgUrl = getValues(imgUrlFieldName);
+  const currentImgKey = getValues(imgKeyFieldName);
 
-  const initImg = useMemo(() => initImgUrl, []);
-  console.log("initImg : ", initImg);
-  console.log("zabbourom niti url img value : ", initImgUrl);
+  const initImg = useMemo(() => currentImgUrl, []);
+
   const setImageUrl = (img?: string) => setValue(imgUrlFieldName, img);
   const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
 
@@ -44,9 +43,9 @@ const useImageUpload = ({
   const currentDisplayed: "fileUpload" | "copper" | "loading" | "imgDisplayed" = useMemo(() => {
     if (progress > 0 && progress < 100) return "loading";
     if (file) return "copper";
-    if (initImgUrl) return "imgDisplayed";
+    if (currentImgUrl) return "imgDisplayed";
     return "fileUpload";
-  }, [file, initImgUrl, progress]);
+  }, [file, currentImgUrl, progress]);
 
   const onZoomChange = (zoom: number) => setZoom(zoom);
   const onCropChange = (point: Point) => setCrop(point);
@@ -56,11 +55,11 @@ const useImageUpload = ({
   const handleCancel = () => setFile(null);
 
   const rollBackToInitImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    console.log("initImgKey : ", initImgKey, " initImgUrl : ", initImgUrl);
+    console.log("initImgKey : ", currentImgKey, " initImgUrl : ", currentImgUrl);
     e.preventDefault();
     setFile(null);
     setImageUrl(initImg);
-    setImageKey(initImgKey);
+    setImageKey(currentImgKey);
   };
 
   console.log("currentDisplayed : ", currentDisplayed);
@@ -114,7 +113,7 @@ const useImageUpload = ({
   return {
     file,
     progress,
-    img: initImgUrl,
+    img: currentImgUrl,
     crop,
     zoom,
     currentDisplayed,

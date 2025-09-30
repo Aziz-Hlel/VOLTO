@@ -1,22 +1,19 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { MediaIdentifier } from './types/MediaIndetifier';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PreSignedUrlRequest } from 'src/storage/dto/preSignedUrl.dto';
 import { StorageService } from 'src/storage/storage.service';
 import { StorageMapper } from 'src/storage/mapper/StorageMapper';
 import { EntityType, Media, MediaStatus } from '@prisma/client';
+import { MediaIdentifier } from './types/MediaIndetifier';
 
 @Injectable()
 export class MediaService {
   constructor(
     private prisma: PrismaService,
     private storageService: StorageService,
-  ) { }
+  ) {}
 
-  async createPendingMedia(
-    preSignedUrlDto: PreSignedUrlRequest,
-    fileKey: string,
-  ) {
+  async createPendingMedia(preSignedUrlDto: PreSignedUrlRequest, fileKey: string) {
     const createdMedia = await this.prisma.media.create({
       data: {
         originalName: preSignedUrlDto.originalName,
@@ -35,8 +32,7 @@ export class MediaService {
   }
 
   async getPresignedUrl(preSignedUrlDto: PreSignedUrlRequest) {
-    const { signedUrl, fileKey } =
-      await this.storageService.getPresignedUrl(preSignedUrlDto);
+    const { signedUrl, fileKey } = await this.storageService.getPresignedUrl(preSignedUrlDto);
 
     this.createPendingMedia(preSignedUrlDto, fileKey);
 
@@ -52,13 +48,10 @@ export class MediaService {
       },
     });
 
-    if (!media)
-      throw new NotFoundException(`Media with s3Key ${s3Key} not found`);
+    if (!media) throw new NotFoundException(`Media with s3Key ${s3Key} not found`);
 
     if (media.status !== MediaStatus.PENDING)
-      throw new Error(
-        ` try to CONFIRM Media with s3Key ${s3Key} which is not in PENDING status`,
-      );
+      throw new Error(` try to CONFIRM Media with s3Key ${s3Key} which is not in PENDING status`);
 
     await this.prisma.media.update({
       where: {
@@ -70,8 +63,6 @@ export class MediaService {
       },
     });
   }
-
-
 
   async findOne(identifier: MediaIdentifier): Promise<Media> {
     const media = await this.prisma.media.findFirst({
@@ -90,9 +81,7 @@ export class MediaService {
     return media;
   }
 
-  async getMediaKeyAndUrl(
-    identifier: MediaIdentifier,
-  ): Promise<{ s3Key: string; url: string }> {
+  async getMediaKeyAndUrl(identifier: MediaIdentifier): Promise<{ s3Key: string; url: string }> {
     const media = await this.findOne(identifier);
 
     const url = await this.storageService.getObjectUrl(media.s3Key);
@@ -100,7 +89,7 @@ export class MediaService {
     return { s3Key: media.s3Key, url };
   }
 
-  async removeMany({ entityId, entityType, }: { entityId: string, entityType: EntityType }) {
+  async removeMany({ entityId, entityType }: { entityId: string; entityType: EntityType }) {
     await this.prisma.media.deleteMany({
       where: {
         entityId,
@@ -109,58 +98,52 @@ export class MediaService {
     });
   }
 
-
   async removeCurrentEntityMedia({ entityId, entityType, mediaPurpose }: MediaIdentifier) {
-    return await this.prisma.media.deleteMany({
+    return this.prisma.media.deleteMany({
       where: {
         entityId,
         entityType,
-        mediaPurpose
+        mediaPurpose,
       },
     });
   }
 
-
-  async updateEntityMedia({ entityId, entityType, mediaPurpose, newMediaS3Key }: MediaIdentifier & { newMediaS3Key: string }) {
-
-    return await this.prisma.$transaction(async (tx) => {
-
+  async updateEntityMedia({
+    entityId,
+    entityType,
+    mediaPurpose,
+    newMediaS3Key,
+  }: MediaIdentifier & { newMediaS3Key: string }) {
+    return this.prisma.$transaction(async (tx) => {
       // removeCurrentEntityMedia
       tx.media.deleteMany({
         where: {
           entityId,
           entityType,
           mediaPurpose,
-          status: MediaStatus.CONFIRMED
+          status: MediaStatus.CONFIRMED,
         },
       });
 
       // assaignNewMedia to entity
-      await tx.media.update({
-        where: {
-          s3Key: newMediaS3Key,
-          entityType: entityType,
-          mediaPurpose: mediaPurpose
-        },
-        data: {
-          entityId: entityId,
-          status: MediaStatus.CONFIRMED,
-        }
-      }).catch((error) => {
-        if (error.code === "P2025") {
-          throw new BadRequestException("Media associated with entity not found in database");
-        }
-        throw error; // rethrow unexpected errors
-
-      });
-
-
-
-    })
-
-
+      await tx.media
+        .update({
+          where: {
+            s3Key: newMediaS3Key,
+            entityType,
+            mediaPurpose,
+          },
+          data: {
+            entityId,
+            status: MediaStatus.CONFIRMED,
+          },
+        })
+        .catch((error) => {
+          if (error.code === 'P2025') {
+            throw new BadRequestException('Media associated with entity not found in database');
+          }
+          throw error; // rethrow unexpected errors
+        });
+    });
   }
-
-
-
 }

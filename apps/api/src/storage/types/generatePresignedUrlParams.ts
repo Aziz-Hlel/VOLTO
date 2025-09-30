@@ -1,5 +1,5 @@
-export type GeneratePresignedUrlParams = {
+export interface GeneratePresignedUrlParams {
   fileKey: string;
   mimeType: string;
   expiresIn: number;
-};
+}

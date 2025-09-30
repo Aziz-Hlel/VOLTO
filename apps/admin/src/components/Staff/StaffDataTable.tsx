@@ -20,7 +20,7 @@ import type { StaffResponseDto } from "@/types/staff/StaffResponseDto";
 
 interface StaffDataTableProps {
   data: StaffResponseDto[];
-  setStaffForEdit: (id: string) => void;
+  setStaffForEdit: (staff: StaffResponseDto) => void;
   setStaffForDeletion: (event: StaffResponseDto) => void;
 }
 
@@ -129,7 +129,7 @@ export const StaffDataTable: React.FC<StaffDataTableProps> = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-white">
                           <DropdownMenuItem
-                            onClick={() => setStaffForEdit(staffMember.id)}
+                            onClick={() => setStaffForEdit(staffMember)}
                             className="flex items-center gap-2 hover:bg-gray-100"
                           >
                             <Edit className="h-4 w-4" />

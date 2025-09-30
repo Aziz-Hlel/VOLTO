@@ -6,20 +6,15 @@ import {
   WebSocketServer,
   WsException,
 } from '@nestjs/websockets';
-import {
-  BadRequestException,
-  Logger,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { BadRequestException, Logger, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import { LadiesNightService } from './ladies-night.service';
 import type { authSocket } from 'src/ladies-night/types/authSocket';
 import { JwtService } from '@nestjs/jwt';
 import ENV from 'src/config/env';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { WsRolesGuard } from 'src/auth/guards/roles.ws.guard';
+import { LadiesNightService } from './ladies-night.service';
 
 export interface AuthenticatedSocket extends Socket {
   user?: any;
@@ -30,13 +25,12 @@ interface BaseEventResponse {
   error_message?: string;
 }
 
-
 @WebSocketGateway({ cors: true, namespace: '/ladies-night' })
 export class LadiesNightGateway {
   constructor(
     private readonly ladiesNightService: LadiesNightService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
   private readonly logger = new Logger(LadiesNightGateway.name);
 
   @WebSocketServer()
@@ -55,8 +49,7 @@ export class LadiesNightGateway {
 
   private async isLadiesNightActive() {
     // return true
-    const isLadiesNightActive =
-      await this.ladiesNightService.isLadiesNightActive2();
+    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive2();
     return isLadiesNightActive;
   }
 
@@ -68,12 +61,8 @@ export class LadiesNightGateway {
         const isLadiesNightActive = await this.isLadiesNightActive();
 
         if (!isLadiesNightActive) {
-          this.logger.log(
-            'Ladies Night is not active. No connections allowed.',
-          );
-          throw new Error(
-            'Ladies Night is not active. No connections allowed.',
-          );
+          this.logger.log('Ladies Night is not active. No connections allowed.');
+          throw new Error('Ladies Night is not active. No connections allowed.');
         }
       } catch (error) {
         this.logger.error(
@@ -98,29 +87,20 @@ export class LadiesNightGateway {
           ...payload,
         };
 
-        this.logger.log(
-          `Socket ${socket.id} authenticated for user ${socket.user.id}`,
-        );
+        this.logger.log(`Socket ${socket.id} authenticated for user ${socket.user.id}`);
         next();
       } catch (error) {
-        this.logger.error(
-          `Authentication failed for socket ${socket.id}: ${error.message}`,
-        );
+        this.logger.error(`Authentication failed for socket ${socket.id}: ${error.message}`);
         next(new Error('Authentication failed'));
       }
     });
 
-    this.logger.log(
-      'WebSocket Gateway initialized with authentication middleware',
-    );
+    this.logger.log('WebSocket Gateway initialized with authentication middleware');
   }
 
   async handleConnection(@ConnectedSocket() socket: authSocket) {
     console.log(`Client connected: ${socket.id}`);
-    await this.ladiesNightService.updateSavedUserSocketId(
-      socket.user.id,
-      socket.id,
-    );
+    await this.ladiesNightService.updateSavedUserSocketId(socket.user.id, socket.id);
   }
 
   handleDisconnect(client: Socket) {
@@ -147,9 +127,13 @@ export class LadiesNightGateway {
 
       const code = await this.ladiesNightService.getCode(userId);
 
-      socket.emit('get-code', { code: code, success: true });
+      socket.emit('get-code', { code, success: true });
     } catch (error) {
-      socket.emit('get-code', { code: null, success: false, error: error.message });
+      socket.emit('get-code', {
+        code: null,
+        success: false,
+        error: error.message,
+      });
     }
   }
 
@@ -173,7 +157,4 @@ export class LadiesNightGateway {
       socket.emit('drink-consumed', { success: false, error: error.message });
     }
   }
-
-
-
 }

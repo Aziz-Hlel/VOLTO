@@ -28,7 +28,6 @@ import { Command, CommandGroup, CommandItem } from "../ui/command";
 import staffService from "@/Api/services/staff.service";
 import { ChevronsUpDown } from "lucide-react";
 
-
 const formSchema = z
   .object({
     username: z.string({ message: "Name is required" }).min(1, { error: "Name is required" }),
@@ -69,20 +68,22 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  console.log("staff : ", staff);
+
   if (staff?.role === Roles.SUPER_ADMIN) {
     return;
   }
   const formDefaultValue: FormData | undefined = !staff
     ? {
-        username: "",
-        email: "",
+        username: "azaz",
+        email: "azza@gmail.com",
         role: "WAITER",
-        phoneNumber: "",
+        phoneNumber: "qsdsqd",
         gender: "M",
         tier: "GOLD",
         avatar: undefined,
-        password: "",
-        confirmPassword: "",
+        password: "12345678",
+        confirmPassword: "12345678",
       }
     : {
         username: staff.username,
@@ -103,10 +104,11 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
 
   const onSubmit = async (values: FormData) => {
     try {
+      console.log("rab om l values : ", values);
       let response: ApiResponse<StaffResponseDto>;
-      
-      const { confirmPassword, ...payload  } = values;
 
+      const { confirmPassword, ...payload } = values;
+      console.log("rab om 3orm l payload : ", payload);
       editMode
         ? (response = await staffService.update(staff!.id, payload))
         : (response = await staffService.create(payload));
@@ -115,7 +117,7 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
         if (editMode) toast.success("Staff Updated successfully");
         if (!editMode) toast.success("Staff Created successfully");
         queryClient.invalidateQueries({ queryKey: ["staff"], exact: false });
-        navigate(".."); 
+        navigate("..");
       }
 
       console.log(values);
@@ -134,7 +136,10 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto h-full py-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 max-w-3xl mx-auto h-full py-8"
+      >
         <FormField
           control={form.control}
           name="username"
@@ -283,8 +288,8 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-6">
             <ImageUpload
-              imgKeyFieldName="thumbnail.s3Key"
-              imgUrlFieldName="thumbnail.url"
+              imgKeyFieldName="avatar.s3Key"
+              imgUrlFieldName="avatar.url"
               entityType="USER"
               imgPurpose="AVATAR"
             />

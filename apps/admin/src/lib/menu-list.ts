@@ -1,9 +1,6 @@
 import {
-  Tag,
   Users,
   Settings,
-  Bookmark,
-  SquarePen,
   LayoutGrid,
   type LucideIcon,
   CalendarDays,
