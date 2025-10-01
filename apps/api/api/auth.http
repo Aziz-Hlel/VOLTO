@@ -16,7 +16,6 @@ Content-Type: application/json
     "password":"123456"
 }
 
-# @access_token = {{register.response.body.$.access_token}}
 
 ### Login request
 ### Step 1: Get access token

@@ -170,9 +170,12 @@ export class UsersService {
 
     await this.emailService.sendResetPasswordEmail({
       recipient: email,
-      token:token,
+      token:hash,
     });
-    return token;
+    return {
+      success: true,
+      message: 'Password reset email sent successfully',
+    }
 
   }
 

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { readFileSync } from 'fs';
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
@@ -8,12 +8,15 @@ import ENV from 'src/config/env';
 @Injectable()
 export class EmailService {
 
-  private readonly transported: nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options>;
+  private readonly logger = new Logger(EmailService.name);
+  private readonly transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo, SMTPTransport.Options>;
+
+  private readonly EMAIL_ADDRESSES = {
+    support: "support@volto.com",
+  }
 
   constructor() {
-    try {
-
-        this.transported = nodemailer.createTransport({
+        this.transporter = nodemailer.createTransport({
             host: ENV.SMTP_HOST,
             port: ENV.SMTP_PORT,
             secure: ENV.SMTP_SECURE,
@@ -21,19 +24,23 @@ export class EmailService {
                 user: ENV.SMTP_USER,
                 pass: ENV.SMTP_PASS,
             },
+            
         });
-    }catch(e){
-        this.logger.fatal('Unable to connect to email server')
-        this.logger.error(e)
-     }
+
+        this.transporter.verify().then(() => {
+            this.logger.log('Connected to email server')
+        }).catch((error) => {
+          this.logger.fatal('Unable to connect to email server')
+          this.logger.error(error)
+          
+        })
     }
 
 
-  private readonly logger = new Logger(EmailService.name);
 
   async sendEmail(email: string, subject: string, text: string) {
-    await this.transported.sendMail({
-      from: ENV.SMTP_USER,
+    await this.transporter.sendMail({
+      from: this.EMAIL_ADDRESSES.support,
       to: email,
       subject: subject,
       text: text,
@@ -48,13 +55,13 @@ export class EmailService {
     token: string;
   }): Promise<void> {
 
-    const templatePath = join(__dirname, '../assets/templates/reset-password.html');
+    const templatePath = join(process.cwd(), 'templates','reset-password.html');
     let html = readFileSync(templatePath, "utf-8");
 
-    const resetUrl = `http://localhost:${ENV.API_PORT}/reset-password?token=${token}` // ! to be change 
+    const resetUrl = `http://localhost:${ENV.VITE_WEB_PORT}/reset-password?token=${token}` // ! to be change 
 
     const subject = 'Reset Your Password';
-    const logoUrl = `http://localhost:${ENV.API_PORT}/api/logo.png`; // ! kifkif
+    const logoUrl = `http://localhost:${ENV.API_PORT}/api/public/logo.dark.png`; // ! kifkif
     const companyName = 'VOLTO';
 
     html = html
@@ -65,17 +72,20 @@ export class EmailService {
     const to = [recipient]
 
     const mailOptions = {
-        from: `"${companyName} Team" <${ENV.SMTP_USER}>`,
+        from: `"${companyName} Team" <${this.EMAIL_ADDRESSES.support}>`,
         to,
         subject,
         html,
     };
     try{
-        await this.transported.sendMail(mailOptions);
+        await this.transporter.sendMail(mailOptions);
 
     }catch(e){
         this.logger.error(e)
-        throw 
+        if (e.responseCode === 550) {
+          throw new BadRequestException({ success: false, message: 'Invalid recipient address'});
+        }
+       throw new ServiceUnavailableException({ success: false, message: 'Email service unavailable'});
     }
   }
 }

@@ -16,6 +16,8 @@ import Navbar from "./components/TopBar/AnotherOne";
 import CardNav, { type CardNavItem, type CardNavProps } from "./components/TopBar/YetAnotherBar";
 import NavBar619 from "./components/TopBar/Nav";
 import { ScrollNavbar } from "./components/TopBar/ScrollNavbar";
+import { ResetPassword } from "./components/ResetPassword/reset-password";
+import ResetPasswordSuccesfulLayout from "./components/ResetPassword/Success";
 
 // const queryClient = new QueryClient();
 
@@ -28,15 +30,9 @@ function App() {
     <div className="flex flex-col min-h-screen  ">
       <Router>
         <ScrollToTop />
-        {/* <InitialLoading /> */}
-        {/* <UpcommingEvent /> */}
-        {/* <Navbar /> */}
-        {/* <ScrollNavbar>
-          <CardNav {...props}  />
-          </ScrollNavbar> */}
+
         <NavBar619 />
 
-        {/* <AnimatedNavbar /> */}
         <Routes>
 
           <Route path="/" element={<Home />} />
@@ -46,9 +42,9 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/contact" element={<ContactUs />} />
 
-
+          <Route path="/reset-password" element={<ResetPasswordSuccesfulLayout/>} /> 
         </Routes>
-      </Router>
+      </Router> 
 
     </div>
   )
