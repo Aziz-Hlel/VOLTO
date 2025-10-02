@@ -1,10 +1,9 @@
-import { Link } from "react-router-dom"
-
+import { Link } from "react-router-dom";
 
 const Topbar = () => {
-    return (
-        <nav className="  w-full sticky top-0  dark:bg-transparent z-50  bg-black/25 ">
-            {/* <div className="max-w-screen-xl flex flex-wrap items-center  justify-between mx-auto p-4">
+  return (
+    <nav className="  w-full sticky top-0  dark:bg-transparent z-50  bg-black/25 ">
+      {/* <div className="max-w-screen-xl flex flex-wrap items-center  justify-between mx-auto p-4">
                 <Link
                     to="/"
                     className="flex items-center space-x-3 rtl:space-x-reverse"
@@ -94,38 +93,38 @@ const Topbar = () => {
                 </div>
             </div> */}
 
-            <div className="m-4 flex group  w-fit max-w-7xl absolute  ">
-                <div className=" group-hover:bg-black/25  transition-all duration-1000 h-24 group-hover:w-2xl group-hover:h-24 flex gap-2 border ">
-
-                    <Link to="/">
-                        <img
-                            src="/logo.png"
-                            className="lg:h-24 z-50 bg-black/25 group-hover:bg-transparent "
-                            alt="Flowbite Logo"
-                        />
-                    </Link>
-                    <div className="transition-all gap-2 duration-1000 group-hover:w-full  flex items-center justify-center  text-white w-0  bg-transparent  overflow-hidden rounded-2xl 
-                  ">
-
-                        <Link to="/menu">
-                            <div>Menu</div>
-                        </Link>
-                        <Link to="/events">
-                            <div>Events</div>
-                        </Link>
-                        <Link to="/gallery">
-                            <div>Gallery</div>
-                        </Link>
-                        <Link to="/about">
-                            <div>About</div>
-                        </Link>
-                        <Link to="/contact">
-                            <div>Contact</div>
-                        </Link>
-                        <Link to="/reservation">
-                            <div>Reservation</div>
-                        </Link>
-                        {/* <div className="flex items-center justify-start h-24 w-full max-w-6xl bg-black relative">
+      <div className="m-4 flex group  w-fit max-w-7xl absolute  ">
+        <div className=" group-hover:bg-black/25  transition-all duration-1000 h-24 group-hover:w-2xl group-hover:h-24 flex gap-2 border ">
+          <Link to="/">
+            <img
+              src="/logo.png"
+              className="lg:h-24 z-50 bg-black/25 group-hover:bg-transparent "
+              alt="Flowbite Logo"
+            />
+          </Link>
+          <div
+            className="transition-all gap-2 duration-1000 group-hover:w-full  flex items-center justify-center  text-white w-0  bg-transparent  overflow-hidden rounded-2xl 
+                  "
+          >
+            <Link to="/menu">
+              <div>Menu</div>
+            </Link>
+            <Link to="/events">
+              <div>Events</div>
+            </Link>
+            <Link to="/gallery">
+              <div>Gallery</div>
+            </Link>
+            <Link to="/about">
+              <div>About</div>
+            </Link>
+            <Link to="/contact">
+              <div>Contact</div>
+            </Link>
+            <Link to="/reservation">
+              <div>Reservation</div>
+            </Link>
+            {/* <div className="flex items-center justify-start h-24 w-full max-w-6xl bg-black relative">
                      
                      <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center text-zinc-400 text-sm font-semibold bg-zinc-950 rounded-full backdrop-blur-sm px-5 py-1 overflow-hidden border border-zinc-700">
                      <button className="hover:text-zinc-100 transition duration-700 px-4 py-1.5 rounded-full relative group isolate">
@@ -164,14 +163,11 @@ const Topbar = () => {
                             </button>
                         </div>
                     </div> */}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
-                    </div>
-                </div>
-
-            </div >
-        </nav >
-
-    )
-}
-
-export default Topbar
+export default Topbar;

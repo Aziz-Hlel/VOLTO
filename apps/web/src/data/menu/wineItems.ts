@@ -8,7 +8,7 @@ const wineItems: Item22[] = [
     price: "25.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Full, Redcurrant, Spice, Chile"
+    description: "Full, Redcurrant, Spice, Chile",
   },
   {
     id: "as",
@@ -17,7 +17,7 @@ const wineItems: Item22[] = [
     price: "30.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Stylish, Premium, Iconic, Champagne"
+    description: "Stylish, Premium, Iconic, Champagne",
   },
   {
     id: "as",
@@ -26,7 +26,7 @@ const wineItems: Item22[] = [
     price: "20.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Intense, Rich, Spice, Italy"
+    description: "Intense, Rich, Spice, Italy",
   },
   {
     id: "as",
@@ -35,7 +35,7 @@ const wineItems: Item22[] = [
     price: "45.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Clean, Soft, Honeysuckle, Italy"
+    description: "Clean, Soft, Honeysuckle, Italy",
   },
   {
     id: "as",
@@ -44,7 +44,7 @@ const wineItems: Item22[] = [
     price: "20.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Intense, Rich, Spice, Italy"
+    description: "Intense, Rich, Spice, Italy",
   },
   {
     id: "as",
@@ -53,7 +53,7 @@ const wineItems: Item22[] = [
     price: "45.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Clean, Soft, Honeysuckle, Italy"
+    description: "Clean, Soft, Honeysuckle, Italy",
   },
   {
     id: "as",
@@ -62,7 +62,7 @@ const wineItems: Item22[] = [
     price: "25.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Full, Redcurrant, Spice, Chile"
+    description: "Full, Redcurrant, Spice, Chile",
   },
   {
     id: "as",
@@ -71,8 +71,8 @@ const wineItems: Item22[] = [
     price: "30.00$ /30ML | 90.00$ /Bottle",
     categrory: "drinks",
     subCategory: "wine",
-    description: "Stylish, Premium, Iconic, Champagne"
-  }
-]
+    description: "Stylish, Premium, Iconic, Champagne",
+  },
+];
 
 export default wineItems;

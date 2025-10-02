@@ -1,6 +1,5 @@
 import type { Item22 } from "@/types/items";
 
-
 const mainsMenuItems: Item22[] = [
   {
     id: "xx",
@@ -9,7 +8,7 @@ const mainsMenuItems: Item22[] = [
     price: "35.00 $",
     description: "Smoked pulled beef ribs, bbq sauce, cheddar, crispy",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -18,7 +17,7 @@ const mainsMenuItems: Item22[] = [
     price: "30.00 $",
     description: "Cajun spicied seabass, deep fried baby potatoes",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -27,7 +26,7 @@ const mainsMenuItems: Item22[] = [
     price: "45.50 $",
     description: "Cajun coated chicken breast, fries and honey mustard",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -36,7 +35,7 @@ const mainsMenuItems: Item22[] = [
     price: "40.00 $",
     description: "Sweetcorn kernels, butter, cloves garlic, potato",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -45,7 +44,7 @@ const mainsMenuItems: Item22[] = [
     price: "45.50 $",
     description: "Cajun coated chicken breast, fries and honey mustard",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -54,7 +53,7 @@ const mainsMenuItems: Item22[] = [
     price: "40.00 $",
     description: "Sweetcorn kernels, butter, cloves garlic, potato",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -63,7 +62,7 @@ const mainsMenuItems: Item22[] = [
     price: "35.00 $",
     description: "Smoked pulled beef ribs, bbq sauce, cheddar, crispy",
     categrory: "food",
-    subCategory: "main"
+    subCategory: "main",
   },
   {
     id: "xx",
@@ -72,7 +71,7 @@ const mainsMenuItems: Item22[] = [
     price: "30.00 $",
     description: "Cajun spicied seabass, deep fried baby potatoes",
     categrory: "food",
-    subCategory: "main"
-  }
-]
+    subCategory: "main",
+  },
+];
 export default mainsMenuItems;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function NavbarWithScrollTop() {
   const [showTopBtn, setShowTopBtn] = useState(false);
@@ -7,12 +7,12 @@ export default function NavbarWithScrollTop() {
     const handleScroll = () => {
       setShowTopBtn(window.scrollY > 300);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -59,15 +59,23 @@ export default function NavbarWithScrollTop() {
                 ))}
               </ul>
             </li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="wine.html">Wine</a></li>
-            <li><a href="contact.html">Contact</a></li>
+            <li>
+              <a href="about.html">About</a>
+            </li>
+            <li>
+              <a href="wine.html">Wine</a>
+            </li>
+            <li>
+              <a href="contact.html">Contact</a>
+            </li>
           </ul>
 
           {/* Cart Button */}
           <div className="relative cursor-pointer">
             <span className="ti-shopping-cart text-2xl"></span>
-            <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#C19D60] text-white text-xs flex items-center justify-center rounded-full">2</span>
+            <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#C19D60] text-white text-xs flex items-center justify-center rounded-full">
+              2
+            </span>
           </div>
         </div>
       </nav>

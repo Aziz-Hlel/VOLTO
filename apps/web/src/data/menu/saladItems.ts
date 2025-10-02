@@ -7,8 +7,7 @@ const saladItems: Item22[] = [
     title: "Ceaser Salad",
     price: "15.00 $",
     description: "Romaine lettuce, croutons, parmigiano",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -16,8 +15,7 @@ const saladItems: Item22[] = [
     title: "Waldorf Salad",
     price: "10.00 $",
     description: "Lettuce, celery, apple, grape, walnut, waldorf sauce",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -25,8 +23,7 @@ const saladItems: Item22[] = [
     title: "Grilled Salmon Salad",
     price: "25.00 $",
     description: "Grilled salmon, mixed greens, capers, orange slices",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -34,8 +31,7 @@ const saladItems: Item22[] = [
     title: "Chicken Cobb Salad",
     price: "30.50 $",
     description: "Iceberg lettuce, cherry tomatoes, blue cheese, avocado",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -43,8 +39,7 @@ const saladItems: Item22[] = [
     title: "Grilled Salmon Salad",
     price: "25.00 $",
     description: "Grilled salmon, mixed greens, capers, orange slices",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -52,8 +47,7 @@ const saladItems: Item22[] = [
     title: "Chicken Cobb Salad",
     price: "30.50 $",
     description: "Iceberg lettuce, cherry tomatoes, blue cheese, avocado",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -61,8 +55,7 @@ const saladItems: Item22[] = [
     title: "Ceaser Salad",
     price: "15.00 $",
     description: "Romaine lettuce, croutons, parmigiano",
-    categrory: "Salad"
-
+    categrory: "Salad",
   },
   {
     id: "aa",
@@ -70,9 +63,8 @@ const saladItems: Item22[] = [
     title: "Waldorf Salad",
     price: "10.00 $",
     description: "Lettuce, celery, apple, grape, walnut, waldorf sauce",
-    categrory: "Salad"
-
-  }
-]
+    categrory: "Salad",
+  },
+];
 
 export default saladItems;

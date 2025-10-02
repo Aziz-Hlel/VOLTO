@@ -1,29 +1,29 @@
 const wines = [
   {
-    title: 'Riscos Malbec',
-    price: '$25.00',
-    desc: 'Full, Redcurrant, Spice, Chile',
-    image: 'img/wine/1.jpg',
+    title: "Riscos Malbec",
+    price: "$25.00",
+    desc: "Full, Redcurrant, Spice, Chile",
+    image: "img/wine/1.jpg",
   },
   {
-    title: 'Dom Perignon',
-    price: '$30.00',
-    desc: 'Stylish, Premium, Iconic, Champagne',
-    image: 'img/wine/2.jpg',
+    title: "Dom Perignon",
+    price: "$30.00",
+    desc: "Stylish, Premium, Iconic, Champagne",
+    image: "img/wine/2.jpg",
   },
   {
-    title: 'Amarone Classico',
-    price: '$20.00',
-    desc: 'Intense, Rich, Spice, Italy',
-    image: 'img/wine/3.jpg',
+    title: "Amarone Classico",
+    price: "$20.00",
+    desc: "Intense, Rich, Spice, Italy",
+    image: "img/wine/3.jpg",
   },
   {
-    title: 'Valle Berta Gavi',
-    price: '$45.00',
-    desc: 'Clean, Soft, Honeysuckle, Italy',
-    image: 'img/wine/4.jpg',
+    title: "Valle Berta Gavi",
+    price: "$45.00",
+    desc: "Clean, Soft, Honeysuckle, Italy",
+    image: "img/wine/4.jpg",
   },
-]
+];
 
 export default function WineBanner() {
   return (
@@ -31,11 +31,7 @@ export default function WineBanner() {
       <div className="grid md:grid-cols-2">
         {/* Left Image */}
         <div className="w-full h-full">
-          <img
-            src="img/banner3.jpg"
-            alt="Wine Banner"
-            className="w-full h-full object-cover"
-          />
+          <img src="img/banner3.jpg" alt="Wine Banner" className="w-full h-full object-cover" />
         </div>
 
         {/* Right Content */}
@@ -67,9 +63,7 @@ export default function WineBanner() {
                   {/* Text Content */}
                   <div className="flex-1">
                     <div className="flex justify-between items-center border-b border-dotted border-gray-300 pb-1 mb-1">
-                      <span className="text-lg font-semibold text-[#1b1b1b]">
-                        {wine.title}
-                      </span>
+                      <span className="text-lg font-semibold text-[#1b1b1b]">{wine.title}</span>
                       <span className="text-[#C19D60] font-medium">{wine.price}</span>
                     </div>
                     <p className="italic text-sm text-[#777]">{wine.desc}</p>
@@ -81,5 +75,5 @@ export default function WineBanner() {
         </div>
       </div>
     </section>
-  )
+  );
 }

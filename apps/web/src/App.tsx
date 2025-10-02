@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import Topbar from './components/TopBar/Topbar3'
+import Topbar from "./components/TopBar/Topbar3";
 import Home from "./components/Home/Home";
 import Menu from "./components/Menu/Menu";
 import UpcommingEvent from "./components/UpcommingEvent/UpcommingEvent";
@@ -21,11 +21,7 @@ import ResetPasswordSuccesfulLayout from "./components/ResetPassword/Success";
 
 // const queryClient = new QueryClient();
 
-
 function App() {
-
-
-      
   return (
     <div className="flex flex-col min-h-screen  ">
       <Router>
@@ -34,7 +30,6 @@ function App() {
         <NavBar619 />
 
         <Routes>
-
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/about" element={<About />} />
@@ -42,16 +37,13 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/contact" element={<ContactUs />} />
 
-          <Route path="reset-password/" element={<ResetPassword/>} >
-            <Route path="success" element={<ResetPasswordSuccesfulLayout/>} />
+          <Route path="reset-password/" element={<ResetPassword />}>
+            <Route path="success" element={<ResetPasswordSuccesfulLayout />} />
           </Route>
-
-
         </Routes>
-      </Router> 
-
+      </Router>
     </div>
-  )
+  );
 }
 
 export default App;

@@ -1,16 +1,14 @@
-import React from 'react'
-import ContactForm from './ContactForm'
-import MediaLinks from './MediaLinks'
+import React from "react";
+import ContactForm from "./ContactForm";
+import MediaLinks from "./MediaLinks";
 
 const ContactUs = () => {
-    return (
-        <>
+  return (
+    <>
+      <ContactForm />
+      {/* <MediaLinks/> */}
+    </>
+  );
+};
 
-            <ContactForm />
-            {/* <MediaLinks/> */}
-
-        </>
-    )
-}
-
-export default ContactUs
+export default ContactUs;

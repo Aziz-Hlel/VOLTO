@@ -1,10 +1,5 @@
+export type ConfirmPasswordRequestDto = {
+  token: string;
 
-
-
-export type ConfirmPasswordRequestDto =  {
-
-    token: string;
-
-    newPassword: string;
-
-}
+  newPassword: string;
+};

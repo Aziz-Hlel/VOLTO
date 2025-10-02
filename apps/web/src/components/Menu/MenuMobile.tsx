@@ -3,7 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 
-
 import { cn } from "@/lib/utils";
 
 const Skiper53 = () => {
@@ -108,18 +107,12 @@ const HoverExpand_002 = ({
                   >
                     <p className="text-left text-xs text-white/50">
                       {image.code}
-<div>
-    menu volto 
-</div>
+                      <div>menu volto</div>
                     </p>
                   </motion.div>
                 )}
               </AnimatePresence>
-              <img
-                src={image.src}
-                className="size-full object-cover"
-                alt={image.alt}
-                />
+              <img src={image.src} className="size-full object-cover" alt={image.alt} />
             </motion.div>
           ))}
         </div>

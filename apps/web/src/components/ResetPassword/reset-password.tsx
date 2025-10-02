@@ -1,148 +1,138 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Navigate, useSearchParams } from "react-router-dom"
-import z from "zod"
-import { useForm } from "react-hook-form"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Navigate, useSearchParams } from "react-router-dom";
+import z from "zod";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import resetPassowrdService from "@/api/service/reset-password"
-import { Phone,Instagram } from 'lucide-react';
-import ResetPasswordSuccesfulLayout from "./Success"
-import { useState } from "react"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import resetPassowrdService from "@/api/service/reset-password";
+import { Phone, Instagram } from "lucide-react";
+import ResetPasswordSuccesfulLayout from "./Success";
+import { useState } from "react";
 
+const formSchema = z
+  .object({
+    newPassword: z
+      .string({ message: "Password is required" })
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .max(32, { message: "Password must be at most 32 characters long" }),
+    confirmPassword: z
+      .string({ message: "Repeat password is required" })
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .max(32, { message: "Password must be at most 32 characters long" }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
-const formSchema = z.object({
-  newPassword: z
-  .string({ message: "Password is required" })
-  .min(8,{message:"Password must be at least 8 characters long"})
-  .max(32,{message:"Password must be at most 32 characters long"}),
-  confirmPassword: z
-  .string({ message: "Repeat password is required" })
-  .min(8,{message:"Password must be at least 8 characters long"})
-  .max(32,{message:"Password must be at most 32 characters long"}),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-})
+type formType = z.infer<typeof formSchema>;
 
-type formType = z.infer<typeof formSchema>
-
-type IresetPasswordResponse = { success:false} | {success:true ,email:string}
+type IresetPasswordResponse = { success: false } | { success: true; email: string };
 
 export function ResetPassword() {
-
   const [searchParams] = useSearchParams();
 
   const form = useForm<formType>({
     resolver: zodResolver(formSchema),
   });
-  
-  
-  const token = searchParams.get('token');
 
-    const [resetPasswordResponse, setResetPasswordResponse] = useState<IresetPasswordResponse>({success: false,});
+  const token = searchParams.get("token");
 
-  if(!token){
-    return <Navigate to="/" />
+  const [resetPasswordResponse, setResetPasswordResponse] = useState<IresetPasswordResponse>({
+    success: false,
+  });
+
+  if (!token) {
+    return <Navigate to="/" />;
   }
 
+  const onSubmit = async (values: formType) => {
+    const { confirmPassword, ...rest } = values;
 
-  const onSubmit =async (values:formType)=>{
+    const payload = {
+      token,
+      ...rest,
+    };
 
-      const {confirmPassword,...rest} = values;
-      
-      const payload = {
-        token,
-        ...rest
-      }
+    const response = await resetPassowrdService.confirm(payload);
 
-      const response = await resetPassowrdService.confirm(payload);
+    if (response.success) {
+      setResetPasswordResponse({ success: true, email: response.data.email });
+    }
 
-      if(response.success){
-        setResetPasswordResponse({success:true,email:response.data.email})
-      }
+    if (!response.success) {
+      form.setError("root", {
+        message: "Invalid token",
+      });
+    }
 
-      if(!response.success){
-        form.setError("root",{
-          message: (response.error as string)
-        })
-      }
-
-      response.success
-
-  }
-
-
+    response.success;
+  };
 
   return (
     <div className={cn(" mx-auto my-auto flex flex-col gap-6")}>
       {/* <Outlet /> */}
-   { resetPasswordResponse.success &&   <ResetPasswordSuccesfulLayout email={resetPasswordResponse.email} />}
+      {resetPasswordResponse.success && (
+        <ResetPasswordSuccesfulLayout email={resetPasswordResponse.email} />
+      )}
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2 ">
           <div className=" flex flex-col p-6 md:p-8 space-y-4">
-
-          <Form {...form} >
-          <form className="" onSubmit={form.handleSubmit(onSubmit)}>
-       
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Reset Password</h1>
-                <p className="text-muted-foreground text-balance">
-                  Enter your new password to reset your password.
-                </p>
-              </div>
+            <Form {...form}>
+              <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="flex flex-col gap-6">
+                  <div className="flex flex-col items-center text-center">
+                    <h1 className="text-2xl font-bold">Reset Password</h1>
+                    <p className="text-muted-foreground text-balance">
+                      Enter your new password to reset your password.
+                    </p>
+                  </div>
                   <FormField
-          control={form.control}
-          name="newPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New Password</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-
-)}
-/>
-                      <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-
-          )}
-          />
-              <Button type="submit" className="w-full">
-                Reset
-              </Button>
-
-            </div>
-          </form>
-          </Form>
-          <div className=" space-y-4">
-
+                    control={form.control}
+                    name="newPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full">
+                    Reset
+                  </Button>
+                </div>
+              </form>
+            </Form>
+            <div className=" space-y-4">
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Contact Us 
-                </span>
+                <span className="bg-card text-muted-foreground relative z-10 px-2">Contact Us</span>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <Button variant="outline" type="button" className="w-full">
-                  <Phone/>
+                  <Phone />
                   <span className="sr-only">Login with Apple</span>
                 </Button>
                 <Button variant="outline" type="button" className="w-full">
-                  <Instagram/>
+                  <Instagram />
                   <span className="sr-only">Login with Google</span>
                 </Button>
                 <Button variant="outline" type="button" className="w-full">
@@ -156,7 +146,7 @@ export function ResetPassword() {
                 </Button>
               </div>
             </div>
-            </div>
+          </div>
           <div className="bg-muted relative hidden md:block">
             <img
               src="/volto.with.name.jpg"
@@ -167,9 +157,9 @@ export function ResetPassword() {
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#">Terms of Service</a> and{" "}
+        <a href="#">Privacy Policy</a>.
       </div>
     </div>
-  )
+  );
 }

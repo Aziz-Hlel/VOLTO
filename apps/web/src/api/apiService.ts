@@ -16,9 +16,7 @@ export interface ApiErrorResponse {
   error: string | unknown;
 }
 
-
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
 
 const creatAxiosInstance = (): AxiosInstance => {
   return axios.create({
@@ -31,27 +29,21 @@ const creatAxiosInstance = (): AxiosInstance => {
 };
 
 class ApiService {
-
   private axiosInstance: AxiosInstance;
-
 
   constructor() {
     this.axiosInstance = creatAxiosInstance();
   }
 
-
-
   private throwErrorAlert = (statusCode: number, error: string) => {
     alert(`Request failed with status ${statusCode} - error message: ${error}`);
   };
-
 
   handleApiSuccess<T>(response: AxiosResponse<T>): ApiResponse<T> {
     return { data: response.data, status: response.status, success: true };
   }
 
   handleApiError(error: unknown): ApiErrorResponse {
-
     let apiErrorMessage = "Request failed";
     let status: number | undefined = undefined;
 
@@ -65,7 +57,7 @@ class ApiService {
 
     if (status !== 200) this.throwErrorAlert(status ?? 0, apiErrorMessage);
 
-    return { error: apiErrorMessage, status : status ?? 0 , success: false };
+    return { error: apiErrorMessage, status: status ?? 0, success: false };
   }
 
   // Wrapper methods with error handling
@@ -87,7 +79,11 @@ class ApiService {
     }
   }
 
-  async post<T, D = unknown>(url: string, data: D, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async post<T, D = unknown>(
+    url: string,
+    data: D,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> {
     try {
       const response = await this.axiosInstance.post<T>(url, data, config);
       return this.handleApiSuccess(response);
@@ -109,7 +105,11 @@ class ApiService {
     }
   }
 
-  async put<T, D = unknown>(url: string, data: D, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async put<T, D = unknown>(
+    url: string,
+    data: D,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> {
     try {
       const response = await this.axiosInstance.put<T>(url, data, config);
       return this.handleApiSuccess(response);
@@ -131,7 +131,11 @@ class ApiService {
     }
   }
 
-  async patch<T, D = unknown>(url: string, data: D, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async patch<T, D = unknown>(
+    url: string,
+    data: D,
+    config?: AxiosRequestConfig,
+  ): Promise<ApiResponse<T>> {
     try {
       const response = await this.axiosInstance.patch<T>(url, data, config);
       return this.handleApiSuccess(response);

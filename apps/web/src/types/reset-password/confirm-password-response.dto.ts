@@ -1,8 +1,3 @@
-
-
-
-export type ConfirmPasswordResponseDto =  {
-
-    email: string;
-
-}
+export type ConfirmPasswordResponseDto = {
+  email: string;
+};
