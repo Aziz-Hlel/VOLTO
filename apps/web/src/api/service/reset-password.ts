@@ -5,10 +5,7 @@ import type { ConfirmPasswordResponseDto } from "@/types/reset-password/confirm-
 
 const resetPassowrdService = {
   confirm: async (payload: ConfirmPasswordRequestDto) =>
-    await apiService.postThrowable<ConfirmPasswordResponseDto>(
-      apiRoutes.resetPassword.confirm(),
-      payload,
-    ),
+    await apiService.post<ConfirmPasswordResponseDto>(apiRoutes.resetPassword.confirm(), payload),
 } as const;
 
 export default resetPassowrdService;

@@ -12,7 +12,7 @@ const rawEnv = ENV_schema.parse(import.meta.env);
 const BASE_URL =
   rawEnv.VITE_NODE_ENV === "production"
     ? rawEnv.VITE_API_URL
-    : `http://localhost:${rawEnv.VITE_API_PORT}`;
+    : `http://localhost:${rawEnv.VITE_API_PORT}/api`;
 
 const ENV = {
   ...rawEnv,

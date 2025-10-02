@@ -37,9 +37,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/contact" element={<ContactUs />} />
 
-          <Route path="reset-password/" element={<ResetPassword />}>
-            <Route path="success" element={<ResetPasswordSuccesfulLayout />} />
-          </Route>
+          <Route path="reset-password/" element={<ResetPassword />} />
         </Routes>
       </Router>
     </div>

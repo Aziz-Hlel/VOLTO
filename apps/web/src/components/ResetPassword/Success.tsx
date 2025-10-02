@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import type { FC } from "react";
+import { Link } from "react-router-dom";
 
 type Props = {
   email: string;
@@ -55,13 +56,15 @@ const ResetPasswordSuccesfulLayout: FC<Props> = ({ email }) => {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline" className=" cursor-pointer ">
-              Return to Homepage
-            </Button>
+            <Link to="/">
+              <Button type="submit" className=" cursor-pointer ">
+                Return to Homepage
+              </Button>
+            </Link>
           </DialogClose>
-          <Button type="submit" className=" cursor-pointer ">
+          {/* <Button type="submit" className=" cursor-pointer ">
             Login
-          </Button>
+          </Button> */}
         </DialogFooter>
       </DialogContent>
     </Dialog>
