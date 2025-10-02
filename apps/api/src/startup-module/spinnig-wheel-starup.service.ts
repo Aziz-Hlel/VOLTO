@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import Redis from 'ioredis';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { HASHES } from 'src/redis/hashes';
+import { REDIS_HASHES } from 'src/redis/hashes';
 import { SpinnigWheelRewardService } from 'src/spinnig-wheel-reward/spinnig-wheel-reward.service';
 import { SpinnigWheelService } from 'src/spinnig-wheel/spinnig-wheel.service';
 

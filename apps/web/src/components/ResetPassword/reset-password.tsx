@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Navigate, useSearchParams } from "react-router-dom"
 import z from "zod"
 import { useForm } from "react-hook-form"
@@ -10,10 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import resetPassowrdService from "@/api/service/reset-password"
 import { Phone,Instagram } from 'lucide-react';
+import ResetPasswordSuccesfulLayout from "./Success"
+import { useState } from "react"
 
 
 const formSchema = z.object({
-  password: z
+  newPassword: z
   .string({ message: "Password is required" })
   .min(8,{message:"Password must be at least 8 characters long"})
   .max(32,{message:"Password must be at most 32 characters long"}),
@@ -21,12 +22,14 @@ const formSchema = z.object({
   .string({ message: "Repeat password is required" })
   .min(8,{message:"Password must be at least 8 characters long"})
   .max(32,{message:"Password must be at most 32 characters long"}),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
 })
 
 type formType = z.infer<typeof formSchema>
+
+type IresetPasswordResponse = { success:false} | {success:true ,email:string}
 
 export function ResetPassword() {
 
@@ -39,12 +42,15 @@ export function ResetPassword() {
   
   const token = searchParams.get('token');
 
+    const [resetPasswordResponse, setResetPasswordResponse] = useState<IresetPasswordResponse>({success: false,});
+
   if(!token){
     return <Navigate to="/" />
   }
 
+
   const onSubmit =async (values:formType)=>{
-    
+
       const {confirmPassword,...rest} = values;
       
       const payload = {
@@ -54,13 +60,26 @@ export function ResetPassword() {
 
       const response = await resetPassowrdService.confirm(payload);
 
+      if(response.success){
+        setResetPasswordResponse({success:true,email:response.data.email})
+      }
+
+      if(!response.success){
+        form.setError("root",{
+          message: (response.error as string)
+        })
+      }
+
       response.success
 
   }
 
 
+
   return (
     <div className={cn(" mx-auto my-auto flex flex-col gap-6")}>
+      {/* <Outlet /> */}
+   { resetPasswordResponse.success &&   <ResetPasswordSuccesfulLayout email={resetPasswordResponse.email} />}
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2 ">
           <div className=" flex flex-col p-6 md:p-8 space-y-4">
@@ -77,7 +96,7 @@ export function ResetPassword() {
               </div>
                   <FormField
           control={form.control}
-          name="password"
+          name="newPassword"
           render={({ field }) => (
             <FormItem>
               <FormLabel>New Password</FormLabel>

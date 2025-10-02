@@ -5,6 +5,6 @@ export type ConfirmPasswordRequestDto =  {
 
     token: string;
 
-    password: string;
+    newPassword: string;
 
 }

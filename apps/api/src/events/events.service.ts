@@ -3,7 +3,7 @@ import { EntityType, Event, MediaPurpose, Prisma } from '@prisma/client';
 import { MediaService } from 'src/media/media.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import Redis from 'ioredis';
-import { HASHES } from 'src/redis/hashes';
+import { REDIS_HASHES } from 'src/redis/hashes';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
@@ -159,7 +159,7 @@ export class EventsService {
       });
 
       if (existingEvent.isLadiesNight) {
-        await this.redis.del(HASHES.LADIES_NIGHT.DATE.HASH());
+        await this.redis.del(REDIS_HASHES.LADIES_NIGHT.DATE.HASH());
       }
 
       if (
@@ -175,7 +175,7 @@ export class EventsService {
   };
 
   async deleteUserHashes() {
-    const pattern = HASHES.LADIES_NIGHT.USER.ALL_HASH();
+    const pattern = REDIS_HASHES.LADIES_NIGHT.USER.ALL_HASHES();
     let cursor = '0';
 
     do {

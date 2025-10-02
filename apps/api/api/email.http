@@ -17,7 +17,7 @@ Content-Type: application/json
 
 
 ### Request Reset-Password
-# @name reset-password
+# @name requestResetPassword
 POST {{baseUrl}}/reset-password/request
 Content-Type: application/json
 
@@ -27,3 +27,24 @@ Content-Type: application/json
 
 
 
+### Confirm Reset-Password
+# @name confirmResetPassword
+POST {{baseUrl}}/reset-password/confirm
+Content-Type: application/json
+
+{
+    "token": "2f2093d4afe41572743cf6bee39caa49f05b6fa8e4801a44922e70896ffcfcf9",
+    "newPassword": "123456789"
+}
+
+
+
+### Login request
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{confirmResetPassword.response.body.email}}",
+    "password": "{{confirmResetPassword.request.body.newPassword}}"
+}

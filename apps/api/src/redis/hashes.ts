@@ -1,22 +1,12 @@
-const USERS = 'USERS';
-const SESSIONS = 'SESSIONS';
-const DRINKS_CONSUMED = 'DRINKS_CONSUMED';
-const QR_CODE = 'QR_CODE';
 
-export const HASHES3 = {
-  USERS,
-  SESSIONS,
-  DRINKS_CONSUMED,
-  QR_CODE,
-} as const;
 
-export const HASHES = {
+export const REDIS_HASHES = {
   USER_SESSION: (userId: string) => `user:${userId}:session`,
 
   LADIES_NIGHT: {
     USER: {
       HASH: (userId: string) => `ladies_night:user:${userId}`,
-      ALL_HASH: () => 'ladies_night:user:*',
+      ALL_HASHES: () => 'ladies_night:user:*',
       USER_DRINKS_CONSUMED: () => 'user_drinks_consumed',
       USER_CODE: () => 'user_code',
       SOCKET_ID: () => 'socket_id',
@@ -34,7 +24,7 @@ export const HASHES = {
   SPINNING_WHEEL: {
     USER: {
       HASH: (userId: string) => `spinning_wheel:user:${userId}`,
-      ALL_HASH: () => 'spinning_wheel:user:*',
+      ALL_HASHES: () => 'spinning_wheel:user:*',
       USER_CODE: () => 'user_code',
       USER_REDEEMED_CODE: () => 'code_redeemed',
       REWARD_ID: () => 'reward_id',
@@ -51,7 +41,22 @@ export const HASHES = {
     REWARDS: {
       REWARD_NAME: () => `spinning_wheel:rewards`,
     },
+    
   },
+
+  RESET_PASSWORD:{
+      HASH : (token: string) => `reset_password:${token}`,
+      UserEmail: () => 'user_email',
+      RequestCount: () => 'request_count',
+      EXP: () =>  60 * 60, // 1 hour
+    },
+
+  RESET_PASSWORD_RATE_LIMIT: {
+    HASH : (email: string) => `reset_password:rate_limit:${email}`,
+    RequestCount: () => 'request_count',
+    RateLimit : () => 3 as const ,
+    EXP: () =>  60 * 60, // 1 hour
+  },
+
 } as const;
 
-export type HASHES3 = keyof typeof HASHES3;

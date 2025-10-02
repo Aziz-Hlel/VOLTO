@@ -9,7 +9,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SpinnigWheelService } from 'src/spinnig-wheel/spinnig-wheel.service';
 import Redis from 'ioredis';
-import { HASHES } from 'src/redis/hashes';
+import { REDIS_HASHES } from 'src/redis/hashes';
 import { UpdateSpinnigWheelRewardDto } from './dto/update-spinnig-wheel-reward.dto';
 import { CreateSpinnigWheelRewardDto } from './dto/create-spinnig-wheel-reward.dto';
 
@@ -91,7 +91,7 @@ export class SpinnigWheelRewardService {
   async getRewardById(
     rewardId: string,
   ): Promise<{ exist: false } | { exist: true; rewardName: string }> {
-    const rewardName = await this.redis.hget(HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), rewardId);
+    const rewardName = await this.redis.hget(REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), rewardId);
 
     if (!rewardName) return { exist: false };
 
@@ -103,6 +103,6 @@ export class SpinnigWheelRewardService {
 
     rewardsList.map((reward) => (dic[reward.id] = reward.name));
 
-    await this.redis.hmset(HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), dic);
+    await this.redis.hmset(REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), dic);
   }
 }

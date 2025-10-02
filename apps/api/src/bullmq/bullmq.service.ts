@@ -3,7 +3,7 @@ import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { HASHES } from 'src/redis/hashes';
+import { REDIS_HASHES } from 'src/redis/hashes';
 import REDIS_KEYS from 'src/redis/redisKeys';
 
 interface EventJobData {

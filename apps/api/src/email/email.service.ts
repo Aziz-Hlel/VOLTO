@@ -53,7 +53,7 @@ export class EmailService {
   }: {
     recipient: string;
     token: string;
-  }): Promise<void> {
+  }){
 
     const templatePath = join(process.cwd(), 'templates','reset-password.html');
     let html = readFileSync(templatePath, "utf-8");

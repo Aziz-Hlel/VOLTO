@@ -1,8 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { HASHES, HASHES3 } from 'src/redis/hashes';
-import REDIS_KEYS from 'src/redis/redisKeys';
+import { REDIS_HASHES } from 'src/redis/hashes';
 import cronParser from 'cron-parser';
 import { WsException } from '@nestjs/websockets';
 
@@ -26,9 +25,9 @@ export class LadiesNightService {
     if (!ladiesNight.cronStartDate || !ladiesNight.cronEndDate)
       throw new BadRequestException('Ladies Night cron dates are not set');
 
-    await this.redis.hmset(HASHES.LADIES_NIGHT.DATE.HASH(), {
-      [HASHES.LADIES_NIGHT.DATE.CRON_START_DATE()]: ladiesNight.cronStartDate,
-      [HASHES.LADIES_NIGHT.DATE.CRON_END_DATE()]: ladiesNight.cronEndDate,
+    await this.redis.hmset(REDIS_HASHES.LADIES_NIGHT.DATE.HASH(), {
+      [REDIS_HASHES.LADIES_NIGHT.DATE.CRON_START_DATE()]: ladiesNight.cronStartDate,
+      [REDIS_HASHES.LADIES_NIGHT.DATE.CRON_END_DATE()]: ladiesNight.cronEndDate,
     });
 
     return [ladiesNight.cronStartDate, ladiesNight.cronEndDate];
@@ -38,9 +37,9 @@ export class LadiesNightService {
     let cronStartDate_ladiesNight: null | string = null;
     let cronEndDate_ladiesNight: null | string = null;
     [cronStartDate_ladiesNight, cronEndDate_ladiesNight] = await this.redis.hmget(
-      HASHES.LADIES_NIGHT.DATE.HASH(),
-      HASHES.LADIES_NIGHT.DATE.CRON_START_DATE(),
-      HASHES.LADIES_NIGHT.DATE.CRON_END_DATE(),
+      REDIS_HASHES.LADIES_NIGHT.DATE.HASH(),
+      REDIS_HASHES.LADIES_NIGHT.DATE.CRON_START_DATE(),
+      REDIS_HASHES.LADIES_NIGHT.DATE.CRON_END_DATE(),
     );
 
     if (cronStartDate_ladiesNight === null || cronEndDate_ladiesNight === null) {
@@ -67,11 +66,11 @@ export class LadiesNightService {
 
   async updateSavedUserSocketId(userId: string, socketId: string) {
     this.redis.hset(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.SOCKET_ID(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.SOCKET_ID(),
       socketId,
     );
-    await this.redis.expire(HASHES.LADIES_NIGHT.USER.HASH(userId), 3600 * 12);
+    await this.redis.expire(REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId), 3600 * 12);
   }
 
   async getDrinkQuota(): Promise<{
@@ -81,9 +80,9 @@ export class LadiesNightService {
   }> {
     // ? bch nradhi 7ama none less
     const [cronStartDate_ladiesNight, cronEndDate_ladiesNight] = await this.redis.hmget(
-      HASHES.LADIES_NIGHT.DATE.HASH(),
-      HASHES.LADIES_NIGHT.DATE.CRON_START_DATE(),
-      HASHES.LADIES_NIGHT.DATE.CRON_END_DATE(),
+      REDIS_HASHES.LADIES_NIGHT.DATE.HASH(),
+      REDIS_HASHES.LADIES_NIGHT.DATE.CRON_START_DATE(),
+      REDIS_HASHES.LADIES_NIGHT.DATE.CRON_END_DATE(),
     );
 
     return {
@@ -95,8 +94,8 @@ export class LadiesNightService {
 
   async getUserDrinksConsumed(userId: string): Promise<number> {
     const remainingDrinks = await this.redis.hget(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED(),
     );
     console.log('remainingDrinks', remainingDrinks);
 
@@ -110,7 +109,7 @@ export class LadiesNightService {
   }
 
   async generateCode(): Promise<string> {
-    const existingCodes = await this.redis.hkeys(HASHES.LADIES_NIGHT.CODES());
+    const existingCodes = await this.redis.hkeys(REDIS_HASHES.LADIES_NIGHT.CODES());
     const existingCodesSet = new Set(existingCodes);
     const code = this.generateUniqueCode(existingCodesSet);
 
@@ -129,8 +128,8 @@ export class LadiesNightService {
     if (userDrinksConsumed === LadiesNightService.DRINK_QUOTA) return null;
 
     const existingCode = await this.redis.hget(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.USER_CODE(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.USER_CODE(),
     );
 
     if (existingCode) return existingCode;
@@ -138,11 +137,11 @@ export class LadiesNightService {
     const code = await this.generateCode();
 
     await this.redis.hset(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.USER_CODE(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.USER_CODE(),
       code,
     );
-    await this.redis.hset(HASHES.LADIES_NIGHT.CODES(), code, userId);
+    await this.redis.hset(REDIS_HASHES.LADIES_NIGHT.CODES(), code, userId);
 
     return code;
   }
@@ -151,14 +150,14 @@ export class LadiesNightService {
     const isLadiesNightActive = await this.isLadiesNightActive2();
     if (!isLadiesNightActive) throw new WsException('Ladies Night is not active');
 
-    const userId = await this.redis.hget(HASHES.LADIES_NIGHT.CODES(), code);
+    const userId = await this.redis.hget(REDIS_HASHES.LADIES_NIGHT.CODES(), code);
 
     if (!userId) throw new BadRequestException('No user found with this QR code');
 
     // const userObject = await this.redis.hgetall(HASHES.LADIES_NIGHT.USER.HASH(userId));
     // if (Object.keys(userObject).length === 0) throw new BadRequestException('No user object found with this QR code');
 
-    const userHashExists = await this.redis.exists(HASHES.LADIES_NIGHT.USER.HASH(userId));
+    const userHashExists = await this.redis.exists(REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId));
 
     if (!userHashExists) throw new BadRequestException('Invalid code');
 
@@ -168,22 +167,22 @@ export class LadiesNightService {
     if (userDrinksConsumed === LadiesNightService.DRINK_QUOTA)
       throw new BadRequestException('User exceeded free drinks quota');
 
-    await this.redis.hdel(HASHES.LADIES_NIGHT.CODES(), code);
+    await this.redis.hdel(REDIS_HASHES.LADIES_NIGHT.CODES(), code);
 
     await this.redis.hdel(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.USER_CODE(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.USER_CODE(),
     );
 
     await this.redis.hset(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED(),
       userDrinksConsumed + 1,
     );
 
     const userSocketId = await this.redis.hget(
-      HASHES.LADIES_NIGHT.USER.HASH(userId),
-      HASHES.LADIES_NIGHT.USER.SOCKET_ID(),
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.SOCKET_ID(),
     );
 
     return {
@@ -237,7 +236,7 @@ export class LadiesNightService {
       const [newCursor, matchedKeys] = await this.redis.scan(
         cursor,
         'MATCH',
-        HASHES.LADIES_NIGHT.USER.ALL_HASH(),
+        REDIS_HASHES.LADIES_NIGHT.USER.ALL_HASHES(),
         'COUNT',
         100,
       );
@@ -256,7 +255,7 @@ export class LadiesNightService {
     if (keys.length === 0) return { totalDrinksConsumed: 0, usersWithDrinks: 0 };
 
     const pipeline = this.redis.pipeline();
-    keys.forEach((key) => pipeline.hget(key, HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED()));
+    keys.forEach((key) => pipeline.hget(key, REDIS_HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED()));
     const results = await pipeline.exec();
 
     let usersWithDrinks = 0;

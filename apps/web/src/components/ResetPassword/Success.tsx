@@ -1,22 +1,51 @@
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "../ui/button"
+import type { FC } from "react";
 
-import { Card } from "@/components/ui/card"
-import { Link } from "react-router-dom"
 
-export default function ResetPasswordSuccesfulLayout() {
+type Props = {
+  email : string,
+}
+
+const ResetPasswordSuccesfulLayout: FC<Props> = ({ email }) => {
+
+  const date = new Date();
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+      month: "long",   // October
+      day: "numeric",  // 1
+      year: "numeric", // 2025
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true     // 12-hour clock with AM/PM
+    }).format(date);
+
+  
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 sm:p-0  bg-gray-50 dark:bg-gray-900">
-      <Card className="max-w-md w-full space-y-6 p-6 bg-white rounded-lg shadow-lg dark:bg-gray-800">
-        <div className="flex flex-col items-center">
-          <CircleCheckIcon  />
-          <h1 className=" text-xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mt-4 ">Password Reset Successful</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2  leading-relaxed text-center text-xs sm:text-base">
-            Your password has been updated successfully. You can now log in with your new credentials.
-          </p>
-        </div>
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-4 text-xs sm:text-base">
+    <Dialog open>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className=" flex flex-col items-center space-y-2 "> 
+                <CircleCheckIcon  />
+                <span>Password Reset Successful</span>
+                 </DialogTitle>
+            <DialogDescription>
+                Your password has been updated successfully. You can now log in with your new credentials.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-4 text-xs sm:text-base">
           <div className="flex justify-between">
             <span className="text-gray-500 dark:text-gray-400">Account:</span>
-            <span className="font-medium text-gray-900 dark:text-gray-50">your@email.com</span>
+            <span className="font-medium text-gray-900 dark:text-gray-50">{email}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500 dark:text-gray-400">Action Completed:</span>
@@ -24,22 +53,24 @@ export default function ResetPasswordSuccesfulLayout() {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500 dark:text-gray-400">Date &amp; Time:</span>
-            <span className="font-medium text-gray-900 dark:text-gray-50">October 1, 2025 at 3:45 PM</span>
+            <span className="font-medium text-gray-900 dark:text-gray-50">{formattedDate}</span>
           </div>
         </div>
-        <div className="flex justify-center">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-xs sm:text-base font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus:ring-gray-300"
-          >
-            
-            Return to Homepage
-          </Link>
-        </div>
-      </Card>
-    </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" className=" cursor-pointer ">Return to Homepage</Button>
+            </DialogClose>
+            <Button type="submit" className=" cursor-pointer ">Login</Button>
+          </DialogFooter>
+        </DialogContent>
+    </Dialog>
   )
 }
+
+export default ResetPasswordSuccesfulLayout;
+
+
+
 
 function CircleCheckIcon() {
   return (

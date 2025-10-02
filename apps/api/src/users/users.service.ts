@@ -1,4 +1,8 @@
 import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -15,6 +19,10 @@ import { CreateStaffDto } from './Dto/create-staff.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
 import { EmailService } from 'src/email/email.service';
 import crypto from "crypto";
+import Redis from 'ioredis';
+import { REDIS_HASHES } from 'src/redis/hashes';
+import { ConfirmPasswordRequestDto } from './Dto/confirm-password-request.dto';
+import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto';
 
 
 @Injectable()
@@ -23,6 +31,8 @@ export class UsersService {
     private prisma: PrismaService,
     private mediaService: MediaService,
     private emailService: EmailService,
+    @Inject('REDIS_CLIENT') private readonly redis: Redis,
+
   ) {}
 
   findAll() {
@@ -163,15 +173,39 @@ export class UsersService {
 
   async sendResetEmail(email: string) {
     const user = await this.findByEmail(email);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) 
+      return {
+        success: true,
+        message: 'Password reset email sent successfully',
+      }
 
+    const userRequestCount = await this.redis.hget(REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.HASH(email), REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.RequestCount());
+
+    if (userRequestCount && parseInt(userRequestCount) >= REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.RateLimit()) {
+        throw new HttpException('Too many password reset attempts. Please try again in 1 hour.', HttpStatus.TOO_MANY_REQUESTS);
+    }
+ 
+    
     const token = crypto.randomBytes(32).toString("hex");
-    const hash = crypto.createHash("sha256").update(token).digest("hex");
 
+    
     await this.emailService.sendResetPasswordEmail({
       recipient: email,
-      token:hash,
+      token:token,
     });
+    
+    if(!userRequestCount){
+      await this.redis.hset(REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.HASH(email), REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.RequestCount(), 1);
+      await this.redis.expire(REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.HASH(email), 10);
+      
+    } else {
+      await this.redis.hincrby(REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.HASH(email), REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.RequestCount(), 1);
+    }
+
+    await this.redis.expire(REDIS_HASHES.RESET_PASSWORD.HASH(token), REDIS_HASHES.RESET_PASSWORD.EXP());
+    await this.redis.hset(REDIS_HASHES.RESET_PASSWORD.HASH(token), REDIS_HASHES.RESET_PASSWORD.UserEmail(), email);
+    
+
     return {
       success: true,
       message: 'Password reset email sent successfully',
@@ -179,5 +213,42 @@ export class UsersService {
 
   }
 
+
+
+  async confirmResetPassword(dto :ConfirmPasswordRequestDto):Promise<ConfirmPasswordResponseDto> {
+
+    const email = await this.redis.hget(REDIS_HASHES.RESET_PASSWORD.HASH(dto.token), REDIS_HASHES.RESET_PASSWORD.UserEmail());
+
+    if(!email) throw new UnauthorizedException('Invalid token');
+
+    const user = await this.findByEmail(email);
+
+    if(!user) throw new UnauthorizedException('Invalid token');
+
+    const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+
+    try{
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          password: hashedPassword,
+        },
+      });
+    } catch (e) {
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
+
+      
+    await this.redis.del(REDIS_HASHES.RESET_PASSWORD.HASH(dto.token));
+    await this.redis.del(REDIS_HASHES.RESET_PASSWORD_RATE_LIMIT.HASH(email));
+
+    return {
+      email: email
+    }
+
+
+  }
 
 }

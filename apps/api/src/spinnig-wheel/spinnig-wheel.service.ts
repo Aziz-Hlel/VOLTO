@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Redis } from 'ioredis';
-import { HASHES } from 'src/redis/hashes';
+import { REDIS_HASHES } from 'src/redis/hashes';
 import { SpinnigWheelRewardService } from 'src/spinnig-wheel-reward/spinnig-wheel-reward.service';
 import { CreateSpinnigWheel } from './dto/create-spinnig-wheel.dto';
 import { UpdateSpinnigWheelDto } from './dto/update-spinnig-wheel.dto';
@@ -34,11 +34,11 @@ export class SpinnigWheelService {
     if (!spinnigWheel)
       throw new InternalServerErrorException('No active spinnig wheel instance found');
 
-    const spinningWheelHashName = HASHES.SPINNING_WHEEL.DATE.HASH();
+    const spinningWheelHashName = REDIS_HASHES.SPINNING_WHEEL.DATE.HASH();
     await this.redis.hmset(spinningWheelHashName, {
-      [HASHES.SPINNING_WHEEL.DATE.START_DATE()]: spinnigWheel.startDate.toISOString(),
-      [HASHES.SPINNING_WHEEL.DATE.END_DATE()]: spinnigWheel.endDate.toISOString(),
-      [HASHES.SPINNING_WHEEL.DATE.NAME()]: spinnigWheel.name,
+      [REDIS_HASHES.SPINNING_WHEEL.DATE.START_DATE()]: spinnigWheel.startDate.toISOString(),
+      [REDIS_HASHES.SPINNING_WHEEL.DATE.END_DATE()]: spinnigWheel.endDate.toISOString(),
+      [REDIS_HASHES.SPINNING_WHEEL.DATE.NAME()]: spinnigWheel.name,
     });
 
     const redisTtl: number = 3600 * 24 * 365;
@@ -63,10 +63,10 @@ export class SpinnigWheelService {
 
   async isSpinningWheelAvailable(): Promise<IsSpinningWheelAvailableResponse> {
     const [strStartDate, strEndDate, spinnigWheelName] = await this.redis.hmget(
-      HASHES.SPINNING_WHEEL.DATE.HASH(),
-      HASHES.SPINNING_WHEEL.DATE.START_DATE(),
-      HASHES.SPINNING_WHEEL.DATE.END_DATE(),
-      HASHES.SPINNING_WHEEL.DATE.NAME(),
+      REDIS_HASHES.SPINNING_WHEEL.DATE.HASH(),
+      REDIS_HASHES.SPINNING_WHEEL.DATE.START_DATE(),
+      REDIS_HASHES.SPINNING_WHEEL.DATE.END_DATE(),
+      REDIS_HASHES.SPINNING_WHEEL.DATE.NAME(),
     );
 
     if (!strStartDate || !strEndDate) return this.updateWheelCache();
@@ -134,7 +134,7 @@ export class SpinnigWheelService {
   };
 
   async deleteUserHashes() {
-    const pattern = HASHES.SPINNING_WHEEL.USER.ALL_HASH();
+    const pattern = REDIS_HASHES.SPINNING_WHEEL.USER.ALL_HASHES();
     let cursor = '0';
 
     do {
@@ -175,7 +175,7 @@ export class SpinnigWheelService {
       include: { rewardList: true },
     });
 
-    await this.redis.del(HASHES.SPINNING_WHEEL.DATE.HASH());
+    await this.redis.del(REDIS_HASHES.SPINNING_WHEEL.DATE.HASH());
     await this.spinnigWheelRewardService.updateRewardsCache(updatedWheel.rewardList);
     if (
       spinnigWheel.startDate !== updatedWheel.startDate ||
@@ -192,7 +192,7 @@ export class SpinnigWheelService {
     if (!isSpinningWheelAvailable.isAvailable)
       throw new BadRequestException('Spinning wheel is not available');
 
-    const user = await this.redis.hgetall(HASHES.SPINNING_WHEEL.USER.HASH(userId));
+    const user = await this.redis.hgetall(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId));
     if (Object.keys(user).length === 0)
       return {
         hasPlayed: false,
@@ -200,12 +200,12 @@ export class SpinnigWheelService {
         codeRedeemed: false,
       };
 
-    const rewardId = user[HASHES.SPINNING_WHEEL.USER.REWARD_ID()];
+    const rewardId = user[REDIS_HASHES.SPINNING_WHEEL.USER.REWARD_ID()];
     const rewardObject = await this.spinnigWheelRewardService.getRewardById(rewardId);
 
     if (!rewardObject.exist) throw new BadRequestException('Reward with the id doesnt exist');
 
-    if (user[HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
+    if (user[REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
       return {
         hasPlayed: true,
         code: null,
@@ -214,14 +214,14 @@ export class SpinnigWheelService {
       };
     return {
       hasPlayed: true,
-      code: user[HASHES.SPINNING_WHEEL.USER.USER_CODE()],
+      code: user[REDIS_HASHES.SPINNING_WHEEL.USER.USER_CODE()],
       codeRedeemed: false,
       winningPrize: rewardObject.rewardName,
     };
   }
 
   async generateUniqueCode(): Promise<string> {
-    const existingCodes = await this.redis.hkeys(HASHES.SPINNING_WHEEL.CODES());
+    const existingCodes = await this.redis.hkeys(REDIS_HASHES.SPINNING_WHEEL.CODES());
     const existingCodesSet = new Set(existingCodes);
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const codeLength = 6;
@@ -248,15 +248,15 @@ export class SpinnigWheelService {
 
     if (!isRewardExists.exist) throw new BadRequestException('Reward does not exist');
 
-    const userCachedDetails = await this.redis.hgetall(HASHES.SPINNING_WHEEL.USER.HASH(userId));
+    const userCachedDetails = await this.redis.hgetall(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId));
 
-    if (userCachedDetails[HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
+    if (userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
       throw new BadRequestException('Code already redeemed');
 
-    if (userCachedDetails[HASHES.SPINNING_WHEEL.USER.USER_CODE()])
+    if (userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.USER_CODE()])
       return {
         hasPlayed: true,
-        code: userCachedDetails[HASHES.SPINNING_WHEEL.USER.USER_CODE()],
+        code: userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.USER_CODE()],
       };
 
     const code = await this.generateUniqueCode();
@@ -266,17 +266,17 @@ export class SpinnigWheelService {
 
     const ttlSeconds = Math.floor((endDate.getTime() - now.getTime()) / 1000);
 
-    await this.redis.hmset(HASHES.SPINNING_WHEEL.USER.HASH(userId), {
-      [HASHES.SPINNING_WHEEL.USER.USER_CODE()]: code,
-      [HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()]: 'false',
-      [HASHES.SPINNING_WHEEL.USER.REWARD_ID()]: wheelRewardId,
+    await this.redis.hmset(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId), {
+      [REDIS_HASHES.SPINNING_WHEEL.USER.USER_CODE()]: code,
+      [REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()]: 'false',
+      [REDIS_HASHES.SPINNING_WHEEL.USER.REWARD_ID()]: wheelRewardId,
     });
 
-    await this.redis.hset(HASHES.SPINNING_WHEEL.CODES(), code, userId);
+    await this.redis.hset(REDIS_HASHES.SPINNING_WHEEL.CODES(), code, userId);
 
-    await this.redis.expire(HASHES.SPINNING_WHEEL.USER.HASH(userId), ttlSeconds);
+    await this.redis.expire(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId), ttlSeconds);
 
-    await this.redis.expire(HASHES.SPINNING_WHEEL.CODES(), ttlSeconds);
+    await this.redis.expire(REDIS_HASHES.SPINNING_WHEEL.CODES(), ttlSeconds);
 
     return {
       hasPlayed: true,
@@ -290,30 +290,30 @@ export class SpinnigWheelService {
     if (!isSpinningWheelAvailable.isAvailable)
       throw new BadRequestException('Spinning wheel is not available');
 
-    const userId = await this.redis.hget(HASHES.SPINNING_WHEEL.CODES(), code);
+    const userId = await this.redis.hget(REDIS_HASHES.SPINNING_WHEEL.CODES(), code);
 
     if (!userId) throw new BadRequestException('Invalid code, User with this code not found');
 
-    const userCachedDetails = await this.redis.hgetall(HASHES.SPINNING_WHEEL.USER.HASH(userId));
+    const userCachedDetails = await this.redis.hgetall(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId));
 
-    if (userCachedDetails[HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
+    if (userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
       throw new BadRequestException('Code already redeemed');
 
-    const userRewardId = userCachedDetails[HASHES.SPINNING_WHEEL.USER.REWARD_ID()];
+    const userRewardId = userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.REWARD_ID()];
 
     const isRewardExists = await this.spinnigWheelRewardService.getRewardById(userRewardId);
 
     if (!isRewardExists.exist) throw new BadRequestException('Reward of the code not found');
 
-    await this.redis.hmset(HASHES.SPINNING_WHEEL.USER.HASH(userId), {
-      [HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()]: 'true',
-      [HASHES.SPINNING_WHEEL.USER.USER_CODE()]: null,
+    await this.redis.hmset(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId), {
+      [REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()]: 'true',
+      [REDIS_HASHES.SPINNING_WHEEL.USER.USER_CODE()]: null,
     });
 
-    await this.redis.hdel(HASHES.SPINNING_WHEEL.CODES(), code);
+    await this.redis.hdel(REDIS_HASHES.SPINNING_WHEEL.CODES(), code);
 
     const rewardName = await this.redis.hget(
-      HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),
+      REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),
       userRewardId,
     );
 
