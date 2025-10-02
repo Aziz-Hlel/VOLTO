@@ -22,8 +22,8 @@ export const envSchema = z.object({
   AWS_CLOUDFRONT_URL: z.string(),
 
   MINIO_Region: z.string().optional(),
-  MINIO_ACCESS_KEY: z.string().optional(),
-  MINIO_SECRET_KEY: z.string().optional(),
+  MINIO_ROOT_USER: z.string().optional(),
+  MINIO_ROOT_PASSWORD: z.string().optional(),
   MINIO_BUCKET: z.string().optional(),
   MINIO_ENDPOINT: z.string().optional(),
   MINIO_PORT: z.coerce.number().optional(),

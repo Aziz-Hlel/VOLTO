@@ -25,19 +25,24 @@ ENV_PROD := $(ROOT)/config/.env
 docker-dev-up:
 	@echo "${YELLOW}🚀 Starting Docker in Dev Env..."
 	@cd $(ROOT) 
-
 	# Ensure local env files exist
 	@touch $(ENV_LOCAL) $(ENV_ROOT)
-
 	@set -a && . $(ENV_DEV) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
+	@export PROJECT_ROOT=$(ROOT)
 	@docker compose -f $(DOCKER_ROOT)/compose.dev.yml up --build
 	@echo "${GREEN}✅ "
 
 
 docker-stage-up:
-	@echo "🚀 Starting staging environment..."
+	@echo "${YELLOW}🚀 Starting Docker in Dev Env..."
+	@cd $(ROOT) 
+	@touch $(ENV_LOCAL) $(ENV_ROOT)
+	@set -a && . $(ENV_STAGE) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
+	@export PROJECT_ROOT=$(ROOT)
+	@echo "VAL: $$MINIO_ACCESS_KEY"
 	@docker compose -f $(DOCKER_ROOT)/compose.stage.yml up --build
-	@echo "✅ Staging environment started"
+	@echo "${GREEN}✅ "
+
 
 docker-up:
 	@echo "🚀 Starting production environment..."

@@ -3,7 +3,7 @@ set -e
 
 
 echo "Waiting for MinIO to be ready..."
-until mc alias set local http://minio:${MINIO_PORT} "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"; do
+until mc alias set local http://minio:${MINIO_PORT} "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
   echo "Retrying..."
   sleep 2
 done

@@ -1,0 +1,52 @@
+FROM node:22.14.0-alpine AS builder
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+COPY ./shared/ ./shared/
+
+ARG API_PATH=apps/api
+
+WORKDIR /app/${API_PATH}
+
+
+COPY ./${API_PATH}/package.json ./${API_PATH}/pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+COPY ./${API_PATH} .
+
+RUN pnpm prisma generate
+
+RUN pnpm build
+
+
+# --- Production image ---
+FROM node:22.14.0-alpine AS runner
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Copy only necessary runtime files (no source, no dev deps)
+WORKDIR /app
+COPY --from=builder ./app/shared ./app/shared
+
+ARG API_PATH=apps/api
+
+WORKDIR /app/${API_PATH}
+
+COPY --from=builder ./app/${API_PATH}/package.json ./
+COPY --from=builder ./app/${API_PATH}/pnpm-lock.yaml ./
+COPY --from=builder ./app/${API_PATH}/node_modules ./node_modules
+COPY --from=builder ./app/${API_PATH}/prisma ./prisma
+COPY --from=builder ./app/${API_PATH}/dist ./dist
+COPY --from=builder ./app/${API_PATH}/public ./public
+COPY --from=builder ./app/${API_PATH}/templates ./templates
+
+# Optional: run as non-root for security
+RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
+USER nodejs
+
+CMD ["sh", "-c", "node dist/main.js"]
+
+

@@ -16,8 +16,8 @@ export class MinioStorage implements IStorageProvider {
     region: ENV.MINIO_Region!,
     endpoint: `http://localhost:${ENV.MINIO_PORT!}/`,
     credentials: {
-      accessKeyId: ENV.MINIO_ACCESS_KEY!,
-      secretAccessKey: ENV.MINIO_SECRET_KEY!,
+      accessKeyId: ENV.MINIO_ROOT_USER!,
+      secretAccessKey: ENV.MINIO_ROOT_PASSWORD!,
     },
     forcePathStyle: true,
   });
