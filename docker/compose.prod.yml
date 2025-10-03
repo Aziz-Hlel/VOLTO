@@ -4,14 +4,14 @@ services:
   reverse-proxy:
     build:
       context: ${PROJECT_ROOT}
-      dockerfile: ./docker/stage/Dockerfile.stage.caddy
+      dockerfile: ./docker/prod/Dockerfile.prod.caddy
       args:
         VITE_NODE_ENV: ${NODE_ENV}
         VITE_API_URL: ${API_URL}
 
     ports:
-      - "443:443"
-      - "80:80"
+      - 443:443
+      - 80:80
 
     volumes:
       # - ./Caddyfile:/etc/caddy/Caddyfile
@@ -21,7 +21,7 @@ services:
   api :
     build:
       context: ${PROJECT_ROOT}
-      dockerfile: ./docker/stage/Dockerfile.stage.api
+      dockerfile: ./docker/prod/Dockerfile.prod.api
 
     environment:
       NODE_ENV: ${NODE_ENV}
