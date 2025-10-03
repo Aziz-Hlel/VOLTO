@@ -39,7 +39,7 @@ docker-stage-up:
 	@touch $(ENV_LOCAL) $(ENV_ROOT)
 	@set -a && . $(ENV_STAGE) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
 	@export PROJECT_ROOT=$(ROOT)
-	@echo "VAL: $$MINIO_ACCESS_KEY"
+# 	@echo "VAL: $$PROJECT_ROOT" # Print an environment variable
 	@docker compose -f $(DOCKER_ROOT)/compose.stage.yml up --build
 	@echo "${GREEN}✅ "
 

@@ -13,7 +13,7 @@ const gloabalValidationPipe = new ValidationPipe({
 });
 
 function enableCors(app: INestApplication<any>) {
-  const allowedOrigins = [ENV.VITE_ADMIN_PORT, ENV.VITE_WEB_PORT];
+  const allowedOrigins = [ENV.ADMIN_URL, ENV.WEB_URL];
 
   app.enableCors({
     origin: '*',

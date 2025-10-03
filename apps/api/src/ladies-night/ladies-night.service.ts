@@ -255,7 +255,9 @@ export class LadiesNightService {
     if (keys.length === 0) return { totalDrinksConsumed: 0, usersWithDrinks: 0 };
 
     const pipeline = this.redis.pipeline();
-    keys.forEach((key) => pipeline.hget(key, REDIS_HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED()));
+    keys.forEach((key) =>
+      pipeline.hget(key, REDIS_HASHES.LADIES_NIGHT.USER.USER_DRINKS_CONSUMED()),
+    );
     const results = await pipeline.exec();
 
     let usersWithDrinks = 0;

@@ -13,5 +13,7 @@ RUN pnpm install --frozen-lockfile
 
 COPY ./apps/api .
 
-CMD ["sh", "-c", "pnpm prisma generate && pnpm run seed && pnpm run start:dev"]
+RUN pnpm prisma generate
+
+CMD ["sh", "-c", "pnpm run seed && pnpm run start:dev"]
 

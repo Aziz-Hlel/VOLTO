@@ -1,8 +1,3 @@
-
-
 export class ConfirmPasswordResponseDto {
-
-    email:string;
-
-
+  email: string;
 }

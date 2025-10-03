@@ -248,7 +248,9 @@ export class SpinnigWheelService {
 
     if (!isRewardExists.exist) throw new BadRequestException('Reward does not exist');
 
-    const userCachedDetails = await this.redis.hgetall(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId));
+    const userCachedDetails = await this.redis.hgetall(
+      REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId),
+    );
 
     if (userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
       throw new BadRequestException('Code already redeemed');
@@ -294,7 +296,9 @@ export class SpinnigWheelService {
 
     if (!userId) throw new BadRequestException('Invalid code, User with this code not found');
 
-    const userCachedDetails = await this.redis.hgetall(REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId));
+    const userCachedDetails = await this.redis.hgetall(
+      REDIS_HASHES.SPINNING_WHEEL.USER.HASH(userId),
+    );
 
     if (userCachedDetails[REDIS_HASHES.SPINNING_WHEEL.USER.USER_REDEEMED_CODE()] === 'true')
       throw new BadRequestException('Code already redeemed');

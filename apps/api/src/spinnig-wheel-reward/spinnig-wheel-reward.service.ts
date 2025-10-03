@@ -91,7 +91,10 @@ export class SpinnigWheelRewardService {
   async getRewardById(
     rewardId: string,
   ): Promise<{ exist: false } | { exist: true; rewardName: string }> {
-    const rewardName = await this.redis.hget(REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(), rewardId);
+    const rewardName = await this.redis.hget(
+      REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),
+      rewardId,
+    );
 
     if (!rewardName) return { exist: false };
 

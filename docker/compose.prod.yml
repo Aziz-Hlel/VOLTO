@@ -10,8 +10,8 @@ services:
         VITE_API_URL: ${API_URL}
 
     ports:
-      - ${WEB_PORT}:${WEB_PORT}
-      - ${ADMIN_PORT}:${ADMIN_PORT}
+      - "443:443"
+      - "80:80"
 
 
   api :
@@ -40,12 +40,6 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET}
       AWS_CLOUDFRONT_URL: ${AWS_CLOUDFRONT_URL}
-
-      MINIO_Region: ${MINIO_Region}
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_PORT: ${MINIO_PORT}
 
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
@@ -81,67 +75,22 @@ services:
       timeout: 5s
 
     volumes:
-      - db_stage_volume:/var/lib/postgresql/data
+      - db_prod_volume:/var/lib/postgresql/data
+
 
   redis:
     image: redis:7.4-alpine
 
     volumes:
-      - redis_stage_volume:/data
+      - redis_prod_volume:/data
     
     command: ['redis-server', '--appendonly', 'yes'] # enables persistence
 
-
-  minio:
-    image: quay.io/minio/minio:latest
     
-    ports:
-      - '${MINIO_PORT:-9000}:${MINIO_PORT:-9000}' # S3 API
-      - 9001:9001 # Web UI
-    
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-
-    volumes:
-      - minio_stage_volume:/data
-    
-    command: server /data --console-address ":9001"
-    
-    
-
-  minio-init:
-    image: minio/mc
-    depends_on:
-      minio:
-        condition: service_started
-
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_PORT: ${MINIO_PORT}
-      MINIO_BUCKET: ${MINIO_BUCKET}
-
-
-    volumes:
-      - ${PROJECT_ROOT}/apps/api/src/seed/minio_client_seed_files:/seed # Your seed files
-      - ${PROJECT_ROOT}/apps/api/init_minio_client.sh:/init_minio_client.sh # The script
-
-    entrypoint: ['/bin/sh', '/init_minio_client.sh']
-
-
-  mailpit:
-      image: axllent/mailpit
-      restart: unless-stopped
-      ports:
-          - 8025:8025 # Web UI
-          - '${SMTP_PORT:-1025}:${SMTP_PORT:-1025}'
 
 
 volumes:
-  db_stage_volume:
+  db_prod_volume:
     driver: local
-  redis_stage_volume:
-    driver: local
-  minio_stage_volume:
+  redis_prod_volume:
     driver: local

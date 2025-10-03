@@ -165,6 +165,5 @@ export const seedGallery = async () => {
       confirmedAt: null,
       entityId: galleryInstance.id,
     });
-    console.log(`image : id ${img.s3Key} entangled with gallery id ${galleryInstance.id}`);
   }
 };

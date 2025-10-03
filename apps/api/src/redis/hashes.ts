@@ -1,5 +1,3 @@
-
-
 export const REDIS_HASHES = {
   USER_SESSION: (userId: string) => `user:${userId}:session`,
 
@@ -41,22 +39,19 @@ export const REDIS_HASHES = {
     REWARDS: {
       REWARD_NAME: () => `spinning_wheel:rewards`,
     },
-    
   },
 
-  RESET_PASSWORD:{
-      HASH : (token: string) => `reset_password:${token}`,
-      UserEmail: () => 'user_email',
-      RequestCount: () => 'request_count',
-      EXP: () =>  60 * 60, // 1 hour
-    },
+  RESET_PASSWORD: {
+    HASH: (token: string) => `reset_password:${token}`,
+    UserEmail: () => 'user_email',
+    RequestCount: () => 'request_count',
+    EXP: () => 60 * 60, // 1 hour
+  },
 
   RESET_PASSWORD_RATE_LIMIT: {
-    HASH : (email: string) => `reset_password:rate_limit:${email}`,
+    HASH: (email: string) => `reset_password:rate_limit:${email}`,
     RequestCount: () => 'request_count',
-    RateLimit : () => 3 as const ,
-    EXP: () =>  60 * 60, // 1 hour
+    RateLimit: () => 3 as const,
+    EXP: () => 60 * 60, // 1 hour
   },
-
 } as const;
-

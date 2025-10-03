@@ -3,7 +3,6 @@ import MeetTeam from "../About/MeetTeam";
 import ChefRecommendation from "./ChefRecommendation";
 import { EventCarousel } from "./EventCarousel";
 import MeetOurChefs from "./MeetOurChefs";
-import Menu from "./Menu";
 import OpeningHours from "./OpeningHours";
 import WineBanner from "./WineBanner";
 

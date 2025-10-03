@@ -8,9 +8,9 @@ import { EmailModule } from 'src/email/email.module';
 import { PasswordResetController } from './passwordReset.controller';
 
 @Module({
-  imports: [PrismaModule, MediaModule,EmailModule],
+  imports: [PrismaModule, MediaModule, EmailModule],
   providers: [UsersService],
   exports: [UsersService],
-  controllers: [UsersController, StaffController,PasswordResetController],
+  controllers: [UsersController, StaffController, PasswordResetController],
 })
 export class UsersModule {}
