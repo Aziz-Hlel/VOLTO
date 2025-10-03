@@ -34,7 +34,7 @@ docker-dev-up:
 
 
 docker-stage-up:
-	@echo "${YELLOW}🚀 Starting Docker in Dev Env..."
+	@echo "${YELLOW}🚀 Starting Docker in Stage Env..."
 	@cd $(ROOT) 
 	@touch $(ENV_LOCAL) $(ENV_ROOT) $(ENV_STAGE)
 	@set -a && . $(ENV_STAGE) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
@@ -45,10 +45,10 @@ docker-stage-up:
 
 
 docker-prod-up:
-	@echo "${YELLOW}🚀 Starting Docker in Dev Env..."
+	@echo "${YELLOW}🚀 Starting Docker in Prod Env..."
 	@cd $(ROOT) 
-	@touch $(ENV_LOCAL) $(ENV_ROOT) $(ENV_STAGE)
-	@set -a && . $(ENV_STAGE) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
+	@touch $(ENV_LOCAL) $(ENV_ROOT) $(ENV_PROD)
+	@set -a && . $(ENV_PROD) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
 	@export PROJECT_ROOT=$(ROOT)
 # 	@echo "VAL: $$PROJECT_ROOT" # Print an environment variable
 	@docker compose -f $(DOCKER_ROOT)/compose.prod.yml up --build
