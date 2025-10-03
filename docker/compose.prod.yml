@@ -13,6 +13,10 @@ services:
       - "443:443"
       - "80:80"
 
+    volumes:
+      # - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-prod-data:/data
+      - caddy-prod-config:/config
 
   api :
     build:
@@ -93,4 +97,8 @@ volumes:
   db_prod_volume:
     driver: local
   redis_prod_volume:
+    driver: local
+  caddy-prod-data:
+    driver: local
+  caddy-prod-config:
     driver: local

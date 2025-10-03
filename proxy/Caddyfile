@@ -1,4 +1,15 @@
-:3000 {
+www.voltobahrain.online {
+    redir https://voltobahrain.online{uri} permanent
+}
+
+
+www.admin.voltobahrain.online {
+    redir https://admin.voltobahrain.online{uri} permanent
+}
+
+
+
+voltobahrain.online {
 
     # -----------------------
     # API reverse proxy
@@ -23,10 +34,8 @@
     }
 }
 
-# -----------------------
-# Admin panel
-# -----------------------
-:3001 {
+
+admin.voltobahrain.online {
     root * /srv/admin
     encode gzip
     file_server
