@@ -7,14 +7,14 @@ const ENV_schema = z.object({
 }).refine(
     (data) => {
       // If env is not dev/test, then web port must exist
-      if (!["development", "test"].includes(data.VITE_NODE_ENV)) {
+      if (["development", "test"].includes(data.VITE_NODE_ENV)) {
         return data.VITE_WEB_PORT !== undefined;
       }
       return true;
     },
     {
       path: ["VITE_WEB_PORT"], // points error to the right field
-      message: "VITE_WEB_PORT is required outside of development or test environments",
+      message: "VITE_WEB_PORT is required in development or test environments",
     }
   );
 
