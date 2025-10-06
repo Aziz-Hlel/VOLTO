@@ -205,6 +205,32 @@ export class UsersService {
     return response;
   }
 
+
+  async deleteUser(id: string) {
+
+    const userToDelete = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!userToDelete) throw new NotFoundException('User not found');
+
+    await this.mediaService.removeCurrentEntityMedia({
+      entityId: id,
+      entityType: EntityType.USER,
+      mediaPurpose: MediaPurpose.AVATAR,
+    });
+
+    const response = await this.prisma.user.update({
+      where: { id },
+      data: {
+        email: new Date().toISOString(),
+      }
+    });
+
+    return response;
+
+  }
+
   async sendResetEmail(email: string) {
     const user = await this.findByEmail(email);
     if (!user)

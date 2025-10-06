@@ -22,7 +22,7 @@ POST {{baseUrl}}/reset-password/request
 Content-Type: application/json
 
 {
-    "email": "tigana@gmail.com"
+    "email": "tigana137@gmail.com"
 }
 
 

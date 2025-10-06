@@ -89,4 +89,9 @@ export class AuthService {
 
     return userDto;
   }
+
+  async deleteAccount(userId: string) {
+    return await this.usersService.deleteUser(userId);
+
+  }
 }
