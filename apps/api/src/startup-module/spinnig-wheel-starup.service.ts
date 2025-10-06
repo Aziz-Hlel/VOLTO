@@ -17,8 +17,6 @@ export class SpinningWheelInitService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     this.logger.log('Spinning Wheel Initialization...');
-    // ! add it later to check if there s already an instance of spinning wheel with isActive true and has 5 rewards
-    // Add scheduler setup logic here
 
     let spinnigWheel = await this.spinnigWheelService.isSpinnigWheelExists();
 

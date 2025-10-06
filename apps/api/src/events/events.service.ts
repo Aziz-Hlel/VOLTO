@@ -225,4 +225,15 @@ export class EventsService {
       }
     });
   }
+
+  async getLadiesNight() {
+   const ladiesNight =await this.prisma.event.findFirst({
+      where: {
+        isLadiesNight: true,
+      },
+    });
+
+    return ladiesNight;
+  }
+  
 }
