@@ -1,9 +1,7 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
-const ADMIN_PORT = import.meta.env.VITE_ADMIN_PORT;
 
 const ENV = {
   BASE_URL,
-  ADMIN_PORT,
 };
 
 (Object.keys(ENV) as Array<keyof typeof ENV>).forEach((key) => {

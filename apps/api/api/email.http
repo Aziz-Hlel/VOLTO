@@ -1,6 +1,6 @@
 
 
-@baseUrl = http://localhost:3000/api
+@baseUrl = http://voltobahrain.online/api
 
 ### Login request
 ### Step 1: Get access token
@@ -22,7 +22,7 @@ POST {{baseUrl}}/reset-password/request
 Content-Type: application/json
 
 {
-    "email": "admin@example.com"
+    "email": "tigana@gmail.com"
 }
 
 
