@@ -19,6 +19,11 @@ export class StaffResponseDto {
 
   updatedAt: Date;
 
+  avatar?: {
+    s3Key: string;
+    url: string;
+  };
+
   constructor(user: User) {
     Object.assign(this, user); // apply the utility
   }

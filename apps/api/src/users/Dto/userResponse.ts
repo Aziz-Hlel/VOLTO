@@ -14,4 +14,9 @@ export class UserResponseDto {
   role: Role;
 
   tier: Tier;
+
+  avatar?: {
+    s3Key: string;
+    url: string;
+  }
 }

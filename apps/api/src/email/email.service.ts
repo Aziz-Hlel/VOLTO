@@ -19,7 +19,7 @@ export class EmailService {
   >;
 
   private readonly EMAIL_ADDRESSES = {
-    support: 'support@volto.com',
+    support: 'support@voltobahrain.online',
   };
 
   constructor() {

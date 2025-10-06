@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   HttpException,
   HttpStatus,
   Inject,
@@ -82,8 +81,22 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  findById(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findById(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+    try{
+
+      const avatar = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.USER,
+        entityId: user.id,
+        mediaPurpose: MediaPurpose.AVATAR,
+      });
+
+      return { ...user, avatar };
+
+    }catch(e){
+      return {...user, avatar: null};
+    }
   }
 
   async getAllStaff() {
@@ -94,17 +107,33 @@ export class UsersService {
         },
       },
     });
+    const fetchStaffAvatars = staff.map(async (user) => {
+      const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
+        entityType: EntityType.USER,
+        entityId: user.id,
+        mediaPurpose: MediaPurpose.AVATAR,
+      });
+      return { ...user, avatar };
+    })
 
-    const staffDto = staff.map((user) => UserMapper.toResponse2(user));
+    const staffWithAvatar = await Promise.all(fetchStaffAvatars);
+    const staffDto = staffWithAvatar.map((user) => UserMapper.toResponse2(user));
     return staffDto;
-  }
+  } 
 
   async getStaffById(id: string) {
     const staff = await this.prisma.user.findUnique({
       where: { id },
     });
     if (!staff) throw new NotFoundException('Staff not found');
-    return staff;
+    if(staff.role === Role.USER) throw new UnauthorizedException('The user is not a staff member');
+    const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
+      entityType: EntityType.USER,
+      entityId: staff.id,
+      mediaPurpose: MediaPurpose.AVATAR,
+    });
+
+    return { ...staff, avatar };
   }
 
   async createStaff(dto: CreateStaffDto) {
@@ -130,10 +159,19 @@ export class UsersService {
     if (!existingUser) throw new NotFoundException('User not found');
 
     try {
+      const { avatar, ...newStaffData } = dto;
+      if(avatar?.s3Key && existingUser.avatar?.s3Key !== avatar?.s3Key){
+        await this.mediaService.updateEntityMedia({
+          entityId: id,
+          entityType: EntityType.USER,
+          mediaPurpose: MediaPurpose.AVATAR,
+          newMediaS3Key: avatar?.s3Key,
+        })
+      }
       const savedUser = await this.prisma.user.update({
         where: { id },
         data: {
-          ...dto,
+          ...newStaffData,
         },
       });
       return savedUser;

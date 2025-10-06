@@ -29,7 +29,7 @@ voltobahrain.online {
     }
 
     log {
-        output stdout
+		level ERROR
         format console
     }
 }
@@ -42,7 +42,8 @@ admin.voltobahrain.online {
     try_files {path} /index.html
 
     log {
-        output stdout
+		level ERROR
         format console
     }
 }
+

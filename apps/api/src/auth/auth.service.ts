@@ -49,7 +49,6 @@ export class AuthService {
 
       const user = await this.usersService.findById(payload.sub);
       if (!user) throw new UnauthorizedException('User not found');
-
       const tokens = this.getTokens(user);
 
       return tokens;
