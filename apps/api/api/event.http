@@ -28,19 +28,23 @@ PUT     {{baseUrl}}/events/5e3b7f1c-2d4a-4f6e-9a8b-1c2d3e4f5a6b
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
-
 {
   "id": "5e3b7f1c-2d4a-4f6e-9a8b-1c2d3e4f5a6b",
-  "name": "Ladies Night",
-  "type": "WEEKLY",
+  "name": "Ladies Night2",
   "description": "Ladies Night",
-  "startDate": null,
-  "endDate": null,
-  "cronStartDate": "01 10 * * 1",
-  "cronEndDate": "07 13 * * 1",
-  "thumbnailKey": "events/ladies-night-wallpaper.jpg",
-  "videoKey": "events/volto-brunch-1.mp4"
+  "type": "WEEKLY",
+  "cronStartDate": "0 15 * * 4",
+  "cronEndDate": "0 19 * * 4",
+  "thumbnail": {
+    "s3Key": "events/ladies-night-wallpaper.jpg",
+    "url": "http://localhost:9000/volto/events/ladies-night-wallpaper.jpg"
+  },
+  "video": {
+    "s3Key": "events/volto-brunch-1.mp4",
+    "url": "http://localhost:9000/volto/events/volto-brunch-1.mp4"
+  }
 }
+
 
 
 
