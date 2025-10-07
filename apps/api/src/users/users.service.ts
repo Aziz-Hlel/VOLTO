@@ -22,6 +22,7 @@ import Redis from 'ioredis';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import { ConfirmPasswordRequestDto } from './Dto/confirm-password-request.dto';
 import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto';
+import { UpdateUserDto } from './Dto/update-user';
 
 @Injectable()
 export class UsersService {
@@ -172,7 +173,11 @@ export class UsersService {
           ...newStaffData,
         },
       });
-      return savedUser;
+
+      const userDto = UserMapper.toResponse(savedUser);
+      
+      return userDto;
+
     } catch (e) {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);
@@ -320,4 +325,36 @@ export class UsersService {
       email: email,
     };
   }
+
+async updateUser(userId: string, updateUserDto: UpdateUserDto){
+    const existingUser = await this.findById(userId);
+    if (!existingUser) throw new NotFoundException('User not found');
+
+    try {
+      const { avatar, ...newStaffData } = updateUserDto;
+      if (avatar?.s3Key && existingUser.avatar?.s3Key !== avatar?.s3Key) {
+        await this.mediaService.updateEntityMedia({
+          entityId: userId,
+          entityType: EntityType.USER,
+          mediaPurpose: MediaPurpose.AVATAR,
+          newMediaS3Key: avatar?.s3Key,
+        });
+      }
+      const savedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          ...newStaffData,
+        },
+      });
+
+      const userDto = UserMapper.toResponse(savedUser);
+      
+      return userDto;
+
+    } catch (e) {
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
+  }
+
 }

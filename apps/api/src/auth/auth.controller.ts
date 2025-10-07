@@ -9,6 +9,7 @@ import {
   Delete,
   Param,
   ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Role } from '@prisma/client';
@@ -20,6 +21,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { Roles } from './decorators/roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { LoginRequestDto } from './dto/loginRequestDto';
+import { UpdateUserDto } from 'src/users/Dto/update-user';
 
 @Controller('auth')
 export class AuthController {
@@ -59,6 +61,19 @@ export class AuthController {
     return payload;
   }
 
+
+  @UseGuards(JwtAccessGuard)
+  @HttpCode(200)
+  @Put()
+  async updateUser(
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: AuthUser,
+  ) {
+    const userId = user.id;
+    const response = await this.authService.updateUser(userId, updateUserDto);
+    return response;
+  }
+
   @UseGuards(JwtAccessGuard)
   @HttpCode(200)
   @Get('me')
@@ -82,12 +97,17 @@ export class AuthController {
 
   @UseGuards(JwtAccessGuard)
   @HttpCode(200)
-  @Delete('/:userId')
-  async deleteStaff(@Param('userId', ParseUUIDPipe) userId: string, @CurrentUser() user: AuthUser) {
+  @Delete()
+  async deleteUser( @CurrentUser() user: AuthUser) {
+
+    const userId = user.id;
     await this.authService.deleteAccount(userId);
     return {
       success: true,
       message: 'Account deleted successfully',
     };
   }
+
+
+
 }

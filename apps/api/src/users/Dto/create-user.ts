@@ -1,15 +1,16 @@
 import { Gender, Role } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsEnum,
-  IsInt,
   IsOptional,
-  IsPositive,
   IsString,
   Matches,
   Max,
   MaxLength,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateUserDto {
   @IsString()
@@ -34,4 +35,9 @@ export class CreateUserDto {
 
   @IsEnum(Role, { message: 'Invalid Role' })
   role: Role;
+
+  @ValidateNested()
+  @Type(() => CreateObjectWithMediaRequestDto)
+  avatar?: CreateObjectWithMediaRequestDto;
+  
 }

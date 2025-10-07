@@ -9,6 +9,7 @@ import { UserResponseDto } from 'src/users/Dto/userResponse';
 import ENV from 'src/config/env';
 import { User } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
+import { UpdateUserDto } from 'src/users/Dto/update-user';
 
 @Injectable()
 export class AuthService {
@@ -92,5 +93,9 @@ export class AuthService {
 
   async deleteAccount(userId: string) {
     return await this.usersService.deleteUser(userId);
+  }
+
+  async updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    return await this.usersService.updateUser(userId, updateUserDto);
   }
 }
