@@ -9,6 +9,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
 import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
+import { WeeklyEventMq } from 'src/bullmq/weeklyEventsMq.service';
 
 @Injectable()
 export class EventsService {
@@ -17,6 +18,7 @@ export class EventsService {
     private readonly mediaService: MediaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly specialEventsMq: SpecialEventMq,
+    private readonly weeklyEventsMq: WeeklyEventMq,
   ) {}
 
   async create(createEventDto: CreateEventDto) {
@@ -49,11 +51,10 @@ export class EventsService {
 
         return createdEvent;
       });
-    } catch (error){
-        console.log(error);
-        throw new BadRequestException("Error creating event");
-      };
-    
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error creating event');
+    }
   }
 
   async getById(id: string) {
@@ -171,6 +172,36 @@ export class EventsService {
           ...eventDto,
         },
       });
+
+      if (
+        existingEvent.type === 'WEEKLY' &&
+        existingEvent.cronStartDate !== updatedEvent.cronStartDate
+      ) {
+        console.log('removing old weekly notif');
+        await this.weeklyEventsMq.removeWeeklyEventNotification(existingEvent.id);
+      }
+
+      if (existingEvent.type === 'SPECIAL' && existingEvent.startDate !== updatedEvent.startDate) {
+        await this.specialEventsMq.removeSpecialEventNotification(existingEvent.id);
+      }
+
+      if (updatedEvent.type === 'WEEKLY') {
+        const newEventJobParams = {
+          eventId: updatedEvent.id,
+          eventName: updatedEvent.name,
+          cronStartDate: updatedEvent.cronStartDate!,
+          cronEndDate: updatedEvent.cronEndDate!,
+        };
+        await this.weeklyEventsMq.addWeeklyEventNotification(newEventJobParams);
+      } else {
+        const newEventJobParams = {
+          eventId: updatedEvent.id,
+          eventName: updatedEvent.name,
+          startDate: updatedEvent.startDate!,
+          endDate: updatedEvent.endDate!,
+        };
+        await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
+      }
 
       if (existingEvent.isLadiesNight) {
         await this.redis.del(REDIS_HASHES.LADIES_NIGHT.DATE.HASH());

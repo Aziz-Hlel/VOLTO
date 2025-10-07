@@ -80,8 +80,10 @@ export class EventsController {
       (!updateEventDto.cronStartDate || !updateEventDto.cronEndDate)
     )
       throw new BadRequestException('cronStartDate and cronEndDate are required for weekly events');
-    console.log('thumbnail == ', updateEventDto.thumbnail);
-    return this.eventsService.update(updateEventDto);
+
+    const response = await this.eventsService.update(updateEventDto);
+
+    return response;
   }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)

@@ -3,14 +3,14 @@ import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-interface IAddEvent {
+interface IAddSpecialEvent {
   eventId: string;
   eventName: string;
   startDate: Date;
   endDate: Date;
 }
 
-interface EventJobData {
+interface SpecialEventJobData {
   eventId: string;
   eventName: string;
   startDate: string;
@@ -22,9 +22,9 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(SpecialEventMq.name);
 
   private readonly queueName = 'specialEvents-scheduler';
-  private eventQueue: Queue<EventJobData>;
+  private eventQueue: Queue<SpecialEventJobData>;
 
-  private eventWorker: Worker<EventJobData>;
+  private eventWorker: Worker<SpecialEventJobData>;
 
   private readonly _hour = 1000 * 60 * 60;
   private readonly firstNotificationDelay = 0; // !this._hour * 24;
@@ -35,9 +35,9 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
-  private processSendSpecialEventsNotification(job: Job<EventJobData>) {
+  private processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
     console.log(
-      'Notification started Now for event : ',
+      'Notification started Now for special event : ',
       job.data.eventName,
       '\n\tEvents starts in : ',
       (new Date(job.data.startDate).getTime() - Date.now()) / 1000,
@@ -46,7 +46,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   }
 
   private initQueue() {
-    this.eventQueue = new Queue<EventJobData>(this.queueName, {
+    this.eventQueue = new Queue<SpecialEventJobData>(this.queueName, {
       connection: this.redis,
       defaultJobOptions: {
         removeOnComplete: 50, // Keep last 50 completed jobs for monitoring
@@ -67,9 +67,9 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   }
 
   private initWorker() {
-    this.eventWorker = new Worker<EventJobData>(
+    this.eventWorker = new Worker<SpecialEventJobData>(
       this.queueName,
-      async (job: Job<EventJobData>) => await this.processSendSpecialEventsNotification(job),
+      async (job: Job<SpecialEventJobData>) => await this.processSendSpecialEventsNotification(job),
       {
         connection: this.redis,
         concurrency: 2,
@@ -95,14 +95,14 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
     return `${eventId}-${delay}`;
   }
 
-  async addSpecialEventNotification(data: IAddEvent) {
+  async addSpecialEventNotification(data: IAddSpecialEvent) {
     const delayInMs = data.startDate.getTime() - Date.now();
     const firstDelay = delayInMs - this.firstNotificationDelay;
     const secondDelay = delayInMs - 2000 - this.secondNotificationDelay;
 
     if (firstDelay > 0) {
       const jobId = this.getJobId(data.eventId, 'firstDelay');
-      const eventJobPayload: EventJobData = {
+      const eventJobPayload: SpecialEventJobData = {
         eventId: data.eventId,
         eventName: data.eventName,
         startDate: data.startDate.toISOString(),
@@ -113,7 +113,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
 
     if (secondDelay > 0) {
       const jobId = this.getJobId(data.eventId, 'secondDelay');
-      const eventJobPayload: EventJobData = {
+      const eventJobPayload: SpecialEventJobData = {
         eventId: data.eventId,
         eventName: data.eventName,
         startDate: data.startDate.toISOString(),
@@ -126,17 +126,15 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async updateSpecialEventNotification(data: IAddEvent) {
-    const firstDelayJobId = this.getJobId(data.eventId, 'firstDelay');
-    const secondDelayJobId = this.getJobId(data.eventId, 'secondDelay');
+  async removeSpecialEventNotification(eventId: string) {
+    const firstDelayJobId = this.getJobId(eventId, 'firstDelay');
+    const secondDelayJobId = this.getJobId(eventId, 'secondDelay');
 
     const firstDelayJob = await this.eventQueue.getJob(firstDelayJobId);
     const secondDelayJob = await this.eventQueue.getJob(secondDelayJobId);
 
     await firstDelayJob?.remove();
     await secondDelayJob?.remove();
-
-    await this.addSpecialEventNotification(data);
   }
 
   async onModuleInit() {

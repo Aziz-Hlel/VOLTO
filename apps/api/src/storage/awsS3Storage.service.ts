@@ -16,8 +16,8 @@ export class AwsS3Storage implements IStorageProvider {
   readonly s3Client = new S3Client({
     region: ENV.AWS_REGION,
     credentials: {
-    accessKeyId: ENV.AWS_ACCESS_KEY_ID,
-    secretAccessKey: ENV.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: ENV.AWS_ACCESS_KEY_ID,
+      secretAccessKey: ENV.AWS_SECRET_ACCESS_KEY,
     },
   });
 

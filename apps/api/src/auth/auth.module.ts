@@ -10,7 +10,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { MediaModule } from 'src/media/media.module';
 
 @Module({
-  imports: [PassportModule, JwtModule.register({}), UsersModule,MediaModule],
+  imports: [PassportModule, JwtModule.register({}), UsersModule, MediaModule],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard],
   controllers: [AuthController],
   exports: [

@@ -1,5 +1,15 @@
 // src/auth/auth.controller.ts
-import { Body, Controller, Post, UseGuards, Get, HttpCode, Delete, Put, BadRequestException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Get,
+  HttpCode,
+  Delete,
+  Put,
+  BadRequestException,
+} from '@nestjs/common';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Role } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
@@ -46,7 +56,8 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Body() payload: { refreshToken: string }) {
     // console.log('Refresh token received:', refreshToken);
-    if(!payload.refreshToken && typeof payload.refreshToken !== 'string') throw new BadRequestException('No refresh token provided');
+    if (!payload.refreshToken && typeof payload.refreshToken !== 'string')
+      throw new BadRequestException('No refresh token provided');
     const response = await this.authService.refresh(payload.refreshToken);
 
     return response;

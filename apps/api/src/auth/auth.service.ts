@@ -31,9 +31,9 @@ export class AuthService {
 
     const user2 = {
       ...user,
-      avatar : user.avatar ?? undefined
+      avatar: user.avatar ?? undefined,
     };
-    
+
     const userDto = UserMapper.toResponse(user2);
 
     return { accessToken, refreshToken, user: userDto };
@@ -46,7 +46,7 @@ export class AuthService {
 
     const userDto = UserMapper.toResponse({
       ...validatedUser,
-      avatar : validatedUser.avatar ?? undefined
+      avatar: validatedUser.avatar ?? undefined,
     });
 
     return { accessToken, refreshToken, user: userDto };
@@ -80,7 +80,7 @@ export class AuthService {
       entityId: user.id,
       mediaPurpose: MediaPurpose.AVATAR,
     });
-    
+
     const userWithAvatar = { ...user, avatar };
 
     return userWithAvatar;
@@ -112,7 +112,7 @@ export class AuthService {
 
     const userDto = UserMapper.toResponse({
       ...foundUser,
-      avatar : avatar ?? undefined
+      avatar: avatar ?? undefined,
     });
 
     return userDto;

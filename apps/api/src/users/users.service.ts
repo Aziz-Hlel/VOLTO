@@ -195,11 +195,11 @@ export class UsersService {
         entityType: EntityType.USER,
         entityId: savedUser.id,
         mediaPurpose: MediaPurpose.AVATAR,
-      })
+      });
 
       const userDto = UserMapper.toResponse({
         ...savedUser,
-        avatar: updatedUserAvatar?? undefined
+        avatar: updatedUserAvatar ?? undefined,
       });
 
       return userDto;
@@ -371,8 +371,16 @@ export class UsersService {
           ...newStaffData,
         },
       });
+      const updatedUserAvatar = await this.mediaService.getMediaKeyAndUrlNoException({
+        entityType: EntityType.USER,
+        entityId: savedUser.id,
+        mediaPurpose: MediaPurpose.AVATAR,
+      });
 
-      const userDto = UserMapper.toResponse(savedUser);
+      const userDto = UserMapper.toResponse({
+        ...savedUser,
+        avatar: updatedUserAvatar ?? undefined,
+      });
 
       return userDto;
     } catch (e) {
