@@ -112,18 +112,19 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
       cronEndDate: data.cronEndDate,
     });
 
-    const a = await this.eventQueue.add(
+    await this.eventQueue.add(
       jobId, // name of the job
       eventJobPayload, // payload
       {
         repeat: {
-          pattern: '17 16 * * *', //data.cronStartDate, // <-- cron expression here
+          pattern: '24 16 * * *', //data.cronStartDate, // <-- cron expression here
           tz: 'utc', // optional: timezone
         },
         repeatJobKey: jobId,
       },
+    
     );
-    console.log('job added with id : ', a.id);
+
     // const delayInMs = data.cronStartDate.getTime() - Date.now();
     // const firstDelay = delayInMs - this.firstNotificationDelay;
     // const secondDelay = delayInMs - 2000 - this.secondNotificationDelay;
@@ -165,11 +166,20 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
   }
 
   async removeWeeklyEventNotification(eventId: string) {
+    
     const firstDelayJobId = this.getJobId(eventId, 'firstDelay');
     const secondDelayJobId = this.getJobId(eventId, 'secondDelay');
 
-    const response = await this.eventQueue.removeJobScheduler(firstDelayJobId);
-    console.log('response to deletin weekly repeatable job : ', response);
+    const allJobSchedulers = await this.eventQueue.getJobSchedulers();
+    
+    allJobSchedulers.map((scheduler) => {
+      scheduler.name === firstDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
+    })
+
+    allJobSchedulers.map((scheduler) => {
+      scheduler.name === secondDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
+    })
+
     // await this.eventQueue.removeJobScheduler(secondDelayJobId);
   }
 
@@ -180,6 +190,7 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     const jobSchedulers = await this.eventQueue.getJobSchedulers();
 
     this.logger.log(`Found ${jobSchedulers.length} job schedulers in ${this.queueName}`);
+
   }
 
   onModuleDestroy() {

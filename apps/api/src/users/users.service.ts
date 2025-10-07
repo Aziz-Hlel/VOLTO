@@ -362,7 +362,7 @@ export class UsersService {
           entityId: userId,
           entityType: EntityType.USER,
           mediaPurpose: MediaPurpose.AVATAR,
-          newMediaS3Key: avatar?.s3Key,
+          newMediaS3Key: avatar.s3Key,
         });
       }
       const savedUser = await this.prisma.user.update({

@@ -28,6 +28,47 @@ Content-Type: application/json
     "password": "12345678"
 }
 
+### Get presigned url for the thumbnail
+# @name getPresignedUrl
+POST {{baseUrl}}/media/presigned-url
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
+
+{
+    "mimeType": "image/jpeg",
+    "fileSize": 521394,
+    "fileType": "jpg",
+    "originalName": "scaled_de5fb0d3-5405-4620-b544-22a059c29cf37235482-1759855191550.jpg",
+    "entityType": "USER",
+    "mediaPurpose": "AVATAR"
+}
+
+
+### Upload the thumbnail into S3
+# @name uploadFile
+PUT {{getPresignedUrl.response.body.url}}
+Content-Type: image/jpeg
+
+< ./assets/img.jpg
+
+
+
+
+###  
+# @name UpdateUser
+PUT {{baseUrl}}/auth/
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{
+    "username":"aze",
+    "gender":"F",
+    "avatar":{
+        "s3Key":"{{getPresignedUrl.response.body.s3Key}}"
+    }
+}
+
+
 ### Get current user (uses token from login)
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{login.response.body.accessToken}}
