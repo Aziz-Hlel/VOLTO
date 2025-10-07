@@ -76,6 +76,4 @@ export class StaffController {
     const response = await this.usersService.deleteStaff(staffId, user.role);
     return response;
   }
-
-  
 }

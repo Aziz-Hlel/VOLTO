@@ -1,5 +1,15 @@
 // src/auth/auth.controller.ts
-import { Body, Controller, Post, UseGuards, Get, HttpCode, Delete, Param, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Get,
+  HttpCode,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Role } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
@@ -70,14 +80,10 @@ export class AuthController {
     };
   }
 
-
   @UseGuards(JwtAccessGuard)
   @HttpCode(200)
   @Delete('/:userId')
-  async deleteStaff(
-    @Param('userId', ParseUUIDPipe) userId: string,
-    @CurrentUser() user: AuthUser,
-  ) {
+  async deleteStaff(@Param('userId', ParseUUIDPipe) userId: string, @CurrentUser() user: AuthUser) {
     await this.authService.deleteAccount(userId);
     return {
       success: true,

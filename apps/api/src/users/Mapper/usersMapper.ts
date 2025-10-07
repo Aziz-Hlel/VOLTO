@@ -22,7 +22,9 @@ export class UserMapper {
     };
   }
 
-  static toResponse2(user: User & { avatar: { s3Key: string; url: string } | null }): StaffResponseDto {
+  static toResponse2(
+    user: User & { avatar: { s3Key: string; url: string } | null },
+  ): StaffResponseDto {
     return new StaffResponseDto(user);
   }
 }

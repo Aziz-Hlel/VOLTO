@@ -92,6 +92,5 @@ export class AuthService {
 
   async deleteAccount(userId: string) {
     return await this.usersService.deleteUser(userId);
-
   }
 }

@@ -1,6 +1,15 @@
 import { EventType } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsOptional, IsString, Matches, ValidateNested } from 'class-validator';
+import {
+  IsDate,
+  IsDefined,
+  IsEnum,
+  IsNotEmptyObject,
+  IsOptional,
+  IsString,
+  Matches,
+  ValidateNested,
+} from 'class-validator';
 import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateEventDto {
@@ -37,10 +46,14 @@ export class CreateEventDto {
   })
   cronEndDate?: string;
 
+  @IsDefined({ message: 'thumbnail is required' })
+  @IsNotEmptyObject({}, { message: 'thumbnail cannot be empty' })
   @ValidateNested()
   @Type(() => CreateObjectWithMediaRequestDto)
   thumbnail: CreateObjectWithMediaRequestDto;
 
+  @IsDefined({ message: 'Video is required' })
+  @IsNotEmptyObject({}, { message: 'Video cannot be empty' })
   @ValidateNested()
   @Type(() => CreateObjectWithMediaRequestDto)
   video: CreateObjectWithMediaRequestDto;

@@ -89,11 +89,13 @@ export class MediaService {
     return { s3Key: media.s3Key, url };
   }
 
-  async getMediaKeyAndUrlNoException(identifier: MediaIdentifier): Promise<{ s3Key: string; url: string }|null> {
+  async getMediaKeyAndUrlNoException(
+    identifier: MediaIdentifier,
+  ): Promise<{ s3Key: string; url: string } | null> {
     try {
       return await this.getMediaKeyAndUrl(identifier);
     } catch (e) {
-    return  null
+      return null;
     }
   }
 
@@ -124,7 +126,7 @@ export class MediaService {
   }: MediaIdentifier & { newMediaS3Key: string }) {
     return this.prisma.$transaction(async (tx) => {
       // removeCurrentEntityMedia
-     await tx.media.deleteMany({
+      await tx.media.deleteMany({
         where: {
           entityId,
           entityType,

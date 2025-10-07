@@ -84,8 +84,7 @@ export class UsersService {
   async findById(id: string) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('User not found');
-    try{
-
+    try {
       const avatar = await this.mediaService.getMediaKeyAndUrl({
         entityType: EntityType.USER,
         entityId: user.id,
@@ -93,9 +92,8 @@ export class UsersService {
       });
 
       return { ...user, avatar };
-
-    }catch(e){
-      return {...user, avatar: null};
+    } catch (e) {
+      return { ...user, avatar: null };
     }
   }
 
@@ -114,19 +112,19 @@ export class UsersService {
         mediaPurpose: MediaPurpose.AVATAR,
       });
       return { ...user, avatar };
-    })
+    });
 
     const staffWithAvatar = await Promise.all(fetchStaffAvatars);
     const staffDto = staffWithAvatar.map((user) => UserMapper.toResponse2(user));
     return staffDto;
-  } 
+  }
 
   async getStaffById(id: string) {
     const staff = await this.prisma.user.findUnique({
       where: { id },
     });
     if (!staff) throw new NotFoundException('Staff not found');
-    if(staff.role === Role.USER) throw new UnauthorizedException('The user is not a staff member');
+    if (staff.role === Role.USER) throw new UnauthorizedException('The user is not a staff member');
     const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
       entityType: EntityType.USER,
       entityId: staff.id,
@@ -160,13 +158,13 @@ export class UsersService {
 
     try {
       const { avatar, ...newStaffData } = dto;
-      if(avatar?.s3Key && existingUser.avatar?.s3Key !== avatar?.s3Key){
+      if (avatar?.s3Key && existingUser.avatar?.s3Key !== avatar?.s3Key) {
         await this.mediaService.updateEntityMedia({
           entityId: id,
           entityType: EntityType.USER,
           mediaPurpose: MediaPurpose.AVATAR,
           newMediaS3Key: avatar?.s3Key,
-        })
+        });
       }
       const savedUser = await this.prisma.user.update({
         where: { id },
@@ -205,9 +203,7 @@ export class UsersService {
     return response;
   }
 
-
   async deleteUser(id: string) {
-
     const userToDelete = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -224,11 +220,10 @@ export class UsersService {
       where: { id },
       data: {
         email: new Date().toISOString(),
-      }
+      },
     });
 
     return response;
-
   }
 
   async sendResetEmail(email: string) {

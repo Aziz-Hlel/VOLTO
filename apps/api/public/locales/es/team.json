@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Fran",
+    "role": "Coreógrafo",
+    "description": "Fran es la mente creativa detrás de las espectaculares rutinas de Volto, combinando arte con precisión atlética.",
+    "instagramTag": "fran_dancer",
+    "image": {
+      "url": "https://www.liogroup.com/wp-content/uploads/2024/04/FRAN-ELIU-COREOGRAFO.jpg"
+    }
+  },
+  {
+    "name": "Busola",
+    "role": "Artista",
+    "description": "Busola ilumina el escenario con movimientos poderosos y una presencia cautivadora.",
+    "instagramTag": "busola_performer",
+    "image": {
+      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/BUSOLA.jpg"
+    }
+  },
+  {
+    "name": "Carlos",
+    "role": "Cantante",
+    "description": "La voz de Carlos lleva la experiencia Volto, mezclando alma y energía en cada actuación.",
+    "instagramTag": "carlos_music",
+    "image": {
+      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/CARLOS.jpg"
+    }
+  },
+  {
+    "name": "Mirela",
+    "role": "Bailarina",
+    "description": "Mirela aporta elegancia y fuego al escenario con cada actuación.",
+    "instagramTag": "mirela_star",
+    "image": {
+      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/MIRELA-1.jpg"
+    }
+  },
+  {
+    "name": "Robert",
+    "role": "Acróbata",
+    "description": "Las acrobacias de Robert desafían la gravedad, aportando emoción y emoción a las noches Volto.",
+    "instagramTag": "robert_acrobat",
+    "image": {
+      "url": "https://www.liogroup.com/wp-content/uploads/2025/04/ROBERT.jpg"
+    }
+  }
+]

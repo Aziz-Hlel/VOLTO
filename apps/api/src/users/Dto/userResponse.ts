@@ -18,5 +18,5 @@ export class UserResponseDto {
   avatar?: {
     s3Key: string;
     url: string;
-  }
+  };
 }

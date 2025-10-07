@@ -9,7 +9,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "user@example.com",
+    "email": "admin@example.com",
     "password": "12345678"
 }
 
@@ -67,3 +67,57 @@ Authorization: Bearer {{login.response.body.accessToken}}
 GET     {{baseUrl}}/events/list?page=1&limit=4
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
+
+
+
+
+
+### Update Special Event
+# @name updateSpecialEvent
+PUT     {{baseUrl}}/events/b6d1e3f4-5a7c-4f2b-8e1a-9c3b2d4f5a6e
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
+
+{
+  "id":"b6d1e3f4-5a7c-4f2b-8e1a-9c3b2d4f5a6e",
+  "name": "New Year's Eve",
+  "type": "SPECIAL",
+  "description": "New Year's Eve",
+  "startDate": "{{$datetime iso8601}}",
+  "endDate": "2025-12-31T23:59:59.999Z",
+  "cronStartDate": null,
+  "cronEndDate": null,
+  "thumbnail": {
+      "s3Key": "events/new-year-event.jpg",
+      "url": "http://localhost:9000/volto/events/new-year-event.jpg"
+    },
+    "video": {
+      "s3Key": "events/volto-video3.mp4",
+      "url": "http://localhost:9000/volto/events/volto-video3.mp4"
+    }
+
+}
+
+
+### Create Special Event
+# @name createSpecialEvent
+POST     {{baseUrl}}/events/
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
+
+{
+  "name": "New Year's Eve22",
+  "type": "SPECIAL",
+  "description": "New Year's Eve22",
+  "startDate": "{{$datetime iso8601}}",
+  "endDate": "2025-12-31T23:59:59.999Z",
+  "thumbnail": {
+      "s3Key": "events/new-year-event.jpg",
+      "url": "http://localhost:9000/volto/events/new-year-event.jpg"
+    },
+    "video": {
+      "s3Key": "events/volto-video3.mp4",
+      "url": "http://localhost:9000/volto/events/volto-video3.mp4"
+    }
+
+}

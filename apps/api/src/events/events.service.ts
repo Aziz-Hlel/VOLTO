@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { EntityType, Event, MediaPurpose, Prisma } from '@prisma/client';
+import { EntityType, Event, EventType, MediaPurpose, Prisma } from '@prisma/client';
 import { MediaService } from 'src/media/media.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import Redis from 'ioredis';
@@ -8,6 +8,7 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
+import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
 
 @Injectable()
 export class EventsService {
@@ -15,31 +16,44 @@ export class EventsService {
     private prisma: PrismaService,
     private readonly mediaService: MediaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
+    private readonly specialEventsMq: SpecialEventMq,
   ) {}
 
   async create(createEventDto: CreateEventDto) {
     const { thumbnail, video, ...eventDto } = createEventDto;
-
-    const createdEvent: Event = await this.prisma.event.create({
-      data: {
-        ...eventDto,
-        isLadiesNight: false,
-      },
-    });
-
     try {
-      const confirmThumbnail = this.mediaService.confirmPendingMedia(
-        thumbnail.s3Key,
-        createdEvent.id,
-      );
-      const confirmVideo = this.mediaService.confirmPendingMedia(video.s3Key, createdEvent.id);
-      await Promise.all([confirmThumbnail, confirmVideo]);
-    } catch (e) {
-      await this.prisma.event.delete({ where: { id: createdEvent.id } });
-      throw new BadRequestException(e.message);
-    }
+       await this.prisma.$transaction(async (tx) => {
+        const createdEvent: Event = await tx.event.create({
+          data: {
+            ...eventDto,
+            isLadiesNight: false,
+          },
+        });
 
-    return createdEvent;
+        const confirmThumbnail = this.mediaService.confirmPendingMedia(
+          thumbnail.s3Key,
+          createdEvent.id,
+        );
+
+        const confirmVideo = this.mediaService.confirmPendingMedia(video.s3Key, createdEvent.id);
+        await Promise.all([confirmThumbnail, confirmVideo]);
+
+        if (createdEvent.type === EventType.SPECIAL) {
+          await this.specialEventsMq.addSpecialEventNotification({
+            eventId: createdEvent.id,
+            eventName: createdEvent.name,
+            startDate: new Date(new Date().getTime() + 10 * 1000)!,
+            endDate: createdEvent.endDate!,
+          });
+        }
+
+        return createdEvent;
+      });
+    } catch {
+      (error) => {
+        throw new BadRequestException(error);
+      };
+    }
   }
 
   async getById(id: string) {
@@ -227,7 +241,7 @@ export class EventsService {
   }
 
   async getLadiesNight() {
-   const ladiesNight =await this.prisma.event.findFirst({
+    const ladiesNight = await this.prisma.event.findFirst({
       where: {
         isLadiesNight: true,
       },
@@ -235,5 +249,4 @@ export class EventsService {
 
     return ladiesNight;
   }
-  
 }
