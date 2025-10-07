@@ -91,6 +91,11 @@ services:
     command: ['redis-server', '--appendonly', 'yes'] # enables persistence
 
     
+  iam-proxy:
+    image: swipely/iam-docker:latest
+    network_mode: "host"
+    privileged: true
+    restart: always
 
 
 volumes:

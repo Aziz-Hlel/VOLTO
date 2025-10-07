@@ -1,6 +1,6 @@
 
 
-@baseUrl = http://localhost:3000/api
+@baseUrl = https://voltobahrain.online/api
 
 
 
@@ -57,10 +57,10 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "mimeType": "image/jpeg",
     "fileSize": 136877,
-    "fileType": ".jpg",
+    "fileType": "jpg",
     "originalName": "img.jpg",
     "entityType": "EVENT",
-    "mediaPurpose": "video"
+    "mediaPurpose": "THUMBNAIL"
 }
 
 
