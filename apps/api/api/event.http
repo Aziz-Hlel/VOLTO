@@ -110,7 +110,7 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
 {
-  "name": "New Year's Evesqdsqd22",
+  "name": "New Year's Evesqdssqdqd22",
   "type": "SPECIAL",
   "description": "New Year's Eve22",
   "startDate": "{{$datetime iso8601}}",

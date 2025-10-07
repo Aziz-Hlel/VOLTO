@@ -28,7 +28,7 @@ Content-Type: application/json
 
 {
     "email": "user@example.com",
-    "password": "user"
+    "password": "12345678"
 }
 
 
@@ -41,10 +41,10 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "mimeType": "image/jpeg",
     "fileSize": 136877,
-    "fileType": ".jpg",
+    "fileType": "jpg",
     "originalName": "img.jpg",
     "entityType": "EVENT",
-    "mediaPurpose": "thumbnail"
+    "mediaPurpose": "THUMBNAIL"
 }
 
  

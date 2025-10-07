@@ -27,7 +27,9 @@ export class PreSignedUrlRequest {
   })
   entityType: EntityType;
 
-  @IsString()
+  @IsEnum(MediaPurpose, {
+    message: `MediaPurpose must be one of ${Object.values(MediaPurpose).join(', ')}`,
+  })
   @MinLength(2)
   mediaPurpose: MediaPurpose;
 }
