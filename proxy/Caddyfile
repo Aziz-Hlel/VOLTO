@@ -11,9 +11,6 @@ www.admin.voltobahrain.online {
 
 voltobahrain.online {
 
-    handle /socket.io/ {
-        reverse_proxy api:3000
-    } 
     # -----------------------
     # API reverse proxy
     # -----------------------
