@@ -24,8 +24,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "test@test.test",
-    "password": "123456"
+    "email": "admin@example.com",
+    "password": "12345678"
 }
 
 ### Get current user (uses token from login)

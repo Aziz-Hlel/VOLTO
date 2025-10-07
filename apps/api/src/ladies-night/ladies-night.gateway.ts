@@ -25,7 +25,7 @@ interface BaseEventResponse {
   error_message?: string;
 }
 
-@WebSocketGateway({ cors: true, namespace: '/ladies-night' })
+@WebSocketGateway({ cors: true, namespace: '/api/ladies-night' })
 export class LadiesNightGateway {
   constructor(
     private readonly ladiesNightService: LadiesNightService,
