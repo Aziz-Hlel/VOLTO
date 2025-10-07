@@ -191,10 +191,16 @@ export class UsersService {
         },
       });
 
-      // ? just to satisfy the type
-      const savedUserWithAvatar = { ...savedUser, avatar };
+      const updatedUserAvatar = await this.mediaService.getMediaKeyAndUrlNoException({
+        entityType: EntityType.USER,
+        entityId: savedUser.id,
+        mediaPurpose: MediaPurpose.AVATAR,
+      })
 
-      const userDto = UserMapper.toResponse(savedUserWithAvatar);
+      const userDto = UserMapper.toResponse({
+        ...savedUser,
+        avatar: updatedUserAvatar?? undefined
+      });
 
       return userDto;
     } catch (e) {

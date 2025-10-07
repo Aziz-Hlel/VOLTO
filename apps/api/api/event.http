@@ -37,11 +37,11 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "cronEndDate": "0 19 * * 4",
   "thumbnail": {
     "s3Key": "events/ladies-night-wallpaper.jpg",
-    "url": "http://localhost:9000/volto/events/ladies-night-wallpaper.jpg"
+    "url": ""
   },
   "video": {
     "s3Key": "events/volto-brunch-1.mp4",
-    "url": "http://localhost:9000/volto/events/volto-brunch-1.mp4"
+    "url": ""
   }
 }
 
@@ -110,7 +110,7 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
 {
-  "name": "New Year's Eve22",
+  "name": "New Year's Evesqdsqd22",
   "type": "SPECIAL",
   "description": "New Year's Eve22",
   "startDate": "{{$datetime iso8601}}",

@@ -49,11 +49,11 @@ export class EventsService {
 
         return createdEvent;
       });
-    } catch {
-      (error) => {
-        throw new BadRequestException(error);
+    } catch (error){
+        console.log(error);
+        throw new BadRequestException("Error creating event");
       };
-    }
+    
   }
 
   async getById(id: string) {

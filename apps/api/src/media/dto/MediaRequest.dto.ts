@@ -6,5 +6,5 @@ export class CreateObjectWithMediaRequestDto {
 
   @IsOptional()
   @IsString()
-  url: string;
+  url?: string;
 }
