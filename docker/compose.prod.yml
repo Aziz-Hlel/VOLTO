@@ -54,6 +54,12 @@ services:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
 
+      AWS_EC2_METADATA_SERVICE_ENDPOINT: "http://169.254.169.254"
+      AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE: "IPv4"
+
+    extra_hosts:
+      "host.docker.internal:host-gateway"
+
     command: sh -c "pnpm prisma migrate deploy && pnpm run seed:prod && node dist/main.js"
 
     depends_on:
