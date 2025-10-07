@@ -7,9 +7,10 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
 import { RolesGuard } from './guards/roles.guard';
+import { MediaModule } from 'src/media/media.module';
 
 @Module({
-  imports: [PassportModule, JwtModule.register({}), UsersModule],
+  imports: [PassportModule, JwtModule.register({}), UsersModule,MediaModule],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard],
   controllers: [AuthController],
   exports: [
