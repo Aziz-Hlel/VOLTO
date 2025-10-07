@@ -40,7 +40,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
       'Notification started Now for event : ',
       job.data.eventName,
       '\n\tEvents starts in : ',
-    (new Date(job.data.startDate).getTime() - Date.now() )/ 1000,
+      (new Date(job.data.startDate).getTime() - Date.now()) / 1000,
       ' sec',
     );
   }
@@ -102,24 +102,27 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
 
     if (firstDelay > 0) {
       const jobId = this.getJobId(data.eventId, 'firstDelay');
-      const eventJobPayload:EventJobData = {
+      const eventJobPayload: EventJobData = {
         eventId: data.eventId,
         eventName: data.eventName,
         startDate: data.startDate.toISOString(),
         endDate: data.endDate.toISOString(),
-      }
+      };
       await this.eventQueue.add(data.eventId, eventJobPayload, { jobId: jobId, delay: firstDelay });
     }
 
     if (secondDelay > 0) {
       const jobId = this.getJobId(data.eventId, 'secondDelay');
-      const eventJobPayload:EventJobData = {
+      const eventJobPayload: EventJobData = {
         eventId: data.eventId,
         eventName: data.eventName,
         startDate: data.startDate.toISOString(),
         endDate: data.endDate.toISOString(),
-      }
-      await this.eventQueue.add(data.eventId, eventJobPayload, { jobId: jobId, delay: secondDelay });
+      };
+      await this.eventQueue.add(data.eventId, eventJobPayload, {
+        jobId: jobId,
+        delay: secondDelay,
+      });
     }
   }
 

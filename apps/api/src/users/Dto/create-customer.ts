@@ -1,4 +1,5 @@
 import { Gender, Role } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -9,7 +10,9 @@ import {
   Max,
   MaxLength,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateCustomerDto {
   @IsString()
@@ -31,4 +34,8 @@ export class CreateCustomerDto {
 
   @IsEnum(Gender, { message: 'Gender must be either M or F' })
   gender: Gender;
+
+  @ValidateNested()
+  @Type(() => CreateObjectWithMediaRequestDto)
+  avatar?: CreateObjectWithMediaRequestDto;
 }

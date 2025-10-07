@@ -5,7 +5,7 @@ import { StaffResponseDto } from '../Dto/staff-response.dto';
 
 export class UserMapper {
   // Convert full User DB object to API response
-  static toResponse(user: User): UserResponseDto {
+  static toResponse(user: User & { avatar?: { s3Key: string; url: string } }): UserResponseDto {
     const { password, createdAt, updatedAt, ...result } = user; // exclude password
     return {
       ...result,

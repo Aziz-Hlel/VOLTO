@@ -38,13 +38,22 @@ export class UsersService {
   }
 
   async createCustomer(dto: CreateCustomerDto, hashedPassword: string) {
-    return this.prisma.user.create({
-      data: {
-        ...dto,
-        role: Role.USER,
-        password: hashedPassword,
-      },
-    });
+    try {
+      const newUser = await this.prisma.user.create({
+        data: {
+          ...dto,
+          role: Role.USER,
+          password: hashedPassword,
+        },
+      });
+      if (dto.avatar?.s3Key)
+        await this.mediaService.confirmPendingMedia(dto.avatar?.s3Key, newUser.id);
+
+      return newUser;
+    } catch (e) {
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message, 'Failed to Confirm Avatar');
+    }
   }
 
   async createUser(dto: CreateUserDto, hashedPassword: string) {
@@ -64,7 +73,15 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const savedUser = await this.createCustomer(dto, hashedPassword);
 
-    return savedUser;
+    const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
+      entityType: EntityType.USER,
+      entityId: savedUser.id,
+      mediaPurpose: MediaPurpose.AVATAR,
+    });
+
+    const userWithAvatar = { ...savedUser, avatar };
+
+    return userWithAvatar;
   }
 
   async registerUser(dto: CreateUserDto) {
@@ -174,10 +191,12 @@ export class UsersService {
         },
       });
 
-      const userDto = UserMapper.toResponse(savedUser);
-      
-      return userDto;
+      // ? just to satisfy the type
+      const savedUserWithAvatar = { ...savedUser, avatar };
 
+      const userDto = UserMapper.toResponse(savedUserWithAvatar);
+
+      return userDto;
     } catch (e) {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);
@@ -326,7 +345,7 @@ export class UsersService {
     };
   }
 
-async updateUser(userId: string, updateUserDto: UpdateUserDto){
+  async updateUser(userId: string, updateUserDto: UpdateUserDto) {
     const existingUser = await this.findById(userId);
     if (!existingUser) throw new NotFoundException('User not found');
 
@@ -348,13 +367,11 @@ async updateUser(userId: string, updateUserDto: UpdateUserDto){
       });
 
       const userDto = UserMapper.toResponse(savedUser);
-      
-      return userDto;
 
+      return userDto;
     } catch (e) {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);
     }
   }
-
 }

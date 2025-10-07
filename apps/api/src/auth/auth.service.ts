@@ -7,15 +7,17 @@ import { UserMapper } from 'src/users/Mapper/usersMapper';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { UserResponseDto } from 'src/users/Dto/userResponse';
 import ENV from 'src/config/env';
-import { User } from '@prisma/client';
+import { EntityType, MediaPurpose, User } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 import { UpdateUserDto } from 'src/users/Dto/update-user';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private mediaService: MediaService,
   ) {}
 
   static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '15m' : '1m';
@@ -27,7 +29,12 @@ export class AuthService {
 
     const { accessToken, refreshToken } = this.getTokens(user);
 
-    const userDto = UserMapper.toResponse(user);
+    const user2 = {
+      ...user,
+      avatar : user.avatar ?? undefined
+    };
+    
+    const userDto = UserMapper.toResponse(user2);
 
     return { accessToken, refreshToken, user: userDto };
   }
@@ -37,7 +44,10 @@ export class AuthService {
 
     const { accessToken, refreshToken } = this.getTokens(validatedUser);
 
-    const userDto = UserMapper.toResponse(validatedUser);
+    const userDto = UserMapper.toResponse({
+      ...validatedUser,
+      avatar : validatedUser.avatar ?? undefined
+    });
 
     return { accessToken, refreshToken, user: userDto };
   }
@@ -65,7 +75,15 @@ export class AuthService {
     const passwordValid = await bcrypt.compare(password, user.password);
     if (!passwordValid) throw new UnauthorizedException('Invalid credentials');
 
-    return user;
+    const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
+      entityType: EntityType.USER,
+      entityId: user.id,
+      mediaPurpose: MediaPurpose.AVATAR,
+    });
+    
+    const userWithAvatar = { ...user, avatar };
+
+    return userWithAvatar;
   }
 
   public getTokens(user: User) {
@@ -86,7 +104,16 @@ export class AuthService {
     const foundUser = await this.usersService.findById(user.id);
     if (!foundUser) throw new UnauthorizedException('User not found');
 
-    const userDto = UserMapper.toResponse(foundUser);
+    const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
+      entityType: EntityType.USER,
+      entityId: user.id,
+      mediaPurpose: MediaPurpose.AVATAR,
+    });
+
+    const userDto = UserMapper.toResponse({
+      ...foundUser,
+      avatar : avatar ?? undefined
+    });
 
     return userDto;
   }

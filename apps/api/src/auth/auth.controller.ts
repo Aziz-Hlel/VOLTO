@@ -1,16 +1,5 @@
 // src/auth/auth.controller.ts
-import {
-  Body,
-  Controller,
-  Post,
-  UseGuards,
-  Get,
-  HttpCode,
-  Delete,
-  Param,
-  ParseUUIDPipe,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, HttpCode, Delete, Put, BadRequestException } from '@nestjs/common';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Role } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
@@ -35,14 +24,15 @@ export class AuthController {
     return payload;
   }
 
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @HttpCode(201)
-  @Post('register-admin')
-  async adminRegister(@Body() dto: CreateUserDto) {
-    const payload = await this.authService.registerCustomer(dto);
+  // ? i think you re not using this api alone
+  // @UseGuards(JwtAccessGuard, RolesGuard)
+  // @HttpCode(201)
+  // @Post('register-admin')
+  // async adminRegister(@Body() dto: CreateUserDto) {
+  //   const payload = await this.authService.registerCustomer(dto);
 
-    return payload;
-  }
+  //   return payload;
+  // }
 
   @HttpCode(200)
   @Post('login')
@@ -54,21 +44,18 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('refresh')
-  async refresh(@Body() { refreshToken }: { refreshToken: string }) {
-    console.log('Refresh token received:', refreshToken);
-    const payload = await this.authService.refresh(refreshToken);
+  async refresh(@Body() payload: { refreshToken: string }) {
+    // console.log('Refresh token received:', refreshToken);
+    if(!payload.refreshToken && typeof payload.refreshToken !== 'string') throw new BadRequestException('No refresh token provided');
+    const response = await this.authService.refresh(payload.refreshToken);
 
-    return payload;
+    return response;
   }
-
 
   @UseGuards(JwtAccessGuard)
   @HttpCode(200)
   @Put()
-  async updateUser(
-    @Body() updateUserDto: UpdateUserDto,
-    @CurrentUser() user: AuthUser,
-  ) {
+  async updateUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() user: AuthUser) {
     const userId = user.id;
     const response = await this.authService.updateUser(userId, updateUserDto);
     return response;
@@ -98,8 +85,7 @@ export class AuthController {
   @UseGuards(JwtAccessGuard)
   @HttpCode(200)
   @Delete()
-  async deleteUser( @CurrentUser() user: AuthUser) {
-
+  async deleteUser(@CurrentUser() user: AuthUser) {
     const userId = user.id;
     await this.authService.deleteAccount(userId);
     return {
@@ -107,7 +93,4 @@ export class AuthController {
       message: 'Account deleted successfully',
     };
   }
-
-
-
 }

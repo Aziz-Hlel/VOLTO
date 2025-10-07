@@ -22,7 +22,7 @@ export class EventsService {
   async create(createEventDto: CreateEventDto) {
     const { thumbnail, video, ...eventDto } = createEventDto;
     try {
-       await this.prisma.$transaction(async (tx) => {
+      await this.prisma.$transaction(async (tx) => {
         const createdEvent: Event = await tx.event.create({
           data: {
             ...eventDto,

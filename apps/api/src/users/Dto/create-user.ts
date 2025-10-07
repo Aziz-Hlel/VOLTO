@@ -39,5 +39,4 @@ export class CreateUserDto {
   @ValidateNested()
   @Type(() => CreateObjectWithMediaRequestDto)
   avatar?: CreateObjectWithMediaRequestDto;
-  
 }
