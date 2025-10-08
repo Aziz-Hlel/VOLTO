@@ -21,6 +21,8 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
+import axios from 'axios';
+import ENV from 'src/config/env';
 
 @Controller('events')
 export class EventsController {
@@ -68,11 +70,7 @@ export class EventsController {
     return response;
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.eventsService.getById(id);
-  }
-
+  
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
@@ -80,25 +78,35 @@ export class EventsController {
       updateEventDto.type === EventType.SPECIAL &&
       (!updateEventDto.startDate || !updateEventDto.endDate)
     )
-      throw new BadRequestException('startDate and endDate are required for special events');
-
+    throw new BadRequestException('startDate and endDate are required for special events');
+    
     if (
       updateEventDto.type === EventType.WEEKLY &&
       (!updateEventDto.cronStartDate || !updateEventDto.cronEndDate)
     )
-      throw new BadRequestException('cronStartDate and cronEndDate are required for weekly events');
-
+    throw new BadRequestException('cronStartDate and cronEndDate are required for weekly events');
+    
     const response = await this.eventsService.update(updateEventDto);
-
+    
     return response;
   }
-
+  
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     if (!id) throw new BadRequestException('id is required');
-
+    
     const response = await this.eventsService.remove(id);
     return response;
   }
+  
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.eventsService.getById(id);
+  }
+
+
+
+
 }

@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nest
 import axios from 'axios';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
+import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 interface IAddSpecialEvent {
@@ -31,23 +32,38 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private readonly firstNotificationDelay = 0; // !this._hour * 24;
   private readonly secondNotificationDelay = 0; // !this._hour * 2;
 
+  private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
+
   public constructor(
     private prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
   private async processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
-    const onSignalUrl = 'https://api.onesignal.com/notifications';
-
     const notificationPayload = {
-      app_id: 'fb30fd8a-0d7a-4e64-8750-68d8babeb254',
-    };
-    const response = await axios.post(onSignalUrl, notificationPayload, {
-      headers: {
-        Authorization: `Bearer ${'ENV.ONE_SIGNAL_APP_SECRET'}`,
-        'Content-Type': 'application/json',
+      app_id: ENV.ONE_SIGNAL_APP_ID,
+      target_channel: 'push',
+      headings: {
+        en: job.data.eventName,
       },
-    });
+      included_segments: ['All'],
+      data: { screen: 'event' },
+      contents: {
+        en: 'Event starts in 24 hours',
+      },
+    };
+
+    try {
+      await axios.post(this.oneSignalUrl, notificationPayload, {
+        headers: {
+          Authorization: `Bearer ${ENV.ONE_SIGNAL_APP_SECRET}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      this.logger.error(`❌ Notification job failed: ${error.message}`);
+    }
+
     console.log(
       'Notification started Now for special event : ',
       job.data.eventName,

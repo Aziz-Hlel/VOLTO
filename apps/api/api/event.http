@@ -33,8 +33,8 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "name": "Ladies Night2",
   "description": "Ladies Night",
   "type": "WEEKLY",
-  "cronStartDate": "0 5 * * 4",
-  "cronEndDate": "0 19 * * 4",  
+  "cronStartDate": "7 15 * * 3",
+  "cronEndDate": "0 19 * * 3",  
   "thumbnail": {
     "s3Key": "events/ladies-night-wallpaper.jpg",
     "url": ""
@@ -87,7 +87,7 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "name": "New Year's Eve",
   "type": "SPECIAL",
   "description": "New Year's Eve",
-  "startDate": "2025-10-07T16:35:00.999Z",
+  "startDate": "2025-10-08T14:59:00.999Z",
   "endDate": "2025-12-31T23:59:59.999Z",
   "cronStartDate": null,
   "cronEndDate": null,

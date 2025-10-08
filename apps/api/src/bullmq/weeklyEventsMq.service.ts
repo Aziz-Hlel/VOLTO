@@ -1,6 +1,8 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import axios from 'axios';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
+import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 interface IAddWeeklyEvent {
@@ -30,12 +32,39 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
   private readonly firstNotificationDelay = 0; // !this._hour * 24;
   private readonly secondNotificationDelay = 0; // !this._hour * 2;
 
+    private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
+
+    
   public constructor(
     private prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
-  private processSendSpecialEventsNotification(job: Job<WeeklyEventJobData>) {
+  private async  processSendSpecialEventsNotification(job: Job<WeeklyEventJobData>) {
+        const notificationPayload = {
+      app_id: ENV.ONE_SIGNAL_APP_ID,
+      target_channel: 'push',
+      headings: {
+        en: job.data.eventName,
+      },
+      included_segments: ['All'],
+      data: { screen: 'event' },
+      contents: {
+        en: 'Event starts in 24 hours',
+      },
+    };
+
+    try {
+      await axios.post(this.oneSignalUrl, notificationPayload, {
+        headers: {
+          Authorization: `Bearer ${ENV.ONE_SIGNAL_APP_SECRET}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      this.logger.error(`❌ Notification job failed: ${error.message}`);
+    }
+
     console.log(
       'Notification started Now for weekly event : ',
       job.data.eventName,
@@ -117,7 +146,7 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
       eventJobPayload, // payload
       {
         repeat: {
-          pattern: '24 16 * * *', //data.cronStartDate, // <-- cron expression here
+          pattern: data.cronStartDate, // <-- cron expression here
           tz: 'utc', // optional: timezone
         },
         repeatJobKey: jobId,
