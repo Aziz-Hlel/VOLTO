@@ -53,8 +53,6 @@ export class CreateEventDto {
   thumbnail: CreateObjectWithMediaRequestDto;
 
   @IsDefined({ message: 'Video is required' })
-  @IsNotEmptyObject({}, { message: 'Video cannot be empty' })
-  @ValidateNested()
   @Type(() => CreateObjectWithMediaRequestDto)
   video: CreateObjectWithMediaRequestDto;
 }

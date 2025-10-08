@@ -122,7 +122,6 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
         },
         repeatJobKey: jobId,
       },
-    
     );
 
     // const delayInMs = data.cronStartDate.getTime() - Date.now();
@@ -166,19 +165,18 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
   }
 
   async removeWeeklyEventNotification(eventId: string) {
-    
     const firstDelayJobId = this.getJobId(eventId, 'firstDelay');
     const secondDelayJobId = this.getJobId(eventId, 'secondDelay');
 
     const allJobSchedulers = await this.eventQueue.getJobSchedulers();
-    
+
     allJobSchedulers.map((scheduler) => {
       scheduler.name === firstDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
-    })
+    });
 
     allJobSchedulers.map((scheduler) => {
       scheduler.name === secondDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
-    })
+    });
 
     // await this.eventQueue.removeJobScheduler(secondDelayJobId);
   }
@@ -190,7 +188,6 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     const jobSchedulers = await this.eventQueue.getJobSchedulers();
 
     this.logger.log(`Found ${jobSchedulers.length} job schedulers in ${this.queueName}`);
-
   }
 
   onModuleDestroy() {

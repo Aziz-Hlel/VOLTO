@@ -9,6 +9,32 @@ import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { join } from 'path';
 import ENV from 'src/config/env';
+import { CreateReservationDto } from './dto/create-reservation.dto';
+
+class ExceptionOptions {
+  throwable: boolean = true;
+}
+
+class IsendEmail {
+  email: string;
+  subject: string;
+  content: string;
+  ExceptionOptions?: ExceptionOptions;
+}
+
+abstract class AbsctractServiceResponse {
+  abstract success: boolean;
+}
+
+class SuccessResponse<T> extends AbsctractServiceResponse {
+  success: true;
+  data: T;
+}
+
+class ErrorResponse extends AbsctractServiceResponse {
+  success: false;
+  error: unknown;
+}
 
 @Injectable()
 export class EmailService {
@@ -44,13 +70,43 @@ export class EmailService {
       });
   }
 
-  async sendEmail(email: string, subject: string, text: string) {
-    await this.transporter.sendMail({
-      from: this.EMAIL_ADDRESSES.support,
-      to: email,
-      subject: subject,
-      text: text,
-    });
+  async sendEmail<T extends IsendEmail >(payload: T): Promise<T['ExceptionOptions'] extends { throwable: true } ? SuccessResponse<undefined> | ErrorResponse : SuccessResponse<undefined> | ErrorResponse> {
+    try {
+      const info = await this.transporter.sendMail({
+        from: this.EMAIL_ADDRESSES.support,
+        to: payload.email,
+        subject: payload.subject,
+        text: payload.content,
+      });
+      return {
+        success: true,
+        data: undefined,
+      };
+    } catch (e) {
+      this.logger.error(e);
+      const throwable = payload.ExceptionOptions?.throwable ?? true;
+
+      if (e.responseCode === 550) {
+        if (throwable)
+          throw new BadRequestException({ success: false, message: 'Invalid recipient address' });
+        return {
+          success: false,
+          error: {
+            message: 'Invalid recipient address',
+          },
+        };
+      }
+      if (throwable)
+        throw new ServiceUnavailableException({
+          success: false,
+          message: 'Email service unavailable',
+        });
+      else
+        return {
+          success: false,
+          error: e,
+        };
+    }
   }
 
   async sendResetPasswordEmail({ recipient, token }: { recipient: string; token: string }) {
@@ -88,5 +144,40 @@ export class EmailService {
         message: 'Email service unavailable',
       });
     }
+  }
+
+  async sendRequestReservationEmailToAdmin(payload: CreateReservationDto) {
+
+    const formattedDate = new Intl.DateTimeFormat("en-US", {
+    month: "long", // October
+    day: "numeric", // 1
+    year: "numeric", // 2025
+    // hour: "numeric",
+    // minute: "numeric",
+    // hour12: true, // 12-hour clock with AM/PM
+  }).format(payload.date);
+
+    const content = `Client Info :\n
+    Username : ${payload.username}\n
+    Email : ${payload.email}\n
+    NbrGuests : \n
+      \tMen : ${payload.nbrGuests.Men}
+      \n\tWomen : ${payload.nbrGuests.Women}\n
+    Date : ${formattedDate}\n
+    
+    `;
+    const subject = payload.isVip ? 'VIP Reservation Request' : 'Reservation Request';
+
+    const response = await this.sendEmail({
+      email: this.EMAIL_ADDRESSES.support,
+      subject,
+      content,
+      ExceptionOptions: { throwable: true },
+    });
+
+
+    return response;
+
+
   }
 }

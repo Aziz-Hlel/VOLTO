@@ -4,6 +4,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsDate,
+  IsDefined,
   IsOptional,
   IsString,
   ValidateNested,
@@ -32,6 +33,7 @@ export class UpdateSpinnigWheelDto {
   @ArrayMinSize(5)
   @ArrayMaxSize(5)
   @ValidateNested({ each: true })
+  @IsDefined({ message: 'thumbnail is required' })
   @Type(() => UpdateSignleSpinnigWheelRewardDto)
   rewardList: UpdateSignleSpinnigWheelRewardDto[];
 }

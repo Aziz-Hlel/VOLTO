@@ -18,6 +18,7 @@ import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { join } from 'path';
     SpinnigWheelRewardModule,
     SpinnigWheelModule,
     GalleryModule,
+    EmailModule,
   ],
 
   controllers: [AppController],
