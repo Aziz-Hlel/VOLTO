@@ -10,6 +10,7 @@ import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
 import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
 import { WeeklyEventMq } from 'src/bullmq/weeklyEventsMq.service';
+import cronParser from 'cron-parser';
 
 @Injectable()
 export class EventsService {
@@ -279,5 +280,73 @@ export class EventsService {
     });
 
     return ladiesNight;
+  }
+
+  async getClosestWeeklyEvent() {
+    const now = new Date();
+
+    const allWeeklyEvents = await this.prisma.event.findMany({
+      where: {
+        type: EventType.WEEKLY,
+      },
+      orderBy: {
+        cronStartDate: 'asc', // earliest first
+      },
+    });
+
+    const withNextDates = allWeeklyEvents
+      .map((event) => {
+        try {
+          const interval = cronParser.parse(event.cronStartDate!, {
+            currentDate: now,
+          });
+          const next = interval.next().toDate();
+          return { ...event, nextExecution: next };
+        } catch (err) {
+          console.error(`Invalid cron expression for event ${event.id}:`, err);
+          return null;
+        }
+      })
+      .filter(Boolean);
+
+    const sorted = withNextDates.sort(
+      (a, b) => (a as any)?.nextExecution?.getTime() - (b as any)?.nextExecution?.getTime(),
+    );
+
+    return {
+      eventTitle: sorted[0]?.name,
+      eventStartDate: sorted[0]?.nextExecution,
+      eventEndDate: sorted[0]?.nextExecution,
+    };
+  }
+
+  async getClosestEvent() {
+    const now = new Date();
+
+    const closestActiveOrUpcomingSpecialEvents = await this.prisma.event.findFirst({
+      where: {
+        endDate: { gt: now }, // filter out events that already ended
+        type: EventType.SPECIAL,
+      },
+      orderBy: {
+        startDate: 'asc', // earliest first
+      },
+    });
+
+    if (!closestActiveOrUpcomingSpecialEvents) {
+      return this.getClosestWeeklyEvent();
+    }
+    const diffInMs = closestActiveOrUpcomingSpecialEvents.startDate!.getTime() - now.getTime();
+    const specialEventInLessThanWeek = diffInMs / (1000 * 60 * 60 * 24) <= 7;
+
+    if (specialEventInLessThanWeek) {
+      return {
+        eventTitle: closestActiveOrUpcomingSpecialEvents.name,
+        eventStartDate: closestActiveOrUpcomingSpecialEvents.startDate,
+        eventEndDate: closestActiveOrUpcomingSpecialEvents.endDate,
+      };
+    }
+
+    return this.getClosestWeeklyEvent();
   }
 }

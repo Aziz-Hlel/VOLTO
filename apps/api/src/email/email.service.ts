@@ -70,7 +70,13 @@ export class EmailService {
       });
   }
 
-  async sendEmail<T extends IsendEmail >(payload: T): Promise<T['ExceptionOptions'] extends { throwable: true } ? SuccessResponse<undefined> | ErrorResponse : SuccessResponse<undefined> | ErrorResponse> {
+  async sendEmail<T extends IsendEmail>(
+    payload: T,
+  ): Promise<
+    T['ExceptionOptions'] extends { throwable: true }
+      ? SuccessResponse<undefined> | ErrorResponse
+      : SuccessResponse<undefined> | ErrorResponse
+  > {
     try {
       const info = await this.transporter.sendMail({
         from: this.EMAIL_ADDRESSES.support,
@@ -147,15 +153,14 @@ export class EmailService {
   }
 
   async sendRequestReservationEmailToAdmin(payload: CreateReservationDto) {
-
-    const formattedDate = new Intl.DateTimeFormat("en-US", {
-    month: "long", // October
-    day: "numeric", // 1
-    year: "numeric", // 2025
-    // hour: "numeric",
-    // minute: "numeric",
-    // hour12: true, // 12-hour clock with AM/PM
-  }).format(payload.date);
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      month: 'long', // October
+      day: 'numeric', // 1
+      year: 'numeric', // 2025
+      // hour: "numeric",
+      // minute: "numeric",
+      // hour12: true, // 12-hour clock with AM/PM
+    }).format(payload.date);
 
     const content = `Client Info :\n
     Username : ${payload.username}\n
@@ -167,7 +172,7 @@ export class EmailService {
     Date : ${formattedDate}\n
     
     `;
-    const subject = payload.isVip ? 'VIP Reservation Request' : 'Reservation Request';
+    const subject = payload.isVip ? 'VIP Reservation Request' : 'Reservation Request (Non VIP)';
 
     const response = await this.sendEmail({
       email: this.EMAIL_ADDRESSES.support,
@@ -176,9 +181,6 @@ export class EmailService {
       ExceptionOptions: { throwable: true },
     });
 
-
     return response;
-
-
   }
 }

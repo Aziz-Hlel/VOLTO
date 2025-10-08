@@ -61,6 +61,13 @@ export class EventsController {
     return data.payload;
   }
 
+  @Get('closest-event')
+  async getClosestEvent() {
+    const response = await this.eventsService.getClosestEvent();
+
+    return response;
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.eventsService.getById(id);

@@ -6,7 +6,5 @@ import { ReservationController } from './reservation.controller';
   controllers: [ReservationController],
   providers: [EmailService],
   exports: [EmailService],
-
-
 })
 export class EmailModule {}

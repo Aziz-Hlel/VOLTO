@@ -9,7 +9,6 @@ export class ReservationController {
   @HttpCode(200)
   @Post()
   async receiveReservation(@Body() payload: CreateReservationDto) {
-      
     const response = await this.emailService.sendRequestReservationEmailToAdmin(payload);
     return {
       success: true,

@@ -125,3 +125,11 @@ Authorization: Bearer {{login.response.body.accessToken}}
     }
 
 }
+
+
+
+
+### Get Closest Event
+# @name getListOfEvents
+GET     {{baseUrl}}/events/closest-event
+Content-Type: application/json

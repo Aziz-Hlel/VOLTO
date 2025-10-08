@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import axios from 'axios';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -35,7 +36,18 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
-  private processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
+  private async processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
+    const onSignalUrl = 'https://api.onesignal.com/notifications';
+
+    const notificationPayload = {
+      app_id: 'fb30fd8a-0d7a-4e64-8750-68d8babeb254',
+    };
+    const response = await axios.post(onSignalUrl, notificationPayload, {
+      headers: {
+        Authorization: `Bearer ${'ENV.ONE_SIGNAL_APP_SECRET'}`,
+        'Content-Type': 'application/json',
+      },
+    });
     console.log(
       'Notification started Now for special event : ',
       job.data.eventName,
