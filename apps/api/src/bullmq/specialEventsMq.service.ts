@@ -29,8 +29,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private eventWorker: Worker<SpecialEventJobData>;
 
   private readonly _hour = 1000 * 60 * 60;
-  private readonly firstNotificationDelay = 0; // !this._hour * 24;
-  private readonly secondNotificationDelay = 0; // !this._hour * 2;
+  private readonly firstNotificationDelay = this._hour * 24;
+  private readonly secondNotificationDelay = this._hour * 2;
 
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
@@ -126,7 +126,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   async addSpecialEventNotification(data: IAddSpecialEvent) {
     const delayInMs = data.startDate.getTime() - Date.now();
     const firstDelay = delayInMs - this.firstNotificationDelay;
-    const secondDelay = delayInMs - 2000 - this.secondNotificationDelay;
+    const secondDelay = delayInMs - this.secondNotificationDelay;
 
     if (firstDelay > 0) {
       const jobId = this.getJobId(data.eventId, 'firstDelay');

@@ -30,10 +30,10 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 {
   "id": "5e3b7f1c-2d4a-4f6e-9a8b-1c2d3e4f5a6b",
-  "name": "Ladies Night2",
+  "name": "Ladies Night",
   "description": "Ladies Night",
   "type": "WEEKLY",
-  "cronStartDate": "7 15 * * 3",
+  "cronStartDate": "20 17 * * 4",
   "cronEndDate": "0 19 * * 3",  
   "thumbnail": {
     "s3Key": "events/ladies-night-wallpaper.jpg",

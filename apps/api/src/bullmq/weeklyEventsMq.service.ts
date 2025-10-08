@@ -4,6 +4,7 @@ import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CommonEventsMqService } from './CommonEventsMq.service';
 
 interface IAddWeeklyEvent {
   eventId: string;
@@ -17,6 +18,7 @@ interface WeeklyEventJobData {
   eventName: string;
   cronStartDate: string;
   cronEndDate: string;
+  delay: 'firstDelay' | 'secondDelay';
 }
 
 @Injectable()
@@ -32,26 +34,29 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
   private readonly firstNotificationDelay = 0; // !this._hour * 24;
   private readonly secondNotificationDelay = 0; // !this._hour * 2;
 
-    private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
+  private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
-    
   public constructor(
     private prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
+    private readonly commonEventsMq: CommonEventsMqService,
   ) {}
 
-  private async  processSendSpecialEventsNotification(job: Job<WeeklyEventJobData>) {
-        const notificationPayload = {
+  private async processSendSpecialEventsNotification(job: Job<WeeklyEventJobData>) {
+    const headings = this.commonEventsMq.getNotifcationHeadings({
+      delay: job.data.delay,
+      eventName: job.data.eventName,
+    });
+
+    const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
+
+    const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
       target_channel: 'push',
-      headings: {
-        en: job.data.eventName,
-      },
+      headings: headings,
       included_segments: ['All'],
       data: { screen: 'event' },
-      contents: {
-        en: 'Event starts in 24 hours',
-      },
+      contents: content,
     };
 
     try {
@@ -124,90 +129,61 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     return `${eventId}-${delay}`;
   }
 
+  shiftCronDayBack(cronExpr: string): string {
+    const parts = cronExpr.split(' '); // split into [minute, hour, day, month, dayOfWeek]
+    if (parts.length !== 5) {
+      // throw new Error('Invalid cron expression');
+      return cronExpr;
+    }
+
+    let dayOfWeek = parts[4];
+
+    // handle numeric day only (0=Sun, 1=Mon,...6=Sat)
+    if (!/^\d$/.test(dayOfWeek)) {
+      return cronExpr;
+      // throw new Error('Day-of-week must be a single digit 0-6');
+    }
+
+    const shiftedDay = (parseInt(dayOfWeek) + 6) % 7; // day-1
+    parts[4] = shiftedDay.toString();
+
+    return parts.join(' ');
+  }
+
   async addWeeklyEventNotification(data: IAddWeeklyEvent) {
-    const jobId = this.getJobId(data.eventId, 'firstDelay');
+    const firstDelayjobId = this.getJobId(data.eventId, 'firstDelay');
+
+    const cronStartDateDayShifted = this.shiftCronDayBack(data.cronStartDate);
 
     const eventJobPayload: WeeklyEventJobData = {
       eventId: data.eventId,
       eventName: data.eventName,
-      cronStartDate: data.cronStartDate,
+      cronStartDate: cronStartDateDayShifted,
       cronEndDate: data.cronEndDate,
+      delay: 'firstDelay',
     };
-    console.log('adding weekly event with param : ', {
-      jobId: jobId,
-      eventId: data.eventId,
-      eventName: data.eventName,
-      cronStartDate: data.cronStartDate,
-      cronEndDate: data.cronEndDate,
-    });
 
     await this.eventQueue.add(
-      jobId, // name of the job
+      firstDelayjobId, // name of the job
       eventJobPayload, // payload
       {
         repeat: {
-          pattern: data.cronStartDate, // <-- cron expression here
+          pattern: cronStartDateDayShifted, // <-- cron expression here
           tz: 'utc', // optional: timezone
         },
-        repeatJobKey: jobId,
+        repeatJobKey: firstDelayjobId,
       },
     );
-
-    // const delayInMs = data.cronStartDate.getTime() - Date.now();
-    // const firstDelay = delayInMs - this.firstNotificationDelay;
-    // const secondDelay = delayInMs - 2000 - this.secondNotificationDelay;
-
-    // if (firstDelay > 0) {
-    //   const jobId = this.getJobId(data.eventId, 'firstDelay');
-    //   const eventJobPayload: WeeklyEventJobData = {
-    //     eventId: data.eventId,
-    //     eventName: data.eventName,
-    //     cronStartDate: data.cronStartDate,
-    //     cronEndDate: data.cronEndDate,
-    //   };
-    //   await this.eventQueue.add(
-    //     data.eventId, // name of the job
-    //     eventJobPayload, // payload
-    //     {
-    //       jobId: jobId, // optional, keeps the same job from duplicating
-    //       repeat: {
-    //         pattern: data.cronStartDate, // <-- cron expression here
-    //         tz: 'utc', // optional: timezone
-    //       },
-    //     },
-    //   );
-    // }
-
-    // if (secondDelay > 0) {
-    //   const jobId = this.getJobId(data.eventId, 'secondDelay');
-    //   const eventJobPayload: WeeklyEventJobData = {
-    //     eventId: data.eventId,
-    //     eventName: data.eventName,
-    //     cronStartDate: data.cronStartDate.toISOString(),
-    //     cronEndDate: data.cronEndDate.toISOString(),
-    //   };
-    //   await this.eventQueue.add(data.eventId, eventJobPayload, {
-    //     jobId: jobId,
-    //     delay: secondDelay,
-    //   });
-    // }
   }
 
   async removeWeeklyEventNotification(eventId: string) {
     const firstDelayJobId = this.getJobId(eventId, 'firstDelay');
-    const secondDelayJobId = this.getJobId(eventId, 'secondDelay');
 
     const allJobSchedulers = await this.eventQueue.getJobSchedulers();
 
     allJobSchedulers.map((scheduler) => {
       scheduler.name === firstDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
     });
-
-    allJobSchedulers.map((scheduler) => {
-      scheduler.name === secondDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
-    });
-
-    // await this.eventQueue.removeJobScheduler(secondDelayJobId);
   }
 
   async onModuleInit() {
