@@ -28,6 +28,9 @@ export class CreateReservationDto {
   @IsEmail()
   email: string;
 
+  @IsString()
+  phoneNumber: string;
+
   @IsDefined({ message: 'nbrGuests is required' })
   @IsNotEmptyObject({}, { message: 'nbrGuests cannot be empty' })
   @ValidateNested()
@@ -39,5 +42,5 @@ export class CreateReservationDto {
   date: Date;
 
   @IsBoolean()
-  isVip: boolean;
+  isVip: boolean = false;
 }

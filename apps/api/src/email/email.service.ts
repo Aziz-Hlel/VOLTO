@@ -160,6 +160,7 @@ export class EmailService {
     const content = `Client Info :\n
     Username : ${payload.username}\n
     Email : ${payload.email}\n
+    Phone Number : ${payload.phoneNumber}\n
     NbrGuests : \n
       \tMen : ${payload.nbrGuests.Men}
       \n\tWomen : ${payload.nbrGuests.Women}\n
