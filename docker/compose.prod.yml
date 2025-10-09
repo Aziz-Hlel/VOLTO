@@ -54,8 +54,8 @@ services:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
 
-      AWS_EC2_METADATA_SERVICE_ENDPOINT: http://169.254.169.254
-      AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE: IPv4
+      ONE_SIGNAL_APP_SECRET: ${ONE_SIGNAL_APP_SECRET}
+      ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
 
     extra_hosts:
       - "host.docker.internal:host-gateway"
