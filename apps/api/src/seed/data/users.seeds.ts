@@ -55,7 +55,7 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     email: 'hkouma2011@gmail.com',
     password: await hashPassword('11111111'),
     role: Role.USER,
-    gender: Gender.M,
+    gender: Gender.F,
     tier: Tier.SILVER,
     phoneNumber: null,
   }
