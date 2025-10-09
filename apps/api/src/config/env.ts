@@ -53,7 +53,7 @@ export const envSchema = z
   .refine(
     (data) => !['stage', 'production'].includes(data.NODE_ENV) || data.ONE_SIGNAL_APP_ID !== '',
     {
-      path: ['APP_ID'],
+      path: ['ONE_SIGNAL_APP_ID'],
       message: 'ONE_SIGNAL_APP_ID is required in stage or production environments',
     },
   );
