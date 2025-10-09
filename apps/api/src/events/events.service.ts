@@ -178,7 +178,6 @@ export class EventsService {
         existingEvent.type === 'WEEKLY' &&
         existingEvent.cronStartDate !== updatedEvent.cronStartDate
       ) {
-        console.log('removing old weekly notif');
         await this.weeklyEventsMq.removeWeeklyEventNotification(existingEvent.id);
       }
 
@@ -297,11 +296,20 @@ export class EventsService {
     const withNextDates = allWeeklyEvents
       .map((event) => {
         try {
-          const interval = cronParser.parse(event.cronStartDate!, {
+          const cronStartDateInterval = cronParser.parse(event.cronStartDate!, {
             currentDate: now,
           });
-          const next = interval.next().toDate();
-          return { ...event, nextExecution: next };
+          const cronEndDateInterval = cronParser.parse(event.cronEndDate!, {
+            currentDate: now,
+          })
+          const nextCronStartDate = cronStartDateInterval.next().toDate();
+          const nextCronEndDate = cronEndDateInterval.next().toDate();
+
+          return { ...event, nextExecution: {
+            nextCronStartDate,
+            nextCronEndDate
+
+          } };
         } catch (err) {
           console.error(`Invalid cron expression for event ${event.id}:`, err);
           return null;
@@ -310,13 +318,13 @@ export class EventsService {
       .filter(Boolean);
 
     const sorted = withNextDates.sort(
-      (a, b) => (a as any)?.nextExecution?.getTime() - (b as any)?.nextExecution?.getTime(),
+      (a, b) => (a as any)?.nextExecution?.nextCronStartDate.getTime() - (b as any)?.nextExecution?.nextCronStartDate.getTime(),
     );
 
     return {
       eventTitle: sorted[0]?.name,
-      eventStartDate: sorted[0]?.nextExecution,
-      eventEndDate: sorted[0]?.nextExecution,
+      eventStartDate: sorted[0]?.nextExecution?.nextCronStartDate,
+      eventEndDate: sorted[0]?.nextExecution?.nextCronEndDate,
     };
   }
 

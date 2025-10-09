@@ -30,14 +30,9 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
 
   private eventWorker: Worker<WeeklyEventJobData>;
 
-  private readonly _hour = 1000 * 60 * 60;
-  private readonly firstNotificationDelay = 0; // !this._hour * 24;
-  private readonly secondNotificationDelay = 0; // !this._hour * 2;
-
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
   public constructor(
-    private prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly commonEventsMq: CommonEventsMqService,
   ) {}

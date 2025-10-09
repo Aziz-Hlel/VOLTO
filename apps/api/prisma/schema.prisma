@@ -108,7 +108,7 @@ model Event {
   description   String
   startDate     DateTime?
   endDate       DateTime?
-  cronStartDate String?
+  cronStartDate String? 
   cronEndDate   String?
   isLadiesNight Boolean   @default(false)
 

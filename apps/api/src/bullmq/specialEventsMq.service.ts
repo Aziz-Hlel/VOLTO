@@ -4,6 +4,7 @@ import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CommonEventsMqService } from './CommonEventsMq.service';
 
 interface IAddSpecialEvent {
   eventId: string;
@@ -17,6 +18,7 @@ interface SpecialEventJobData {
   eventName: string;
   startDate: string;
   endDate: string;
+  delay: 'firstDelay' | 'secondDelay';
 }
 
 @Injectable()
@@ -35,22 +37,27 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
   public constructor(
-    private prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
+        private readonly commonEventsMq: CommonEventsMqService,
+    
   ) {}
 
   private async processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
+        const headings = this.commonEventsMq.getNotifcationHeadings({
+      delay: job.data.delay,
+      eventName: job.data.eventName,
+    });
+
+    const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
+
+
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
       target_channel: 'push',
-      headings: {
-        en: job.data.eventName,
-      },
+      headings: headings,
       included_segments: ['All'],
       data: { screen: 'event' },
-      contents: {
-        en: 'Event starts in 24 hours',
-      },
+      contents: content,
     };
 
     try {
@@ -135,6 +142,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
         eventName: data.eventName,
         startDate: data.startDate.toISOString(),
         endDate: data.endDate.toISOString(),
+        delay: 'firstDelay',
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, { jobId: jobId, delay: firstDelay });
     }
@@ -146,6 +154,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
         eventName: data.eventName,
         startDate: data.startDate.toISOString(),
         endDate: data.endDate.toISOString(),
+        delay: 'secondDelay',
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, {
         jobId: jobId,
