@@ -29,10 +29,13 @@ const apiRoutes = {
     delete: (eventId: string) => `/events/${eventId}` as const,
   },
 
+  ladiesNight: {
+    details: () => "/ladies-night/details" as const,
+  },
+
   media: {
     presignedUrl: () => "/media/presigned-url" as const,
   },
-
   images: () => ENV.BASE_URL + "/images/",
 };
 

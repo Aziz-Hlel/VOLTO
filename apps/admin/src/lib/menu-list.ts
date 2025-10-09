@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Images,
   LifeBuoy,
+  PartyPopper,
 } from "lucide-react";
 
 type Submenu = {
@@ -62,6 +63,16 @@ export function getMenuList(pathname: string): Group[] {
           href: "/Gallery",
           label: "Gallery",
           icon: Images,
+        },
+      ],
+    },
+    {
+      groupLabel: "Contents",
+      menus: [
+        {
+          href: "/ladies-night",
+          label: "Ladies Night",
+          icon: PartyPopper,
         },
         {
           href: "/spinning-wheel",

@@ -14,6 +14,7 @@ import AddEventWrapper from "./components/events/AddEventWrapper";
 import Staff from "./pages/Staff";
 import StaffMainContent from "./components/Staff/StaffMainContent";
 import AddStaffWrapper from "./components/Staff/AddStaffWrapper";
+import LadiesNight from "./components/LadiesNight/LadiesNight";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,8 @@ function App() {
                   <Route path="create" element={<AddStaffWrapper />} />
                   <Route path="edit/:staffId" element={<AddStaffWrapper />} />
                 </Route>
+
+                <Route path="ladies-night" element={<LadiesNight />}></Route>
 
                 <Route path="*" element={<NotFound />} />
               </Route>
