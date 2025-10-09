@@ -50,7 +50,7 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     phoneNumber: null,
   },
   {
-  id: '2d7f1a3e-5b6c-4f2d-8e1a-9c3b4f5d6a7e',
+  id: 'd2a8c4d1-3e91-4a79-b68e-9d3ad28a83a4',
   username: 'Salma Hayek',
   email: 'user@example.com',
   password: await hashPassword('12345678'),
