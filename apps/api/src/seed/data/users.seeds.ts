@@ -30,12 +30,12 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     phoneNumber: null,
   },
   {
-    id: 'd2a8c4d1-3e91-4a79-b68e-9d3ad28a83a4',
+    id: 'a7f1c3b2-8d4e-4f6a-b2c1-7d5e8f9a0b3c',
     username: 'Waiter',
-    email: 'hkouma2011@gmail.com',
-    password: await hashPassword('11111111'),
-    role: Role.USER,
-    gender: Gender.F,
+    email: 'waiter@example.com',
+    password: await hashPassword('12345678'),
+    role: Role.WAITER,
+    gender: Gender.M,
     tier: Tier.SILVER,
     phoneNumber: null,
   },
@@ -50,15 +50,15 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     phoneNumber: null,
   },
   {
-  id: '7b9e2c6a-41cf-4a87-91fd-4f6e2f9c1a3b',
-  username: 'Salma Hayek',
-  email: 'user@example.com',
-  password: await hashPassword('12345678'),
-  role: Role.USER,
-  gender: Gender.M,
-  tier: Tier.SILVER,
-  phoneNumber: null,
-},
+    id: '7b9e2c6a-41cf-4a87-91fd-4f6e2f9c1a3b',
+    username: 'Salma Hayek',
+    email: 'hkouma2011@gmail.com',
+    password: await hashPassword('12345678'),
+    role: Role.USER,
+    gender: Gender.M,
+    tier: Tier.SILVER,
+    phoneNumber: null,
+  }
 ];
 
 const seedUsers = async () => {

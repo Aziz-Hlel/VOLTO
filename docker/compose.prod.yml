@@ -57,9 +57,6 @@ services:
       ONE_SIGNAL_APP_SECRET: ${ONE_SIGNAL_APP_SECRET}
       ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
 
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
     command: sh -c "pnpm prisma migrate deploy && node dist/main.js"
 
     depends_on:
