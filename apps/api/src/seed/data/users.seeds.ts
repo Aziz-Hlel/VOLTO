@@ -53,7 +53,7 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     id: '7b9e2c6a-41cf-4a87-91fd-4f6e2f9c1a3b',
     username: 'Salma Hayek',
     email: 'hkouma2011@gmail.com',
-    password: await hashPassword('12345678'),
+    password: await hashPassword('11111111'),
     role: Role.USER,
     gender: Gender.M,
     tier: Tier.SILVER,
