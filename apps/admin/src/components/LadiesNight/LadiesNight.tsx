@@ -26,7 +26,22 @@ const LadiesNight = () => {
     }); // Get this week's end date
     const nextEndDate = endInterval.next().toDate();
 
-    // if (nextstartDate)
+    if (nextstartDate < nextEndDate){
+        const diff = nextstartDate.getTime() - currentDate.getTime();
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        return `Event Starts in ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+        
+    }
+const diff = nextEndDate.getTime() - currentDate.getTime();
+const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+return `Event Ends in ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+    
   }, [ladiesNight]);
 
   return (

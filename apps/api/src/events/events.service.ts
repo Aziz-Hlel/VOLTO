@@ -318,7 +318,7 @@ export class EventsService {
       .filter(Boolean);
 
     const sorted = withNextDates.sort(
-      (a, b) => (a as any)?.nextExecution?.nextCronStartDate.getTime() - (b as any)?.nextExecution?.nextCronStartDate.getTime(),
+      (a, b) => (a as any)?.nextExecution?.nextCronEndDate.getTime() - (b as any)?.nextExecution?.nextCronEndDate.getTime(),
     );
 
     return {

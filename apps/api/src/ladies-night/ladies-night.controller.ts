@@ -13,4 +13,12 @@ export class LadiesNightController {
 
     return { isLadiesNightActive, ...response };
   }
+
+  @Get('details')
+  async getLadiesNightDetails() {
+    const response =  await this.ladiesNightService.getLadiesNightDetails();
+
+    return response;
+    
+  }
 }

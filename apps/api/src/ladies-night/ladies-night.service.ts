@@ -4,11 +4,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import cronParser from 'cron-parser';
 import { WsException } from '@nestjs/websockets';
+import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class LadiesNightService {
   constructor(
     private prisma: PrismaService,
+    private mediaService: MediaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
@@ -299,4 +301,21 @@ export class LadiesNightService {
       },
     });
   };
+
+
+
+  async getLadiesNightDetails() {
+
+    const ladiesNight = await this.prisma.event.findFirst({
+      where: { isLadiesNight: true },
+    });
+
+    if(!ladiesNight) throw new BadRequestException('Ladies Night event not found in database');
+
+    return {
+      success: true,
+      ladiesNight,
+    };
+
+  }
 }
