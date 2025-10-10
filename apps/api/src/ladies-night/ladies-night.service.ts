@@ -312,10 +312,7 @@ export class LadiesNightService {
 
     if(!ladiesNight) throw new BadRequestException('Ladies Night event not found in database');
 
-    return {
-      success: true,
-      ladiesNight,
-    };
+    return ladiesNight;
 
   }
 }

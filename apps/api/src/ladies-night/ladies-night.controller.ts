@@ -19,6 +19,18 @@ export class LadiesNightController {
     const response =  await this.ladiesNightService.getLadiesNightDetails();
 
     return response;
-    
+
+  }
+
+  @Get('quota')
+  async getQuota() {
+
+    const response =  await this.ladiesNightService.getDrinkQuota();
+
+
+    return {
+      quota : response.quota
+    }
+
   }
 }

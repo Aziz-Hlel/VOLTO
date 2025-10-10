@@ -3,6 +3,9 @@ import { apiService } from "../apiService";
 import apiRoutes from "../routes";
 
 export const ladiesNightService = {
-  details: () =>
-    apiService.getThrowable<LadiesNightDetailsResponse>(apiRoutes.ladiesNight.details()),
+  details: async () =>
+    await apiService.getThrowable<LadiesNightDetailsResponse>(apiRoutes.ladiesNight.details()),
+
+  getQuota: async () =>
+    await apiService.getThrowable<{ quota: number }>(apiRoutes.ladiesNight.getQuota()),
 };

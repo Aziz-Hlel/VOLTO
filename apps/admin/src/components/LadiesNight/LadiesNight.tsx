@@ -1,62 +1,75 @@
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "../ui/button";
 import { ladiesNightService } from "@/Api/services/ladiesNight.service";
-import cronParser from "cron-parser";
-import { useMemo } from "react";
+import CountDown from "./CountDown";
+import { Button } from "../ui/button";
+import { Martini } from "lucide-react";
+import { Spinner } from "../ui/spinner";
+import { useState } from "react";
+import UpdateDrinkQuota from "./UpdateDrinkQuota";
+import { ChartAreaInteractive } from "./Chart/chart-area-interactive";
 
 const LadiesNight = () => {
-  const { data, isLoading } = useQuery({
+  const { data: ladiesNightData, isFetched: ladiesNightDataIsFetched } = useQuery({
     queryKey: ["ladies-night", "details"],
-    queryFn: () => ladiesNightService.details(),
+    queryFn: async () => await ladiesNightService.details(),
     enabled: true,
   });
 
-  const ladiesNight = data?.data;
+  const { data: quotaData, isFetched: quotaDataIsFetched } = useQuery({
+    queryKey: ["ladies-night", "quota"],
+    queryFn: async () => await ladiesNightService.getQuota(),
+    enabled: true,
+  });
 
-  const getLadiesNightCountDown = useMemo(() => {
-    const currentDate = new Date();
+  const ladiesNight = ladiesNightData?.data;
 
-    const startInterval = cronParser.parseExpression(ladiesNight.cronStartDate!, {
-      currentDate,
-    });
-    const nextstartDate = startInterval.next().toDate();
+  const drinkQuota = quotaData?.data.quota ?? undefined;
 
-    const endInterval = cronParser.parseExpression(ladiesNight.cronEndDate!, {
-      currentDate,
-    }); // Get this week's end date
-    const nextEndDate = endInterval.next().toDate();
+  const [openUpdateDrinkQuota, setOpenUpdateDrinkQuota] = useState(false);
 
-    if (nextstartDate < nextEndDate){
-        const diff = nextstartDate.getTime() - currentDate.getTime();
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        return `Event Starts in ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
-        
-    }
-const diff = nextEndDate.getTime() - currentDate.getTime();
-const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-return `Event Ends in ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
-    
-  }, [ladiesNight]);
+  const handleOpenUpdateDrinkQuota = (open: boolean) => setOpenUpdateDrinkQuota(open);
 
   return (
     <div>
+      {openUpdateDrinkQuota && (
+        <UpdateDrinkQuota
+          open={openUpdateDrinkQuota}
+          setOpen={handleOpenUpdateDrinkQuota}
+          initialDrinkQuota={drinkQuota ?? 0}
+        />
+      )}
       <header className="border-b bg-card px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Ladies Night Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, {"user?.email"}</p>
+            <p className="text-muted-foreground">Welcome back</p>
           </div>
-          <Button variant="outline" className=" ">
-            Logout
-          </Button>
+          <CountDown ladiesNight={ladiesNight} isFetched={ladiesNightDataIsFetched} />
         </div>
       </header>
+
+      <main className="p-6">
+        <div className=" w-full flex justify-end">
+          <Button
+            variant="default"
+            className=" flex"
+            onClick={() => handleOpenUpdateDrinkQuota(true)}
+          >
+            <div className="h-full flex justify-center items-center space-x-1">
+              <span className="w-full ">Drink Quota : </span>
+              {quotaDataIsFetched ? <span>{drinkQuota}</span> : <Spinner />}
+              <Martini className=" size-3  font-semibold" />
+            </div>
+          </Button>
+        </div>
+
+        <div className=" w-full grid grid-cols-5">
+          <div className=" col-span-3">
+            <ChartAreaInteractive />
+          </div>
+          <div></div>
+        </div>
+      </main>
     </div>
   );
 };
