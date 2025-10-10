@@ -16,7 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { LadiesNightDataResponseDto } from "@/types/events/eventResponse.dto";
 import cronstrue from "cronstrue";
 import { EventType } from "@/types/events/EventType";
 
@@ -40,7 +39,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
   setEventForDeletion,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<keyof LadiesNightDataResponseDto>("name");
+  const [sortBy, setSortBy] = useState<keyof LadiesNightDataResponseDto>("startDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // const filteredData = data.filter(
