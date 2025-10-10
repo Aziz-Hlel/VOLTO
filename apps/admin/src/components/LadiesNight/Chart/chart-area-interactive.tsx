@@ -230,7 +230,7 @@ export function ChartAreaInteractive() {
               stroke="var(--color-desktop)"
               stackId="a"
             />
-            <ChartLegend content={<ChartLegendContent payload={chartData} />} />
+            <ChartLegend content={<ChartLegendContent payload={undefined} />} />
           </AreaChart>
         </ChartContainer>
       </CardContent>
