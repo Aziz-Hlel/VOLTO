@@ -88,7 +88,9 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({ data }) => {
                   Participants With All Redeemed Drinks
                 </TableHead>
                 <TableHead className="max-w-52">Drink Quota</TableHead>
-                <TableHead className="max-w-52 whitespace-normal">Average Drinks Per Participant</TableHead>
+                <TableHead className="max-w-52 whitespace-normal">
+                  Average Drinks Per Participant
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -106,9 +108,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({ data }) => {
                     <TableCell className="text-sm ">
                       {tableRow.participantWithAllRedeemedDrinks}
                     </TableCell>
-                    <TableCell className="text-sm ">
-                      {tableRow.drinkQuota}
-                    </TableCell>
+                    <TableCell className="text-sm ">{tableRow.drinkQuota}</TableCell>
                     <TableCell className="text-sm">
                       {(tableRow.totalParticipants / tableRow.drinkQuota).toFixed(2)}
                     </TableCell>

@@ -66,7 +66,8 @@ const LadiesNight = () => {
 
         <div className=" w-full grid grid-cols-5 gap-4">
           <div className=" col-span-3">
-            <EventsDataTable data={  []} />
+            <EventsDataTable data={ []} />
+            {/* <EventsDataTable data={ladiesNight?.events ?? []} /> */}
           </div>
           <div className=" col-span-2">
             <ChartAreaInteractive />

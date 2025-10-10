@@ -5,12 +5,14 @@ import Redis from 'ioredis';
 import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommonEventsMqService } from './CommonEventsMq.service';
+import { LadiesNightDataMqService } from './LadiesNightDataMq.service';
 
 export interface IAddWeeklyEvent {
   eventId: string;
   eventName: string;
   cronStartDate: string;
   cronEndDate: string;
+  isLadiesNight: boolean;
 }
 
 export interface WeeklyEventJobData {
@@ -19,6 +21,7 @@ export interface WeeklyEventJobData {
   cronStartDate: string;
   cronEndDate: string;
   delay: 'firstDelay' | 'secondDelay';
+  isLadiesNight: boolean;
 }
 
 @Injectable()
@@ -35,6 +38,7 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
   public constructor(
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly commonEventsMq: CommonEventsMqService,
+    private readonly ladiesNightDataMq: LadiesNightDataMqService,
   ) {}
 
   private async processSendSpecialEventsNotification(job: Job<WeeklyEventJobData>) {
@@ -156,6 +160,7 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
       cronStartDate: cronStartDateDayShifted,
       cronEndDate: data.cronEndDate,
       delay: 'firstDelay',
+      isLadiesNight: data.isLadiesNight,
     };
 
     await this.eventQueue.add(
@@ -163,7 +168,7 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
       eventJobPayload, // payload
       {
         repeat: {
-          pattern: cronStartDateDayShifted, // <-- cron expression here
+          pattern: cronStartDateDayShifted,
           tz: 'utc', // optional: timezone
         },
         repeatJobKey: firstDelayjobId,

@@ -191,6 +191,7 @@ export class EventsService {
           eventName: updatedEvent.name,
           cronStartDate: updatedEvent.cronStartDate!,
           cronEndDate: updatedEvent.cronEndDate!,
+          isLadiesNight: updatedEvent.isLadiesNight,
         };
         await this.weeklyEventsMq.addWeeklyEventNotification(newEventJobParams);
       } else {

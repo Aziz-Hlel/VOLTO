@@ -17,6 +17,14 @@ export const REDIS_HASHES = {
       CRON_START_DATE: () => 'start_date',
       CRON_END_DATE: () => 'end_date',
     },
+
+    STATS: {
+      HASH: () => 'ladies_night:stats',
+      TOTAL_DRINKS_CONSUMED: () => 'total_drinks_consumed',
+      TOTAL_PARTICIPANTS: () => 'total_participants',
+      PARTICIPANTS_WITH_ALL_REDEEMED_DRINKS: () => 'participants_with_all_redeemed_drinks',
+      DRINK_QUOTA: () => 'drink_quota',
+    }
   },
 
   SPINNING_WHEEL: {
