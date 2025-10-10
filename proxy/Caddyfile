@@ -11,6 +11,16 @@ www.admin.voltobahrain.online {
 
 voltobahrain.online {
 
+    # -----------------------
+    # Well-known files
+    # -----------------------
+    handle /.well-known/* {
+        root * /srv/.well-known
+        uri strip_prefix /.well-known
+        file_server
+    }
+
+
     handle /socket.io/* {
         reverse_proxy api:3000
     }
@@ -22,14 +32,6 @@ voltobahrain.online {
         reverse_proxy api:3000
     }
 
-
-    # -----------------------
-    # Well-known files
-    # -----------------------
-    handle /.well-known/* {
-        root * /srv/.well-known
-        file_server
-    }
 
     # -----------------------
     # Web SPA
