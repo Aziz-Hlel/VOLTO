@@ -55,4 +55,6 @@ COPY --from=web_build /app/apps/web/dist /srv/web
 
 COPY --from=admin_build /app/apps/admin/dist /srv/admin
 
+COPY ./.well-known /srv/.well-known
+
 COPY ./proxy/Caddyfile.stage /etc/caddy/Caddyfile
