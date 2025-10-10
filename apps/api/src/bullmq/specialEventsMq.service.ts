@@ -38,18 +38,16 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
 
   public constructor(
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
-        private readonly commonEventsMq: CommonEventsMqService,
-    
+    private readonly commonEventsMq: CommonEventsMqService,
   ) {}
 
   private async processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
-        const headings = this.commonEventsMq.getNotifcationHeadings({
+    const headings = this.commonEventsMq.getNotifcationHeadings({
       delay: job.data.delay,
       eventName: job.data.eventName,
     });
 
     const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
-
 
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,

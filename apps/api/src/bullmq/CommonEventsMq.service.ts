@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CommonEventsMqService {
-   getNotifcationHeadings({
+  getNotifcationHeadings({
     delay,
     eventName,
   }: {
@@ -10,29 +10,17 @@ export class CommonEventsMqService {
     eventName: string;
   }) {
     return {
-      en:
-        delay === 'firstDelay'
-          ? `🎉 ${eventName} `
-          : `🎊 ${eventName}`,
+      en: delay === 'firstDelay' ? `🎉 ${eventName} ` : `🎊 ${eventName}`,
 
-      fr:
-        delay === 'firstDelay'
-          ? `🎉 ${eventName} `
-          : `🎊 ${eventName}`,
+      fr: delay === 'firstDelay' ? `🎉 ${eventName} ` : `🎊 ${eventName}`,
 
-      es:
-        delay === 'firstDelay'
-          ? `🎉 ${eventName} `
-          : `🎊 ${eventName}`,
+      es: delay === 'firstDelay' ? `🎉 ${eventName} ` : `🎊 ${eventName}`,
 
-      ar:
-        delay === 'firstDelay'
-          ? `🎉 ${eventName} `
-          : `🎊 ${eventName}`,
+      ar: delay === 'firstDelay' ? `🎉 ${eventName} ` : `🎊 ${eventName}`,
     };
   }
 
-   getNotificationContent({ delay }: { delay: 'firstDelay' | 'secondDelay' }) {
+  getNotificationContent({ delay }: { delay: 'firstDelay' | 'secondDelay' }) {
     return {
       en:
         delay === 'firstDelay'

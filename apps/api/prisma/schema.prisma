@@ -167,3 +167,14 @@ model Gallery {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+
+model LadiesNightData{
+  id  String      @id @default(cuid())
+  startDate DateTime
+  totalParticipants Int
+  participantWithAllRedeemedDrinks Int
+  drinkQuota Int
+
+}

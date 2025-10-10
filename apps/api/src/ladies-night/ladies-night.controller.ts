@@ -16,21 +16,17 @@ export class LadiesNightController {
 
   @Get('details')
   async getLadiesNightDetails() {
-    const response =  await this.ladiesNightService.getLadiesNightDetails();
+    const response = await this.ladiesNightService.getLadiesNightDetails();
 
     return response;
-
   }
 
   @Get('quota')
   async getQuota() {
-
-    const response =  await this.ladiesNightService.getDrinkQuota();
-
+    const response = await this.ladiesNightService.getDrinkQuota();
 
     return {
-      quota : response.quota
-    }
-
+      quota: response.quota,
+    };
   }
 }

@@ -7,7 +7,7 @@ import { LadiesNightController } from './ladies-night.controller';
 import { MediaModule } from 'src/media/media.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule,MediaModule],
+  imports: [PrismaModule, AuthModule, MediaModule],
   controllers: [LadiesNightController],
   providers: [LadiesNightGateway, LadiesNightService],
   exports: [LadiesNightService],

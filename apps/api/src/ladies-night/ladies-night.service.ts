@@ -302,17 +302,13 @@ export class LadiesNightService {
     });
   };
 
-
-
   async getLadiesNightDetails() {
-
     const ladiesNight = await this.prisma.event.findFirst({
       where: { isLadiesNight: true },
     });
 
-    if(!ladiesNight) throw new BadRequestException('Ladies Night event not found in database');
+    if (!ladiesNight) throw new BadRequestException('Ladies Night event not found in database');
 
     return ladiesNight;
-
   }
 }

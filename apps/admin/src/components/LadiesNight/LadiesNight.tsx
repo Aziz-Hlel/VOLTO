@@ -7,6 +7,7 @@ import { Spinner } from "../ui/spinner";
 import { useState } from "react";
 import UpdateDrinkQuota from "./UpdateDrinkQuota";
 import { ChartAreaInteractive } from "./Chart/chart-area-interactive";
+import { EventsDataTable } from "./LadiesNightDataTable";
 
 const LadiesNight = () => {
   const { data: ladiesNightData, isFetched: ladiesNightDataIsFetched } = useQuery({
@@ -63,11 +64,13 @@ const LadiesNight = () => {
           </Button>
         </div>
 
-        <div className=" w-full grid grid-cols-5">
+        <div className=" w-full grid grid-cols-5 gap-4">
           <div className=" col-span-3">
+            <EventsDataTable data={ladiesNight?.events ?? []} />
+          </div>
+          <div className=" col-span-2">
             <ChartAreaInteractive />
           </div>
-          <div></div>
         </div>
       </main>
     </div>

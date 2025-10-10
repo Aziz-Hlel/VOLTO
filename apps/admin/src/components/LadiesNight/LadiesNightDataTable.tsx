@@ -16,8 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import cronstrue from "cronstrue";
-import { EventType } from "@/types/events/EventType";
 
 type LadiesNightDataResponseDto = {
   id: string;
@@ -29,15 +27,9 @@ type LadiesNightDataResponseDto = {
 
 interface EventsDataTableProps {
   data: LadiesNightDataResponseDto[];
-  setEventForEdit: (id: string) => void;
-  setEventForDeletion: (event: LadiesNightDataResponseDto) => void;
 }
 
-export const EventsDataTable: React.FC<EventsDataTableProps> = ({
-  data,
-  setEventForEdit,
-  setEventForDeletion,
-}) => {
+export const EventsDataTable: React.FC<EventsDataTableProps> = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<keyof LadiesNightDataResponseDto>("startDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -68,87 +60,57 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
     }
   };
 
-  const getdisplayedStartDate = (event: LadiesNightDataResponseDto) => {
-  return  new Date(event.startDate).toLocaleDateString() ;  };
-
-
+  const getdisplayedDate = (event: LadiesNightDataResponseDto) => {
+    return new Date(event.startDate).toLocaleDateString();
+  };
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search events..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-8"
-          />
-        </div>
-      </div>
-
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead
-                  className="min-w-[150px] cursor-pointer hover:bg-muted/50"
+                  className="max-w-52 cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort("startDate")}
                 >
                   Event Date {sortBy === "startDate" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
                 <TableHead
-                  className="min-w-[200px] cursor-pointer hover:bg-muted/50"
+                  className="max-w-52 cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort("totalParticipants")}
                 >
-                  Total Participants {sortBy === "totalParticipants" && (sortOrder === "asc" ? "↑" : "↓")}
+                  Total Participants{" "}
+                  {sortBy === "totalParticipants" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
-                <TableHead className="hidden lg:table-cell">Start Date</TableHead>
-                <TableHead className="hidden lg:table-cell">End Date</TableHead>
-                <TableHead className="w-[70px]">Actions</TableHead>
+                <TableHead className=" max-w-52  whitespace-normal ">
+                  Participants With All Redeemed Drinks
+                </TableHead>
+                <TableHead className="max-w-52">Drink Quota</TableHead>
+                <TableHead className="max-w-52 whitespace-normal">Average Drinks Per Participant</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {sortedData.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    No admins found
+                    No Events yet
                   </TableCell>
                 </TableRow>
               ) : (
-                sortedData.map((event) => (
-                  <TableRow key={event.id} className=" hover:cursor-default">
-                    <TableCell className="font-medium">
-                      {event.startDate.toLocaleDateString()}
+                sortedData.map((tableRow) => (
+                  <TableRow key={tableRow.id} className=" hover:cursor-default">
+                    <TableCell className="text-sm">{getdisplayedDate(tableRow)}</TableCell>
+                    <TableCell className="text-sm">{tableRow.totalParticipants}</TableCell>
+                    <TableCell className="text-sm ">
+                      {tableRow.participantWithAllRedeemedDrinks}
                     </TableCell>
-                    {/* <TableCell className="text-sm">{event.}</TableCell> */}
-                    <TableCell className="text-sm">{getdisplayedStartDate(event)}</TableCell>
-
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white">
-                          <DropdownMenuItem
-                            onClick={() => setEventForEdit(event.id)}
-                            className="flex items-center gap-2 hover:bg-gray-100"
-                          >
-                            <Edit className="h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setEventForDeletion(event)}
-                            className="flex items-center gap-2 text-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <TableCell className="text-sm ">
+                      {tableRow.drinkQuota}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {(tableRow.totalParticipants / tableRow.drinkQuota).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))

@@ -6,14 +6,14 @@ import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CommonEventsMqService } from './CommonEventsMq.service';
 
-interface IAddWeeklyEvent {
+export interface IAddWeeklyEvent {
   eventId: string;
   eventName: string;
   cronStartDate: string;
   cronEndDate: string;
 }
 
-interface WeeklyEventJobData {
+export interface WeeklyEventJobData {
   eventId: string;
   eventName: string;
   cronStartDate: string;

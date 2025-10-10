@@ -58,7 +58,7 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     gender: Gender.F,
     tier: Tier.SILVER,
     phoneNumber: null,
-  }
+  },
 ];
 
 const seedUsers = async () => {

@@ -301,15 +301,17 @@ export class EventsService {
           });
           const cronEndDateInterval = cronParser.parse(event.cronEndDate!, {
             currentDate: now,
-          })
+          });
           const nextCronStartDate = cronStartDateInterval.next().toDate();
           const nextCronEndDate = cronEndDateInterval.next().toDate();
 
-          return { ...event, nextExecution: {
-            nextCronStartDate,
-            nextCronEndDate
-
-          } };
+          return {
+            ...event,
+            nextExecution: {
+              nextCronStartDate,
+              nextCronEndDate,
+            },
+          };
         } catch (err) {
           console.error(`Invalid cron expression for event ${event.id}:`, err);
           return null;
@@ -318,9 +320,26 @@ export class EventsService {
       .filter(Boolean);
 
     const sorted = withNextDates.sort(
-      (a, b) => (a as any)?.nextExecution?.nextCronEndDate.getTime() - (b as any)?.nextExecution?.nextCronEndDate.getTime(),
+      (a, b) =>
+        (a as any)?.nextExecution?.nextCronEndDate.getTime() -
+        (b as any)?.nextExecution?.nextCronEndDate.getTime(),
     );
 
+    const chosenEvent = sorted[0];
+
+    if (
+      chosenEvent?.nextExecution?.nextCronStartDate &&
+      chosenEvent?.nextExecution?.nextCronEndDate &&
+      chosenEvent?.nextExecution?.nextCronStartDate?.getTime() >
+        chosenEvent?.nextExecution?.nextCronEndDate?.getTime()
+    ) {
+      const cronStartDateInterval = cronParser.parse(chosenEvent.cronStartDate!, {
+        currentDate: now,
+      });
+      const nextCronStartDate = cronStartDateInterval.prev().toDate();
+
+      chosenEvent.nextExecution.nextCronStartDate = nextCronStartDate;
+    }
     return {
       eventTitle: sorted[0]?.name,
       eventStartDate: sorted[0]?.nextExecution?.nextCronStartDate,
