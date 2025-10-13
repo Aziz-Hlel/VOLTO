@@ -7,7 +7,7 @@ import { Spinner } from "../ui/spinner";
 import { useState } from "react";
 import UpdateDrinkQuota from "./UpdateDrinkQuota";
 import { ChartAreaInteractive } from "./Chart/chart-area-interactive";
-import { EventsDataTable } from "./LadiesNightDataTable";
+import LadiesNightDataTableWrapper from "./LadiesNightDataTableWrapper";
 
 const LadiesNight = () => {
   const { data: ladiesNightData, isFetched: ladiesNightDataIsFetched } = useQuery({
@@ -36,7 +36,7 @@ const LadiesNight = () => {
         <UpdateDrinkQuota
           open={openUpdateDrinkQuota}
           setOpen={handleOpenUpdateDrinkQuota}
-          initialDrinkQuota={drinkQuota ?? 0}
+          initialDrinkQuota={drinkQuota!}
         />
       )}
       <header className="border-b bg-card px-6 py-4">
@@ -66,7 +66,7 @@ const LadiesNight = () => {
 
         <div className=" w-full grid grid-cols-5 gap-4">
           <div className=" col-span-3">
-            <EventsDataTable data={[]} />
+            <LadiesNightDataTableWrapper />
             {/* <EventsDataTable data={ladiesNight?.events ?? []} /> */}
           </div>
           <div className=" col-span-2">

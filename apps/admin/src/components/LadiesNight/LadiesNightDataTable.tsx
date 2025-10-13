@@ -16,92 +16,66 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-type LadiesNightDataResponseDto = {
-  id: string;
-  startDate: Date;
-  totalParticipants: number;
-  participantWithAllRedeemedDrinks: number;
-  drinkQuota: number;
-};
+import type { LadiesNightStatsResponse } from "@/types/ladiesNight/LadiesNightStatsResponse";
+import type { GetLadiesNightDataQueryDto } from "@/types/ladiesNight/GetLadiesNightDataQueryDto";
 
 interface EventsDataTableProps {
-  data: LadiesNightDataResponseDto[];
+  data: LadiesNightStatsResponse[];
+  count: number;
+  query: GetLadiesNightDataQueryDto;
+  setQuery: (query: GetLadiesNightDataQueryDto) => void;
 }
 
-export const EventsDataTable: React.FC<EventsDataTableProps> = ({ data }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<keyof LadiesNightDataResponseDto>("startDate");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+export const EventsDataTable: React.FC<EventsDataTableProps> = ({
+  data,
+  count,
+  query,
+  setQuery,
+}) => {
+  const getdisplayedDate = (event: LadiesNightStatsResponse) => {
+    const date = new Date(event.startDate);
 
-  // const filteredData = data.filter(
-  //   (tableRow) => tableRow.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  //   // ||
-  //   // event.email.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
+    const formattedDate = new Intl.DateTimeFormat("en-US", {
+      month: "long", // October
+      day: "numeric", // 1
+      year: "numeric", // 2025
+    }).format(date);
 
-  const sortedData = [...data].sort((a, b) => {
-    const aValue = a[sortBy];
-    const bValue = b[sortBy];
-
-    if (sortOrder === "asc") {
-      return (aValue as any) < (bValue as any) ? -1 : (aValue as any) > (bValue as any) ? 1 : 0;
-    } else {
-      return (aValue as any) > (bValue as any) ? -1 : (aValue as any) < (bValue as any) ? 1 : 0;
-    }
-  });
-
-  const handleSort = (column: keyof LadiesNightDataResponseDto) => {
-    if (sortBy === column) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(column);
-      setSortOrder("asc");
-    }
-  };
-
-  const getdisplayedDate = (event: LadiesNightDataResponseDto) => {
-    return new Date(event.startDate).toLocaleDateString();
+    return formattedDate;
   };
 
   return (
     <div className="space-y-4">
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <Table>
+          <Table className="border-b">
             <TableHeader>
               <TableRow>
-                <TableHead
-                  className="max-w-52 cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleSort("startDate")}
-                >
-                  Event Date {sortBy === "startDate" && (sortOrder === "asc" ? "↑" : "↓")}
+                <TableHead className="max-w-52 cursor-pointer hover:bg-muted/50">
+                  Event Date
                 </TableHead>
-                <TableHead
-                  className="max-w-52 cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleSort("totalParticipants")}
-                >
+                <TableHead className="max-w-52 cursor-pointer hover:bg-muted/50">
                   Total Participants{" "}
-                  {sortBy === "totalParticipants" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
                 <TableHead className=" max-w-52  whitespace-normal ">
                   Participants With All Redeemed Drinks
                 </TableHead>
                 <TableHead className="max-w-52">Drink Quota</TableHead>
+                <TableHead className="max-w-52">Total Drinks Consumed</TableHead>
                 <TableHead className="max-w-52 whitespace-normal">
                   Average Drinks Per Participant
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedData.length === 0 ? (
+              {data.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     No Events yet
                   </TableCell>
                 </TableRow>
               ) : (
-                sortedData.map((tableRow) => (
+                data.map((tableRow) => (
                   <TableRow key={tableRow.id} className=" hover:cursor-default">
                     <TableCell className="text-sm">{getdisplayedDate(tableRow)}</TableCell>
                     <TableCell className="text-sm">{tableRow.totalParticipants}</TableCell>
@@ -109,6 +83,8 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({ data }) => {
                       {tableRow.participantWithAllRedeemedDrinks}
                     </TableCell>
                     <TableCell className="text-sm ">{tableRow.drinkQuota}</TableCell>
+                    <TableCell className="text-sm ">{tableRow.totalDrinksConsumed}</TableCell>
+
                     <TableCell className="text-sm">
                       {(tableRow.totalParticipants / tableRow.drinkQuota).toFixed(2)}
                     </TableCell>
@@ -117,6 +93,31 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({ data }) => {
               )}
             </TableBody>
           </Table>
+          <div className=" w-full flex justify-end p-2 gap-x-2 ">
+            <div className="flex items-center justify-end">
+              <p className="text-sm text-muted-foreground">
+                Showing {data.length * (query.page - 1) + 1}-
+                {data.length * (query.page - 1) + 1 + data.length} of {count} results
+              </p>
+            </div>
+            <div className=" flex gap-x-2">
+              <Button
+                className=" w-12 h-8 enabled:cursor-pointer"
+                disabled={query.page === 1}
+                onClick={() => setQuery({ ...query, page: query.page - 1 })}
+              >
+                Prev
+              </Button>
+              <Button
+                className=" w-12 h-8 enabled:cursor-pointer"
+                disabled={query.page === Math.ceil(count / query.limit)}
+                onClick={() => setQuery({ ...query, page: query.page + 1 })}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+          <div></div>
         </div>
       </div>
     </div>

@@ -30,8 +30,9 @@ const apiRoutes = {
   },
 
   ladiesNight: {
-    details: () => "/ladies-night-stats" as const,
+    details: () => "/ladies-night/details" as const,
     getQuota: () => "/ladies-night/quota" as const,
+    stats: () => "/ladies-night-stats" as const,
   },
 
   media: {

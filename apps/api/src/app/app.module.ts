@@ -19,6 +19,7 @@ import { AppController } from './app.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EmailModule } from 'src/email/email.module';
+import { LadiesNightStatsModule } from 'src/ladies-night-stats/ladies-night-stats.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { EmailModule } from 'src/email/email.module';
     MediaModule,
     EventsModule,
     LadiesNightModule,
+    LadiesNightStatsModule,
     BullmqModule,
     StartupModuleModule,
     SpinnigWheelRewardModule,
