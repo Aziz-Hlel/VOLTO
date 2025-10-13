@@ -4,9 +4,11 @@ import { SpinnigWheelRewardModule } from 'src/spinnig-wheel-reward/spinnig-wheel
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { SpinningWheelInitService } from './spinnig-wheel-starup.service';
 import { StartupModuleService } from './startup-module.service';
+import { AppSettingsServiceStartup } from './app-settings-startup.service';
+import { AppSettingsModule } from 'src/app-settings/app-settings.module';
 
 @Module({
-  imports: [PrismaModule, SpinnigWheelModule, SpinnigWheelRewardModule],
-  providers: [StartupModuleService, SpinningWheelInitService],
+  imports: [PrismaModule, SpinnigWheelModule, SpinnigWheelRewardModule, AppSettingsModule],
+  providers: [StartupModuleService, SpinningWheelInitService, AppSettingsServiceStartup],
 })
 export class StartupModuleModule {}

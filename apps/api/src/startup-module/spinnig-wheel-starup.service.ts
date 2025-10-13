@@ -16,8 +16,6 @@ export class SpinningWheelInitService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    this.logger.log('Spinning Wheel Initialization...');
-
     let spinnigWheel = await this.spinnigWheelService.isSpinnigWheelExists();
 
     if (!spinnigWheel)
@@ -36,6 +34,6 @@ export class SpinningWheelInitService implements OnApplicationBootstrap {
 
     this.spinnigWheelRewardService.updateRewardsCache(spinnigWheelRewards);
 
-    this.logger.log('Spinning Wheel Initialized');
+    this.logger.log('✅ Spinning Wheel Initialized');
   }
 }

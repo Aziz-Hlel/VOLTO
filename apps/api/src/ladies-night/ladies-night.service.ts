@@ -4,19 +4,23 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import cronParser from 'cron-parser';
 import { WsException } from '@nestjs/websockets';
-import { MediaService } from 'src/media/media.service';
 
 @Injectable()
 export class LadiesNightService {
   constructor(
     private prisma: PrismaService,
-    private mediaService: MediaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
   ) {}
 
-  static DRINK_QUOTA = 3;
-
   static msInHours = 1000 * 60 * 60;
+
+  async getDrinksQuota() {
+    const ladiesNight_DrinkQuota = await this.redis.hget(
+      REDIS_HASHES.APP_SETTINGS.HASH(),
+      REDIS_HASHES.APP_SETTINGS.LADIES_NIGHT_DRINK_QUOTA(),
+    );
+    return Number(ladiesNight_DrinkQuota);
+  }
 
   async storeLadiesNightTimeStamps() {
     const ladiesNight = await this.prisma.event.findFirst({
@@ -88,7 +92,7 @@ export class LadiesNightService {
     );
 
     return {
-      quota: LadiesNightService.DRINK_QUOTA,
+      quota: await this.getDrinksQuota(),
       eventStartDate: cronStartDate_ladiesNight,
       eventEndDate: cronEndDate_ladiesNight,
     };
@@ -103,7 +107,7 @@ export class LadiesNightService {
 
     if (!remainingDrinks || isNaN(Number(remainingDrinks))) return 0;
 
-    if (Number(remainingDrinks) > LadiesNightService.DRINK_QUOTA) {
+    if (Number(remainingDrinks) > (await this.getDrinksQuota())) {
       throw new BadRequestException('user consumed drinks more than quota');
     }
 
@@ -124,10 +128,10 @@ export class LadiesNightService {
 
     const userDrinksConsumed = await this.getUserDrinksConsumed(userId);
 
-    if (userDrinksConsumed > LadiesNightService.DRINK_QUOTA)
+    if (userDrinksConsumed > (await this.getDrinksQuota()))
       throw new BadRequestException('user consumed drinks more than quota');
 
-    if (userDrinksConsumed === LadiesNightService.DRINK_QUOTA) return null;
+    if (userDrinksConsumed === (await this.getDrinksQuota())) return null;
 
     const existingCode = await this.redis.hget(
       REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
@@ -166,8 +170,30 @@ export class LadiesNightService {
     const userDrinksConsumed = await this.getUserDrinksConsumed(userId);
     console.log('userDrinksConsumed', userDrinksConsumed);
 
-    if (userDrinksConsumed === LadiesNightService.DRINK_QUOTA)
+    if (userDrinksConsumed === (await this.getDrinksQuota()))
       throw new BadRequestException('User exceeded free drinks quota');
+
+    await this.redis.hincrby(
+      REDIS_HASHES.LADIES_NIGHT.STATS.HASH(),
+      REDIS_HASHES.LADIES_NIGHT.STATS.TOTAL_DRINKS_CONSUMED(),
+      1,
+    );
+
+    if (userDrinksConsumed === 0) {
+      await this.redis.hincrby(
+        REDIS_HASHES.LADIES_NIGHT.STATS.HASH(),
+        REDIS_HASHES.LADIES_NIGHT.STATS.TOTAL_PARTICIPANTS(),
+        1,
+      );
+    }
+
+    if (userDrinksConsumed === (await this.getDrinksQuota()) - 1) {
+      await this.redis.hincrby(
+        REDIS_HASHES.LADIES_NIGHT.STATS.HASH(),
+        REDIS_HASHES.LADIES_NIGHT.STATS.PARTICIPANTS_WITH_ALL_REDEEMED_DRINKS(),
+        1,
+      );
+    }
 
     await this.redis.hdel(REDIS_HASHES.LADIES_NIGHT.CODES(), code);
 
@@ -297,7 +323,7 @@ export class LadiesNightService {
         date: new Date(),
         totalParticipants: stats.usersWithDrinks,
         drinksConsumed: stats.totalDrinksConsumed,
-        quota: LadiesNightService.DRINK_QUOTA,
+        quota: await this.getDrinksQuota(),
       },
     });
   };

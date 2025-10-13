@@ -1,6 +1,6 @@
 
 @baseUrl = http://localhost:3000/api
-@baseUrl = https://voltobahrain.online/api
+# @baseUrl = https://voltobahrain.online/api
 
 
 ### Login request
@@ -34,8 +34,8 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "name": "Ladies Night",
   "description": "Ladies Night",
   "type": "WEEKLY",
-  "cronStartDate": "38 17 * * 4",
-  "cronEndDate": "0 19 * * 5",  
+  "cronStartDate": "19 11 * * 1",
+  "cronEndDate": "0 19 * * 1",  
   "thumbnail": {
     "s3Key": "events/ladies-night-wallpaper.jpg",
     "url": ""

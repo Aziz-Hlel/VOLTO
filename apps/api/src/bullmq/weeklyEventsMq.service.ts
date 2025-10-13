@@ -174,6 +174,18 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
         repeatJobKey: firstDelayjobId,
       },
     );
+
+    if (data.isLadiesNight) {
+      const ladiesNightStatsJobPayload: WeeklyEventJobData = {
+        eventId: data.eventId,
+        eventName: data.eventName,
+        cronStartDate: data.cronStartDate,
+        cronEndDate: data.cronEndDate,
+        delay: 'firstDelay',
+        isLadiesNight: data.isLadiesNight,
+      };
+      await this.ladiesNightDataMq.addJob(ladiesNightStatsJobPayload);
+    }
   }
 
   async removeWeeklyEventNotification(eventId: string) {

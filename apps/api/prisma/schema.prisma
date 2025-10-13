@@ -172,9 +172,21 @@ model Gallery {
 
 model LadiesNightData{
   id  String      @id @default(cuid())
-  startDate DateTime
+  startDate DateTime @unique
   totalParticipants Int
   participantWithAllRedeemedDrinks Int
+  totalDrinksConsumed Int
   drinkQuota Int
+
+  
+
+}
+
+model appSettings {
+  id  String      @id @default(cuid())
+  field String @unique
+  value String
+
+  @@index([field])
 
 }

@@ -62,10 +62,10 @@ export class EmailService {
     this.transporter
       .verify()
       .then(() => {
-        this.logger.log('Connected to email server');
+        this.logger.log('✅ Connected to email server');
       })
       .catch((error) => {
-        this.logger.fatal('Unable to connect to email server');
+        this.logger.fatal('❌ Unable to connect to email server');
         this.logger.error(error);
       });
   }

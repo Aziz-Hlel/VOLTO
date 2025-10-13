@@ -5,6 +5,7 @@ import { Job, Queue, Worker } from 'bullmq';
 import cronParser from 'cron-parser';
 import cron from 'node-cron';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { REDIS_HASHES } from 'src/redis/hashes';
 
 @Injectable()
 export class LadiesNightDataMqService implements OnModuleInit, OnModuleDestroy {
@@ -16,32 +17,122 @@ export class LadiesNightDataMqService implements OnModuleInit, OnModuleDestroy {
 
   private eventWorker: Worker<WeeklyEventJobData>;
 
-  public constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis,private readonly prisma: PrismaService) {}
+  public constructor(
+    @Inject('REDIS_CLIENT') private readonly redis: Redis,
+    private readonly prisma: PrismaService,
+  ) {}
 
+  private async updateLadiesNightData({
+    currentEventStartDate,
+    totalParticipants,
+    participantsWithAllRedeemedDrinks,
+    totalDrinksConsumed,
+  }: {
+    currentEventStartDate: Date;
+    totalParticipants: number;
+    participantsWithAllRedeemedDrinks: number;
+    totalDrinksConsumed: number;
+  }) {
+    try {
+      await this.prisma.ladiesNightData.upsert({
+        where: {
+          startDate: currentEventStartDate,
+        },
+        create: {
+          startDate: currentEventStartDate,
+          totalParticipants: totalParticipants,
+          participantWithAllRedeemedDrinks: participantsWithAllRedeemedDrinks,
+          totalDrinksConsumed: totalDrinksConsumed,
+          drinkQuota: 0,
+        },
+        update: {
+          startDate: currentEventStartDate,
+          totalParticipants: totalParticipants,
+          participantWithAllRedeemedDrinks: participantsWithAllRedeemedDrinks,
+          totalDrinksConsumed: totalDrinksConsumed,
+        },
+      });
+    } catch (error) {
+      this.logger.error('❌ Fatal error updating ladies night stats to DB', error);
+    }
+  }
 
-    private async updateLadiesNightData({currentEventStartDate}:{currentEventStartDate:Date}){ {
-        
-    }}
+  private async resetLadiesNightStats(startDate: Date) {
+    this.logger.debug(`🕒Resetting ladies night stats in redis and adding instance in DB`);
+    await this.redis.del(REDIS_HASHES.LADIES_NIGHT.STATS.HASH());
 
+    const ladiesNight_DrinkQuota = await this.redis.hget(
+      REDIS_HASHES.APP_SETTINGS.HASH(),
+      REDIS_HASHES.APP_SETTINGS.LADIES_NIGHT_DRINK_QUOTA(),
+    );
+
+    await this.redis.hset(REDIS_HASHES.LADIES_NIGHT.STATS.HASH(), {
+      [REDIS_HASHES.LADIES_NIGHT.STATS.TOTAL_PARTICIPANTS()]: 0,
+      [REDIS_HASHES.LADIES_NIGHT.STATS.PARTICIPANTS_WITH_ALL_REDEEMED_DRINKS()]: 0,
+      [REDIS_HASHES.LADIES_NIGHT.STATS.TOTAL_DRINKS_CONSUMED()]: 0,
+      [REDIS_HASHES.LADIES_NIGHT.STATS.DRINK_QUOTA()]: ladiesNight_DrinkQuota,
+    });
+
+    const ladiesNightData = await this.prisma.ladiesNightData.create({
+      data: {
+        startDate: startDate,
+        totalParticipants: 0,
+        participantWithAllRedeemedDrinks: 0,
+        totalDrinksConsumed: 0,
+        drinkQuota: Number(ladiesNight_DrinkQuota),
+      },
+    });
+
+    console.log('ladiesNightData created : ', ladiesNightData);
+  }
 
   private async addDataScheduler(job: Job<WeeklyEventJobData>) {
-    const task =await cron.schedule('*/15 * * * *', () => {
+    this.logger.debug(`Ladies Night weekly Job started`);
+    const cronStartDateParsed = cronParser.parse(job.data.cronStartDate);
+    const currentEventStartDate = cronStartDateParsed.prev().toDate();
+
+    await this.resetLadiesNightStats(currentEventStartDate);
+
+    const task = cron.schedule('*/1 * * * *', async () => {
+      this.logger.debug(`🕒1mn passed : Updating ladies night data...`);
       const cronEndDateParsed = cronParser.parse(job.data.cronEndDate);
       const currentEventEndDate = cronEndDateParsed.next().toDate();
       const currentDate = new Date();
       if (currentDate > currentEventEndDate) task.stop();
       const startDateParsed = cronParser.parse(job.data.cronStartDate);
-      const currentEventStartDate = startDateParsed.next().toDate();
+      const currentEventStartDate = startDateParsed.prev().toDate();
 
+      const statHash = REDIS_HASHES.LADIES_NIGHT.STATS.HASH();
+
+      const pipeline = this.redis.pipeline();
+      pipeline.hget(statHash, REDIS_HASHES.LADIES_NIGHT.STATS.TOTAL_PARTICIPANTS());
+      pipeline.hget(
+        statHash,
+        REDIS_HASHES.LADIES_NIGHT.STATS.PARTICIPANTS_WITH_ALL_REDEEMED_DRINKS(),
+      );
+      pipeline.hget(statHash, REDIS_HASHES.LADIES_NIGHT.STATS.TOTAL_DRINKS_CONSUMED());
+
+      const [totalParticipants, participantsWithAllRedeemedDrinks, totalDrinksConsumed] =
+        (await pipeline.exec())!.map(([err, res]) => res);
+
+      await this.updateLadiesNightData({
+        currentEventStartDate: currentEventStartDate,
+        totalParticipants: Number(totalParticipants),
+        participantsWithAllRedeemedDrinks: Number(participantsWithAllRedeemedDrinks),
+        totalDrinksConsumed: Number(totalDrinksConsumed),
+      });
     });
+
+    await task.execute();
   }
 
-  async addJob(job: Job<WeeklyEventJobData>) {
-    await this.eventQueue.add(job.data.eventId, job.data, {
-      jobId: job.data.eventId,
-      repeatJobKey: job.data.eventId,
+  async addJob(jobData: WeeklyEventJobData) {
+    this.logger.debug(`📥 Adding Ladies Night Job To excute every cron start Date`);
+    await this.eventQueue.add(jobData.eventId, jobData, {
+      jobId: jobData.eventId,
+      repeatJobKey: jobData.eventId,
       repeat: {
-        pattern: job.data.cronStartDate,
+        pattern: jobData.cronStartDate,
         utc: true,
       },
     });

@@ -1,5 +1,8 @@
 export const REDIS_HASHES = {
-  USER_SESSION: (userId: string) => `user:${userId}:session`,
+  APP_SETTINGS: {
+    HASH: () => 'app_settings',
+    LADIES_NIGHT_DRINK_QUOTA: () => 'LADIES_NIGHT_DRINK_QUOTA',
+  },
 
   LADIES_NIGHT: {
     USER: {
@@ -24,7 +27,7 @@ export const REDIS_HASHES = {
       TOTAL_PARTICIPANTS: () => 'total_participants',
       PARTICIPANTS_WITH_ALL_REDEEMED_DRINKS: () => 'participants_with_all_redeemed_drinks',
       DRINK_QUOTA: () => 'drink_quota',
-    }
+    },
   },
 
   SPINNING_WHEEL: {
