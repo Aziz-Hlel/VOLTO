@@ -14,6 +14,10 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Martini } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
+import { Spinner } from "../ui/spinner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ladiesNightService } from "@/Api/services/ladiesNight.service";
+import { toast } from "sonner";
 
 interface UpdateDrinkQuotaProps {
   initialDrinkQuota: number;
@@ -23,9 +27,30 @@ interface UpdateDrinkQuotaProps {
 
 const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, setOpen }) => {
   const [drinkQuota, setDrinkQuota] = useState(initialDrinkQuota);
+  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleDrinkQuotaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (Number(event.target.value) >= 0) setDrinkQuota(Number(event.target.value));
+  };
+
+  const handleFormSubmit =async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    try{
+      setLoading(true);
+     const response = await ladiesNightService.updateQuota(drinkQuota);
+     await queryClient.invalidateQueries({ queryKey: ["ladiesNight"], exact: false });
+
+      setLoading(false);
+      setOpen(false);
+      toast.success("Drink quota updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["ladiesNight"], exact: false });
+    }catch(error){
+      setLoading(false);
+      toast.error("Error updating drink quota");
+    }
+
   };
 
   return (
@@ -58,7 +83,7 @@ const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, 
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Save changes</Button>
+              <Button disabled={loading} onClick={handleFormSubmit} type="submit" className="enabled:cursor-pointer">{loading ? <Spinner /> : "Save"}</Button>
             </DialogFooter>
           </DialogContent>
         </form>

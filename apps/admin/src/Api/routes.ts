@@ -32,6 +32,7 @@ const apiRoutes = {
   ladiesNight: {
     details: () => "/ladies-night/details" as const,
     getQuota: () => "/ladies-night/quota" as const,
+    updateQuota : () => "/app-settings/ladies-night/drink-quota" as const,
     stats: () => "/ladies-night-stats" as const,
   },
 

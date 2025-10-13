@@ -7,7 +7,7 @@ import { Spinner } from "../ui/spinner";
 
 const LadiesNightDataTableWrapper = () => {
   const [query, setQuery] = useState<GetLadiesNightDataQueryDto>({ limit: 7, page: 1 });
-console.log('query: ', query)
+  console.log("query: ", query);
   const { data: ladiesNightData, isFetched: ladiesNightStatsIsFetched } = useQuery({
     queryKey: ["ladies-night", "stats", query],
     queryFn: async () => await ladiesNightService.stats(query),

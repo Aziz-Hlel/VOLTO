@@ -12,6 +12,11 @@ export const ladiesNightService = {
   getQuota: async () =>
     await apiService.getThrowable<{ quota: number }>(apiRoutes.ladiesNight.getQuota()),
 
+  updateQuota: async (quota: number) =>
+    await apiService.patchThrowable<{ quota: number }>(apiRoutes.ladiesNight.updateQuota(), {
+      quota,
+    }),
+
   stats: async (queryParams: GetLadiesNightDataQueryDto) =>
     await apiService.getThrowable<GetLadiesNightDataQueryDtoPaginated>(
       apiRoutes.ladiesNight.stats(),
