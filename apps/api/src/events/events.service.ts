@@ -103,7 +103,7 @@ export class EventsService {
       return { ...event, thumbnail, video };
     });
 
-    return Promise.all(eventWithMedia);
+    return await Promise.all(eventWithMedia);
   }
 
   async findPage(query: GetEventsPageDto) {

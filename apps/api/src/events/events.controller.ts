@@ -21,8 +21,6 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
-import axios from 'axios';
-import ENV from 'src/config/env';
 
 @Controller('events')
 export class EventsController {
