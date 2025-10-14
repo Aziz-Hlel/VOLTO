@@ -49,7 +49,7 @@ const LadiesNight = () => {
         </div>
       </header>
 
-      <main className="p-6">
+      <main className="p-6 flex flex-col gap-y-4">
         <div className=" w-full flex justify-end">
           <Button
             variant="default"

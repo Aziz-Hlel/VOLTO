@@ -86,7 +86,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                     <TableCell className="text-sm ">{tableRow.totalDrinksConsumed}</TableCell>
 
                     <TableCell className="text-sm">
-                      {(tableRow.totalParticipants / tableRow.drinkQuota).toFixed(2)}
+                      {(tableRow.totalDrinksConsumed / tableRow.drinkQuota).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))

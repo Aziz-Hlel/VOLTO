@@ -7,10 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Martini } from "lucide-react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
@@ -30,27 +27,29 @@ const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, 
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
+  const { mutateAsync } = useMutation({
+    mutationFn: (quota: number) => ladiesNightService.updateQuota(quota),
+  });
+
   const handleDrinkQuotaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (Number(event.target.value) >= 0) setDrinkQuota(Number(event.target.value));
   };
 
-  const handleFormSubmit =async (event: React.FormEvent<HTMLButtonElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    try{
+    try {
       setLoading(true);
-     const response = await ladiesNightService.updateQuota(drinkQuota);
-     await queryClient.invalidateQueries({ queryKey: ["ladiesNight"], exact: false });
+      const response = await mutateAsync(drinkQuota);
+      await queryClient.refetchQueries({ queryKey: ["ladies-night", "quota"], exact: true });
 
       setLoading(false);
       setOpen(false);
       toast.success("Drink quota updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["ladiesNight"], exact: false });
-    }catch(error){
+    } catch (error) {
       setLoading(false);
       toast.error("Error updating drink quota");
     }
-
   };
 
   return (
@@ -83,7 +82,14 @@ const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, 
                   Cancel
                 </Button>
               </DialogClose>
-              <Button disabled={loading} onClick={handleFormSubmit} type="submit" className="enabled:cursor-pointer">{loading ? <Spinner /> : "Save"}</Button>
+              <Button
+                disabled={loading}
+                onClick={handleFormSubmit}
+                type="submit"
+                className="enabled:cursor-pointer"
+              >
+                {loading ? <Spinner /> : "Save"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </form>

@@ -4,6 +4,7 @@ import apiRoutes from "../routes";
 import type { GetLadiesNightDataQueryDto } from "@/types/ladiesNight/GetLadiesNightDataQueryDto";
 import type { LadiesNightStatsResponse } from "@/types/ladiesNight/LadiesNightStatsResponse";
 import type { GetLadiesNightDataQueryDtoPaginated } from "@/types/ladiesNight/GetLadiesNightDataQueryDtoPaginated";
+import type { GetLadiesNightByPeriodDto } from "@/types/ladiesNight/GetLadiesNightByPeriodDto";
 
 export const ladiesNightService = {
   details: async () =>
@@ -20,6 +21,12 @@ export const ladiesNightService = {
   stats: async (queryParams: GetLadiesNightDataQueryDto) =>
     await apiService.getThrowable<GetLadiesNightDataQueryDtoPaginated>(
       apiRoutes.ladiesNight.stats(),
+      { params: queryParams },
+    ),
+
+  statsByPeriod: async (queryParams: GetLadiesNightByPeriodDto) =>
+    await apiService.getThrowable<LadiesNightStatsResponse[]>(
+      apiRoutes.ladiesNight.statsByPeriod(),
       { params: queryParams },
     ),
 };
