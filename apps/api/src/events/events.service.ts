@@ -150,7 +150,7 @@ export class EventsService {
     const currentDate = new Date();
     
     if(existingEvent.type ==="SPECIAL"){
-      if ( existingEvent.startDate! > currentDate ||currentDate < existingEvent.endDate!) {
+      if ( existingEvent.startDate! && currentDate ||currentDate < existingEvent.endDate!) {
         throw new BadRequestException('Cannot Update Event while active');
       }
     }

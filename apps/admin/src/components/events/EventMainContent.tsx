@@ -35,6 +35,7 @@ const EventMainContent = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl lg:text-2xl font-bold">Events table</h2>
+          <span className="text-red-600 text-xs ">* Cannot Edit an Event while it is live</span>
         </div>
 
         <Link to={"/events/create"}>

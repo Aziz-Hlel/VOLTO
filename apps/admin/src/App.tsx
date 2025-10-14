@@ -45,7 +45,7 @@ function App() {
                   <Route path="edit/:staffId" element={<AddStaffWrapper />} />
                 </Route>
 
-                <Route path="ladies-night" element={<LadiesNight />}></Route>
+                <Route path="ladies-night" element={<LadiesNight />}/>
 
                 <Route path="*" element={<NotFound />} />
               </Route>

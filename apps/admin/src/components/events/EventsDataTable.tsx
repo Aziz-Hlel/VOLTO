@@ -19,6 +19,7 @@ import {
 import type { EventResponseDto } from "@/types/events/eventResponse.dto";
 import cronstrue from "cronstrue";
 import { EventType } from "@/types/events/EventType";
+import getdisplayedDate from "@/lib/get-formatted-date";
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
@@ -63,16 +64,16 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
 
   const getdisplayedStartDate = (event: EventResponseDto) => {
     if (event.type === EventType.SPECIAL)
-      return event.startDate ? new Date(event.startDate).toLocaleDateString() : "N/A";
+      return event.startDate ? getdisplayedDate({date: event.startDate,showTime: true}) : "N/A";
     if (event.type === EventType.WEEKLY)
       return event.cronStartDate ? cronstrue.toString(event.cronStartDate) : "N/A";
   };
 
   const getdisplayedEndtDate = (event: EventResponseDto) => {
     if (event.type === EventType.SPECIAL)
-      return event.endDate ? new Date(event.endDate).toLocaleDateString() : "N/A";
+      return event.endDate ? getdisplayedDate({date: event.endDate,showTime: true}) : "N/A";
     if (event.type === EventType.WEEKLY)
-      return event.cronEndDate ? cronstrue.toString(event.cronEndDate) : "N/A";
+      return event.cronEndDate ? cronstrue.toString(event.cronEndDate).split(",")[0] : "N/A";
   };
 
   return (
