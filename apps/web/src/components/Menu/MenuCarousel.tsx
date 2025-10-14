@@ -20,62 +20,7 @@ import "swiper/css/effect-cards";
 import { cn } from "@/lib/utils";
 import { menuImages } from "./menu-images";
 
-const Skiper49 = () => {
-  const images = [
-    {
-      src: "/images/x.com/13.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/32.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/20.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/21.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/19.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/1.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/2.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/3.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/4.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/5.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-    {
-      src: "/images/x.com/6.jpeg",
-      alt: "Illustrations by my fav AarzooAly",
-    },
-  ];
 
-  return (
-    <div className="flex h-full w-full items-center justify-center overflow-hidden bg-[#f5f4f3]">
-      <MenuCarousel className="" images={images} showPagination loop />
-    </div>
-  );
-};
-
-export { Skiper49 };
 
 export type MenuCarouselTypes = 'Food' | 'Cocktails' | 'Hookah';
 
