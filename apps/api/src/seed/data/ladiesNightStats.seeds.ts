@@ -88,7 +88,7 @@ const ladiesNightStatsSeed: ILadiesNightData[] = [
 const prisma = new PrismaClient();
 
 export const seedLadiesNightStats = async () =>{
-  prisma.ladiesNightData.createMany({
+  await prisma.ladiesNightData.createMany({
     data: ladiesNightStatsSeed,
     skipDuplicates: true,
   });

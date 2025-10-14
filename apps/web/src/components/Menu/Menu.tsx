@@ -59,7 +59,8 @@ const Menu = () => {
             whileHover={{ scale: 1.05, y: -4 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
             className="relative w-full sm:w-[380px] h-[420px] rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer backdrop-blur-sm"
-          >
+      onClick={() => navigate("/menu/"+item.menuType.toLocaleLowerCase())}
+    >
             {/* Image */}
             <img
               src={item.image}

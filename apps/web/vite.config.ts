@@ -25,7 +25,7 @@ export default defineConfig({
   server: {
     port: getPort(),
     host: "0.0.0.0", // allow external access (needed in Docker)
-    allowedHosts: ["rhode-flyer-zus-advisor.trycloudflare.com"],
+    allowedHosts: ["peace-brighton-lat-casual.trycloudflare.com"],
   },
   resolve: {
     alias: {

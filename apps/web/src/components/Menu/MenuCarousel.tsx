@@ -42,13 +42,13 @@ menuType,
   spaceBetween?: number;
 }) => {
 
-const images = menuImages[menuType];
-
+const images = menuImages['Cocktails'];
+// console.log('images :',images)
 
   const css = `
   .Carousal_003 {
     width: 100%;
-    height: 350px;
+    height: 520px;
     padding-bottom: 50px !important;
   }
   
@@ -71,7 +71,7 @@ const images = menuImages[menuType];
         duration: 0.3,
         delay: 0.5,
       }}
-      className={cn("relative w-full max-w-4xl px-5", className)}
+      className={cn("relative w-full h-full  px-5 my-auto", className)}
     >
       <style>{css}</style>
 
@@ -118,13 +118,13 @@ const images = menuImages[menuType];
                 }
               : false
           }
-          className="Carousal_003"
+          className="Carousal_003 h-[30rem] w-[40rem] "
           modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
         >
           {images.map((image, index) => (
-            <SwiperSlide key={index} className="">
+            <SwiperSlide key={index} className=" h-full">
               <img
-                className="h-full w-full object-cover"
+                className="h-[30rem] w-[40rem] object-cover"
                 src={image}
                 // alt={image.alt}
               />
