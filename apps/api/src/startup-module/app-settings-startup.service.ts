@@ -41,8 +41,7 @@ export class AppSettingsServiceStartup implements OnApplicationBootstrap {
 
     await this.redis.hset(REDIS_HASHES.APP_SETTINGS.HASH(), appSettings);
 
-    const dirabk = await this.redis.hgetall(REDIS_HASHES.APP_SETTINGS.HASH());
-    console.log('dirabk', dirabk);
+    await this.redis.hgetall(REDIS_HASHES.APP_SETTINGS.HASH());
 
     this.logger.log('✅ App Settings Singleton instance is Set-up');
   }

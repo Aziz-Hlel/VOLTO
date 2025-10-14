@@ -10,10 +10,11 @@ export class AppSettingsController {
 
   @HttpCode(200)
   @Patch('/ladies-night/drink-quota')
-  async update( @Body() updateDrinkQuotaDto: UpdateDrinkQuotaDto) {
-   const res =  await this.appSettingsService.updateLadiesNightDrinkQuota(updateDrinkQuotaDto.quota);
- 
+  async update(@Body() updateDrinkQuotaDto: UpdateDrinkQuotaDto) {
+    const res = await this.appSettingsService.updateLadiesNightDrinkQuota(
+      updateDrinkQuotaDto.quota,
+    );
+
     return res;
   }
-
 }

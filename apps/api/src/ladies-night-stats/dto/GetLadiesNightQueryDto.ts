@@ -22,7 +22,7 @@ export class GetLadiesNightDataQueryDto {
   @IsPositive()
   @Type(() => Number)
   page: number;
-  
+
   @IsOptional()
   sort?: 'startDate:asc' | 'startDate:desc';
 }

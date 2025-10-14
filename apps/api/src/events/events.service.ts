@@ -147,6 +147,22 @@ export class EventsService {
 
     const existingEvent = await this.getById(updateEventDto.id);
 
+    const currentDate = new Date();
+    
+    if(existingEvent.type ==="SPECIAL"){
+      if ( existingEvent.startDate! > currentDate ||currentDate < existingEvent.endDate!) {
+        throw new BadRequestException('Cannot Update Event while active');
+      }
+    }
+
+    if(existingEvent.type ==="WEEKLY"){
+      const nextStartDate = cronParser.parse(existingEvent.cronStartDate!).next().toDate();
+      const nextEndDate = cronParser.parse(existingEvent.cronEndDate!).next().toDate();
+      if (nextEndDate < nextStartDate ) {
+        throw new BadRequestException('Cannot Update Event while active');
+      }
+    }
+
     if (!existingEvent) throw new Error(`Event with ID ${updateEventDto.id} not found`);
 
     return this.prisma.$transaction(async (tx) => {

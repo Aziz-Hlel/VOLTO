@@ -152,6 +152,25 @@ export class LadiesNightService {
     return code;
   }
 
+  async getCurrentCode(userId: string): Promise<string | null> {
+    const isLadiesNightActive = await this.isLadiesNightActive2();
+    if (!isLadiesNightActive) throw new BadRequestException('Ladies Night is not active');
+
+    const userDrinksConsumed = await this.getUserDrinksConsumed(userId);
+
+    if (userDrinksConsumed > (await this.getDrinksQuota()))
+      throw new BadRequestException('user consumed drinks more than quota');
+
+    if (userDrinksConsumed === (await this.getDrinksQuota())) return null;
+
+    const existingCode = await this.redis.hget(
+      REDIS_HASHES.LADIES_NIGHT.USER.HASH(userId),
+      REDIS_HASHES.LADIES_NIGHT.USER.USER_CODE(),
+    );
+
+    return existingCode;
+  }
+
   async consumeDrink(code: string) {
     const isLadiesNightActive = await this.isLadiesNightActive2();
     if (!isLadiesNightActive) throw new WsException('Ladies Night is not active');
@@ -229,7 +248,7 @@ export class LadiesNightService {
 
     const { quota } = await this.getDrinkQuota();
 
-    const code = await this.getCode(userId);
+    const code = await this.getCurrentCode(userId);
 
     return {
       success: true,
