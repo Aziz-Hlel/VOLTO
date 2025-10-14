@@ -11,6 +11,7 @@ const resetDB = async () => {
   await prisma.user.deleteMany();
   await prisma.media.deleteMany();
   await prisma.event.deleteMany();
+  await prisma.ladiesNightData.deleteMany();
 };
 
 async function main() {
