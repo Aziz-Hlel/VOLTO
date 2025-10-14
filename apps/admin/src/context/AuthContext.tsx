@@ -5,7 +5,7 @@ import { jwtTokenManager } from "@/Api/JwtTokenManager.class";
 import type { sigInApiResponse, signUpApiResponse } from "@/types/auth/auth";
 import type { User } from "@/types/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import authService from "@/Api/services/auth.service";
 
 type AuthState =
@@ -31,12 +31,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const { data: authData, isLoading } = useQuery<ApiResponse<User>>({
     queryKey: AUTH_QUERY_KEY,
-    queryFn: authService.me,
-    enabled: !!jwtTokenManager.getAccessToken(),
-    // Remove initialData and select, handle mapping below
+    queryFn: async () => {
+      const accessToken = jwtTokenManager.getAccessToken();
+      const refreshToken = jwtTokenManager.getRefreshToken();
+
+      // No tokens at all - user is not authenticated
+      if (!accessToken && !refreshToken) {
+        throw new Error("No authentication tokens");
+      }
+
+      // Try to fetch user with access token
+      if (accessToken) {
+        try {
+          const response = await authService.me();
+          if (response.success) {
+            return response;
+          }
+        } catch (error) {
+          // Access token failed, will try refresh below
+          console.warn("Access token invalid, attempting refresh");
+        }
+      }
+
+      // Access token missing or invalid - try refresh token
+      if (refreshToken) {
+        const refreshResponse = await authService.refresh(refreshToken);
+
+        if (refreshResponse.success) {
+          jwtTokenManager.setTokens(
+            refreshResponse.data.accessToken,
+            refreshResponse.data.refreshToken,
+          );
+          // Fetch user data with new token
+          return await authService.me();
+        }
+      }
+
+      // Both tokens failed
+      jwtTokenManager.clearTokens();
+      throw new Error("Authentication failed");
+    },
+    enabled: !!jwtTokenManager.getAccessToken() || !!jwtTokenManager.getRefreshToken(),
+    retry: false, // Don't retry failed auth requests
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes (formerly cacheTime)
   });
 
-  // Map the query result to AuthState
   const authState: AuthState = useMemo(() => {
     if (isLoading) {
       return { status: "loading", user: null };
@@ -49,27 +89,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUpMutation = useMutation({
     mutationFn: authService.signUp,
-    onSuccess: async (response) => {
+    onSuccess: (response) => {
       if (!response.success) return;
       jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
-      await queryClient.setQueryData(AUTH_QUERY_KEY, response);
+      queryClient.setQueryData(AUTH_QUERY_KEY, response);
     },
   });
 
-  const loginMuation = useMutation({
+  const loginMutation = useMutation({
     mutationFn: authService.login,
-    onSuccess: async (response) => {
+    onSuccess: (response) => {
       if (!response.success) return;
       jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
-      await queryClient.setQueryData(AUTH_QUERY_KEY, response);
+      queryClient.setQueryData(AUTH_QUERY_KEY, response);
     },
   });
 
   const register = useCallback(
     async (data: signUpSchema) => {
       try {
-        const response = await signUpMutation.mutateAsync(data);
-        return response;
+        return await signUpMutation.mutateAsync(data);
       } catch (error) {
         return error as ApiResponse<signUpApiResponse>;
       }
@@ -80,47 +119,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(
     async (data: sigInSchema) => {
       try {
-        const response = await loginMuation.mutateAsync(data);
-        return response;
+        return await loginMutation.mutateAsync(data);
       } catch (error) {
         return error as ApiResponse<sigInApiResponse>;
       }
     },
-    [loginMuation],
+    [loginMutation],
   );
 
   const logout = useCallback(() => {
     jwtTokenManager.clearTokens();
     queryClient.setQueryData(AUTH_QUERY_KEY, null);
+    queryClient.removeQueries({ queryKey: AUTH_QUERY_KEY });
   }, [queryClient]);
-
-  const initializeAuth = useCallback(async () => {
-    const refreshToken = jwtTokenManager.getRefreshToken();
-
-    if (!refreshToken) {
-      queryClient.setQueryData(AUTH_QUERY_KEY, null);
-      return;
-    }
-
-    const response = await authService.refresh(refreshToken);
-
-    if (response.success) {
-      jwtTokenManager.setTokens(response.data.accessToken, response.data.refreshToken);
-      await queryClient.refetchQueries({ queryKey: AUTH_QUERY_KEY });
-    } else {
-      jwtTokenManager.clearTokens();
-      queryClient.setQueryData(AUTH_QUERY_KEY, null);
-    }
-  }, [queryClient]);
-
-  useEffect(() => {
-    const a = async () => {
-      await initializeAuth();
-    };
-    a()
-      .then(() => {})
-      .catch(() => {});
-  }, [initializeAuth]);
 
   const contextValue = useMemo<IAuthContext>(
     () => ({
@@ -139,8 +150,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-
   if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");
-
   return context;
 };

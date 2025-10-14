@@ -12,17 +12,57 @@ const Events = () => {
 
   return (
     <>
-      <div className="max-w-screen px-4 md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:min-w-6xl mx-auto  ">
+      <div className="relative">
+        {/* Background Overlay Noir & Or */}
+        <div className="absolute inset-0 overflow-hidden -z-10">
+          {/* Dégradé principal noir & or */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-[#0a0a0a] to-black opacity-95 backdrop-blur-[3px]"></div>
+
+          {/* Halo doré animé - en haut à gauche */}
+          <div className="absolute -top-32 -left-32 w-[700px] h-[700px] bg-[#C19D60]/15 blur-[150px] rounded-full animate-pulseGold"></div>
+
+          {/* Halo doré animé - en bas à droite */}
+          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#C19D60]/20 blur-[180px] rounded-full animate-glowGold opacity-40"></div>
+
+          {/* Dégradé mobile flottant */}
+          <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-gradient-to-r from-[#C19D60]/10 via-[#b8914f]/20 to-transparent blur-[100px] rounded-full mix-blend-screen animate-floatSlow"></div>
+
+          {/* Particules scintillantes */}
+          <div className="absolute inset-0 overflow-hidden">
+            {Array.from({ length: 25 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-[3px] h-[3px] bg-[#C19D60] rounded-full opacity-60 animate-twinkle"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 4}s`,
+                  animationDuration: `${3 + Math.random() * 3}s`,
+                }}
+              ></div>
+            ))}
+          </div>
+        </div>
         <div className="w-full h-full mt-20 md:pt-10 ">
-          <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans">
-            Upcomming Events
+          <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-white font-sans flex items-center gap-3">
+            <img
+              src="/img/events/upcoming-events-icon.svg"
+              alt="Upcoming Event Icon"
+              className="h-8 w-8 md:h-12 md:w-12"
+            />
+            Upcoming Events
           </h2>
 
           <Carousel events={upcommingEvents} />
         </div>
 
         <div className="w-full h-full md:py-10">
-          <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-800 dark:text-neutral-200 font-sans">
+          <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-white font-sans flex items-center gap-3">
+            <img
+              src="/img/events/previous-events-icon.svg"
+              alt="Upcoming Event Icon"
+              className="h-8 w-8 md:h-12 md:w-12"
+            />
             Previous Events
           </h2>
 

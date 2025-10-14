@@ -60,6 +60,7 @@ const data = [
     src: "/img/events/brunch-wallpaper.jpg",
     content: <DummyContent />,
   },
+
   {
     category: "Special Event",
     title: "New Year's Party",

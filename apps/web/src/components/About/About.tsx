@@ -4,6 +4,7 @@ import AboutUsSection from "./AboutUsSection";
 import CeoSection from "./ChefHighlightSection";
 import { ArrowDown } from "lucide-react";
 import MeetTeam from "./MeetTeam";
+import Footer from "../footer/Footer";
 
 const About = () => {
   return (
@@ -20,10 +21,10 @@ const About = () => {
             <div className="text-center mt-16 flex flex-col md:flex-row items-center justify-center space-x-4">
               {/* <h5 className="text-sm uppercase tracking-[7px] text-white mb-4 font-noah">Restaurant</h5> */}
 
-              <h1 className="text-white text-7xl leading-none font-serif font-normal">
+              <h1 className="font-['Great_Vibes'] text-[#faf9f7] text-9xl font-normal italic">
                 Behind The
-                {/* <span className="block text-[35px] text-[#C19D60] mt-2">Food & Wine</span> */}
               </h1>
+
               <img src="/logo.png" alt="" />
             </div>
           </div>
@@ -38,6 +39,7 @@ const About = () => {
       <AboutUsSection />
       <CeoSection />
       <MeetTeam />
+      <Footer />
     </>
   );
 };

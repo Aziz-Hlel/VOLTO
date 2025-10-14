@@ -12,14 +12,13 @@ const CeoSection = () => {
           <div className="lg:w-1/2 space-y-6">
             <div>
               <div className="text-sm tracking-[3px] text-[#C19D60] uppercase mb-2">
-                20 Year of Experience
+                10 Year of Experience
               </div>
               <h2 className="text-6xl font-serif text-white">Ceo & Co-Founder</h2>
             </div>
             <p className="text-gray-300  leading-8">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima repellendus tempora
-              repellat mollitia repudiandae eum maiores molestias ex illum labore dolorum beatae
-              architecto quisquam earum dolores incidunt aut, non tenetur?
+              With decades of passion for entertainment, Volto was born to redefine nightlife. Our
+              founder brings vision, creativity, and dedication to every unforgettable night.
             </p>
 
             {/* Signature Block */}

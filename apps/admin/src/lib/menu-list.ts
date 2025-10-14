@@ -30,17 +30,17 @@ type Group = {
 
 export function getMenuList(pathname: string): Group[] {
   return [
-    {
-      groupLabel: "",
-      menus: [
-        {
-          href: "/dashboard",
-          label: "Dashboard",
-          icon: LayoutGrid,
-          submenus: [],
-        },
-      ],
-    },
+    // {
+    //   groupLabel: "",
+    //   menus: [
+    //     {
+    //       href: "/dashboard",
+    //       label: "Dashboard",
+    //       icon: LayoutGrid,
+    //       submenus: [],
+    //     },
+    //   ],
+    // },
     {
       groupLabel: "Contents",
       menus: [
@@ -59,11 +59,11 @@ export function getMenuList(pathname: string): Group[] {
           //   }
           // ]
         },
-        {
-          href: "/Gallery",
-          label: "Gallery",
-          icon: Images,
-        },
+        // {
+        //   href: "/Gallery",
+        //   label: "Gallery",
+        //   icon: Images,
+        // },
       ],
     },
     {

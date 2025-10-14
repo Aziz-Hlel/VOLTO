@@ -13,16 +13,15 @@ const AboutUsSection = () => {
               </div>
               <h2 className="text-4xl font-serif text-[#1b1b1b]">Few Words About Us</h2>
             </div>
-            <p className="text-[#777] leading-8">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis hic voluptates,
-              nostrum quaerat dolores suscipit neque eius. Cum eveniet nemo, quos eligendi excepturi
-              accusamus dignissimos accusantium repellat hic saepe fugit?
-              <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, quia.</div>
+            <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
+              Volto Bahrain is more than a restaurant – it is an experience. With world-class
+              design, an electric atmosphere, and a fusion of fine dining and music, Volto has
+              quickly become a landmark destination in the Kingdom of Bahrain.
             </p>
-            <p className="text-[#777] leading-8">
-              Wine porta laoreet ante, luctus maximus ipsum blandit eget. Integer mollis eniman
-              metus, eget consequat enim commodo eduis id magna arcu duis nec elit praesent
-              convallis et justo nec tristique sapien quis.
+            <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
+              Our team of award-winning chefs, mixologists, and performers craft unforgettable
+              nights. From signature cocktails to live DJ sets, every detail at Volto is designed to
+              deliver luxury, style, and energy.
             </p>
           </div>
 

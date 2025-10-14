@@ -20,7 +20,7 @@ export class AuthService {
     private mediaService: MediaService,
   ) {}
 
-  static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '1m' : '1d';
+  static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '1m' : '1d';//! set the access back to 15min in prod
 
   static refreshExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '7d' : '30d';
 

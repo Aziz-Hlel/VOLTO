@@ -340,7 +340,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <style >{`
+      <style>{`
         @keyframes fade-in-up {
           from {
             opacity: 0;

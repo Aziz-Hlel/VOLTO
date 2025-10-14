@@ -403,11 +403,12 @@ export const Card = ({
           <motion.p
             layoutId={layout ? `title-${event.title}` : undefined}
             className={cn(
-              "mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl",
-              event.category === "SPECIAL" && "bg-gradient-to-r from-gray-400 to-gray-600",
+              "relative mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl",
+              event.category === "SPECIAL" &&
+                "before:absolute before:inset-0 before:z-0 before:bg-gray-600 opacity-80 before:rounded-md",
             )}
           >
-            {event.title}
+            <span className="relative z-10">{event.title}</span>
           </motion.p>
         </div>
         <BlurImage

@@ -48,7 +48,8 @@ const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, 
       toast.success("Drink quota updated successfully");
     } catch (error) {
       setLoading(false);
-      toast.error("Error updating drink quota");
+      console.log(error);
+      toast.error(error?.error ?? "Error updating drink quota");
     }
   };
 

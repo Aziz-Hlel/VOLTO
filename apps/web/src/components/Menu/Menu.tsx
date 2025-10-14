@@ -1,98 +1,89 @@
-import mainsMenuItems from "@/data/menu/mainsMenu";
-import MenuSection from "./MenuSection";
-import wineItems from "@/data/menu/wineItems";
-import type { Item22 } from "@/types/items";
-import startesItems from "@/data/menu/startesItems";
-import { hookahMenuItems } from "@/data/menu/hookahMenuItems";
-import { drinksCategory } from "@/data/menu/drinks";
-import { foodCategory } from "@/data/menu/food";
-import { hookahsCategory } from "@/data/menu/hookahs";
-import { vegansCategory } from "@/data/menu/vegans";
-import { HoverExpand_002, Skiper53 } from "./MenuMobile";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import type { MenuCarouselTypes } from "./MenuCarousel";
+
+
+type ImenuCategories = {
+  title: string;
+  image: string;
+  color: string;
+  menuType: MenuCarouselTypes
+}
+const menuCategories:ImenuCategories[] = [
+  {
+    title: "VOLTO Special Cocktails",
+    image: "/img/menuWallpaper/cocktail1.png",
+    color: "from-orange-400/40 to-yellow-600/30",
+    menuType: "Cocktails"
+  },
+  {
+    title: "VOLTO Food Cuisine",
+    image: "/img/menuWallpaper/hamburger.jpg",
+    color: "from-red-600/40 to-emerald-700/30",
+    menuType: "Food"
+  },
+  {
+    title: "VOLTO Hookah",
+    image: "/img/menuWallpaper/hookaItem1.jpeg",
+    color: "from-blue-500/40 to-red-700/30",
+    menuType: "Hookah"
+  },
+];
 
 const Menu = () => {
-  const isMobile = () => {
-    return window && window.innerWidth < 768;
-  };
 
+  const navigate = useNavigate();
   return (
-    <>
-      <div>
-        <div
-          className="relative bg-fixed bg-cover bg-center min-h-screen  flex items-center justify-center"
-          style={{ backgroundImage: "url('/img/banner12.jpg')" }}
-        >
-          {/* Optional overlay */}
-          <div className="absolute inset-0  bg-opacity-60 bg-black/25" />
+    <section className="relative min-h-screen text-white flex flex-col items-center justify-center overflow-hidden">
+      {/* ✨ Background professionnel */}
+      <div className="absolute inset-0 bg-[url('/img/banner-volto.png')] bg-cover bg-center bg-no-repeat opacity-20"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-neutral-900/90 to-black/95 backdrop-blur-[2px]"></div>
+      <div className="absolute -top-20 left-0 w-[800px] h-[800px] bg-[#C19D60]/10 blur-[120px] rounded-full opacity-40"></div>
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-yellow-500/10 blur-[150px] rounded-full opacity-30"></div>
 
-          <div className="relative z-10 w-full">
-            <div className="max-w-[1140px] mx-auto px-4">
-              <div className="text-center mt-[60px]">
-                <h5 className="text-sm uppercase tracking-[7px] text-white mb-4 font-noah">
-                  Restaurant
-                </h5>
-
-                <h1 className="text-white text-[70px] leading-none font-serif font-normal">
-                  Menu Book
-                  <span className="block text-[35px] text-[#C19D60] mt-2">Food & Wine</span>
-                </h1>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* <Skiper53  /> */}
-        <MenuSection
-          img={"/img/menuWallpaper/cocktail.png"}
-          category={drinksCategory}
-          menuCardPostiion="right"
-          menuTitle="VOLTO Special Cocktails"
-        />
-        <MenuSection
-          img={"/img/menuWallpaper/banner8.inverted.jpg"}
-          category={foodCategory}
-          menuCardPostiion="left"
-          menuTitle="VOLTO Drink Bar"
-        />
-        <MenuSection
-          img={"/img/menuWallpaper/2.jpg"}
-          category={vegansCategory}
-          menuCardPostiion="right"
-          menuTitle="VOLTO Food Cuisine"
-        />
-        <MenuSection
-          img={"/img/menuWallpaper/hooka3.jpg"}
-          category={hookahsCategory}
-          menuCardPostiion="left"
-          menuTitle="VOLTO Hookah"
-        />
-
-        {/* <MenuSection img={"/img/banner5.jpg"} items={mainsMenuItems} /> */}
-
-        <div
-          className="relative bg-fixed bg-cover bg-center min-h-screen  flex items-center justify-center"
-          style={{ backgroundImage: "url('/img/banner7.jpg')" }}
-        >
-          {/* Optional overlay */}
-          <div className="absolute inset-0  bg-opacity-60" />
-
-          <div className="relative z-10 w-full">
-            <div className="max-w-[1140px] mx-auto px-4">
-              <div className="text-center mt-[60px]">
-                <h5 className="text-sm uppercase tracking-[7px] text-white mb-4 font-noah">
-                  Restaurant
-                </h5>
-
-                <h1 className="text-white text-[70px] leading-none font-serif font-normal">
-                  Menu Book
-                  <span className="block text-[35px] text-[#C19D60] mt-2">Food & Wine</span>
-                </h1>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Header */}
+      <div className="relative w-full z-10 mt-20 px-4 sm:px-6 lg:px-8 text-center">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-semibold leading-snug text-white">
+          Menu Book
+        </h1>
+        <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[#C19D60] font-medium mt-1">
+          Food & Wine Selection
+        </p>
       </div>
-    </>
+
+      {/* Horizontal cards */}
+      <div className="flex flex-row justify-center gap-8 w-full max-w-7xl flex-wrap sm:flex-nowrap z-10">
+        {menuCategories.map((item, index) => (
+          <motion.div
+            key={index}
+            whileHover={{ scale: 1.05, y: -4 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="relative w-full sm:w-[380px] h-[420px] rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer backdrop-blur-sm"
+          >
+            {/* Image */}
+            <img
+              src={item.image}
+              alt={item.title}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+              onClick={() => navigate("/menu/"+item.menuType.toLocaleLowerCase())}
+            />
+
+            {/* Overlay */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-b ${item.color} to-black/80 transition-opacity duration-300`}
+            />
+
+            {/* Text */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end">
+              <h2 className="text-2xl sm:text-3xl font-serif font-semibold mb-1">{item.title}</h2>
+              <p className="text-gray-300 text-sm sm:text-base tracking-wide">
+                Discover the flavors
+              </p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
   );
 };
 

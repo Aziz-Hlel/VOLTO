@@ -1,15 +1,14 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import CardNav, { type CardNavItem, type CardNavProps } from "./YetAnotherBar";
 
 const NavBar619 = () => {
-  // Centralized navigation state
   const [navState, setNavState] = useState({
     isOpen: false,
-    scrollY: 0,
     lastScrollY: 0,
-    isScrollingDown: false,
     isVisible: true,
   });
+
+  const navRef = useRef<HTMLDivElement | null>(null);
 
   const navBarItems: CardNavItem[] = [
     {
@@ -46,67 +45,60 @@ const NavBar619 = () => {
           type: "a",
         },
         { label: "Whatsapp", href: "https://wa.me/+97334588466", ariaLabel: "Whatsapp", type: "a" },
-        { label: "Book A Table", href: "/contact", ariaLabel: "Book A Table", type: "Link" },
+        { label: "Book A Table", href: "/reservation", ariaLabel: "Book A Table", type: "Link" },
       ],
     },
   ];
 
-  // Professional scroll handler with proper throttling
+  // 👇 Gestion du scroll
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
-    const scrollThreshold = 100;
 
     setNavState((prev) => {
-      const isScrollingDown =
-        currentScrollY > prev.lastScrollY && currentScrollY >= scrollThreshold;
-      const shouldHide = isScrollingDown && currentScrollY >= scrollThreshold;
+      const isScrollingDown = currentScrollY > prev.lastScrollY;
+      const isVisible = !isScrollingDown || currentScrollY < 10;
 
+      // ✅ Ferme le menu dès qu'on scroll
       return {
         ...prev,
-        scrollY: currentScrollY,
         lastScrollY: currentScrollY,
-        isScrollingDown,
-        isVisible: !shouldHide,
-        // Auto-close menu when scrolling down
-        isOpen: shouldHide ? false : prev.isOpen,
+        isVisible,
+        isOpen: false, // <<< fermeture du menu
       };
     });
   }, []);
 
-  // Debounced scroll handler for performance
   useEffect(() => {
-    let rafId: number;
     let timeoutId: NodeJS.Timeout;
 
     const throttledScroll = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        rafId = requestAnimationFrame(handleScroll);
-      }, 10);
+      timeoutId = setTimeout(handleScroll, 50);
     };
 
     window.addEventListener("scroll", throttledScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", throttledScroll);
-      clearTimeout(timeoutId);
-      if (rafId) cancelAnimationFrame(rafId);
-    };
+    return () => window.removeEventListener("scroll", throttledScroll);
   }, [handleScroll]);
 
-  // Handle menu toggle from child component
-  const handleMenuToggle = useCallback((isOpen: boolean) => {
+  // ✅ Fermer le menu si clic à l’extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        setNavState((prev) => ({ ...prev, isOpen: false }));
+      }
+    };
+
+    if (navState.isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [navState.isOpen]);
+
+  const handleMenuToggle = (isOpen: boolean) => {
     setNavState((prev) => ({ ...prev, isOpen }));
-  }, []);
-
-  // Professional navbar classes with smooth transitions
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getNavbarClasses = () => {
-    const baseClasses =
-      "fixed -m-1 top-0 left-0 right-0 z-50 w-full transition-transform duration-300 ease-in-out";
-    const visibilityClasses = navState.isVisible ? "translate-y-0" : "-translate-y-full";
-
-    return `${baseClasses} ${visibilityClasses}`;
   };
 
   const navProps: CardNavProps = {
@@ -114,20 +106,17 @@ const NavBar619 = () => {
     items: navBarItems,
     isOpen: navState.isOpen,
     onMenuToggle: handleMenuToggle,
-    // Pass scroll state for any scroll-dependent behavior
-    scrollState: {
-      scrollY: navState.scrollY,
-      isScrollingDown: navState.isScrollingDown,
-      isVisible: navState.isVisible,
-    },
   };
 
+  const navClasses = `
+    fixed top-0 left-0 right-0 z-[99] w-full
+    transition-all duration-500 ease-in-out
+    ${navState.isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}
+    bg-transparent
+  `;
+
   return (
-    <nav
-      className={
-        "fixed -m-1 top-0 left-0 right-0 z-[99] w-full transition-transform  bg-transparent duration-300 ease-in-out"
-      }
-    >
+    <nav className={navClasses} ref={navRef}>
       <CardNav {...navProps} />
     </nav>
   );

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
@@ -30,8 +30,8 @@ function App() {
 
             <Route element={<AuthenticatedRoutes />}>
               <Route path="/" element={<Home />}>
-                <Route index element={<Dashboard />} />
-                <Route path="dashboard" element={<Dashboard />} />
+                <Route index element={<Navigate to="/events" />} />
+                {/* <Route path="dashboard" element={<Dashboard />} /> */}
 
                 <Route path="events/" element={<Events />}>
                   <Route index element={<EventMainContent />} />

@@ -134,7 +134,11 @@ class ApiService {
   }
 
   handleApiError<T>(error: any): ApiResponse<T> {
-    const apiErrorMessage = error.response?.data?.error || error.message || "Request failed";
+    const apiErrorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "Request failed";
 
     const status = error.response?.status;
     if (status !== 200) this.throwErrorAlert(status, apiErrorMessage);

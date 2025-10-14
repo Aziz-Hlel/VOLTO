@@ -106,7 +106,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
       );
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error(error?.error ?? "Failed to submit the form. Please try again.");
     }
   };
 
