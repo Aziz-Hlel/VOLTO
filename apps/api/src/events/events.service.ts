@@ -45,7 +45,7 @@ export class EventsService {
           await this.specialEventsMq.addSpecialEventNotification({
             eventId: createdEvent.id,
             eventName: createdEvent.name,
-            startDate: new Date(new Date().getTime() + 10 * 1000)!,
+            startDate: createdEvent.startDate!,
             endDate: createdEvent.endDate!,
           });
         }

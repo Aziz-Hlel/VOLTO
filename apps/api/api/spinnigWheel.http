@@ -34,28 +34,28 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "id": "{{getSpinnigWheelInstance.response.body.id}}",
     "name":"Spinning Wheel Name Updated",
-    "startDate": "2025-09-12T11:35:10.161Z",
-    "endDate": "2025-09-12T11:38:10.161Z",
+    "startDate": "2025-10-16T11:35:10.161Z",
+    "endDate": "2025-10-19T11:38:10.161Z",
     "rewardList":[
         {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[0].id}}",
-            "name": "Reward 1 updated from Rest Client"
+            "name": "Reward 1 updated"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[1].id}}",
-            "name": "Reward 2 updated from Rest Client"
+            "name": "Reward 2 updated"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[2].id}}",
-            "name": "Reward 3 updated from Rest Client"
+            "name": "Reward 3 updated"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[3].id}}",
-            "name": "Reward 4 updated from Rest Client"
+            "name": "Reward 4 updated"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[4].id}}",
-            "name": "Reward 5555 updated from Rest Client"
+            "name": "Reward 5 updated"
         }
     ]
 }

@@ -1,9 +1,9 @@
-import type { LadiesNightDetailsResponse } from "@/types/ladiesNight/LadiesNightDetailsResponse";
 import { useEffect, useMemo, useState, type FC } from "react";
-import cronParser from "cron-parser";
 
 interface CountDownProps {
-  ladiesNight: LadiesNightDetailsResponse | undefined;
+  startDate: string;
+  endDate: string;
+  onComplete?: () => void; // 👈 restored optional callback
 }
 
 interface TimeRemaining {
@@ -28,31 +28,33 @@ const calculateTimeRemaining = (targetDate: Date): TimeRemaining => {
   };
 };
 
-export const useCountDown = ({ ladiesNight }: CountDownProps) => {
+export const useCountDown = ({ startDate, endDate, onComplete }: CountDownProps) => {
   const getLadiesNightCountDown = useMemo(() => {
-    if (!ladiesNight) return null;
-    console.log(ladiesNight);
+    const startDateConverted = new Date(startDate);
+    const endDateConverted = new Date(endDate);
     const currentDate = new Date();
 
-    const startInterval = cronParser.parseExpression(ladiesNight.cronStartDate!);
-    const nextstartDate = startInterval.next().toDate();
-
-    const endInterval = cronParser.parseExpression(ladiesNight.cronEndDate!, {
-      currentDate,
-    }); // Get this week's end date
-    const nextEndDate = endInterval.next().toDate();
-
-    if (nextstartDate < nextEndDate) {
+    if (currentDate > endDateConverted) {
       return {
-        ladiesNightIsActive: false,
-        date: nextstartDate,
+        IsActive: false,
+        IsDisabled: true,
       };
     }
+
+    if (currentDate < startDateConverted) {
+      return {
+        ladiesNightIsActive: false,
+        IsDisabled: false,
+        date: startDateConverted,
+      };
+    }
+
     return {
       ladiesNightIsActive: true,
-      date: nextEndDate,
+      IsDisabled: false,
+      date: endDateConverted,
     };
-  }, [ladiesNight]);
+  }, [startDate, endDate]);
 
   const targetDate = getLadiesNightCountDown?.date ?? null;
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining | null>(null);
@@ -63,29 +65,31 @@ export const useCountDown = ({ ladiesNight }: CountDownProps) => {
       return;
     }
 
-    // Initial calculation
     const updateTimer = () => {
       const remaining = calculateTimeRemaining(targetDate);
       setTimeRemaining(remaining);
 
-      // Trigger onComplete callback when countdown reaches zero
-      //   if (remaining.total === 0 && onComplete) {
-      //     onComplete();
-      //   }
+      // ✅ Trigger onComplete callback when countdown reaches zero
+      if (remaining.total === 0 && typeof onComplete === "function") {
+        onComplete();
+      }
     };
 
     updateTimer(); // Run immediately
-
-    // Update every second
     const intervalId = setInterval(updateTimer, 1000);
 
-    // Cleanup - Critical for preventing memory leaks
     return () => clearInterval(intervalId);
-  }, [targetDate]); // onComplete]);
+  }, [targetDate, onComplete]);
 
-  const label = getLadiesNightCountDown?.ladiesNightIsActive
-    ? "🔴 Live Now ! Ladies Night ends in "
-    : "📅 Upcoming ! Ladies Nights starts in : ";
+  let label: string;
+
+  if (getLadiesNightCountDown.IsDisabled) {
+    label = "❌ No Spinning Wheel Scheduled";
+  } else if (getLadiesNightCountDown.ladiesNightIsActive) {
+    label = "🎉 Event is Active!";
+  } else {
+    label = "📅 Upcoming! Spinning Wheel starts in:";
+  }
 
   return {
     timeRemaining,

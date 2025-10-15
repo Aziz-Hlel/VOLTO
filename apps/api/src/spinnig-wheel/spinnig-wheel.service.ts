@@ -14,6 +14,7 @@ import { UpdateSpinnigWheelDto } from './dto/update-spinnig-wheel.dto';
 import { IsSpinningWheelAvailableResponse } from './dto/active-spinning-wheel.dto';
 import { UserQuotaResponseDto } from './dto/user-quota-response.dto';
 import { RedeemCodeResponseDto } from './dto/RedeemCodeResponse.dto';
+import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
 
 @Injectable()
 export class SpinnigWheelService {
@@ -22,6 +23,7 @@ export class SpinnigWheelService {
     private readonly spinnigWheelRewardService: SpinnigWheelRewardService,
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
+    private readonly  specialEventsMq:SpecialEventMq
   ) {}
 
   async updateWheelCache(): Promise<IsSpinningWheelAvailableResponse> {
@@ -148,6 +150,7 @@ export class SpinnigWheelService {
   }
 
   update = async (updateSpinnigWheelDto: UpdateSpinnigWheelDto) => {
+    //! enable this shit when you done from dev mode
     // if((await this.isSpinningWheelAvailable()).isAvailable)
     //   throw new BadRequestException('Cannot update while spinning wheel event is active');
 
@@ -180,9 +183,15 @@ export class SpinnigWheelService {
     if (
       spinnigWheel.startDate !== updatedWheel.startDate ||
       spinnigWheel.endDate !== updatedWheel.endDate
-    )
+    ){
       await this.deleteUserHashes();
-
+          await this.specialEventsMq.addSpecialEventNotification({
+            eventId: spinnigWheel.id,
+            eventName: spinnigWheel.name ?? 'Spinnig Wheel',
+            startDate: spinnigWheel.startDate!,
+            endDate: spinnigWheel.endDate!,
+          });
+}
     return updatedWheel;
   };
 

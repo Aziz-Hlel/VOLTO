@@ -37,6 +37,11 @@ const apiRoutes = {
     statsByPeriod: () => "/ladies-night-stats/periodic" as const,
   },
 
+  spinningWheel: {
+    details: () => "/spinning-wheel/admin/instance" as const,
+    update: () => "/spinning-wheel/admin/instance" as const,
+  },
+
   media: {
     presignedUrl: () => "/media/presigned-url" as const,
   },

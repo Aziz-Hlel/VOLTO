@@ -15,6 +15,7 @@ import Staff from "./pages/Staff";
 import StaffMainContent from "./components/Staff/StaffMainContent";
 import AddStaffWrapper from "./components/Staff/AddStaffWrapper";
 import LadiesNight from "./components/LadiesNight/LadiesNight";
+import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
 
 const queryClient = new QueryClient();
 
@@ -45,7 +46,8 @@ function App() {
                   <Route path="edit/:staffId" element={<AddStaffWrapper />} />
                 </Route>
 
-                <Route path="ladies-night" element={<LadiesNight />}/>
+                <Route path="ladies-night" element={<LadiesNight />} />
+                <Route path="spinning-wheel" element={<SpinningWheel />} />
 
                 <Route path="*" element={<NotFound />} />
               </Route>

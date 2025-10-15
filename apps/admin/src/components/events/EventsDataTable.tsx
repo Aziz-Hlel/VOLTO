@@ -19,7 +19,6 @@ import {
 import type { EventResponseDto } from "@/types/events/eventResponse.dto";
 import cronstrue from "cronstrue";
 import { EventType } from "@/types/events/EventType";
-import getdisplayedDate from "@/lib/get-formatted-date";
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
@@ -62,16 +61,50 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
     }
   };
 
-  const getdisplayedStartDate = (event: EventResponseDto) => {
-    if (event.type === EventType.SPECIAL)
-      return event.startDate ? getdisplayedDate({date: event.startDate,showTime: true}) : "N/A";
-    if (event.type === EventType.WEEKLY)
-      return event.cronStartDate ? cronstrue.toString(event.cronStartDate) : "N/A";
+  const getdisplayedEndtDate = (event: EventResponseDto) => {
+    const startCron = cronstrue.toString(event.cronStartDate);
+    const endCron = cronstrue.toString(event.cronEndDate).split(",")[0].split("At ")[1];
+    return `${startCron.split(",")[1]}, ${startCron.split(",")[0]} to ${endCron} `;
   };
 
-  const getdisplayedEndtDate = (event: EventResponseDto) => {
-    if (event.type === EventType.SPECIAL)
-      return event.endDate ? getdisplayedDate({date: event.endDate,showTime: true}) : "N/A";
+  const getdisplayedSpecialDate = (event: EventResponseDto) => {
+    if (event.type === EventType.SPECIAL) {
+      const startDate = new Date(event.startDate);
+      const endDate = new Date(event.endDate);
+      const formattedStartDate = new Intl.DateTimeFormat("en-US", {
+        month: "long", // October
+        day: "numeric", // 1
+        year: "numeric", // 2025
+      }).format(startDate);
+
+      const formattedEndDate = new Intl.DateTimeFormat("en-US", {
+        month: "long", // October
+        day: "numeric", // 1
+        year: "numeric", // 2025
+      }).format(endDate);
+
+      let dayRange =
+        startDate.getDate() === endDate.getDate()
+          ? `from ${formattedStartDate}`
+          : `from ${formattedStartDate} to ${formattedEndDate}`;
+
+      const startHour = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true, // 12-hour clock with AM/PM
+      }).format(startDate);
+
+      const endHour = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true, // 12-hour clock with AM/PM
+      }).format(endDate);
+
+      dayRange = `${dayRange}, at ${startHour} to ${endHour}`;
+
+      return dayRange;
+    }
+
     if (event.type === EventType.WEEKLY)
       return event.cronEndDate ? cronstrue.toString(event.cronEndDate).split(",")[0] : "N/A";
   };
@@ -107,8 +140,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                 >
                   Email {sortBy === "type" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
-                <TableHead className="hidden lg:table-cell">Start Date</TableHead>
-                <TableHead className="hidden lg:table-cell">End Date</TableHead>
+                <TableHead className="hidden lg:table-cell">Date Range</TableHead>
                 <TableHead className="w-[70px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -124,8 +156,11 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                   <TableRow key={event.id} className=" hover:cursor-default">
                     <TableCell className="font-medium">{event.name}</TableCell>
                     <TableCell className="text-sm">{event.description}</TableCell>
-                    <TableCell className="text-sm">{getdisplayedStartDate(event)}</TableCell>
-                    <TableCell className="text-sm">{getdisplayedEndtDate(event)}</TableCell>
+                    <TableCell className="text-sm">
+                      {event.type === "SPECIAL"
+                        ? getdisplayedSpecialDate(event)
+                        : getdisplayedEndtDate(event)}
+                    </TableCell>
 
                     <TableCell>
                       <DropdownMenu>
