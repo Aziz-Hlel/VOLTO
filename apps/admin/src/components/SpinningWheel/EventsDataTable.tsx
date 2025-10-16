@@ -74,7 +74,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                     <TableCell className="text-sm border-r">{getdisplayedDate(tableRow)}</TableCell>
                     <TableCell className="text-sm border-r">{tableRow.totalParticipants}</TableCell>
                     <TableCell className="text-sm border-r ">
-                      {tableRow.participantsRedeemedCodes}
+                      {tableRow.participantsRedeemedCode}
                     </TableCell>
                   </TableRow>
                 ))

@@ -343,7 +343,7 @@ export class SpinnigWheelService {
 
     await this.redis.hdel(REDIS_HASHES.SPINNING_WHEEL.CODES(), code);
 
-    this.redis.hincrby(
+   await this.redis.hincrby(
       REDIS_HASHES.SPINNING_WHEEL.STATS.HASH(),
       REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED(),
       1,

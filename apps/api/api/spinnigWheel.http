@@ -1,5 +1,6 @@
 
 @baseUrl = http://localhost:3000/api
+@baseUrl = https://voltobahrain.online/api
 
 
 
@@ -34,8 +35,8 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "id": "{{getSpinnigWheelInstance.response.body.id}}",
     "name":"Spinning Wheel Name Updated",
-    "startDate": "2025-10-16T17:08:00.999Z",
-    "endDate": "2025-10-16T17:12:00.999Z",
+    "startDate": "2025-10-16T17:21:00.999Z",
+    "endDate": "2025-10-16T17:25:00.999Z",
     "rewardList":[
         {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[0].id}}",

@@ -60,7 +60,7 @@ export function ChartAreaInteractive() {
     data?.data.map((item) => ({
       date: item.startDate,
       totalParticipants: item.totalParticipants,
-      participantsRedeemedCodes: item.participantsRedeemedCodes,
+      participantsRedeemedCodes: item.participantsRedeemedCode,
     })) ?? undefined;
 
   return (

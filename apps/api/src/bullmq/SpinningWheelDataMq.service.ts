@@ -75,10 +75,11 @@ export class SpinningWheelDataMqService implements OnModuleInit {
       pipeline.hget(statHash, REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS());
       pipeline.hget(statHash, REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED());
 
-      const [totalParticipants, participantsWithRedeemedCode] = (await pipeline.exec())!.map(
-        ([err, res]) => res,
-      );
-
+     const [totalParticipants, participantsWithRedeemedCode] = await this.redis.hmget(statHash,
+    REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS(),
+    REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED()
+);
+this.logger.debug(`Current stats from redis are, total :  ${totalParticipants}, redeemed : ${participantsWithRedeemedCode}`);
       await this.prisma.spinningWheelData.upsert({
         where: {
           startDate: new Date(job.data.startDate),
@@ -99,6 +100,7 @@ export class SpinningWheelDataMqService implements OnModuleInit {
   }
 
   async deletePreviousJob(jobId: string) {
+    // ! ouble check this cuz i forgot but ti tihkin this is not weekly so doesnt need to be this way
     const allJobSchedulers = await this.eventQueue.getJobSchedulers();
 
     const targetScheduler = allJobSchedulers.find((scheduler) => scheduler.name === jobId);
