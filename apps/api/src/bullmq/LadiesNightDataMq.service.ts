@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 
 @Injectable()
-export class LadiesNightDataMqService implements OnModuleInit, OnModuleDestroy {
+export class LadiesNightDataMqService implements OnModuleInit {
   private readonly logger = new Logger(LadiesNightDataMqService.name);
 
   private readonly queueName = 'LadiesEventData-recorder';
@@ -96,7 +96,7 @@ export class LadiesNightDataMqService implements OnModuleInit, OnModuleDestroy {
     const task = cron.schedule('*/1 * * * *', async () => {
       this.logger.debug(`🕒1mn passed : Updating ladies night data...`);
       const cronEndDateParsed = cronParser.parse(job.data.cronEndDate);
-      const currentEventEndDate = cronEndDateParsed.next().toDate();
+      const currentEventEndDate = cronEndDateParsed.next().toDate(); // ! implementation 5ayba barcha ken server ta7 f w9t l end date , chiwalli lend date t3 jom3a jeya
       const currentDate = new Date();
       if (currentDate > currentEventEndDate) task.stop();
       const startDateParsed = cronParser.parse(job.data.cronStartDate);
@@ -203,9 +203,5 @@ export class LadiesNightDataMqService implements OnModuleInit, OnModuleDestroy {
   onModuleInit() {
     this.initQueue();
     this.initWorker();
-  }
-
-  onModuleDestroy() {
-    throw new Error('Method not implemented.');
   }
 }

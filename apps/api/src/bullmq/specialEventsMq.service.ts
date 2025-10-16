@@ -5,14 +5,14 @@ import Redis from 'ioredis';
 import ENV from 'src/config/env';
 import { CommonEventsMqService } from './CommonEventsMq.service';
 
-interface IAddSpecialEvent {
+export interface IAddSpecialEvent {
   eventId: string;
   eventName: string;
   startDate: Date;
   endDate: Date;
 }
 
-interface SpecialEventJobData {
+export interface SpecialEventJobData {
   eventId: string;
   eventName: string;
   startDate: string;

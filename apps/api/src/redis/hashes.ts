@@ -50,6 +50,12 @@ export const REDIS_HASHES = {
     REWARDS: {
       REWARD_NAME: () => `spinning_wheel:rewards`,
     },
+
+    STATS: {
+      HASH: () => 'spinning_wheel:stats',
+      TOTAL_PARTICIPANTS: () => 'total_participants',
+      PARTICIPANTS_WITH_CODE_REDEEMED: () => 'participants_with_code_redeemed',
+    },
   },
 
   RESET_PASSWORD: {

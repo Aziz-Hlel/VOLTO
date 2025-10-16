@@ -15,6 +15,7 @@ import { IsSpinningWheelAvailableResponse } from './dto/active-spinning-wheel.dt
 import { UserQuotaResponseDto } from './dto/user-quota-response.dto';
 import { RedeemCodeResponseDto } from './dto/RedeemCodeResponse.dto';
 import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
+import { SpinningWheelDataMqService } from 'src/bullmq/SpinningWheelDataMq.service';
 
 @Injectable()
 export class SpinnigWheelService {
@@ -24,6 +25,7 @@ export class SpinnigWheelService {
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly specialEventsMq: SpecialEventMq,
+    private readonly spinningWheelDataMqService:SpinningWheelDataMqService
   ) {}
 
   async updateWheelCache(): Promise<IsSpinningWheelAvailableResponse> {
@@ -191,6 +193,16 @@ export class SpinnigWheelService {
         startDate: updatedWheel.startDate!,
         endDate: updatedWheel.endDate!,
       });
+
+      await this.spinningWheelDataMqService.addJob({
+        eventId: updatedWheel.id,
+        startDate: updatedWheel.startDate!.toISOString(),
+        endDate: updatedWheel.endDate!.toISOString(),
+        eventName: updatedWheel.name ? updatedWheel.name : 'Spinnig Wheel',
+        delay:'firstDelay',
+      })
+
+      
     }
     return updatedWheel;
   };
@@ -289,6 +301,12 @@ export class SpinnigWheelService {
 
     await this.redis.expire(REDIS_HASHES.SPINNING_WHEEL.CODES(), ttlSeconds);
 
+    await this.redis.hincrby(
+      REDIS_HASHES.SPINNING_WHEEL.STATS.HASH(),
+      REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS(),
+      1,
+    );
+
     return {
       hasPlayed: true,
       code,
@@ -325,6 +343,11 @@ export class SpinnigWheelService {
 
     await this.redis.hdel(REDIS_HASHES.SPINNING_WHEEL.CODES(), code);
 
+    this.redis.hincrby(
+      REDIS_HASHES.SPINNING_WHEEL.STATS.HASH(),
+      REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED(),
+      1,
+    )
     const rewardName = await this.redis.hget(
       REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),
       userRewardId,

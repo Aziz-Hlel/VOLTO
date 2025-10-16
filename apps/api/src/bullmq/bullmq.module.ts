@@ -5,10 +5,11 @@ import { SpecialEventMq } from './specialEventsMq.service';
 import { WeeklyEventMq } from './weeklyEventsMq.service';
 import { CommonEventsMqService } from './CommonEventsMq.service';
 import { LadiesNightDataMqService } from './LadiesNightDataMq.service';
+import { SpinningWheelDataMqService } from './SpinningWheelDataMq.service';
 
 @Module({
   imports: [PrismaModule, LadiesNightModule],
-  providers: [CommonEventsMqService, SpecialEventMq, WeeklyEventMq, LadiesNightDataMqService],
-  exports: [SpecialEventMq, WeeklyEventMq],
+  providers: [CommonEventsMqService, SpecialEventMq, WeeklyEventMq, LadiesNightDataMqService,SpinningWheelDataMqService],
+  exports: [SpecialEventMq, WeeklyEventMq,SpinningWheelDataMqService],
 })
 export class BullmqModule {}
