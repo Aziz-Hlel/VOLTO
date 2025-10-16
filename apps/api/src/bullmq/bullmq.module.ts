@@ -9,7 +9,13 @@ import { SpinningWheelDataMqService } from './SpinningWheelDataMq.service';
 
 @Module({
   imports: [PrismaModule, LadiesNightModule],
-  providers: [CommonEventsMqService, SpecialEventMq, WeeklyEventMq, LadiesNightDataMqService,SpinningWheelDataMqService],
-  exports: [SpecialEventMq, WeeklyEventMq,SpinningWheelDataMqService],
+  providers: [
+    CommonEventsMqService,
+    SpecialEventMq,
+    WeeklyEventMq,
+    LadiesNightDataMqService,
+    SpinningWheelDataMqService,
+  ],
+  exports: [SpecialEventMq, WeeklyEventMq, SpinningWheelDataMqService],
 })
 export class BullmqModule {}

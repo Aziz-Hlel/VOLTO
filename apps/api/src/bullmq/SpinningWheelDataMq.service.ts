@@ -6,7 +6,6 @@ import { SpecialEventJobData } from './specialEventsMq.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import cron from 'node-cron';
 
-
 @Injectable()
 export class SpinningWheelDataMqService implements OnModuleInit {
   private readonly logger = new Logger(SpinningWheelDataMqService.name);
@@ -75,11 +74,14 @@ export class SpinningWheelDataMqService implements OnModuleInit {
       pipeline.hget(statHash, REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS());
       pipeline.hget(statHash, REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED());
 
-     const [totalParticipants, participantsWithRedeemedCode] = await this.redis.hmget(statHash,
-    REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS(),
-    REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED()
-);
-this.logger.debug(`Current stats from redis are, total :  ${totalParticipants}, redeemed : ${participantsWithRedeemedCode}`);
+      const [totalParticipants, participantsWithRedeemedCode] = await this.redis.hmget(
+        statHash,
+        REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS(),
+        REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED(),
+      );
+      this.logger.debug(
+        `Current stats from redis are, total :  ${totalParticipants}, redeemed : ${participantsWithRedeemedCode}`,
+      );
       await this.prisma.spinningWheelData.upsert({
         where: {
           startDate: new Date(job.data.startDate),
@@ -99,17 +101,18 @@ this.logger.debug(`Current stats from redis are, total :  ${totalParticipants}, 
     await task.start();
   }
 
-  async deletePreviousJob(jobId: string) {
+  private async deletePreviousJob(jobId: string) {
     // ! ouble check this cuz i forgot but ti tihkin this is not weekly so doesnt need to be this way
-    const allJobSchedulers = await this.eventQueue.getJobSchedulers();
 
-    const targetScheduler = allJobSchedulers.find((scheduler) => scheduler.name === jobId);
 
-    if (targetScheduler) {
-      this.logger.debug('Deleted previous Spinning Wheel Stats repeatable job');
-      await this.eventQueue.removeJobScheduler(targetScheduler.key);
+const firstDelayJob = await this.eventQueue.getJob(jobId);
+
+    if (firstDelayJob) {
+      this.logger.debug('Deleted previous first delay job');
+      await firstDelayJob.remove();
     } else {
-      this.logger.debug('No previous Spinning Wheel() Stats repeatable job to delete');
+      this.logger.debug('No previous first delay job to delete');
+
     }
   }
 

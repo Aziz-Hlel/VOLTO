@@ -25,7 +25,7 @@ export class SpinnigWheelService {
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly specialEventsMq: SpecialEventMq,
-    private readonly spinningWheelDataMqService:SpinningWheelDataMqService
+    private readonly spinningWheelDataMqService: SpinningWheelDataMqService,
   ) {}
 
   async updateWheelCache(): Promise<IsSpinningWheelAvailableResponse> {
@@ -199,10 +199,8 @@ export class SpinnigWheelService {
         startDate: updatedWheel.startDate!.toISOString(),
         endDate: updatedWheel.endDate!.toISOString(),
         eventName: updatedWheel.name ? updatedWheel.name : 'Spinnig Wheel',
-        delay:'firstDelay',
-      })
-
-      
+        delay: 'firstDelay',
+      });
     }
     return updatedWheel;
   };
@@ -343,11 +341,11 @@ export class SpinnigWheelService {
 
     await this.redis.hdel(REDIS_HASHES.SPINNING_WHEEL.CODES(), code);
 
-   await this.redis.hincrby(
+    await this.redis.hincrby(
       REDIS_HASHES.SPINNING_WHEEL.STATS.HASH(),
       REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED(),
       1,
-    )
+    );
     const rewardName = await this.redis.hget(
       REDIS_HASHES.SPINNING_WHEEL.REWARDS.REWARD_NAME(),
       userRewardId,
