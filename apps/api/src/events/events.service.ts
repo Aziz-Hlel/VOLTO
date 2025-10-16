@@ -148,17 +148,17 @@ export class EventsService {
     const existingEvent = await this.getById(updateEventDto.id);
 
     const currentDate = new Date();
-    
-    if(existingEvent.type ==="SPECIAL"){
-      if ( currentDate > existingEvent.startDate! && currentDate < existingEvent.endDate!) {
+
+    if (existingEvent.type === 'SPECIAL') {
+      if (currentDate > existingEvent.startDate! && currentDate < existingEvent.endDate!) {
         throw new BadRequestException('Cannot Update Event while active');
       }
     }
 
-    if(existingEvent.type ==="WEEKLY"){
+    if (existingEvent.type === 'WEEKLY') {
       const nextStartDate = cronParser.parse(existingEvent.cronStartDate!).next().toDate();
       const nextEndDate = cronParser.parse(existingEvent.cronEndDate!).next().toDate();
-      if (nextEndDate < nextStartDate ) {
+      if (nextEndDate < nextStartDate) {
         throw new BadRequestException('Cannot Update Event while active');
       }
     }
@@ -198,7 +198,7 @@ export class EventsService {
       }
 
       if (existingEvent.type === 'SPECIAL' && existingEvent.startDate !== updatedEvent.startDate) {
-        await this.specialEventsMq.removeSpecialEventNotification(existingEvent.id);
+        await this.specialEventsMq.removeExistingJob(existingEvent.id);
       }
 
       if (updatedEvent.type === 'WEEKLY') {

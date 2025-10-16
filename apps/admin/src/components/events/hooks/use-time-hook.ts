@@ -29,12 +29,14 @@ const useTimeHook = ({
   const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
     const hour = parseInt(e.target.value, 10);
+    if (hour < 1 || hour > 12) return;
     setStartTime(hour);
   };
 
   const handleEndTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
     const hour = parseInt(e.target.value, 10);
+    if (hour < 1 || hour > 12) return;
     setEndHour(hour);
   };
 

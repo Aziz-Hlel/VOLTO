@@ -149,7 +149,26 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     return parts.join(' ');
   }
 
+  async removeWeeklyEventNotification(weeklyEventId: string) {
+    const firstDelayJobId = this.getJobId(weeklyEventId, 'firstDelay');
+
+    const allJobSchedulers = await this.eventQueue.getJobSchedulers();
+
+    const targetScheduler = allJobSchedulers.find(
+      (scheduler) => scheduler.name === firstDelayJobId,
+    );
+
+    if (targetScheduler) {
+      this.logger.debug('Deleted previous first delay job');
+      await this.eventQueue.removeJobScheduler(targetScheduler.key);
+    } else {
+      this.logger.debug('No previous first delay job to delete');
+    }
+  }
+
   async addWeeklyEventNotification(data: IAddWeeklyEvent) {
+    await this.removeWeeklyEventNotification(data.eventId);
+
     const firstDelayjobId = this.getJobId(data.eventId, 'firstDelay');
 
     const cronStartDateDayShifted = this.shiftCronDayBack(data.cronStartDate);
@@ -186,16 +205,6 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
       };
       await this.ladiesNightDataMq.addJob(ladiesNightStatsJobPayload);
     }
-  }
-
-  async removeWeeklyEventNotification(eventId: string) {
-    const firstDelayJobId = this.getJobId(eventId, 'firstDelay');
-
-    const allJobSchedulers = await this.eventQueue.getJobSchedulers();
-
-    allJobSchedulers.map((scheduler) => {
-      scheduler.name === firstDelayJobId && this.eventQueue.removeJobScheduler(scheduler.key);
-    });
   }
 
   async onModuleInit() {

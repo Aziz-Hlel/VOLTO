@@ -54,19 +54,19 @@ export default function SingleEventDate({
     initDuration: initDuration,
   });
 
-  const handleRangeDateChange = (selectedDate: Date) => {
-    setDay(selectedDate);
+  const handleSingleDateChange = (selectedDate: Date | undefined) => {
+    if (selectedDate) setDay(selectedDate);
   };
 
   const updateFormFields = () => {
     const newStartDate = day;
     newStartDate.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
-    newStartDate.setMinutes(19);   
+    newStartDate.setMinutes(31);
     newStartDate.setSeconds(0);
 
     const newEndDate = new Date(day);
     newEndDate.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
-    newEndDate.setMinutes(59);
+    newEndDate.setMinutes(0);
     newEndDate.setSeconds(0);
     newEndDate.setHours(newEndDate.getHours() + duration);
 
@@ -104,7 +104,7 @@ export default function SingleEventDate({
               captionLayout="dropdown"
               onSelect={(e) => {
                 setOpenCalendar(false);
-                handleRangeDateChange(e);
+                handleSingleDateChange(e);
               }}
             />
           </PopoverContent>

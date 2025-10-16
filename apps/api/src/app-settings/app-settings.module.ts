@@ -5,7 +5,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { LadiesNightModule } from 'src/ladies-night/ladies-night.module';
 
 @Module({
-  imports: [PrismaModule,LadiesNightModule],
+  imports: [PrismaModule, LadiesNightModule],
   controllers: [AppSettingsController],
   providers: [AppSettingsService],
   exports: [AppSettingsService],

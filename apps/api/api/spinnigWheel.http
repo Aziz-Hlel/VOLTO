@@ -34,7 +34,7 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "id": "{{getSpinnigWheelInstance.response.body.id}}",
     "name":"Spinning Wheel Name Updated",
-    "startDate": "2025-10-16T11:35:10.161Z",
+    "startDate": "2025-10-16T12:51:00.999Z",
     "endDate": "2025-10-19T11:38:10.161Z",
     "rewardList":[
         {

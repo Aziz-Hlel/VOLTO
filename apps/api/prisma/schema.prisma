@@ -177,10 +177,16 @@ model LadiesNightData{
   participantWithAllRedeemedDrinks Int
   totalDrinksConsumed Int
   drinkQuota Int
-
-  
-
 }
+
+
+model SpinningWheelData{
+  id  String      @id @default(cuid())
+  startDate DateTime @unique
+  totalParticipants Int
+  participantsRedeemedCode Int
+}
+
 
 model appSettings {
   id  String      @id @default(cuid())

@@ -2,29 +2,30 @@ import { ladiesNightService } from "@/Api/services/ladiesNight.service";
 import type { GetLadiesNightDataQueryDto } from "@/types/ladiesNight/GetLadiesNightDataQueryDto";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { EventsDataTable } from "./EventsDataTable";
 import { Spinner } from "../ui/spinner";
+import { EventsDataTable } from "./EventsDataTable";
+import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
 
-const LadiesNightDataTableWrapper = () => {
+const SpinningWheelDataTableWrapper = () => {
   const [query, setQuery] = useState<GetLadiesNightDataQueryDto>({ limit: 7, page: 1 });
-  console.log("query: ", query);
-  const { data: ladiesNightData, isFetched: ladiesNightStatsIsFetched } = useQuery({
-    queryKey: ["ladies-night", "stats", query],
-    queryFn: async () => await ladiesNightService.stats(query),
+
+  const { data: spinningWheelData, isFetched: ladiesNightStatsIsFetched } = useQuery({
+    queryKey: ["spinning-wheel", "stats", query],
+    queryFn: async () => await SpinningWheelService.stats(query),
     enabled: true,
   });
 
-  const ladiesNightStats = ladiesNightData?.data.ladiesNightStats;
-  const count = ladiesNightData?.data.count;
+  const spinningWheelStats = spinningWheelData?.data.spinningWheelStats;
+  const count = spinningWheelData?.data.count;
 
   const handleQueryChange = (newQuery: GetLadiesNightDataQueryDto) => setQuery(newQuery);
 
   if (!ladiesNightStatsIsFetched) return <Spinner />;
 
-  if (ladiesNightStatsIsFetched && ladiesNightStats)
+  if (ladiesNightStatsIsFetched && spinningWheelStats)
     return (
       <EventsDataTable
-        data={ladiesNightStats}
+        data={spinningWheelStats}
         count={count}
         query={query}
         setQuery={handleQueryChange}
@@ -32,4 +33,4 @@ const LadiesNightDataTableWrapper = () => {
     );
 };
 
-export default LadiesNightDataTableWrapper;
+export default SpinningWheelDataTableWrapper;

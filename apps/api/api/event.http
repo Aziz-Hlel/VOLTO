@@ -1,6 +1,6 @@
 
 @baseUrl = http://localhost:3000/api
-@baseUrl = https://voltobahrain.online/api
+# @baseUrl = https://voltobahrain.online/api
 
 
 ### Login request
@@ -88,7 +88,7 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "name": "New Year's Eve",
   "type": "SPECIAL",
   "description": "New Year's Eve",
-  "startDate": "2025-10-08T14:59:00.999Z",
+  "startDate": "2025-10-16T12:35:00.999Z",
   "endDate": "2025-12-31T23:59:59.999Z",
   "cronStartDate": null,
   "cronEndDate": null,

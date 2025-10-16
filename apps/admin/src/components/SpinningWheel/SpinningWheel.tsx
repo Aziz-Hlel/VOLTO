@@ -7,6 +7,8 @@ import { useState } from "react";
 import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
 import CountDown from "./CountDown";
 import UpdateSpinningWheel from "./UpdateSpinningWheel";
+import SpinningWheelDataTableWrapper from "./SpinningWheelDataTableWrapper";
+import { ChartAreaInteractive } from "./Chart/chart-area-interactive";
 
 const SpinningWheel = () => {
   const { data: spinningWheelData, isFetched: spinningWheelIsFetched } = useQuery({
@@ -64,8 +66,8 @@ const SpinningWheel = () => {
         </div>
 
         <div className=" w-full grid grid-cols-5 gap-4">
-          <div className=" col-span-3">{/* <LadiesNightDataTableWrapper /> */}</div>
-          <div className=" col-span-2">{/* <ChartAreaInteractive /> */}</div>
+          <div className=" col-span-3"><SpinningWheelDataTableWrapper /></div>
+          <div className=" col-span-2"><ChartAreaInteractive /></div>
         </div>
       </main>
     </div>

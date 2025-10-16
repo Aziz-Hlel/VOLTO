@@ -23,7 +23,7 @@ export class SpinnigWheelService {
     private readonly spinnigWheelRewardService: SpinnigWheelRewardService,
     private readonly prisma: PrismaService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
-    private readonly  specialEventsMq:SpecialEventMq
+    private readonly specialEventsMq: SpecialEventMq,
   ) {}
 
   async updateWheelCache(): Promise<IsSpinningWheelAvailableResponse> {
@@ -183,15 +183,15 @@ export class SpinnigWheelService {
     if (
       spinnigWheel.startDate !== updatedWheel.startDate ||
       spinnigWheel.endDate !== updatedWheel.endDate
-    ){
+    ) {
       await this.deleteUserHashes();
-          await this.specialEventsMq.addSpecialEventNotification({
-            eventId: spinnigWheel.id,
-            eventName: spinnigWheel.name ?? 'Spinnig Wheel',
-            startDate: spinnigWheel.startDate!,
-            endDate: spinnigWheel.endDate!,
-          });
-}
+      await this.specialEventsMq.addSpecialEventNotification({
+        eventId: updatedWheel.id,
+        eventName: updatedWheel.name ? updatedWheel.name : 'Spinnig Wheel',
+        startDate: updatedWheel.startDate!,
+        endDate: updatedWheel.endDate!,
+      });
+    }
     return updatedWheel;
   };
 

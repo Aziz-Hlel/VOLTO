@@ -20,6 +20,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EmailModule } from 'src/email/email.module';
 import { LadiesNightStatsModule } from 'src/ladies-night-stats/ladies-night-stats.module';
+import { SpinningWheelStatsModule } from 'src/spinning-wheel-stats/spinning-wheel-stats.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { LadiesNightStatsModule } from 'src/ladies-night-stats/ladies-night-stat
     StartupModuleModule,
     SpinnigWheelRewardModule,
     SpinnigWheelModule,
+    SpinningWheelStatsModule,
     GalleryModule,
     EmailModule,
   ],

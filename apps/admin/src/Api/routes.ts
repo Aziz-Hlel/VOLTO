@@ -40,6 +40,8 @@ const apiRoutes = {
   spinningWheel: {
     details: () => "/spinning-wheel/admin/instance" as const,
     update: () => "/spinning-wheel/admin/instance" as const,
+    stats: () => "/spinning-wheel-stats/list" as const,
+    statsByPeriod: () => "/spinning-wheel-stats/periodic" as const,
   },
 
   media: {

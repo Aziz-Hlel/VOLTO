@@ -86,9 +86,9 @@ export const useCountDown = ({ startDate, endDate, onComplete }: CountDownProps)
   if (getLadiesNightCountDown.IsDisabled) {
     label = "❌ No Spinning Wheel Scheduled";
   } else if (getLadiesNightCountDown.ladiesNightIsActive) {
-    label = "🎉 Event is Active!";
+    label = "🎉 Event is Active! Ending in : ";
   } else {
-    label = "📅 Upcoming! Spinning Wheel starts in:";
+    label = "📅 Upcoming! Spinning Wheel starts in : ";
   }
 
   return {

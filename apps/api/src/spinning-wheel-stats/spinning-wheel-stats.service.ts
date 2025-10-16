@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetLadiesNightDataQueryDto } from './dto/GetLadiesNightQueryDto';
+import { GetSpinnigWheelDataQueryDto } from './dto/GetSpinnigWheelDataQueryDto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GetLadiesNightByPeriodDto } from './dto/GetLadiesNightByPeriod.dto';
+import { GetSpinnigWheelDataByPeriodDto } from './dto/GetSpinningWheelByPeriod.dto';
 
 @Injectable()
-export class LadiesNightStatsService {
+export class SpinningWheelStatsService {
   constructor(private prisma: PrismaService) {}
 
-  async findMany(query: GetLadiesNightDataQueryDto) {
-    const { startDate, endDate, limit, page, sort = 'startDate:asc' } = query;
+  async findMany(query: GetSpinnigWheelDataQueryDto) {
+    const { startDate, endDate, limit, page } = query;
     const skip = (page - 1) * limit;
     const where: any = {};
     if (startDate || endDate) {
@@ -19,30 +19,30 @@ export class LadiesNightStatsService {
 
     const orderBy = { startDate: 'desc' } as const;
 
-    const ladiesNightStats = this.prisma.ladiesNightData.findMany({
+    const spinnigWheelStats = this.prisma.spinningWheelData.findMany({
       where,
       orderBy,
       skip,
       take: limit,
     });
 
-    const total = this.prisma.ladiesNightData.count({ where });
-    const [response, count] = await Promise.all([ladiesNightStats, total]);
+    const total = this.prisma.spinningWheelData.count({ where });
+    const [response, count] = await Promise.all([spinnigWheelStats, total]);
 
     return {
-      ladiesNightStats: response,
+      spinningWheelStats: response,
       count,
     };
   }
 
-  async getByPeriod(query: GetLadiesNightByPeriodDto) {
+  async getByPeriod(query: GetSpinnigWheelDataByPeriodDto) {
     const period = Number(query.period.split('d')[0]);
 
     if (isNaN(period)) throw new BadRequestException('period must be a number');
 
     const orderBy = { startDate: 'asc' } as const;
 
-    const ladiesNightStats = await this.prisma.ladiesNightData.findMany({
+    const spinningWheelStats = await this.prisma.spinningWheelData.findMany({
       where: {
         startDate: {
           gte: new Date(Date.now() - period * 24 * 60 * 60 * 1000),
@@ -51,6 +51,6 @@ export class LadiesNightStatsService {
       orderBy,
     });
 
-    return ladiesNightStats;
+    return spinningWheelStats;
   }
 }

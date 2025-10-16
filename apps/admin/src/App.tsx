@@ -5,7 +5,6 @@ import { Toaster } from "sonner";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";
-import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./components/Login/Login";
 import Events from "./pages/Events";

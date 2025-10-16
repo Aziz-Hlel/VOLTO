@@ -19,6 +19,7 @@ const useCronTimeHook = ({
   const handleStartingHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
     const hour = parseInt(e.target.value, 10);
+    if (hour < 1 || hour > 12) return;
     setStartingHour(hour);
   };
 
@@ -30,6 +31,7 @@ const useCronTimeHook = ({
   const handleDuration = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) return;
     const newDuration = parseInt(e.target.value, 10);
+    if (newDuration < 1 || newDuration > 21) return;
     setDuration(newDuration);
   };
 

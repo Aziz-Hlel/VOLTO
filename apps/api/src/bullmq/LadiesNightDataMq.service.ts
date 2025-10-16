@@ -126,8 +126,24 @@ export class LadiesNightDataMqService implements OnModuleInit, OnModuleDestroy {
     await task.execute();
   }
 
+  async deletePreviousJob(jobId: string) {
+    const allJobSchedulers = await this.eventQueue.getJobSchedulers();
+
+    const targetScheduler = allJobSchedulers.find((scheduler) => scheduler.name === jobId);
+
+    if (targetScheduler) {
+      this.logger.debug('Deleted previous Ladies Night Stats repeatable job');
+      await this.eventQueue.removeJobScheduler(targetScheduler.key);
+    } else {
+      this.logger.debug('No previous Ladies Night Stats repeatable job to delete');
+    }
+  }
+
   async addJob(jobData: WeeklyEventJobData) {
     this.logger.debug(`📥 Adding Ladies Night Job To excute every cron start Date`);
+
+    this.deletePreviousJob(jobData.eventId);
+
     await this.eventQueue.add(jobData.eventId, jobData, {
       jobId: jobData.eventId,
       repeatJobKey: jobData.eventId,

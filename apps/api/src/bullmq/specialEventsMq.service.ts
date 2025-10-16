@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import ENV from 'src/config/env';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CommonEventsMqService } from './CommonEventsMq.service';
 
 interface IAddSpecialEvent {
@@ -31,8 +30,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private eventWorker: Worker<SpecialEventJobData>;
 
   private readonly _hour = 1000 * 60 * 60;
-  private readonly firstNotificationDelay = 0  // ! this._hour * 24;
-  private readonly secondNotificationDelay = 1000 * 60 // ! this._hour * 1;
+  private readonly firstNotificationDelay = 0; // ! this._hour * 24;
+  private readonly secondNotificationDelay = 1000 * 60; // ! this._hour * 1;
 
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
@@ -42,6 +41,10 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   private async processSendSpecialEventsNotification(job: Job<SpecialEventJobData>) {
+    this.logger.debug(
+      `Job started for Special Event : ${job.data.eventName} in Queue ${this.queueName}`,
+    );
+
     const headings = this.commonEventsMq.getNotifcationHeadings({
       delay: job.data.delay,
       eventName: job.data.eventName,
@@ -93,8 +96,31 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
     });
 
     this.eventQueue.on('waiting', (job) => {
+      const now = Date.now();
+
+      const delay = job.opts.delay ?? 0;
+      const createdAt = job.timestamp ?? now;
+
+      const target = createdAt + delay;
+      const remaining = Math.max(target - now, 0);
+
+      const totalSeconds = Math.floor(remaining / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      let formatted = '';
+      days > 0 && (formatted += `${days}d `);
+      hours > 0 && (formatted += `${hours}h `);
+      minutes > 0 && (formatted += `${minutes}m `);
+      seconds > 0 && (formatted += `${seconds}s`);
+
+      const executionTime = new Date(target).toISOString();
+
       this.logger.log(
-        `📥 Job ${job.data.eventId} ${job.data.eventName} has been created and is waiting`,
+        `📥 Job ${job.data.eventId} "${job.data.eventName}" is waiting. 
+     ⏳ Time left: ${formatted} (executes at ${executionTime})`,
       );
     });
   }
@@ -102,7 +128,10 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private initWorker() {
     this.eventWorker = new Worker<SpecialEventJobData>(
       this.queueName,
-      async (job: Job<SpecialEventJobData>) => await this.processSendSpecialEventsNotification(job),
+      async (job: Job<SpecialEventJobData>) => {
+        this.logger.debug('t5l rabk bech y5dm l job');
+        await this.processSendSpecialEventsNotification(job);
+      },
       {
         connection: this.redis,
         concurrency: 2,
@@ -128,9 +157,32 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
     return `${eventId}-${delay}`;
   }
 
+  async removeExistingJob(specialEventId: string) {
+    const firstDelayJobId = this.getJobId(specialEventId, 'firstDelay');
+    const secondDelayJobId = this.getJobId(specialEventId, 'secondDelay');
+
+    const firstDelayJob = await this.eventQueue.getJob(firstDelayJobId);
+    const secondDelayJob = await this.eventQueue.getJob(secondDelayJobId);
+
+    if (firstDelayJob) {
+      this.logger.debug('Deleted previous first delay job');
+      await firstDelayJob.remove();
+    } else {
+      this.logger.debug('No previous first delay job to delete');
+    }
+    if (secondDelayJob) {
+      this.logger.debug('Deleted previous second delay job');
+      await secondDelayJob.remove();
+    } else {
+      this.logger.debug('No previous second delay job to delete');
+    }
+  }
+
   async addSpecialEventNotification(data: IAddSpecialEvent) {
-    this.logger.log('t5lt bech iadi');
-    console.log('diraabk l date : ',data.startDate.toUTCString())
+    this.logger.log('Adding special event notification job for ', data.eventName);
+
+    await this.removeExistingJob(data.eventId);
+
     const delayInMs = data.startDate.getTime() - Date.now();
     const firstDelay = delayInMs - this.firstNotificationDelay;
     const secondDelay = delayInMs - this.secondNotificationDelay;
@@ -140,8 +192,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
       const eventJobPayload: SpecialEventJobData = {
         eventId: data.eventId,
         eventName: data.eventName,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        startDate: data.startDate.toUTCString(),
+        endDate: data.endDate.toUTCString(),
         delay: 'firstDelay',
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, { jobId: jobId, delay: firstDelay });
@@ -152,8 +204,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
       const eventJobPayload: SpecialEventJobData = {
         eventId: data.eventId,
         eventName: data.eventName,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
+        startDate: data.startDate.toUTCString(),
+        endDate: data.endDate.toUTCString(),
         delay: 'secondDelay',
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, {
@@ -161,17 +213,6 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
         delay: secondDelay,
       });
     }
-  }
-
-  async removeSpecialEventNotification(eventId: string) {
-    const firstDelayJobId = this.getJobId(eventId, 'firstDelay');
-    const secondDelayJobId = this.getJobId(eventId, 'secondDelay');
-
-    const firstDelayJob = await this.eventQueue.getJob(firstDelayJobId);
-    const secondDelayJob = await this.eventQueue.getJob(secondDelayJobId);
-
-    await firstDelayJob?.remove();
-    await secondDelayJob?.remove();
   }
 
   async onModuleInit() {

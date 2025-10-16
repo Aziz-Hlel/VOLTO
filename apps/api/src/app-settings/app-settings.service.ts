@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateAppSettingDto } from './dto/create-app-setting.dto';
 import { UpdateAppSettingDto } from './dto/update-app-setting.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -45,7 +50,7 @@ export class AppSettingsService {
     if (await this.ladiesNightService.isLadiesNightActive2())
       throw new BadRequestException('Cannot change quota while Ladies Night is active');
 
-    const drinkQuotaKeyName :  IAppSettings = "LADIES_NIGHT_DRINK_QUOTA";
+    const drinkQuotaKeyName: IAppSettings = 'LADIES_NIGHT_DRINK_QUOTA';
 
     try {
       const res = await this.prisma.appSettings.update({
