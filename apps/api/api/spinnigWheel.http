@@ -35,30 +35,31 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "id": "{{getSpinnigWheelInstance.response.body.id}}",
     "name":"Spinning Wheel Name Updated",
-    "startDate": "2025-10-16T17:39:00.999Z",
-    "endDate": "2025-10-16T17:43:00.999Z",
-    "rewardList":[
-        {
+    "startDate": "2025-10-17T08:53:00.999Z",
+    "endDate": "2025-10-17T08:58:00.999Z",
+  "rewardList":[
+   {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[0].id}}",
-            "name": "Reward 1 updated"
+            "name": "10% OFF Next Drink"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[1].id}}",
-            "name": "Reward 2 updated"
+            "name": "2 Shots Of Tequila"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[2].id}}",
-            "name": "Reward 3 updated"
+            "name": "15% OFF Next Drink"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[3].id}}",
-            "name": "Reward 4 updated"
+            "name": "Volto Cocktail"
         },
           {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[4].id}}",
-            "name": "Reward 5 updated"
-        }
+            "name": "20% OFF Next Drink"
+      }
     ]
+
 }
 
 

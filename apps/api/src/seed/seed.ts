@@ -3,6 +3,7 @@ import seedUsers from './data/users.seeds';
 import seedEvents from './data/events.seeds';
 import { seedGallery } from './data/gallery.seed';
 import { seedLadiesNightStats } from './data/ladiesNightStats.seeds';
+import { seedSpinningWheelStats } from './data/spinnigWheelStats.seeds';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +13,7 @@ const resetDB = async () => {
   await prisma.media.deleteMany();
   await prisma.event.deleteMany();
   await prisma.ladiesNightData.deleteMany();
+  await prisma.spinningWheelData.deleteMany();
 };
 
 async function main() {
@@ -20,11 +22,14 @@ async function main() {
   await resetDB();
 
   await seedUsers();
+  
   await seedEvents();
 
   await seedGallery();
 
   await seedLadiesNightStats();
+
+  await seedSpinningWheelStats();
 
   await prisma.$disconnect();
 }
