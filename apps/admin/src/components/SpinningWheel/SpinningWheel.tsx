@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
 import { ladiesNightService } from "@/Api/services/ladiesNight.service";
 import { Button } from "../ui/button";
-import { Martini } from "lucide-react";
 import { Spinner } from "../ui/spinner";
 import { useState } from "react";
-import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
 import CountDown from "./CountDown";
 import UpdateSpinningWheel from "./UpdateSpinningWheel";
 import SpinningWheelDataTableWrapper from "./SpinningWheelDataTableWrapper";
@@ -24,52 +23,57 @@ const SpinningWheel = () => {
   });
 
   const spinningWheel = spinningWheelData?.data;
-
   const drinkQuota = quotaData?.data.quota ?? undefined;
 
   const [openUpdateSpinningWheel, setOpenUpdateSpinningWheel] = useState(false);
 
-  const handleOpenUpdateDrinkQuota = (open: boolean) => setOpenUpdateSpinningWheel(open);
+  const handleOpenUpdate = (open: boolean) => setOpenUpdateSpinningWheel(open);
 
   if (!spinningWheelIsFetched || !quotaDataIsFetched) return <Spinner />;
 
   return (
-    <div>
-      {openUpdateSpinningWheel && (
-        <UpdateSpinningWheel
-          open={openUpdateSpinningWheel}
-          setOpen={handleOpenUpdateDrinkQuota}
-          initialSpinningWheel={spinningWheel!}
-        />
-      )}
-      <header className="border-b bg-card px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Spinning Wheel Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back</p>
-          </div>
-          <CountDown spinningWheel={spinningWheel} isFetched={spinningWheelIsFetched} />
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 text-gray-900 p-6 space-y-6">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0">
+        <div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">🎡 Spinning Wheel Dashboard</h1>
+          <p className="text-sm sm:text-base mt-1 text-purple-100">Manage your spinning wheels effectively</p>
         </div>
+        <CountDown spinningWheel={spinningWheel} isFetched={spinningWheelIsFetched} />
       </header>
 
-      <main className="p-6 flex flex-col gap-y-4">
-        <div className=" w-full flex justify-end">
+      {/* Main Content */}
+      <main className="flex flex-col gap-6">
+        {/* Edit Button */}
+        <div className="flex justify-end">
           <Button
             variant="default"
-            className=" flex"
-            onClick={() => handleOpenUpdateDrinkQuota(true)}
+            className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold px-5 py-2.5 rounded-lg shadow-md transition-all"
+            onClick={() => handleOpenUpdate(true)}
           >
-            <div className="h-full flex justify-center items-center space-x-1">
-              <span className="w-full ">Edit Spinning Wheel</span>
-            </div>
+            Edit Spinning Wheel
           </Button>
         </div>
 
-        <div className=" w-full grid grid-cols-5 gap-4">
-          <div className=" col-span-3"><SpinningWheelDataTableWrapper /></div>
-          <div className=" col-span-2"><ChartAreaInteractive /></div>
+        {/* Tableau complet */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 overflow-x-auto w-full">
+          <SpinningWheelDataTableWrapper />
+        </div>
+
+        {/* Chronogramme en dessous */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 w-full">
+          <ChartAreaInteractive />
         </div>
       </main>
+
+      {/* Update Dialog */}
+      {openUpdateSpinningWheel && (
+        <UpdateSpinningWheel
+          open={openUpdateSpinningWheel}
+          setOpen={handleOpenUpdate}
+          initialSpinningWheel={spinningWheel!}
+        />
+      )}
     </div>
   );
 };

@@ -23,54 +23,57 @@ const LadiesNight = () => {
   });
 
   const ladiesNight = ladiesNightData?.data;
-
   const drinkQuota = quotaData?.data.quota ?? undefined;
-
   const [openUpdateDrinkQuota, setOpenUpdateDrinkQuota] = useState(false);
 
-  const handleOpenUpdateDrinkQuota = (open: boolean) => setOpenUpdateDrinkQuota(open);
-
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-purple-50 to-blue-50 p-4 sm:p-6 lg:p-10 space-y-6">
+      {/* Update Drink Quota Modal */}
       {openUpdateDrinkQuota && (
         <UpdateDrinkQuota
           open={openUpdateDrinkQuota}
-          setOpen={handleOpenUpdateDrinkQuota}
+          setOpen={setOpenUpdateDrinkQuota}
           initialDrinkQuota={drinkQuota!}
         />
       )}
-      <header className="border-b bg-card px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Ladies Night Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back</p>
-          </div>
+
+      {/* Header */}
+      <header className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 shadow-lg text-white border border-purple-300">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold">💃 Ladies Night Dashboard</h1>
+          <p className="text-sm sm:text-base mt-1 text-purple-100">Welcome back VIP</p>
+        </div>
+        <div className="flex items-center gap-4">
           <CountDown ladiesNight={ladiesNight} isFetched={ladiesNightDataIsFetched} />
+          <Button
+            variant="default"
+            onClick={() => setOpenUpdateDrinkQuota(true)}
+            className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold px-4 py-2 rounded-lg shadow-lg transition-all duration-300"
+          >
+            {quotaDataIsFetched ? (
+              <>
+                <span>Drink Quota: {drinkQuota}</span>
+                <Martini className="w-5 h-5" />
+              </>
+            ) : (
+              <Spinner />
+            )}
+          </Button>
         </div>
       </header>
 
-      <main className="p-6 flex flex-col gap-y-4">
-        <div className=" w-full flex justify-end">
-          <Button
-            variant="default"
-            className=" flex"
-            onClick={() => handleOpenUpdateDrinkQuota(true)}
-          >
-            <div className="h-full flex justify-center items-center space-x-1">
-              <span className="w-full ">Drink Quota : </span>
-              {quotaDataIsFetched ? <span>{drinkQuota}</span> : <Spinner />}
-              <Martini className=" size-3  font-semibold" />
-            </div>
-          </Button>
-        </div>
-
-        <div className=" w-full grid grid-cols-5 gap-4">
-          <div className=" col-span-3">
+      {/* Main Content */}
+      <main className="space-y-6">
+        {/* Tableau - Carte spéciale */}
+        <div className="bg-white rounded-3xl shadow-xl border border-purple-200 p-4 sm:p-6 overflow-x-auto">
+          <div className="min-w-[320px]">
             <LadiesNightDataTableWrapper />
           </div>
-          <div className=" col-span-2">
-            <ChartAreaInteractive />
-          </div>
+        </div>
+
+        {/* Graphique - Carte spéciale */}
+        <div className="bg-white rounded-3xl shadow-xl border border-purple-200 p-4 sm:p-6">
+          <ChartAreaInteractive />
         </div>
       </main>
     </div>

@@ -8,8 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Edit, Trash2, MoreHorizontal, Search } from "lucide-react";
+import { Edit, Trash2, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,114 +34,107 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
 
   const weeklyEvents = data.filter((event) => event.type === EventType.WEEKLY);
   const pastSpecialEvents = data.filter(
-    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) < new Date(),
+    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) < new Date()
   );
   const upcomingSpecialEvents = data.filter(
-    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) >= new Date(),
+    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) >= new Date()
   );
 
   return (
-    <div className="space-y-4">
-      <div className="border rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="min-w-[150px] cursor-pointer hover:bg-muted/50">
-                  Name
-                </TableHead>
-                <TableHead className="min-w-[200px] cursor-pointer hover:bg-muted/50">
-                  Description
-                </TableHead>
-                <TableHead className="hidden lg:table-cell">Date Range</TableHead>
-                <TableHead className="w-[70px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    No admins found
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <>
-                  <TableRow className=" hover:cursor-default">
-                    <TableCell colSpan={6} className="text-left bg-blue-300 py-6 text-white ">
-                      Upcoming Special Events
-                    </TableCell>
-                  </TableRow>
-                  {upcomingSpecialEvents.length > 0 ? (
-                    upcomingSpecialEvents.map((event, index) => (
-                      <EventTableRow
-                        key={index}
-                        event={event}
-                        setEventForEdit={setEventForEdit}
-                        setEventForDeletion={setEventForDeletion}
-                      />
-                    ))
-                  ) : (
-                    <TableRow className=" hover:cursor-default">
-                      <TableCell colSpan={6} className="text-left py-6 text-black">
-                        No upcoming special events
-                      </TableCell>
-                    </TableRow>
-                  )}
-
-                  <TableRow className=" hover:cursor-default">
-                    <TableCell colSpan={6} className="text-left bg-blue-300 py-6 text-white ">
-                      Weekly Events
-                    </TableCell>
-                  </TableRow>
-
-                  {weeklyEvents.length > 0 ? (
-                    weeklyEvents.map((event, index) => (
-                      <EventTableRow
-                        key={index}
-                        event={event}
-                        setEventForEdit={setEventForEdit}
-                        setEventForDeletion={setEventForDeletion}
-                      />
-                    ))
-                  ) : (
-                    <TableRow className=" hover:cursor-default">
-                      <TableCell colSpan={6} className="text-left py-6 text-black">
-                        No weekly events
-                      </TableCell>
-                    </TableRow>
-                  )}
-
-                  <TableRow className=" hover:cursor-default">
-                    <TableCell colSpan={6} className="text-left bg-blue-300 py-6 text-white ">
-                      Past Special Events
-                    </TableCell>
-                  </TableRow>
-                  {pastSpecialEvents.length > 0 ? (
-                    pastSpecialEvents.map((event, index) => (
-                      <EventTableRow
-                        key={index}
-                        event={event}
-                        setEventForEdit={setEventForEdit}
-                        setEventForDeletion={setEventForDeletion}
-                      />
-                    ))
-                  ) : (
-                    <TableRow className=" hover:cursor-default">
-                      <TableCell colSpan={6} className="text-left py-6 text-black">
-                        No past special events
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+    <div className="space-y-8 p-4 sm:p-6 bg-white/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200">
+      {/* 🔍 Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h2 className="text-2xl font-extrabold bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-600 bg-clip-text text-transparent">
+          Event Management
+        </h2>
       </div>
+
+      {/* 🗓 Upcoming Special Events */}
+      <EventSection
+        title="Upcoming Special Events"
+        events={upcomingSpecialEvents}
+        color="from-pink-400 via-fuchsia-500 to-purple-500"
+        setEventForEdit={setEventForEdit}
+        setEventForDeletion={setEventForDeletion}
+      />
+
+      {/* 🔁 Weekly Events */}
+      <EventSection
+        title="Weekly Events"
+        events={weeklyEvents}
+        color="from-indigo-400 via-blue-500 to-sky-500"
+        setEventForEdit={setEventForEdit}
+        setEventForDeletion={setEventForDeletion}
+      />
+
+      {/* ⏳ Past Special Events */}
+      <EventSection
+        title="Past Special Events"
+        events={pastSpecialEvents}
+        color="from-gray-400 via-gray-500 to-gray-600"
+        setEventForEdit={setEventForEdit}
+        setEventForDeletion={setEventForDeletion}
+      />
     </div>
   );
 };
 
+/* ========================== 🔹 SECTIONS ========================== */
+interface EventSectionProps {
+  title: string;
+  color: string;
+  events: EventResponseDto[];
+  setEventForEdit: (id: string) => void;
+  setEventForDeletion: (event: EventResponseDto) => void;
+}
+
+const EventSection: FC<EventSectionProps> = ({
+  title,
+  color,
+  events,
+  setEventForEdit,
+  setEventForDeletion,
+}) => (
+  <div className="rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div
+      className={`px-4 py-3 bg-gradient-to-r ${color} text-white font-semibold text-lg tracking-wide`}
+    >
+      {title}
+    </div>
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-gray-50">
+            <TableHead className="font-semibold text-gray-600">Name</TableHead>
+            <TableHead className="font-semibold text-gray-600">Description</TableHead>
+            <TableHead className="font-semibold text-gray-600">Date Range</TableHead>
+            <TableHead className="text-right font-semibold text-gray-600">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {events.length > 0 ? (
+            events.map((event, i) => (
+              <EventTableRow
+                key={i}
+                event={event}
+                setEventForEdit={setEventForEdit}
+                setEventForDeletion={setEventForDeletion}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center py-6 text-gray-400">
+                No events available
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  </div>
+);
+
+/* ========================== 🔹 ROW ========================== */
 interface EventTableRowProps {
   event: EventResponseDto;
   setEventForEdit: (id: string) => void;
@@ -150,91 +142,45 @@ interface EventTableRowProps {
 }
 
 const EventTableRow: FC<EventTableRowProps> = ({ event, setEventForEdit, setEventForDeletion }) => {
-  const getdisplayedEndtDate = (event: EventResponseDto) => {
-    const startCron = cronstrue.toString(event.cronStartDate);
-    const endCron = cronstrue.toString(event.cronEndDate).split(",")[0].split("At ")[1];
-    return `${startCron.split(",")[1]}, ${startCron.split(",")[0]} to ${endCron} `;
-  };
-
-  const getdisplayedSpecialDate = (event: EventResponseDto) => {
+  const getDisplayDate = (event: EventResponseDto) => {
     if (event.type === EventType.SPECIAL) {
-      const startDate = new Date(event.startDate);
-      const endDate = new Date(event.endDate);
-      const formattedStartDate = new Intl.DateTimeFormat("en-US", {
-        month: "long", // October
-        day: "numeric", // 1
-        year: "numeric", // 2025
-      }).format(startDate);
-
-      const formattedEndDate = new Intl.DateTimeFormat("en-US", {
-        month: "long", // October
-        day: "numeric", // 1
-        year: "numeric", // 2025
-      }).format(endDate);
-
-      let dayRange =
-        startDate.getDate() === endDate.getDate()
-          ? `from ${formattedStartDate}`
-          : `from ${formattedStartDate} to ${formattedEndDate}`;
-
-      const startHour = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true, // 12-hour clock with AM/PM
-      }).format(startDate);
-
-      const endHour = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true, // 12-hour clock with AM/PM
-      }).format(endDate);
-
-      dayRange = `${dayRange}, at ${startHour} to ${endHour}`;
-
-      return dayRange;
+      const start = new Date(event.startDate);
+      const end = new Date(event.endDate);
+      return `${start.toLocaleDateString()} → ${end.toLocaleDateString()}`;
     }
-
-    if (event.type === EventType.WEEKLY)
-      return event.cronEndDate ? cronstrue.toString(event.cronEndDate).split(",")[0] : "N/A";
+    return cronstrue.toString(event.cronStartDate);
   };
 
   return (
-    <>
-      <TableRow className=" hover:cursor-default">
-        <TableCell className="font-medium border-r">{event.name}</TableCell>
-        <TableCell className="text-sm truncate max-w-60 px-2 border-r">
-          {event.description}
-        </TableCell>
-        <TableCell className="text-sm">
-          {event.type === "SPECIAL" ? getdisplayedSpecialDate(event) : getdisplayedEndtDate(event)}
-        </TableCell>
-
-        <TableCell>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white">
-              <DropdownMenuItem
-                onClick={() => setEventForEdit(event.id)}
-                className="flex items-center gap-2 hover:bg-gray-100"
-              >
-                <Edit className="h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setEventForDeletion(event)}
-                className="flex items-center gap-2 text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TableCell>
-      </TableRow>
-    </>
+    <TableRow className="hover:bg-gray-50 transition-colors">
+      <TableCell className="font-semibold">{event.name}</TableCell>
+      <TableCell className="text-sm text-gray-600 truncate max-w-60">{event.description}</TableCell>
+      <TableCell className="text-sm text-gray-600">{getDisplayDate(event)}</TableCell>
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 text-gray-600 hover:text-gray-900">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-white shadow-lg border border-gray-200">
+            <DropdownMenuItem
+              onClick={() => setEventForEdit(event.id)}
+              className="flex items-center gap-2 hover:bg-gray-100"
+            >
+              <Edit className="h-4 w-4 text-blue-500" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setEventForDeletion(event)}
+              className="flex items-center gap-2 hover:bg-red-50 text-red-600"
+            >
+              <Trash2 className="h-4 w-4 text-red-500" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    </TableRow>
   );
 };
