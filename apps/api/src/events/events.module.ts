@@ -5,9 +5,10 @@ import { MediaModule } from 'src/media/media.module';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 import { BullmqModule } from 'src/bullmq/bullmq.module';
+import { LadiesNightModule } from 'src/ladies-night/ladies-night.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, MediaModule, BullmqModule],
+  imports: [PrismaModule, AuthModule, MediaModule, BullmqModule,LadiesNightModule],
   controllers: [EventsController],
   providers: [EventsService],
 })

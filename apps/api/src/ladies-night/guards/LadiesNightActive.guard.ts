@@ -17,7 +17,7 @@ export class LadiesNightActiveGuard implements CanActivate {
       'generate-code': 'get-code',
     };
 
-    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive2();
+    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive();
 
     if (!isLadiesNightActive) {
       client.emit(returnEvent[eventName], {

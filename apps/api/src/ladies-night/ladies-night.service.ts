@@ -39,7 +39,7 @@ export class LadiesNightService {
     return [ladiesNight.cronStartDate, ladiesNight.cronEndDate];
   }
 
-  async isLadiesNightActive2(): Promise<boolean> {
+  async isLadiesNightActive(): Promise<boolean> {
     let cronStartDate_ladiesNight: null | string = null;
     let cronEndDate_ladiesNight: null | string = null;
     [cronStartDate_ladiesNight, cronEndDate_ladiesNight] = await this.redis.hmget(
@@ -123,7 +123,7 @@ export class LadiesNightService {
   }
 
   async getCode(userId: string): Promise<string | null> {
-    const isLadiesNightActive = await this.isLadiesNightActive2();
+    const isLadiesNightActive = await this.isLadiesNightActive();
     if (!isLadiesNightActive) throw new BadRequestException('Ladies Night is not active');
 
     const userDrinksConsumed = await this.getUserDrinksConsumed(userId);
@@ -153,7 +153,7 @@ export class LadiesNightService {
   }
 
   async getCurrentCode(userId: string): Promise<string | null> {
-    const isLadiesNightActive = await this.isLadiesNightActive2();
+    const isLadiesNightActive = await this.isLadiesNightActive();
     if (!isLadiesNightActive) throw new BadRequestException('Ladies Night is not active');
 
     const userDrinksConsumed = await this.getUserDrinksConsumed(userId);
@@ -172,7 +172,7 @@ export class LadiesNightService {
   }
 
   async consumeDrink(code: string) {
-    const isLadiesNightActive = await this.isLadiesNightActive2();
+    const isLadiesNightActive = await this.isLadiesNightActive();
     if (!isLadiesNightActive) throw new WsException('Ladies Night is not active');
 
     const userId = await this.redis.hget(REDIS_HASHES.LADIES_NIGHT.CODES(), code);
@@ -241,7 +241,7 @@ export class LadiesNightService {
   }
 
   async getUserQuota(userId: string) {
-    const isLadiesNightActive = await this.isLadiesNightActive2();
+    const isLadiesNightActive = await this.isLadiesNightActive();
     if (!isLadiesNightActive) throw new BadRequestException('Ladies Night is not active');
 
     const drinksConsumed = await this.getUserDrinksConsumed(userId);
@@ -330,7 +330,7 @@ export class LadiesNightService {
   };
 
   saveStatsToDb = async () => {
-    const isLadiesNightActive = await this.isLadiesNightActive2();
+    const isLadiesNightActive = await this.isLadiesNightActive();
 
     if (!isLadiesNightActive) return;
 

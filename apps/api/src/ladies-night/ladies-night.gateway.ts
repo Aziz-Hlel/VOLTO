@@ -50,7 +50,7 @@ export class LadiesNightGateway {
 
   private async isLadiesNightActive() {
     // return true
-    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive2();
+    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive();
     return isLadiesNightActive;
   }
 

@@ -90,13 +90,13 @@ export class LadiesNightDataMqService implements OnModuleInit {
     this.logger.debug(`Ladies Night weekly Job started`);
     const cronStartDateParsed = cronParser.parse(job.data.cronStartDate);
     const currentEventStartDate = cronStartDateParsed.prev().toDate();
+    const cronEndDateParsed = cronParser.parse(job.data.cronEndDate);
+    const currentEventEndDate = cronEndDateParsed.next().toDate();
 
     await this.resetLadiesNightStats(currentEventStartDate);
 
     const task = cron.schedule('*/1 * * * *', async () => {
       this.logger.debug(`🕒1mn passed : Updating ladies night data...`);
-      const cronEndDateParsed = cronParser.parse(job.data.cronEndDate);
-      const currentEventEndDate = cronEndDateParsed.next().toDate(); // ! implementation 5ayba barcha ken server ta7 f w9t l end date , chiwalli lend date t3 jom3a jeya
       const currentDate = new Date();
       if (currentDate > currentEventEndDate) task.stop();
       const startDateParsed = cronParser.parse(job.data.cronStartDate);

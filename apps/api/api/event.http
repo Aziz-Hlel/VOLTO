@@ -34,8 +34,8 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "name": "Ladies Night",
   "description": "Ladies Night",
   "type": "WEEKLY",
-  "cronStartDate": "00 15 * * 2",
-  "cronEndDate": "30 15 * * 2",  
+  "cronStartDate": "51 13 * * 1",
+  "cronEndDate": "55 13 * * 1",  
   "thumbnail": {
     "s3Key": "events/ladies-night-wallpaper.jpg",
     "url": ""

@@ -47,7 +47,7 @@ export class AppSettingsService {
   }
 
   async updateLadiesNightDrinkQuota(drinkQuota: number) {
-    if (await this.ladiesNightService.isLadiesNightActive2())
+    if (await this.ladiesNightService.isLadiesNightActive())
       throw new BadRequestException('Cannot change quota while Ladies Night is active');
 
     const drinkQuotaKeyName: IAppSettings = 'LADIES_NIGHT_DRINK_QUOTA';

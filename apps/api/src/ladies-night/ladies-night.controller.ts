@@ -7,7 +7,7 @@ export class LadiesNightController {
 
   @Get()
   async isLadiesNightActive() {
-    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive2();
+    const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive();
 
     const response = await this.ladiesNightService.getDrinkQuota();
 
