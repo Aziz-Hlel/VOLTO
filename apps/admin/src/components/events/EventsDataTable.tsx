@@ -34,10 +34,10 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
 
   const weeklyEvents = data.filter((event) => event.type === EventType.WEEKLY);
   const pastSpecialEvents = data.filter(
-    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) < new Date()
+    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) < new Date(),
   );
   const upcomingSpecialEvents = data.filter(
-    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) >= new Date()
+    (event) => event.type === EventType.SPECIAL && new Date(event.endDate) >= new Date(),
   );
 
   return (

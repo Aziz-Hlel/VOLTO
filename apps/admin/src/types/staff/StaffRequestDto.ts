@@ -4,7 +4,8 @@ import type { Tier } from "../enums/Tier";
 
 export type StaffRequestDto = {
   email: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   role: "WAITER" | "ADMIN" | "SUPER_ADMIN";
   phoneNumber?: string;
   gender: Gender;

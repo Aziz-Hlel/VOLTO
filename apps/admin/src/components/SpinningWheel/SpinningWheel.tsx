@@ -36,8 +36,12 @@ const SpinningWheel = () => {
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white rounded-2xl p-6 shadow-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">🎡 Spinning Wheel Dashboard</h1>
-          <p className="text-sm sm:text-base mt-1 text-purple-100">Manage your spinning wheels effectively</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">
+            🎡 Spinning Wheel Dashboard
+          </h1>
+          <p className="text-sm sm:text-base mt-1 text-purple-100">
+            Manage your spinning wheels effectively
+          </p>
         </div>
         <CountDown spinningWheel={spinningWheel} isFetched={spinningWheelIsFetched} />
       </header>

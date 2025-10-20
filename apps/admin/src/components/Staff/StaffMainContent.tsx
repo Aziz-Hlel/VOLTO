@@ -58,9 +58,7 @@ const StaffMainContent = () => {
         {/* Add Staff Button */}
         <div className="flex justify-end">
           <Link to={"/staff/create"}>
-            <Button
-              className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold px-5 py-2.5 rounded-lg shadow-md transition-all"
-            >
+            <Button className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold px-5 py-2.5 rounded-lg shadow-md transition-all">
               + Add Staff
             </Button>
           </Link>
@@ -80,7 +78,7 @@ const StaffMainContent = () => {
       {selectedStaffToDelete && (
         <DeleteConfirmationDialog
           title="Delete Staff Member"
-          description={`Are you sure you want to delete "${selectedStaffToDelete.username}"?`}
+          description={`Are you sure you want to delete "${selectedStaffToDelete.firstName}"?`}
           removeObjectFromDeletion={setStaffForDeletion}
           objectId={selectedStaffToDelete.id}
         />

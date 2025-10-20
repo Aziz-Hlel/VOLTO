@@ -27,13 +27,16 @@ import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Command, CommandGroup, CommandItem } from "../ui/command";
 import staffService from "@/Api/services/staff.service";
 import { ChevronsUpDown } from "lucide-react";
+import { PhoneInput } from "../ui/phone-input";
+import { produce } from "immer";
 
 const formSchema = z
   .object({
-    username: z.string().min(1),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
     email: z.string().email(),
     role: z.enum(Object.values(Roles)),
-    phoneNumber: z.string().min(1),
+    phoneNumber: z.string().optional(),
     gender: z.enum(Object.values(Gender)),
     tier: z.enum(Object.values(Tier)),
     avatar: z
@@ -59,27 +62,29 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
 
   const formDefaultValue: FormData | undefined = staff
     ? {
-      username: staff.username,
-      email: staff.email,
-      role: staff.role,
-      phoneNumber: staff.phoneNumber ?? "",
-      gender: staff.gender,
-      tier: staff.tier,
-      avatar: staff.avatar ?? undefined,
-      password: undefined,
-      confirmPassword: undefined,
-    }
+        firstName: staff.firstName,
+        lastName: staff.lastName,
+        email: staff.email,
+        role: staff.role,
+        phoneNumber: staff.phoneNumber ?? undefined,
+        gender: staff.gender,
+        tier: staff.tier,
+        avatar: staff.avatar ?? undefined,
+        password: undefined,
+        confirmPassword: undefined,
+      }
     : {
-      username: "",
-      email: "",
-      role: "WAITER",
-      phoneNumber: "",
-      gender: "M",
-      tier: "GOLD",
-      avatar: undefined,
-      password: "",
-      confirmPassword: "",
-    };
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: "WAITER",
+        phoneNumber: "",
+        gender: "M",
+        tier: "GOLD",
+        avatar: undefined,
+        password: "",
+        confirmPassword: "",
+      };
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -87,8 +92,12 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
   });
 
   const onSubmit = async (values: FormData) => {
+    const payload = produce(values, (payload) => {
+      payload.phoneNumber === "" && delete payload.phoneNumber;
+      delete payload.confirmPassword;
+    });
+
     try {
-      const { confirmPassword, ...payload } = values;
       const response: ApiResponse<StaffResponseDto> = editMode
         ? await staffService.update(staff!.id, payload)
         : await staffService.create(payload);
@@ -112,14 +121,28 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Username */}
             <FormField
               control={form.control}
-              name="username"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormDescription>Type the staff username</FormDescription>
+                  <FormLabel>First Name</FormLabel>
+                  <FormDescription>Type the staff first name</FormDescription>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormDescription>Type the staff last name</FormDescription>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
                   </FormControl>
@@ -224,7 +247,8 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="+973 12345678" {...field} />
+                      {/* <Input placeholder="+973 12345678" {...field} /> */}
+                      <PhoneInput placeholder="Placeholder" {...field} defaultCountry="BH" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -260,9 +284,7 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
 
             {/* Avatar */}
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-              <div className="flex items-center gap-2 mb-2 text-blue-600 font-semibold">
-                Avatar
-              </div>
+              <div className="flex items-center gap-2 mb-2 text-blue-600 font-semibold">Avatar</div>
               <ImageUpload
                 imgKeyFieldName="avatar.s3Key"
                 imgUrlFieldName="avatar.url"
@@ -274,11 +296,17 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
             {/* Actions */}
             <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t border-gray-100">
               <Link to="..">
-                <Button variant="ghost" className="w-full sm:w-auto border border-gray-300 hover:bg-gray-100">
+                <Button
+                  variant="ghost"
+                  className="w-full sm:w-auto border border-gray-300 hover:bg-gray-100"
+                >
                   Cancel
                 </Button>
               </Link>
-              <Button type="submit" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-md">
+              <Button
+                type="submit"
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-md"
+              >
                 {editMode ? "Update Staff" : "Create Staff"}
               </Button>
             </div>

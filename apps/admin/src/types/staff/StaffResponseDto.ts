@@ -5,7 +5,8 @@ import type { Tier } from "../enums/Tier";
 export type StaffResponseDto = {
   id: string;
   email: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   role: Roles;
   phoneNumber?: string;
   gender: Gender;

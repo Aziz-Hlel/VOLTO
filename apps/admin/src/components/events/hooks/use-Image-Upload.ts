@@ -27,8 +27,6 @@ const useImageUpload = ({
   const currentImgKey = getValues(imgKeyFieldName) as string | undefined;
 
   const initImg = useMemo(() => currentImgUrl, []);
-  console.log("initImg : ", initImg);
-  console.log("zabbourom niti url img value : ", currentImgUrl);
   const setImageUrl = (img?: string) => setValue(imgUrlFieldName, img);
   const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
 
@@ -62,8 +60,6 @@ const useImageUpload = ({
     setImageUrl(initImg);
     setImageKey(currentImgKey);
   };
-
-  console.log("currentDisplayed : ", currentDisplayed);
 
   const Crop_OptimizeImage = async () => {
     if (!croppedAreaPixels || !file) {

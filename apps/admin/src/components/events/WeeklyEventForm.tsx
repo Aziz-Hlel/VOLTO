@@ -34,8 +34,6 @@ const WeeklyEventForm = ({
   const cronEndDate = watch(endDateFieldName);
   const _1hour = 1000 * 60 * 60;
 
-  console.log("cronStartDate : ", cronStartDate, " \n cronEndDate : ", cronEndDate);
-
   // return null
 
   const dayOfWeekFromCron = (cron: string): number => {

@@ -30,11 +30,11 @@ export const StaffDataTable: React.FC<StaffDataTableProps> = ({
   setStaffForDeletion,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<keyof StaffResponseDto>("username");
+  const [sortBy, setSortBy] = useState<keyof StaffResponseDto>("firstName");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const filteredData = data.filter(
-    (staff) => staff.username.toLowerCase().includes(searchTerm.toLowerCase()),
+    (staff) => staff.firstName.toLowerCase().includes(searchTerm.toLowerCase()),
     // ||
     // event.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -80,9 +80,9 @@ export const StaffDataTable: React.FC<StaffDataTableProps> = ({
               <TableRow>
                 <TableHead
                   className="min-w-[150px] cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleSort("username")}
+                  onClick={() => handleSort("firstName")}
                 >
-                  Username {sortBy === "username" && (sortOrder === "asc" ? "↑" : "↓")}
+                  Full Name {sortBy === "firstName" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
                 <TableHead
                   className="min-w-[200px] cursor-pointer hover:bg-muted/50"
@@ -108,7 +108,7 @@ export const StaffDataTable: React.FC<StaffDataTableProps> = ({
               ) : (
                 sortedData.map((staffMember) => (
                   <TableRow key={staffMember.id} className=" hover:cursor-default">
-                    <TableCell className="font-medium">{staffMember.username}</TableCell>
+                    <TableCell className="font-medium">{`${staffMember.firstName} ${staffMember.lastName}`}</TableCell>
                     <TableCell className="text-sm">{staffMember.email}</TableCell>
                     <TableCell className="text-sm">{staffMember.role}</TableCell>
                     <TableCell className="text-sm">{staffMember.phoneNumber ?? "N/A"}</TableCell>

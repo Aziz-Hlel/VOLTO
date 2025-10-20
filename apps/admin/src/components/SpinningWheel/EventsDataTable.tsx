@@ -57,7 +57,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                 <TableHead className="max-w-52 cursor-pointer hover:bg-muted/50">
                   Total Participants{" "}
                 </TableHead>
-             
+
                 <TableHead className="max-w-52">Participants who redeemed codes</TableHead>
               </TableRow>
             </TableHeader>

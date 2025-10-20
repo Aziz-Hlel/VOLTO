@@ -38,7 +38,8 @@ const EventMainContent = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">🍾 Events Dashboard</h1>
           <p className="text-sm sm:text-base mt-1 text-blue-100">
-            Manage your upcoming events easily. <span className="text-red-300 font-medium">* You cannot edit a live event.</span>
+            Manage your upcoming events easily.{" "}
+            <span className="text-red-300 font-medium">* You cannot edit a live event.</span>
           </p>
         </div>
         <div className="flex items-center gap-4">
