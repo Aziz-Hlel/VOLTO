@@ -1,15 +1,9 @@
-
 "use client";
 
 import { motion } from "framer-motion";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import React from "react";
-import {
-  Autoplay,
-  EffectCoverflow,
-  Navigation,
-  Pagination,
-} from "swiper/modules";
+import { Autoplay, EffectCoverflow, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
@@ -20,12 +14,10 @@ import "swiper/css/effect-cards";
 import { cn } from "@/lib/utils";
 import { menuImages } from "./menu-images";
 
-
-
-export type MenuCarouselTypes = 'Food' | 'Cocktails' | 'Hookah';
+export type MenuCarouselTypes = "Food" | "Cocktails" | "Hookah";
 
 const MenuCarousel = ({
-menuType,
+  menuType,
   className,
   showPagination = true,
   showNavigation = false,
@@ -33,7 +25,7 @@ menuType,
   autoplay = false,
   spaceBetween = 0,
 }: {
-  menuType: MenuCarouselTypes
+  menuType: MenuCarouselTypes;
   className?: string;
   showPagination?: boolean;
   showNavigation?: boolean;
@@ -41,9 +33,8 @@ menuType,
   autoplay?: boolean;
   spaceBetween?: number;
 }) => {
-
-const images = menuImages['Cocktails'];
-// console.log('images :',images)
+  const images = menuImages[menuType];
+  // console.log('images :',images)
 
   const css = `
   .Carousal_003 {

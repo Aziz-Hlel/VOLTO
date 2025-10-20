@@ -18,14 +18,13 @@ services:
     environment:
       CHOKIDAR_USEPOLLING: true
       WATCHPACK_POLLING: true
-      # DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}?schema=public ? e5i aparament tnjamm t3ml hakka , taken from chat
 
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
-
+    
     volumes:
       - ${PROJECT_ROOT}/apps/api/src:/app/apps/api/src
       - ${PROJECT_ROOT}/apps/api/prisma:/app/apps/api/prisma

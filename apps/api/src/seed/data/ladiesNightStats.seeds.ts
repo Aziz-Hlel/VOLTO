@@ -437,7 +437,6 @@ const ladiesNightStatsSeed: ILadiesNightData[] = [
   },
 ];
 
-
 const prisma = new PrismaClient();
 
 export const seedLadiesNightStats = async () => {

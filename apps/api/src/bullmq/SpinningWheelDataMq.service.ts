@@ -104,15 +104,13 @@ export class SpinningWheelDataMqService implements OnModuleInit {
   private async deletePreviousJob(jobId: string) {
     // ! ouble check this cuz i forgot but ti tihkin this is not weekly so doesnt need to be this way
 
-
-const firstDelayJob = await this.eventQueue.getJob(jobId);
+    const firstDelayJob = await this.eventQueue.getJob(jobId);
 
     if (firstDelayJob) {
       this.logger.debug('Deleted previous first delay job');
       await firstDelayJob.remove();
     } else {
       this.logger.debug('No previous first delay job to delete');
-
     }
   }
 

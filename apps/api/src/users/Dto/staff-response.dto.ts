@@ -5,9 +5,12 @@ export class StaffResponseDto {
 
   email: string;
 
-  username: string;
+  firstName: string;
+
+  lastName: string;
 
   role: Role;
+
 
   phoneNumber?: string;
 

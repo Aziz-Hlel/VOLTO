@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsOptional,
   IsString,
+  Matches,
   Max,
   MaxLength,
   MinLength,
@@ -16,7 +17,12 @@ export class CreateStaffDto {
   @IsString()
   @MinLength(2)
   @MaxLength(30)
-  username: string;
+  firstName: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(30)
+  lastName: string;
 
   @IsEmail()
   email: string;
@@ -30,7 +36,7 @@ export class CreateStaffDto {
   role: Role;
 
   @IsOptional()
-  @IsString()
+  @Matches(/^\+[0-9]+$/, { message: 'Phone number must start with + and contain only numbers' })
   phoneNumber?: string;
 
   @IsEnum(Gender, { message: 'Gender must be either M or F' })

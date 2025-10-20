@@ -5,7 +5,9 @@ export class jwtUserToken {
 
   email: string;
 
-  username: string;
+  firstName: string;
+
+  lastName: string;
 
   role: Role;
 }

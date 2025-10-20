@@ -14,7 +14,6 @@ import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Role } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../users/Dto/create-user';
 import { JwtAccessGuard } from './guards/jwt.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Roles } from './decorators/roles.decorator';

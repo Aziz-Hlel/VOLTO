@@ -1,10 +1,6 @@
-import { PrismaClient, SpinningWheelData } from "@prisma/client";
-
-
+import { PrismaClient, SpinningWheelData } from '@prisma/client';
 
 type ISpinningWheelData = Omit<SpinningWheelData, 'createdAt' | 'updatedAt'>;
-
-
 
 const spinningWheelStatsSeed: ISpinningWheelData[] = [
   {
@@ -332,9 +328,6 @@ const spinningWheelStatsSeed: ISpinningWheelData[] = [
     participantsRedeemedCode: 162,
   },
 ];
-
-
-
 
 const prisma = new PrismaClient();
 

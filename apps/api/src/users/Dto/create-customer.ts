@@ -1,13 +1,10 @@
-import { Gender, Role } from '@prisma/client';
+import { Gender } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsEnum,
-  IsInt,
   IsOptional,
-  IsPositive,
   IsString,
   Matches,
-  Max,
   MaxLength,
   MinLength,
   ValidateNested,
@@ -17,7 +14,11 @@ import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto'
 export class CreateCustomerDto {
   @IsString()
   @MinLength(2)
-  username: string;
+  firstName: string;
+
+  @IsString()
+  @MinLength(2)
+  lastName: string;
 
   @IsString()
   @MinLength(2)

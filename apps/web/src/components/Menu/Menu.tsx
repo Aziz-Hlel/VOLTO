@@ -2,36 +2,34 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import type { MenuCarouselTypes } from "./MenuCarousel";
 
-
 type ImenuCategories = {
   title: string;
   image: string;
   color: string;
-  menuType: MenuCarouselTypes
-}
-const menuCategories:ImenuCategories[] = [
+  menuType: MenuCarouselTypes;
+};
+const menuCategories: ImenuCategories[] = [
   {
     title: "VOLTO Special Cocktails",
     image: "/img/menuWallpaper/cocktail1.png",
     color: "from-orange-400/40 to-yellow-600/30",
-    menuType: "Cocktails"
+    menuType: "Cocktails",
   },
   {
     title: "VOLTO Food Cuisine",
     image: "/img/menuWallpaper/hamburger.jpg",
     color: "from-red-600/40 to-emerald-700/30",
-    menuType: "Food"
+    menuType: "Food",
   },
   {
     title: "VOLTO Hookah",
     image: "/img/menuWallpaper/hookaItem1.jpeg",
     color: "from-blue-500/40 to-red-700/30",
-    menuType: "Hookah"
+    menuType: "Hookah",
   },
 ];
 
 const Menu = () => {
-
   const navigate = useNavigate();
   return (
     <section className="relative min-h-screen text-white flex flex-col items-center justify-center overflow-hidden">
@@ -54,19 +52,17 @@ const Menu = () => {
       {/* Horizontal cards */}
       <div className="flex flex-row justify-center gap-8 w-full max-w-7xl flex-wrap sm:flex-nowrap z-10">
         {menuCategories.map((item, index) => (
-          <motion.div
+          <div
             key={index}
-            whileHover={{ scale: 1.05, y: -4 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="relative w-full sm:w-[380px] h-[420px] rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer backdrop-blur-sm"
-      onClick={() => navigate("/menu/"+item.menuType.toLocaleLowerCase())}
-    >
+            className="relative hover:scale-110 duration-100 transition-transform w-full sm:w-[380px] h-[420px] rounded-3xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer backdrop-blur-sm"
+            onClick={() => navigate("/menu/" + item.menuType.toLocaleLowerCase())}
+          >
             {/* Image */}
             <img
               src={item.image}
               alt={item.title}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-              onClick={() => navigate("/menu/"+item.menuType.toLocaleLowerCase())}
+              onClick={() => navigate("/menu/" + item.menuType.toLocaleLowerCase())}
             />
 
             {/* Overlay */}
@@ -81,7 +77,7 @@ const Menu = () => {
                 Discover the flavors
               </p>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

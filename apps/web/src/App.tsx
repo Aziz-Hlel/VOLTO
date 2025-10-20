@@ -34,7 +34,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/menu" element={<Outlet />} >
+          <Route path="/menu" element={<Outlet />}>
             <Route index element={<Menu />} />
             <Route path="food" element={<MenuCarousel menuType="Food" />} />
             <Route path="cocktails" element={<MenuCarousel menuType="Cocktails" />} />

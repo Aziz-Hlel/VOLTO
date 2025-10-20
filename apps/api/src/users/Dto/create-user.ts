@@ -15,7 +15,11 @@ import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto'
 export class CreateUserDto {
   @IsString()
   @MinLength(2)
-  username: string;
+  firstName: string;
+
+  @IsString()
+  @MinLength(2)
+  lastName: string;
 
   @IsString()
   @MinLength(2)

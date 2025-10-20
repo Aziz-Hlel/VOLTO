@@ -85,13 +85,16 @@ const Footer = () => {
           </h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li>
-              <span className="font-semibold text-gray-300">Address:</span> Shop 2, Building، 436 Road 3815, Manama, Bahrain
+              <span className="font-semibold text-gray-300">Address:</span> Shop 2, Building، 436
+              Road 3815, Manama, Bahrain
             </li>
             <li>
-              <span className="font-semibold text-gray-300">Phone:</span> <a href="tel:+97334588466">+973 3458 8466</a> 
+              <span className="font-semibold text-gray-300">Phone:</span>{" "}
+              <a href="tel:+97334588466">+973 3458 8466</a>
             </li>
             <li>
-              <span className="font-semibold text-gray-300">Email:</span> support@voltobahrain.online
+              <span className="font-semibold text-gray-300">Email:</span>{" "}
+              support@voltobahrain.online
             </li>
           </ul>
         </div>

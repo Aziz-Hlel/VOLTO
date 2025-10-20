@@ -11,7 +11,8 @@ const hashPassword = async (rawPassword: string): Promise<string> => bcrypt.hash
 const userSeeds = async (): Promise<IUserSeeds[]> => [
   {
     id: '4f8a2d1e-3b7f-4c2a-9e6a-7f2d8a1c3b4e',
-    username: 'Super Admin',
+    firstName: 'Super Admin',
+    lastName: 'Example',
     email: 'superadmin@example.com',
     password: await hashPassword('12345678'),
     role: Role.SUPER_ADMIN,
@@ -21,7 +22,8 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
   },
   {
     id: '9c1b5f2d-7e4f-44c8-a1f2-3b6d7e8f9a0b',
-    username: 'Admin',
+    firstName: 'Admin',
+    lastName: 'Example',
     email: 'admin@example.com',
     password: await hashPassword('12345678'),
     role: Role.ADMIN,
@@ -31,7 +33,8 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
   },
   {
     id: 'a7f1c3b2-8d4e-4f6a-b2c1-7d5e8f9a0b3c',
-    username: 'Waiter',
+    firstName: 'Waiter',
+    lastName: 'Example',
     email: 'waiter@example.com',
     password: await hashPassword('12345678'),
     role: Role.WAITER,
@@ -41,7 +44,8 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
   },
   {
     id: '2d7f1a3e-5b6c-4f2d-8e1a-9c3b4f5d6a7e',
-    username: 'User',
+    firstName: 'User',
+    lastName: 'Example',
     email: 'user@example.com',
     password: await hashPassword('12345678'),
     role: Role.USER,
@@ -51,7 +55,8 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
   },
   {
     id: '7b9e2c6a-41cf-4a87-91fd-4f6e2f9c1a3b',
-    username: 'Salma Hayek',
+    firstName: 'Salma Hayek',
+    lastName: 'Example',
     email: 'hkouma2011@gmail.com',
     password: await hashPassword('11111111'),
     role: Role.USER,

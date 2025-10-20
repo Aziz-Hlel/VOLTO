@@ -9,7 +9,9 @@ export class UserResponseDto {
 
   phoneNumber?: string;
 
-  username: string;
+  firstName: string;
+
+  lastName: string;
 
   role: Role;
 

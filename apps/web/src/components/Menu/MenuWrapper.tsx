@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const MenuWrapper = () => {
-  return (
-    <div>MenuWrapper</div>
-  )
-}
+  return <div>MenuWrapper</div>;
+};
 
-export default MenuWrapper
+export default MenuWrapper;

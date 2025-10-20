@@ -22,7 +22,7 @@ async function main() {
   await resetDB();
 
   await seedUsers();
-  
+
   await seedEvents();
 
   await seedGallery();
