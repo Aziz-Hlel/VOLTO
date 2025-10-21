@@ -1,3 +1,4 @@
+import axiosInstance from "@/api/axiosInstance";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import type { IEventCategory } from "@/types/EventCategory";
 import { useQuery } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ type Event = {
 
 const Events = () => {
   const fetchEvents = async () => {
-    const response = await axios.get<Event[]>("https://voltobahrain.online/api/events/");
+    const response = await axiosInstance.get<Event[]>("/events/");
     return response.data;
   };
   const { data } = useQuery({

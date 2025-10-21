@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
+import axiosInstance from "@/api/axiosInstance";
 
 const reservationSchema = z.object({
   username: z.string().min(2, "Username must be at least 2 characters"),
@@ -65,7 +66,7 @@ const ReservationForm = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["create-reservation"],
     mutationFn: async (data: IForm) =>
-      await axios.post("https://voltobahrain.online/api/reservation", data),
+      await axiosInstance.post("/reservation", data),
     onSuccess: () => {
       toast("Reservation created successfully!", {
         description:
