@@ -45,18 +45,18 @@ const ContactForm = () => {
   });
 
   const { isSubmitting } = form.formState;
-const {mutateAsync} = useMutation({
+  const { mutateAsync } = useMutation({
     mutationKey: ["contact-us"],
     mutationFn: async (data: formData) => axiosInstance.post("/contact", data),
     onSuccess: () => {
       form.reset();
-      toast.success("Message sent successfully!",{description: "We will get back to you soon."});
+      toast.success("Message sent successfully!", { description: "We will get back to you soon." });
     },
     onError: () => {
       toast.error("Failed to send message. Please try again later.");
     },
   });
-  const onSubmit =async (data: formData) => {
+  const onSubmit = async (data: formData) => {
     await mutateAsync(data);
   };
 
@@ -156,15 +156,15 @@ const {mutateAsync} = useMutation({
               )}
             />
 
-                <FormField
+            <FormField
               control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Textarea
-              placeholder="Type your message here..."
-              className="w-full min-h-28 rounded-lg bg-gray-800 text-white placeholder:text-gray-400 border border-gray-700 focus-visible:border-yellow-500 focus-visible:ring-1 focus-visible:ring-yellow-500 outline-none "
+                      placeholder="Type your message here..."
+                      className="w-full min-h-28 rounded-lg bg-gray-800 text-white placeholder:text-gray-400 border border-gray-700 focus-visible:border-yellow-500 focus-visible:ring-1 focus-visible:ring-yellow-500 outline-none "
                       {...field}
                     />
                   </FormControl>
@@ -179,11 +179,7 @@ const {mutateAsync} = useMutation({
                 type="submit"
                 className="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-yellow-400 hover:opacity-90 text-gray-900 font-semibold py-2 px-5 rounded-lg shadow transition-all"
               >
-           { isSubmitting ? 
-           <Spinner /> :
-               <span>
-                Send ➤
-                </span>}
+                {isSubmitting ? <Spinner /> : <span>Send ➤</span>}
               </button>
               <button
                 type="reset"

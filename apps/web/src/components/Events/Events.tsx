@@ -10,7 +10,7 @@ export const EventType = {
   SPECIAL: "SPECIAL",
 };
 
-type Event = {
+export type Event = {
   id: string;
   name: string;
   description: string;

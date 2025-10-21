@@ -8,6 +8,45 @@ const NavBar619 = () => {
     isVisible: true,
   });
 
+  const url = "https://voltobahrain.online/";
+  const APP_SCHEME = `${url}/mobile/home`;
+  const APP_STORE_URL = "https://apps.apple.com/app/id6753715978";
+  const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.techno.volto";
+  const LANDING_PAGE_URL = "https://yourdomain.com/get-app";
+
+  const openAppOrRedirect = (storeUrl: string) => {
+    const now = Date.now();
+    window.location.href = APP_SCHEME;
+
+    // If app isn't installed, fallback after 1.2s
+    setTimeout(() => {
+      if (Date.now() - now < 1500) {
+        window.location.href = storeUrl;
+      }
+    }, 1200);
+  };
+
+  const handleClick = () => {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    const platform = navigator.platform || "";
+    console.log("userAgent = ", userAgent);
+    console.log("platform = ", platform);
+
+    const isAndroid = /android/i.test(userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+    const isMac = platform.includes("Mac") && !isIOS;
+
+    if (isAndroid) {
+      openAppOrRedirect(PLAY_STORE_URL);
+    } else if (isIOS || isMac) {
+      // macOS users often use iPhones/iPads too, so send them to iOS store
+      openAppOrRedirect(APP_STORE_URL);
+    } else {
+      // Windows/Linux desktops
+      window.open(LANDING_PAGE_URL, "_blank");
+    }
+  };
+
   const navRef = useRef<HTMLDivElement | null>(null);
 
   const navBarItems: CardNavItem[] = [

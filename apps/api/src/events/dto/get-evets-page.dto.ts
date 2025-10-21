@@ -1,5 +1,6 @@
+import { EventType } from '@prisma/client';
 import { Type } from 'class-transformer';
-import { IsNumber, Max, Min } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 export class GetEventsPageDto {
   @Type(() => Number)
@@ -13,4 +14,9 @@ export class GetEventsPageDto {
   @Min(1)
   @Max(50)
   limit = 10;
+
+
+  @IsEnum( EventType )
+  @IsOptional()
+  type?:EventType
 }

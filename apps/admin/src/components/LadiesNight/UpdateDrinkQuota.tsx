@@ -42,10 +42,9 @@ const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, 
       setLoading(true);
       const response = await mutateAsync(drinkQuota);
       await queryClient.refetchQueries({ queryKey: ["ladies-night", "quota"], exact: true });
-
       setLoading(false);
       setOpen(false);
-      toast.success("Drink quota updated successfully");
+      toast.success("Drink quota updated successfully 🍸");
     } catch (error) {
       setLoading(false);
       toast.error(error?.error ?? "Error updating drink quota");
@@ -53,48 +52,62 @@ const UpdateDrinkQuota: FC<UpdateDrinkQuotaProps> = ({ initialDrinkQuota, open, 
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <form>
-          <DialogContent className="[&_button.absolute.right-4.top-4]:hidden sm:max-w-[425px] grid grid-cols-4 grid-rows-2 p-5">
-            <DialogHeader className=" col-span-3 row-span-1">
-              <DialogTitle>Edit Drink Quota </DialogTitle>
-              <DialogDescription>Click save when you&apos;re done.</DialogDescription>
-            </DialogHeader>
-            <div className=" col-span-1 row-span-1 flex items-center justify-center ">
-              <InputGroup className="w-24">
-                <InputGroupInput
-                  placeholder="3"
-                  type="number"
-                  value={drinkQuota}
-                  onChange={handleDrinkQuotaChange}
-                />
-                <InputGroupAddon align="inline-end">
-                  <div className="bg-primary text-primary-foreground flex size-4 items-center justify-center rounded-full">
-                    <Martini className="size-3" />
-                  </div>
-                </InputGroupAddon>
-              </InputGroup>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <form>
+        <DialogContent className="sm:max-w-md bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-300">
+          <DialogHeader className="text-center space-y-1">
+            <div className="flex items-center justify-center space-x-2">
+              <Martini className="w-6 h-6 text-pink-500 animate-pulse" />
+              <DialogTitle className="text-2xl font-bold text-gray-800">
+                Edit Drink Quota
+              </DialogTitle>
             </div>
-            <DialogFooter className=" col-span-4 row-span-1">
-              <DialogClose asChild>
-                <Button className="" variant="outline" onClick={() => setOpen(false)}>
-                  Cancel
-                </Button>
-              </DialogClose>
+            <DialogDescription className="text-gray-500 text-sm">
+              Adjust the number of free drinks available for ladies night.
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Input Section */}
+          <div className="flex items-center justify-center my-6">
+            <InputGroup className="w-32 border rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-pink-400">
+              <InputGroupInput
+                placeholder="3"
+                type="number"
+                value={drinkQuota}
+                onChange={handleDrinkQuotaChange}
+                className="text-center font-semibold text-gray-700"
+              />
+              <InputGroupAddon align="inline-end">
+                <div className="bg-pink-500 text-white flex items-center justify-center size-6 rounded-full">
+                  <Martini className="size-4" />
+                </div>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
+
+          {/* Footer Buttons */}
+          <DialogFooter className="flex justify-end space-x-3">
+            <DialogClose asChild>
               <Button
-                disabled={loading}
-                onClick={handleFormSubmit}
-                type="submit"
-                className="enabled:cursor-pointer"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="border-gray-300 hover:bg-gray-100 text-gray-700"
               >
-                {loading ? <Spinner /> : "Save"}
+                Cancel
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </form>
-      </Dialog>
-    </>
+            </DialogClose>
+            <Button
+              disabled={loading}
+              onClick={handleFormSubmit}
+              type="submit"
+              className="bg-pink-500 hover:bg-pink-600 text-white shadow-md transition-transform hover:scale-105"
+            >
+              {loading ? <Spinner /> : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </form>
+    </Dialog>
   );
 };
 

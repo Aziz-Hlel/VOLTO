@@ -62,24 +62,41 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.length === 0 ? (
+              {data.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell
+                    colSpan={6}
+                    className="text-center py-8 text-muted-foreground"
+                  >
                     No Data yet
                   </TableCell>
                 </TableRow>
-              ) : (
+              )}
+
+              {data.length > 0 &&
                 data.map((tableRow) => (
-                  <TableRow key={tableRow.id} className=" hover:cursor-default">
+                  <TableRow key={tableRow.id} className="hover:cursor-default">
                     <TableCell className="text-sm border-r">{getdisplayedDate(tableRow)}</TableCell>
                     <TableCell className="text-sm border-r">{tableRow.totalParticipants}</TableCell>
-                    <TableCell className="text-sm border-r ">
+                    <TableCell className="text-sm border-r">
                       {tableRow.participantsRedeemedCode}
                     </TableCell>
                   </TableRow>
-                ))
-              )}
+                ))}
+
+              {data.length > 0 &&
+                Array.from({ length: 7 - data.length }).map((_, index) => (
+                  <TableRow
+                    key={`empty-${index}`}
+                    className="hover:cursor-default opacity-0 select-none pointer-events-none"
+                  >
+                    <TableCell className="text-sm border-r">&nbsp;</TableCell>
+                    <TableCell className="text-sm border-r">&nbsp;</TableCell>
+                    <TableCell className="text-sm border-r">&nbsp;</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
+
           </Table>
           <div className=" w-full flex justify-end p-2 gap-x-2 ">
             <div className="flex items-center justify-end">
@@ -90,26 +107,27 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                 {query.limit * (query.page - 1) + data.length} of {count} results
               </p>
             </div>
-            <div className=" flex gap-x-2">
+            <div className="flex gap-x-2">
               <Button
-                className=" w-12 h-8 enabled:cursor-pointer"
+                className="w-12 h-8 enabled:cursor-pointer bg-gradient-to-r from-blue-400 to-blue-600 text-white font-semibold rounded-md shadow-md hover:from-blue-500 hover:to-blue-700 transition-all"
                 disabled={query.page === 1}
                 onClick={() => setQuery({ ...query, page: query.page - 1 })}
               >
                 Prev
               </Button>
               <Button
-                className=" w-12 h-8 enabled:cursor-pointer"
+                className="w-12 h-8 enabled:cursor-pointer bg-gradient-to-r from-blue-400 to-blue-600 text-white font-semibold rounded-md shadow-md hover:from-blue-500 hover:to-blue-700 transition-all"
                 disabled={query.page >= Math.ceil(count / query.limit)}
                 onClick={() => setQuery({ ...query, page: query.page + 1 })}
               >
                 Next
               </Button>
             </div>
+
           </div>
           <div></div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };

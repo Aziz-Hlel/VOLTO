@@ -109,12 +109,21 @@ export class EventsService {
   }
 
   async findPage(query: GetEventsPageDto) {
+
+    let filter = {};
+    if (query.type) {
+      filter = {
+        ...filter,
+        type: query.type,
+      };
+    }
     const galleries = this.prisma.event.findMany({
       skip: (query.page - 1) * query.limit,
       take: query.limit,
       orderBy: {
         createdAt: 'desc',
       },
+      where: filter,
     });
     const total = this.prisma.event.count({});
 

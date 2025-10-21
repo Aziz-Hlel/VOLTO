@@ -1,9 +1,11 @@
-import React, { useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useCallback, useState } from "react";
 import { gsap } from "gsap";
 import { ArrowUpRight as GoArrowUpRight } from "lucide-react";
 import { FaApple } from "react-icons/fa";
 import { AiFillAndroid } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { set } from "zod";
+import DownloadApp from "../DownloadApp/DownloadApp";
 
 type CardNavLink = {
   label: string;
@@ -216,10 +218,97 @@ const CardNav: React.FC<CardNavProps> = ({
     [],
   );
 
+  const getPlatform = () => {
+    const ua = navigator.userAgent.toLowerCase();
+
+    if (/iphone|ipad|ipod/.test(ua)) return "ios";
+    if (/android/.test(ua)) return "android";
+    if (/mac os/.test(ua)) return "macos";
+    if (/windows|win32/.test(ua)) return "windows";
+
+    return "unknown";
+  };
+  console.log("platform : ", getPlatform());
+
+  // Configuration - update with your actual app details
+  const APP_CONFIG = {
+    ios: {
+      appStore: "https://apps.apple.com/app/id6753715978", // Replace with your App Store ID
+      deepLink: "https://voltobahrain.online/mobile/",
+    },
+    android: {
+      playStore: "https://play.google.com/store/apps/details?id=com.techno.volto", // Replace with your package name
+      deepLink: "https://voltobahrain.online/mobile/",
+    },
+  };
+
+  const [platform, setPlatform] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setPlatform(getPlatform());
+  }, []);
+
+  const handleOpenApp = async () => {
+    if (!platform || isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      if (platform === "ios") {
+        // Try to open the app via deep link
+        const deepLinkUrl = APP_CONFIG.ios.deepLink + "home";
+
+        // Set a timeout to redirect to App Store if app doesn't open
+        const appNotInstalledTimer = setTimeout(() => {
+          window.location.href = APP_CONFIG.ios.appStore;
+        }, 2000);
+
+        // Attempt to open the app
+        window.location.href = deepLinkUrl;
+
+        // Clear timer if navigation succeeds
+        return () => clearTimeout(appNotInstalledTimer);
+      } else if (platform === "android") {
+        // Android handles this more gracefully with intent
+        const deepLinkUrl = APP_CONFIG.android.deepLink + "home";
+
+        // Try deep link first
+        const androidTimer = setTimeout(() => {
+          window.location.href = APP_CONFIG.android.playStore;
+        }, 2000);
+
+        window.location.href = deepLinkUrl;
+
+        return () => clearTimeout(androidTimer);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDesktopRedirect = () => {
+    setIsLoading(true);
+
+    if (platform === "macos") {
+      window.location.href = APP_CONFIG.ios.appStore;
+    } else {
+      // Windows, Linux, or unknown - redirect to Android Play Store (or your preference)
+      window.location.href = APP_CONFIG.android.playStore;
+    }
+  };
+
+  const isMobile = platform === "ios" || platform === "android";
+
+
+  const [openDownloadAppDialog, setOpenDownloadAppDialog] = useState(false);
+
   return (
     <div
       className={`card-nav-container mx-auto mt-3 w-[90%] max-w-[800px] z-[90] top-[1.2em] md:top-[2em]  ${className}`}
     >
+      {openDownloadAppDialog && <DownloadApp  closeDialog={() => setOpenDownloadAppDialog(false)}/>}
+        
       <nav
         ref={navRef}
         className={`card-nav ${isOpen ? "open" : ""} block  h-[60px] p-0 rounded-xl bg-white/75 shadow-md relative overflow-hidden will-change-[height]`}
@@ -262,6 +351,7 @@ const CardNav: React.FC<CardNavProps> = ({
             className="card-nav-cta-button hidden md:inline-flex md:justify-center md:items-center border-0 rounded-[calc(0.75rem-0.2rem)] px-4 h-full font-medium cursor-pointer transition-colors duration-300 bg-black/85 text-white hover:bg-black/95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black/50"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
             aria-label="Get mobile app"
+            onClick={()=>setOpenDownloadAppDialog(true)}
           >
             Get App
           </button>
@@ -328,10 +418,23 @@ const CardNav: React.FC<CardNavProps> = ({
               </div>
             </div>
           ))}
-          <div className=" w-full flex justify-center items-center gap-2  text-white text-md  bg-black/85 rounded-md md:hidden ">
+          <div
+            className=" w-full flex justify-center items-center gap-2  text-white text-md  bg-black/85 rounded-md md:hidden "
+            onClick={isMobile ? handleOpenApp : handleDesktopRedirect}
+          >
+            <span>
+
             Get App
+            </span>
+
+            <a href="">
             <FaApple className=" text-white h-8  " />
+
+            </a>
+<a href="">
             <AiFillAndroid className=" text-white h-8  " />
+
+</a>
           </div>
         </div>
       </nav>

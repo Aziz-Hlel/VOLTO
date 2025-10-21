@@ -66,6 +66,7 @@ export default function RangeEventDate({
     setValue(startDateFieldName, newStartDate);
     setValue(endDateFieldName, newEndDate);
 
+    console.log("newStartDate : ", newStartDate, " newEndDate : ", newEndDate);
   };
 
   useEffect(() => {
@@ -73,15 +74,16 @@ export default function RangeEventDate({
   }, [range, startTime, StartTimeDayPeriod, endTime, endTimeDayPeriod]);
 
   return (
-    <div className="flex gap-6 items-start">
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="dates" className="px-1 flex ">
+    <div className="flex flex-col md:flex-row md:items-start gap-6 w-full">
+      {/* Sélection de date */}
+      <div className="flex flex-col gap-2 md:w-64">
+        <Label htmlFor="dates" className="px-1 flex flex-col">
           Select Event's Days
-          <span className="text-xs  siz font-thin">* Double click to select one day</span>
+          <span className="text-xs font-thin">* Double click to select one day</span>
         </Label>
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" id="dates" className="w-56 justify-between font-normal">
+            <Button variant="outline" id="dates" className="w-full justify-between font-normal">
               {range?.from && range?.to
                 ? `${range.from.toLocaleDateString()} - ${range.to.toLocaleDateString()}`
                 : "Select date"}
@@ -99,59 +101,56 @@ export default function RangeEventDate({
         </Popover>
       </div>
 
-      <div className="flex flec gap-4">
-        <div className="flex flex-col gap-3">
-          <Label htmlFor="time-from" className="px-1">
-            Starring at
-          </Label>
-
-          <div className="flex gap-2 justify-center items-center">
-            <Input
-              type="number"
-              min={0}
-              max={12}
-              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-              value={startTime}
-              onChange={handleStartTimeChange}
-            />
-            <select
-              value={StartTimeDayPeriod}
-              onChange={handleStartTimeDayPeriod}
-              className="bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-          </div>
+      {/* Heure de début */}
+      <div className="flex flex-col gap-2 md:w-40">
+        <Label htmlFor="time-from" className="px-1">
+          Starting at
+        </Label>
+        <div className="flex gap-2 items-center">
+          <Input
+            type="number"
+            min={0}
+            max={12}
+            className="bg-background w-20 appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+            value={startTime}
+            onChange={handleStartTimeChange}
+          />
+          <select
+            value={StartTimeDayPeriod}
+            onChange={handleStartTimeDayPeriod}
+            className="bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
         </div>
       </div>
 
-      <div className="flex flec gap-4">
-        <div className="flex flex-col gap-3">
-          <Label htmlFor="time-from" className="px-1">
-            Ending at
-          </Label>
-
-          <div className="flex gap-2 justify-center items-center">
-            <Input
-              type="number"
-              min={0}
-              max={12}
-              className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-              value={endTime}
-              onChange={handleEndTimeChange}
-            />
-            <select
-              value={endTimeDayPeriod}
-              onChange={handleEndTimeDayPeriod}
-              className="bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-          </div>
+      {/* Heure de fin */}
+      <div className="flex flex-col gap-2 md:w-40">
+        <Label htmlFor="time-to" className="px-1">
+          Ending at
+        </Label>
+        <div className="flex gap-2 items-center">
+          <Input
+            type="number"
+            min={0}
+            max={12}
+            className="bg-background w-20 appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+            value={endTime}
+            onChange={handleEndTimeChange}
+          />
+          <select
+            value={endTimeDayPeriod}
+            onChange={handleEndTimeDayPeriod}
+            className="bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
         </div>
       </div>
     </div>
   );
+
 }

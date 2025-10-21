@@ -120,9 +120,10 @@ const Footer = () => {
       <div className="mt-12 border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 gap-3 text-center">
         <p>
           © {new Date().getFullYear()}{" "}
-          <span className="bg-gradient-to-r from-[#c5a100] via-[#e0b84a] to-[#f5d67b] bg-clip-text text-transparent font-semibold">
+          <a className="bg-gradient-to-r from-[#c5a100] via-[#e0b84a] to-[#f5d67b] bg-clip-text text-transparent font-semibold hover:underline underline"
+            href="https://technoshark.org/" target="_blank" rel="noopener noreferrer">
             Techno Shark
-          </span>
+          </a>
           . All rights reserved.
         </p>
 

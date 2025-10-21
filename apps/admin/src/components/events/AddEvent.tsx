@@ -54,17 +54,17 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
 
   const formDefaultValue: FormData | undefined = event
     ? {
-        id: event.id,
-        name: event.name,
-        description: event.description,
-        type: event.type,
-        startDate: event.startDate ?? undefined,
-        endDate: event.endDate ?? undefined,
-        cronStartDate: event.cronStartDate ?? undefined,
-        cronEndDate: event.cronEndDate ?? undefined,
-        thumbnail: event.thumbnail,
-        video: event.video,
-      }
+      id: event.id,
+      name: event.name,
+      description: event.description,
+      type: event.type,
+      startDate: event.startDate ?? undefined,
+      endDate: event.endDate ?? undefined,
+      cronStartDate: event.cronStartDate ?? undefined,
+      cronEndDate: event.cronEndDate ?? undefined,
+      thumbnail: event.thumbnail,
+      video: event.video,
+    }
     : undefined;
 
   const form = useForm<FormData>({

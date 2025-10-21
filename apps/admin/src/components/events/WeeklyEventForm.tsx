@@ -40,7 +40,10 @@ const WeeklyEventForm = ({
     if (!cron) return 0;
     try {
       const interval = parser.parseExpression(cron);
+      console.log("t5l tryyyyyy, interval : ", cron);
       const next = interval.next().toDate();
+      console.log("next date : ", next);
+      console.log("day ::::: ", next.getDay());
       return next.getDay();
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -75,10 +78,12 @@ const WeeklyEventForm = ({
   const getInitialDurationFromCron = (cronStartDate: string, cronEndDate: string): number => {
     if (!cronStartDate || !cronEndDate) return 8;
     try {
+      console.log("getInitialDurationFromCron called with: ", { cronStartDate, cronEndDate });
       const startInterval = parser.parseExpression(cronStartDate);
       const endInterval = parser.parseExpression(cronEndDate);
       const start = startInterval.next().toDate();
       const end = endInterval.next().toDate();
+      console.log("start : ", start, " end : ", end);
       return (end.getTime() - start.getTime()) / _1hour;
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -87,6 +92,7 @@ const WeeklyEventForm = ({
   };
 
   const initialDay = cronStartDate && cronEndDate ? dayOfWeekFromCron(cronStartDate) : 0;
+  console.log("initialDay : ", initialDay);
 
   const {
     startingHour,
@@ -105,6 +111,7 @@ const WeeklyEventForm = ({
   const [open, setOpen] = useState(false);
 
   const [day, setDay] = useState<number>(initialDay);
+  console.log("l day bidou fil state : ", day);
 
   const createCronExpression = (day: number, hour: number, ampm: "AM" | "PM") => {
     const adjustedHour = ampm === "PM" ? (hour % 12) + 12 : hour % 12;
@@ -127,12 +134,14 @@ const WeeklyEventForm = ({
       setValue(startDateFieldName, newCronStartDateExpression, { shouldDirty: true });
       setValue(endDateFieldName, newCronEndDateExpression, { shouldDirty: true });
     } catch (err) {
+      console.log("Something went wrong with updating cron expressions");
       setValue(startDateFieldName, "0 8 * * 0", { shouldDirty: true });
       setValue(endDateFieldName, "0 10 * * 0", { shouldDirty: true });
     }
   };
 
   useEffect(() => {
+    console.log("cronStartDate : ", cronStartDate, " cronEndDate : ", cronEndDate);
   }, []);
 
   const handleDayChange = (day: string) => {
@@ -147,89 +156,88 @@ const WeeklyEventForm = ({
 
   return (
     <>
-      <div className="flex items-center gap-6 w-full">
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-3">
-            <Label htmlFor="time-from" className="px-1">
-              Every
-            </Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-[200px] justify-between"
-                >
-                  { daysOfTheWeek.find((dayOfWeek) => dayOfWeek.value === day)?.label}
-                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandList>
-                    <CommandGroup>
-                      {daysOfTheWeek.map((dayOfWeek) => (
-                        <CommandItem
-                          key={dayOfWeek.value}
-                          value={dayOfWeek.value.toString()}
-                          onSelect={handleDayChange}
-                        >
-                          <CheckIcon
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              day === dayOfWeek.value ? "opacity-100" : "opacity-0",
-                            )}
-                          />
-                          {dayOfWeek.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
-        </div>
-
-        <div></div>
-
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-3">
-            <Label htmlFor="time-from" className="px-1">
-              Starring at
-            </Label>
-
-            <div className="flex gap-2 justify-center items-center">
-              <Input
-                type="number"
-                min={0}
-                max={12}
-                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                value={startingHour}
-                onChange={handleStartingHourChange}
-              />
-              <select
-                value={amPM}
-                onChange={handleAMPMChange}
-                className="bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      {/* Container principal responsive */}
+      <div className="flex flex-col md:flex-row md:items-center gap-6 w-full">
+        {/* Jour de la semaine */}
+        <div className="flex flex-col gap-3 md:w-[200px]">
+          <Label htmlFor="time-from" className="px-1">
+            Every
+          </Label>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between"
               >
-                <option value="AM">AM</option>
-                <option value="PM">PM</option>
-              </select>
-            </div>
+                {day
+                  ? daysOfTheWeek.find((dayOfWeek) => dayOfWeek.value === day)?.label
+                  : "Select Day of the week... "}
+                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandList>
+                  <CommandGroup>
+                    {daysOfTheWeek.map((dayOfWeek) => (
+                      <CommandItem
+                        key={dayOfWeek.value}
+                        value={dayOfWeek.value.toString()}
+                        onSelect={handleDayChange}
+                      >
+                        <CheckIcon
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            day === dayOfWeek.value ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {dayOfWeek.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* Heure de début */}
+        <div className="flex flex-col gap-3 md:w-[150px]">
+          <Label htmlFor="time-from" className="px-1">
+            Starting at
+          </Label>
+          <div className="flex gap-2 items-center">
+            <Input
+              type="number"
+              min={0}
+              max={12}
+              className="bg-background w-20 appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
+              value={startingHour}
+              onChange={handleStartingHourChange}
+            />
+            <select
+              value={amPM}
+              onChange={handleAMPMChange}
+              className="bg-background rounded-md border border-input px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <Label htmlFor="time-to" className="px-1 ">
+
+        {/* Durée */}
+        <div className="flex flex-col gap-3 md:w-[150px]">
+          <Label htmlFor="time-to" className="px-1">
             Duration
           </Label>
-
-          <div className="flex gap-2 justify-center items-center">
+          <div className="flex gap-2 items-center">
             <Input
               type="number"
               step="1"
-              className=" w-20 bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              className="w-20 bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
               value={duration}
               onChange={handleDuration}
               min={1}
@@ -241,6 +249,7 @@ const WeeklyEventForm = ({
       </div>
     </>
   );
+
 };
 
 export default WeeklyEventForm;

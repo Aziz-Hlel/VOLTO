@@ -43,8 +43,11 @@ const LadiesNight = () => {
           <h1 className="text-2xl sm:text-3xl font-extrabold">💃 Ladies Night Dashboard</h1>
           <p className="text-sm sm:text-base mt-1 text-purple-100">Welcome back VIP</p>
         </div>
-        <div className="flex items-center gap-4">
-          <CountDown ladiesNight={ladiesNight} isFetched={ladiesNightDataIsFetched} />
+        <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-15">
+          <CountDown
+            ladiesNight={ladiesNight}
+            isFetched={ladiesNightDataIsFetched}
+          />
           <Button
             variant="default"
             onClick={() => setOpenUpdateDrinkQuota(true)}
@@ -60,6 +63,7 @@ const LadiesNight = () => {
             )}
           </Button>
         </div>
+
       </header>
 
       {/* Main Content */}

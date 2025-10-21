@@ -97,9 +97,12 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={() => { }}
                     variant="outline"
-                    className="w-full justify-center h-10 mt-5"
+                    className={cn(
+                      "w-full justify-center h-10 mt-5 font-semibold rounded-lg shadow-md transition-all",
+                      "bg-gradient-to-r from-red-400 to-red-600 text-white hover:from-red-500 hover:to-red-700",
+                    )}
                   >
                     <span className={cn(isOpen === false ? "" : "mr-4")}>
                       <LogOut size={18} />
@@ -113,6 +116,7 @@ export function Menu({ isOpen }: MenuProps) {
                       Sign out
                     </p>
                   </Button>
+
                 </TooltipTrigger>
                 {isOpen === false && <TooltipContent side="right">Sign out</TooltipContent>}
               </Tooltip>
