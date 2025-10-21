@@ -10,6 +10,7 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { join } from 'path';
 import ENV from 'src/config/env';
 import { CreateReservationDto } from './dto/create-reservation.dto';
+import { CreateContactDto } from './dto/create-contact.dto';
 
 class ExceptionOptions {
   throwable: boolean = true;
@@ -19,16 +20,15 @@ class IsendEmail {
   email: string;
   subject: string;
   content: string;
-  ExceptionOptions?: ExceptionOptions;
+  ExceptionOptions: ExceptionOptions;
 }
 
 abstract class AbsctractServiceResponse {
   abstract success: boolean;
 }
 
-class SuccessResponse<T> extends AbsctractServiceResponse {
+class SuccessResponse extends AbsctractServiceResponse {
   success: true;
-  data: T;
 }
 
 class ErrorResponse extends AbsctractServiceResponse {
@@ -74,8 +74,8 @@ export class EmailService {
     payload: T,
   ): Promise<
     T['ExceptionOptions'] extends { throwable: true }
-      ? SuccessResponse<undefined> | ErrorResponse
-      : SuccessResponse<undefined> | ErrorResponse
+      ? SuccessResponse | ErrorResponse
+      : SuccessResponse | ErrorResponse
   > {
     try {
       const info = await this.transporter.sendMail({
@@ -86,7 +86,6 @@ export class EmailService {
       });
       return {
         success: true,
-        data: undefined,
       };
     } catch (e) {
       this.logger.error(e);
@@ -157,9 +156,6 @@ export class EmailService {
       month: 'long', // October
       day: 'numeric', // 1
       year: 'numeric', // 2025
-      // hour: "numeric",
-      // minute: "numeric",
-      // hour12: true, // 12-hour clock with AM/PM
     }).format(payload.date);
 
     const content = `Client Info :\n
@@ -179,6 +175,26 @@ export class EmailService {
       subject,
       content,
       ExceptionOptions: { throwable: true },
+    });
+
+    return response;
+  }
+
+
+  async sendContactMessageEmailToAdmin(payload:CreateContactDto){
+    const content = `A Client has sent a contact message :\n
+    Name : ${payload.name}\n
+    Email : ${payload.email}\n
+    Subject : ${payload.subject}\n
+    Message : ${payload.message}\n
+    `;
+    const subject = `New Contact Message: ${payload.subject}`;
+
+    const response = await this.sendEmail({
+      email: this.EMAIL_ADDRESSES.support,
+      subject,
+      content,
+      ExceptionOptions: { throwable: false },
     });
 
     return response;

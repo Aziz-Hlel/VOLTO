@@ -48,15 +48,17 @@ const Events = () => {
   const events = data || [];
 
   const weeklyEventsData = events.filter((event) => event.type === "WEEKLY");
-  
+
   const upcommingEventsData = events.filter(
-    (event) => event.type === "SPECIAL" && event.startDate && (new Date(event.startDate) > new Date()),
+    (event) =>
+      event.type === "SPECIAL" && event.startDate && new Date(event.startDate) > new Date(),
   );
   const previousEventsData = events.filter(
-    (event) => event.type === "SPECIAL" && event.startDate && (new Date(event.startDate) < new Date()),
+    (event) =>
+      event.type === "SPECIAL" && event.startDate && new Date(event.startDate) < new Date(),
   );
 
-  const weeklyAndUpcommingEventsData = [ ...upcommingEventsData,...weeklyEventsData];
+  const weeklyAndUpcommingEventsData = [...upcommingEventsData, ...weeklyEventsData];
 
   const weeklyAndUpcommingEventsDataComponents: ICard[] = weeklyAndUpcommingEventsData.map(
     (event, index) => ({
@@ -120,7 +122,7 @@ const Events = () => {
 
   return (
     <>
-      <div className="relative">
+      <div className="relative min-h-screen">
         {/* Background Overlay Noir & Or */}
         <div className="absolute inset-0 overflow-hidden -z-10 ">
           {/* Dégradé principal noir & or */}

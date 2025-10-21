@@ -43,7 +43,7 @@ const OpeningHours = () => {
             </div>
 
             <Link
-              to="/contact"
+              to="/reservation"
               className="mt-8 inline-block w-fit bg-[#C19D60] text-white uppercase tracking-wide text-sm md:text-base py-3 px-8 rounded-lg shadow-lg hover:bg-[#b98f50] transition-colors duration-300"
             >
               Make A Reservation

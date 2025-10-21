@@ -63,10 +63,9 @@ const ReservationForm = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationKey: ["create-reservation"],
-    mutationFn: async (data: IForm) =>
-      await axiosInstance.post("/reservation", data),
+    mutationFn: async (data: IForm) => await axiosInstance.post("/reservation", data),
     onSuccess: () => {
       toast("Reservation created successfully!", {
         description:
@@ -284,14 +283,14 @@ const ReservationForm = () => {
             <div className="flex flex-col sm:flex-row justify-between gap-4 mt-4">
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={form.formState.isSubmitting}
                 className="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-yellow-400 hover:opacity-90 text-gray-900 font-semibold py-2 px-5 rounded-lg shadow transition-all"
               >
-                {isPending ? <Spinner /> : <span>Send ➤</span>}
+                {form.formState.isSubmitting ? <Spinner /> : <span>Send ➤</span>}
               </button>
               <button
                 type="reset"
-                onClick={()=>form.reset()}
+                onClick={() => form.reset()}
                 className="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-5 rounded-lg shadow transition-all"
               >
                 Reset
