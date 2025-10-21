@@ -1,6 +1,6 @@
 
 @baseUrl = http://localhost:3000/api
-# @baseUrl = https://voltobahrain.online/api
+@baseUrl = https://voltobahrain.online/api
 
 
 ### Login request
@@ -23,6 +23,13 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 
 
+### Is Ladies Night Active
+# @name isLadiesNightActive
+GET     {{baseUrl}}/ladies-night
+Content-Type: application/json
+
+
+
 ### Update Ladies Night
 # @name updateLadiesNightEvent
 PUT     {{baseUrl}}/events/5e3b7f1c-2d4a-4f6e-9a8b-1c2d3e4f5a6b
@@ -34,8 +41,8 @@ Authorization: Bearer {{login.response.body.accessToken}}
   "name": "Ladies Night",
   "description": "Ladies Night",
   "type": "WEEKLY",
-  "cronStartDate": "51 13 * * 1",
-  "cronEndDate": "55 13 * * 1",  
+  "cronStartDate": "34 15 * * 1",
+  "cronEndDate": "36 15 * * 1",  
   "thumbnail": {
     "s3Key": "events/ladies-night-wallpaper.jpg",
     "url": ""
@@ -134,3 +141,5 @@ Authorization: Bearer {{login.response.body.accessToken}}
 # @name getListOfEvents
 GET     {{baseUrl}}/events/closest-event
 Content-Type: application/json
+
+

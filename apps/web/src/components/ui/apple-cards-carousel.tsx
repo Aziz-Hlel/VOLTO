@@ -9,6 +9,7 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 import { AspectRatio } from "./aspect-ratio";
 import type { ICard } from "../Events/Events";
 import EventCategory from "@/types/EventCategory";
+import { Link } from "react-router-dom";
 
 interface CarouselProps {
   events: JSX.Element[];
@@ -349,14 +350,18 @@ export const Card = ({
 
                     {isUpcommingEvent && (
                       <div className=" flex w-full justify-end gap-4 ">
-                        <button className="relative inline-flex w-36 h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+                        <Link
+                          to="/reservation"
+                          className="relative inline-flex w-36 h-10 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                        >
                           <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
                           <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-pink-600 via-pink-700 to-pink-600 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
                             Make Reservation
                           </span>
-                        </button>
+                        </Link>
 
-                        <button
+                        <Link
+                          to="/reservation"
                           className="w-36 h-10 rounded-full bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#aa771c] 
                                     text-[14px] text-[#796703] font-semibold flex items-center justify-center gap-2 
                                     shadow-md bg-[length:200%_200%] transition-all duration-[3000ms] ease-in-out 
@@ -369,7 +374,7 @@ export const Card = ({
                             />
                           </svg>
                           Book VIP Table
-                        </button>
+                        </Link>
                       </div>
                     )}
                   </>

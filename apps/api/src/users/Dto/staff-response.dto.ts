@@ -11,7 +11,6 @@ export class StaffResponseDto {
 
   role: Role;
 
-
   phoneNumber?: string;
 
   gender: Gender;

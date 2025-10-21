@@ -127,6 +127,8 @@ export class LadiesNightDataMqService implements OnModuleInit {
   }
 
   async deletePreviousJob(jobId: string) {
+    this.logger.debug(`📥 Preparing to delete previous Ladies Night job data collecting`);
+
     const allJobSchedulers = await this.eventQueue.getJobSchedulers();
 
     const targetScheduler = allJobSchedulers.find((scheduler) => scheduler.name === jobId);
@@ -140,9 +142,11 @@ export class LadiesNightDataMqService implements OnModuleInit {
   }
 
   async addJob(jobData: WeeklyEventJobData) {
-    this.logger.debug(`📥 Adding Ladies Night Job To excute every cron start Date`);
+    this.logger.debug(
+      `📥 Preparing to add Ladies Night data collecting Job To excute every cron start Date`,
+    );
 
-    this.deletePreviousJob(jobData.eventId);
+    await this.deletePreviousJob(jobData.eventId);
 
     await this.eventQueue.add(jobData.eventId, jobData, {
       jobId: jobData.eventId,

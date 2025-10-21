@@ -34,7 +34,7 @@ const formSchema = z
   .object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
-    email: z.string().email(),
+    email: z.email(),
     role: z.enum(Object.values(Roles)),
     phoneNumber: z.string().optional(),
     gender: z.enum(Object.values(Gender)),

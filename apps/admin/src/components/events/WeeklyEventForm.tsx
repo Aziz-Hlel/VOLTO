@@ -92,7 +92,6 @@ const WeeklyEventForm = ({
   };
 
   const initialDay = cronStartDate && cronEndDate ? dayOfWeekFromCron(cronStartDate) : 0;
-  console.log("initialDay : ", initialDay);
 
   const {
     startingHour,
@@ -111,7 +110,6 @@ const WeeklyEventForm = ({
   const [open, setOpen] = useState(false);
 
   const [day, setDay] = useState<number>(initialDay);
-  console.log("l day bidou fil state : ", day);
 
   const createCronExpression = (day: number, hour: number, ampm: "AM" | "PM") => {
     const adjustedHour = ampm === "PM" ? (hour % 12) + 12 : hour % 12;
@@ -170,9 +168,7 @@ const WeeklyEventForm = ({
                   aria-expanded={open}
                   className="w-[200px] justify-between"
                 >
-                  {day
-                    ? daysOfTheWeek.find((dayOfWeek) => dayOfWeek.value === day)?.label
-                    : "Select Day of the week... "}
+                  { daysOfTheWeek.find((dayOfWeek) => dayOfWeek.value === day)?.label}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>

@@ -1,12 +1,119 @@
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import type { IEventCategory } from "@/types/EventCategory";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+export type EventType = "WEEKLY" | "SPECIAL";
+
+export const EventType = {
+  WEEKLY: "WEEKLY",
+  SPECIAL: "SPECIAL",
+};
+
+type Event = {
+  id: string;
+  name: string;
+  description: string;
+  type: EventType;
+  startDate: Date | null;
+  endDate: Date | null;
+  cronStartDate: string | null;
+  cronEndDate: string | null;
+  isLadiesNight: boolean;
+
+  createdAt: Date;
+  updatedAt: Date;
+
+  thumbnail: {
+    s3Key: string;
+    url: string;
+  };
+  video: {
+    s3Key: string;
+    url: string;
+  };
+};
 
 const Events = () => {
-  const upcommingEvents = upcommingEventsData.map((event, index) => (
+  const fetchEvents = async () => {
+    const response = await axios.get<Event[]>("https://voltobahrain.online/api/events/");
+    return response.data;
+  };
+  const { data } = useQuery({
+    queryKey: ["events"],
+    queryFn: fetchEvents,
+    enabled: true,
+  });
+
+  const events = data || [];
+
+  const upcommingEventsData = events.filter(
+    (event) => event.type === "SPECIAL" && event.startDate && event.startDate > new Date(),
+  );
+  const weeklyEventsData = events.filter((event) => event.type === "WEEKLY");
+  const previousEventsData = events.filter(
+    (event) => event.type === "SPECIAL" && event.startDate && event.startDate < new Date(),
+  );
+
+  const weeklyAndUpcommingEventsData = [...weeklyEventsData, ...upcommingEventsData];
+
+  const weeklyAndUpcommingEventsDataComponents: ICard[] = weeklyAndUpcommingEventsData.map(
+    (event, index) => ({
+      id: event.id,
+      category: event.type,
+      title: event.name,
+      media: {
+        img: {
+          url: event.thumbnail.url,
+          key: event.thumbnail.s3Key,
+        },
+        video: {
+          url: event.video.url,
+          key: event.video.s3Key,
+        },
+      },
+      startDate: event.startDate || new Date(),
+      endDate: event.endDate || new Date(),
+      isLadiesNight: event.isLadiesNight,
+      content: (
+        <DummyContent
+          startDate={event.startDate || new Date()}
+          endDate={event.endDate || new Date()}
+        />
+      ),
+    }),
+  );
+
+  const previousEventsDataComponents: ICard[] = previousEventsData.map((event, index) => ({
+    id: event.id,
+    category: event.type,
+    title: event.name,
+    media: {
+      img: {
+        url: event.thumbnail.url,
+        key: event.thumbnail.s3Key,
+      },
+      video: {
+        url: event.video.url,
+        key: event.video.s3Key,
+      },
+    },
+    startDate: event.startDate || new Date(),
+    endDate: event.endDate || new Date(),
+    isLadiesNight: event.isLadiesNight,
+    content: (
+      <DummyContent
+        startDate={event.startDate || new Date()}
+        endDate={event.endDate || new Date()}
+      />
+    ),
+  }));
+
+  const upcommingEvents = weeklyAndUpcommingEventsDataComponents.map((event, index) => (
     <Card key={event.id} event={event} index={index} layout={true} />
   ));
 
-  const previousEvents = previousEventsData.map((event, index) => (
+  const previousEvents = previousEventsDataComponents.map((event, index) => (
     <Card key={event.id} event={event} index={index} layout={true} />
   ));
 
@@ -14,9 +121,9 @@ const Events = () => {
     <>
       <div className="relative">
         {/* Background Overlay Noir & Or */}
-        <div className="absolute inset-0 overflow-hidden -z-10">
+        <div className="absolute inset-0 overflow-hidden -z-10 ">
           {/* Dégradé principal noir & or */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-[#0a0a0a] to-black opacity-95 backdrop-blur-[3px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b  from-black via-[#0a0a0a] to-black opacity-95 backdrop-blur-[3px]"></div>
 
           {/* Halo doré animé - en haut à gauche */}
           <div className="absolute -top-32 -left-32 w-[700px] h-[700px] bg-[#C19D60]/15 blur-[150px] rounded-full animate-pulseGold"></div>
@@ -28,7 +135,7 @@ const Events = () => {
           <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-gradient-to-r from-[#C19D60]/10 via-[#b8914f]/20 to-transparent blur-[100px] rounded-full mix-blend-screen animate-floatSlow"></div>
 
           {/* Particules scintillantes */}
-          <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden ">
             {Array.from({ length: 25 }).map((_, i) => (
               <div
                 key={i}
@@ -66,13 +173,15 @@ const Events = () => {
             Previous Events
           </h2>
 
-          <Carousel events={previousEvents} />
+          {previousEvents.length > 0 ? (
+            <Carousel events={previousEvents} />
+          ) : (
+            <p className="max-w-7xl text-center pl-4 mx-auto text-white font-sans py-10">
+              No previous events available at the moment. Please check back later!
+            </p>
+          )}
         </div>
       </div>
-
-      {/* <div className='2xl:min-w-7xl 2xl:max-w-9/12 xl:max-w-6xl lg:max-w-5xl md:max-w-2xl max-w-screen px-4  mx-auto '>
-                <AppleCardsCarouselDemo />
-            </div> */}
     </>
   );
 };
@@ -141,269 +250,3 @@ const DummyContent = ({ startDate, endDate }: { startDate: Date; endDate: Date }
     </>
   );
 };
-
-type IEvent = {
-  id: string;
-  type: "weekly" | "special";
-  name: string;
-  media: {
-    img: {
-      key: string;
-      url: string;
-    };
-    video: {
-      key: string;
-      url: string;
-    };
-  };
-  description: string;
-  startDate: Date;
-  endDate: Date;
-  isLadiesNight: boolean;
-};
-
-const data2: IEvent[] = [
-  {
-    id: "1",
-    type: "weekly",
-    name: "Friday Brunch",
-    media: {
-      img: {
-        key: "/img/events/brunch-wallpaper.jpg",
-        url: "/img/events/brunch-wallpaper.jpg",
-      },
-      video: {
-        key: "/videos/friday-brunch.mp4",
-        url: "/videos/friday-brunch.mp4",
-      },
-    },
-
-    description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                        Aliquid praesentium expedita fuga nostrum. Unde vero saepe fugiat nemo,
-                        architecto, accusantium repellendus rem asperiores, est dolorum alias
-                        aliquid eos exercitationem tenetur!
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                        Aliquid praesentium expedita fuga nostrum. Unde vero saepe fugiat nemo,
-                        architecto, accusantium repellendus rem asperiores, est dolorum alias
-                        aliquid eos exercitationem tenetur!,`,
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-01T15:00:00Z"),
-    isLadiesNight: false,
-  },
-  {
-    id: "2",
-    type: "special",
-    name: "New Year's Party",
-    media: {
-      img: {
-        key: "/img/events/new-year-event.jpg",
-        url: "/img/events/new-year-event.jpg",
-      },
-      video: {
-        key: "/videos/new-year-party.mp4",
-        url: "/videos/new-year-party.mp4",
-      },
-    },
-    description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                        Aliquid praesentium expedita fuga nostrum. Unde vero saepe fugiat nemo,
-                        architecto, accusantium repellendus rem asperiores, est dolorum alias
-                        aliquid eos exercitationem tenetur!`,
-    isLadiesNight: false,
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-10T15:00:00Z"),
-  },
-  {
-    id: "3",
-    type: "weekly",
-    name: "Ladies Night",
-    media: {
-      img: {
-        key: "/img/events/ladies-night-wallpaper.jpg",
-        url: "/img/events/ladies-night-wallpaper.jpg",
-      },
-      video: {
-        key: "/videos/ladies-night.mp4",
-        url: "/videos/ladies-night.mp4",
-      },
-    },
-    description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                        Aliquid praesentium expedita fuga nostrum. Unde vero saepe fugiat nemo,
-                        architecto, accusantium repellendus rem asperiores, est dolorum alias
-                        aliquid eos exercitationem tenetur!`,
-    isLadiesNight: true,
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-01T15:00:00Z"),
-  },
-  {
-    id: "4",
-    type: "weekly",
-    name: "Hookah's Night",
-    media: {
-      img: {
-        key: "/img/events/hookah-night.jpg",
-        url: "/img/events/hookah-night.jpg",
-      },
-      video: {
-        key: "/videos/hookahs-night.mp4",
-        url: "/videos/hookahs-night.mp4",
-      },
-    },
-    description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                        Aliquid praesentium expedita fuga nostrum. Unde vero saepe fugiat nemo,
-                        architecto, accusantium repellendus rem asperiores, est dolorum alias
-                        aliquid eos exercitationem tenetur!`,
-    isLadiesNight: false,
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-01T15:00:00Z"),
-  },
-];
-
-const upcommingEventsData: ICard[] = [
-  {
-    id: "1",
-    category: "WEEKLY",
-    title: "Friday Brunch",
-    media: {
-      img: {
-        url: "/img/events/brunch-wallpaper.jpg",
-        key: "/img/events/brunch-wallpaper.jpg",
-      },
-      video: {
-        url: "/videos/friday-brunch.mp4",
-        key: "/videos/friday-brunch.mp4",
-      },
-    },
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-01T15:00:00Z"),
-    isLadiesNight: false,
-    content: (
-      <DummyContent
-        startDate={new Date("2023-11-01T10:00:00Z")}
-        endDate={new Date("2023-11-01T15:00:00Z")}
-      />
-    ),
-  },
-  {
-    id: "2",
-    category: "SPECIAL",
-    title: "New Year's Party",
-    media: {
-      img: {
-        url: "/img/events/new-year-event.jpg",
-        key: "/img/events/new-year-event.jpg",
-      },
-      video: {
-        url: "/videos/new-year-party.mp4",
-        key: "/videos/new-year-party.mp4",
-      },
-    },
-    isLadiesNight: false,
-    startDate: new Date("2025-11-15T10:00:00Z"),
-    endDate: new Date("2025-11-15T15:00:00Z"),
-    content: (
-      <DummyContent
-        startDate={new Date("2023-11-15T10:00:00Z")}
-        endDate={new Date("2023-11-15T15:00:00Z")}
-      />
-    ),
-  },
-  {
-    id: "3",
-    category: "WEEKLY",
-    title: "Ladies Night",
-    media: {
-      img: {
-        url: "/img/events/ladies-night-wallpaper.jpg",
-        key: "/img/events/ladies-night-wallpaper.jpg",
-      },
-      video: {
-        url: "/videos/ladies-night.mp4",
-        key: "/videos/ladies-night.mp4",
-      },
-    },
-    isLadiesNight: true,
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-01T15:00:00Z"),
-    content: (
-      <DummyContent
-        startDate={new Date("2023-11-01T10:00:00Z")}
-        endDate={new Date("2023-11-01T15:00:00Z")}
-      />
-    ),
-  },
-  {
-    id: "4",
-    category: "WEEKLY",
-    title: "Hookah's Night",
-    media: {
-      img: {
-        url: "/img/events/hookah-night.jpg",
-        key: "/img/events/hookah-night.jpg",
-      },
-      video: {
-        url: "/videos/hookahs-night.mp4",
-        key: "/videos/hookahs-night.mp4",
-      },
-    },
-    isLadiesNight: false,
-    startDate: new Date("2023-11-01T10:00:00Z"),
-    endDate: new Date("2023-11-01T15:00:00Z"),
-    content: (
-      <DummyContent
-        startDate={new Date("2023-11-01T10:00:00Z")}
-        endDate={new Date("2023-11-01T15:00:00Z")}
-      />
-    ),
-  },
-];
-
-const previousEventsData: ICard[] = [
-  {
-    id: "10",
-    category: "SPECIAL",
-    title: "Halloween",
-    media: {
-      img: {
-        url: "/img/events/halloween-event.jpg",
-        key: "/img/events/halloween-event.jpg",
-      },
-      video: {
-        url: "/videos/halloween-bash.mp4",
-        key: "/videos/halloween-bash.mp4",
-      },
-    },
-    isLadiesNight: false,
-    startDate: new Date("2023-10-31T18:00:00Z"),
-    endDate: new Date("2023-10-31T18:59:59Z"),
-    content: (
-      <DummyContent
-        startDate={new Date("2023-10-31T18:00:00Z")}
-        endDate={new Date("2023-10-31T18:59:59Z")}
-      />
-    ),
-  },
-  {
-    id: "12",
-    category: "SPECIAL",
-    title: "EID",
-    media: {
-      img: {
-        url: "/img/events/eid-event.jpg",
-        key: "/img/events/eid-event.jpg",
-      },
-      video: {
-        url: "/videos/eid.mp4",
-        key: "/videos/eid.mp4",
-      },
-    },
-    isLadiesNight: false,
-    startDate: new Date("2023-11-01T18:00:00Z"),
-    endDate: new Date("2023-11-01T23:59:59Z"),
-    content: (
-      <DummyContent
-        startDate={new Date("2023-11-01T18:00:00Z")}
-        endDate={new Date("2023-11-01T23:59:59Z")}
-      />
-    ),
-  },
-];

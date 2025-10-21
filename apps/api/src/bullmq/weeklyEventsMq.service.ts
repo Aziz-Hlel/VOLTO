@@ -150,6 +150,8 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
   }
 
   async removeWeeklyEventNotification(weeklyEventId: string) {
+    this.logger.debug(`Preparing to delete previous weekly event notification`);
+
     const firstDelayJobId = this.getJobId(weeklyEventId, 'firstDelay');
 
     const allJobSchedulers = await this.eventQueue.getJobSchedulers();
@@ -159,14 +161,16 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     );
 
     if (targetScheduler) {
-      this.logger.debug('Deleted previous first delay job');
+      this.logger.debug('Deleted previous weekly delay job');
       await this.eventQueue.removeJobScheduler(targetScheduler.key);
     } else {
-      this.logger.debug('No previous first delay job to delete');
+      this.logger.debug('No previous weekly delay job to delete');
     }
   }
 
   async addWeeklyEventNotification(data: IAddWeeklyEvent) {
+    this.logger.debug(`Preparing to add weekly event notification`, data);
+
     await this.removeWeeklyEventNotification(data.eventId);
 
     const firstDelayjobId = this.getJobId(data.eventId, 'firstDelay');

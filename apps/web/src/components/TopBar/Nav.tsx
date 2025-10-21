@@ -19,6 +19,7 @@ const NavBar619 = () => {
       links: [
         { label: "Home", href: "/", ariaLabel: "Home", type: "Link" },
         { label: "About", href: "/about", ariaLabel: "About", type: "Link" },
+        { label: "Contact Us", href: "/contact", ariaLabel: "Contact Us", type: "Link" },
       ],
     },
     {

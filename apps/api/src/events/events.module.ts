@@ -8,7 +8,7 @@ import { BullmqModule } from 'src/bullmq/bullmq.module';
 import { LadiesNightModule } from 'src/ladies-night/ladies-night.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, MediaModule, BullmqModule,LadiesNightModule],
+  imports: [PrismaModule, AuthModule, MediaModule, BullmqModule, LadiesNightModule],
   controllers: [EventsController],
   providers: [EventsService],
 })

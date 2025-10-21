@@ -63,6 +63,7 @@ Content-Type: application/json
 {
     "email": "testReservation@gamil.com",
     "username": "client intreset in a reservation",
+    "phone": "+1234567890",
     "nbrGuests":{
         "Men":1,
         "Women":3

@@ -21,7 +21,7 @@ export class EventsService {
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly specialEventsMq: SpecialEventMq,
     private readonly weeklyEventsMq: WeeklyEventMq,
-    private readonly ladiesNightService:LadiesNightService,
+    private readonly ladiesNightService: LadiesNightService,
   ) {}
 
   async create(createEventDto: CreateEventDto) {
@@ -151,11 +151,13 @@ export class EventsService {
 
     const currentDate = new Date();
 
-    if(existingEvent.isLadiesNight && await this.ladiesNightService.isLadiesNightActive()){
-      throw new BadRequestException('Cannot Update Ladies Night Event while active');
-    }
+    //! just chnage it nik omk
 
-    if(existingEvent.isLadiesNight && updateEventDto.type === 'SPECIAL'){
+    // if (existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
+    //   throw new BadRequestException('Cannot Update Ladies Night Event while active');
+    // }
+
+    if (existingEvent.isLadiesNight && updateEventDto.type === 'SPECIAL') {
       throw new BadRequestException('Ladies Night Event must be of type WEEKLY');
     }
 

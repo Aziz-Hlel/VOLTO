@@ -108,7 +108,7 @@ const Footer = () => {
             Subscribe to our newsletter and never miss our latest updates.
           </p>
 
-          <Link to="reservation">
+          <Link to="/reservation">
             <button className="cursor-pointer bg-gradient-to-r from-[#c5a100] via-[#e0b84a] to-[#f5d67b] hover:from-[#f5d67b] hover:to-[#c5a100] text-black font-semibold px-5 py-2 rounded-md w-full sm:w-auto transition-all shadow-md hover:shadow-lg">
               Make A Reservation
             </button>
