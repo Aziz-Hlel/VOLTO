@@ -73,7 +73,6 @@ export default function SingleEventDate({
     setValue(startDateFieldName, newStartDate.toUTCString());
     setValue(endDateFieldName, newEndDate.toUTCString());
 
-    // console.log("newStartDate : ", newStartDate, " newEndDate : ", newEndDate);
   };
 
   useEffect(() => {

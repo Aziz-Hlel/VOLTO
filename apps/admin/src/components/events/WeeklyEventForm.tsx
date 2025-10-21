@@ -40,10 +40,7 @@ const WeeklyEventForm = ({
     if (!cron) return 0;
     try {
       const interval = parser.parseExpression(cron);
-      console.log("t5l tryyyyyy, interval : ", cron);
       const next = interval.next().toDate();
-      console.log("next date : ", next);
-      console.log("day ::::: ", next.getDay());
       return next.getDay();
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -78,12 +75,10 @@ const WeeklyEventForm = ({
   const getInitialDurationFromCron = (cronStartDate: string, cronEndDate: string): number => {
     if (!cronStartDate || !cronEndDate) return 8;
     try {
-      console.log("getInitialDurationFromCron called with: ", { cronStartDate, cronEndDate });
       const startInterval = parser.parseExpression(cronStartDate);
       const endInterval = parser.parseExpression(cronEndDate);
       const start = startInterval.next().toDate();
       const end = endInterval.next().toDate();
-      console.log("start : ", start, " end : ", end);
       return (end.getTime() - start.getTime()) / _1hour;
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -132,14 +127,12 @@ const WeeklyEventForm = ({
       setValue(startDateFieldName, newCronStartDateExpression, { shouldDirty: true });
       setValue(endDateFieldName, newCronEndDateExpression, { shouldDirty: true });
     } catch (err) {
-      console.log("Something went wrong with updating cron expressions");
       setValue(startDateFieldName, "0 8 * * 0", { shouldDirty: true });
       setValue(endDateFieldName, "0 10 * * 0", { shouldDirty: true });
     }
   };
 
   useEffect(() => {
-    console.log("cronStartDate : ", cronStartDate, " cronEndDate : ", cronEndDate);
   }, []);
 
   const handleDayChange = (day: string) => {

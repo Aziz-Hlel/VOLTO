@@ -43,8 +43,6 @@ const VideoUpload = ({
   const { getFieldState, getValues } = useFormContext();
 
   const fieldErrorMessage = getFieldState(videoKeyFieldName).error?.message;
-  console.log("fieldErrorMessage : ", fieldErrorMessage);
-  console.log("videoKeyFieldName : ", getValues(videoKeyFieldName));
 
   const {
     currentDisplayed,

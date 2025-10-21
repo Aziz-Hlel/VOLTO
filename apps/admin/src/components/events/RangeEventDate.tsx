@@ -66,7 +66,6 @@ export default function RangeEventDate({
     setValue(startDateFieldName, newStartDate);
     setValue(endDateFieldName, newEndDate);
 
-    console.log("newStartDate : ", newStartDate, " newEndDate : ", newEndDate);
   };
 
   useEffect(() => {

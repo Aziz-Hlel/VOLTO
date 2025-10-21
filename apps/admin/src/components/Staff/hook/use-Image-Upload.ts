@@ -55,14 +55,12 @@ const useImageUpload = ({
   const handleCancel = () => setFile(null);
 
   const rollBackToInitImage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    console.log("initImgKey : ", currentImgKey, " initImgUrl : ", currentImgUrl);
     e.preventDefault();
     setFile(null);
     setImageUrl(initImg);
     setImageKey(currentImgKey);
   };
 
-  console.log("currentDisplayed : ", currentDisplayed);
 
   const Crop_OptimizeImage = async () => {
     if (!croppedAreaPixels || !file) {
@@ -85,7 +83,6 @@ const useImageUpload = ({
       setProgress(10);
       setFile(null);
 
-      console.log("ouslililili");
       const s3Key = await uploadImageToS3_SIMULATOR({
         uploadedImg: optimizedImg.blob,
         name: fileName,

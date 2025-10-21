@@ -31,7 +31,7 @@ const calculateTimeRemaining = (targetDate: Date): TimeRemaining => {
 export const useCountDown = ({ ladiesNight }: CountDownProps) => {
   const getLadiesNightCountDown = useMemo(() => {
     if (!ladiesNight) return null;
-    console.log(ladiesNight);
+
     const currentDate = new Date();
 
     const startInterval = cronParser.parseExpression(ladiesNight.cronStartDate!);

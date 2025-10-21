@@ -9,7 +9,6 @@ const GalleryTags: FC<{
   onSelect: (tag: IGalleryTag) => void;
   selectedTag: IGalleryTag;
 }> = ({ tag, onSelect, selectedTag }) => {
-  console.log("selected tag ", selectedTag, "tag : ", tag);
   return (
     <Button
       className={cn(

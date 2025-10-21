@@ -44,7 +44,6 @@ const ImageUpload = ({
   const { getFieldState } = useFormContext();
 
   const fieldErrorMessage = getFieldState(imgKeyFieldName).error?.message;
-  console.log("imgUrlFieldName : ", imgUrlFieldName);
   const {
     currentDisplayed,
     file,

@@ -2,7 +2,6 @@ import axiosInstance from "@/api/axiosInstance";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import type { IEventCategory } from "@/types/EventCategory";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 export type EventType = "WEEKLY" | "SPECIAL";
 
@@ -48,15 +47,16 @@ const Events = () => {
 
   const events = data || [];
 
-  const upcommingEventsData = events.filter(
-    (event) => event.type === "SPECIAL" && event.startDate && event.startDate > new Date(),
-  );
   const weeklyEventsData = events.filter((event) => event.type === "WEEKLY");
+  
+  const upcommingEventsData = events.filter(
+    (event) => event.type === "SPECIAL" && event.startDate && (new Date(event.startDate) > new Date()),
+  );
   const previousEventsData = events.filter(
-    (event) => event.type === "SPECIAL" && event.startDate && event.startDate < new Date(),
+    (event) => event.type === "SPECIAL" && event.startDate && (new Date(event.startDate) < new Date()),
   );
 
-  const weeklyAndUpcommingEventsData = [...weeklyEventsData, ...upcommingEventsData];
+  const weeklyAndUpcommingEventsData = [ ...upcommingEventsData,...weeklyEventsData];
 
   const weeklyAndUpcommingEventsDataComponents: ICard[] = weeklyAndUpcommingEventsData.map(
     (event, index) => ({
@@ -73,13 +73,13 @@ const Events = () => {
           key: event.video.s3Key,
         },
       },
-      startDate: event.startDate || new Date(),
-      endDate: event.endDate || new Date(),
+      startDate: new Date(event.startDate) || new Date(),
+      endDate: new Date(event.endDate) || new Date(),
       isLadiesNight: event.isLadiesNight,
       content: (
         <DummyContent
-          startDate={event.startDate || new Date()}
-          endDate={event.endDate || new Date()}
+          startDate={new Date(event.startDate) || new Date()}
+          endDate={new Date(event.endDate) || new Date()}
         />
       ),
     }),

@@ -54,7 +54,6 @@ export class AuthController {
   @HttpCode(200)
   @Post('refresh')
   async refresh(@Body() payload: { refreshToken: string }) {
-    // console.log('Refresh token received:', refreshToken);
     if (!payload.refreshToken && typeof payload.refreshToken !== 'string')
       throw new BadRequestException('No refresh token provided');
     const response = await this.authService.refresh(payload.refreshToken);
@@ -75,7 +74,6 @@ export class AuthController {
   @HttpCode(200)
   @Get('me')
   async me(@CurrentUser() user: AuthUser) {
-    // console.log(req);
     const userDto = this.authService.me(user);
 
     return userDto;

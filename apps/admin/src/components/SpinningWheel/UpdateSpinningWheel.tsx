@@ -85,10 +85,8 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
       toast.error(error?.error ?? "Error updating Spinig Wheel");
     }
 
-    console.log(data);
   };
 
-  console.log("error:", form.formState.errors);
 
   const loading = false;
   return (

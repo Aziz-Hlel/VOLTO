@@ -9,7 +9,6 @@ const useCronTimeHook = ({
   initAmPM: "AM" | "PM";
   initDuration: number;
 }) => {
-  console.log(" useTimeHook called with: ", { initStartingHour, initAmPM, initDuration });
   const [startingHour, setStartingHour] = useState<number>(initStartingHour ?? 8);
   const [amPM, setAMPM] = useState<"AM" | "PM">(initAmPM ?? "PM");
   const [duration, setDuration] = useState<number>(initDuration ?? 8);

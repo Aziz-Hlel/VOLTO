@@ -30,7 +30,6 @@ export const getSignedUrlUpload = async ({
   });
 
   if (!response.success) {
-    console.log(response.error);
     throw new Error();
   }
 
@@ -53,8 +52,6 @@ export const uploadImageToS3_SIMULATOR = async ({
   const { type: mimeType, size } = uploadedImg;
 
   const [_, subtype] = mimeType.split("/");
-  // console.log(type);    // "image"
-  console.log(subtype); // "webp"
 
   const { url, s3Key } = await getSignedUrlUpload({
     fileName: name,
@@ -65,7 +62,6 @@ export const uploadImageToS3_SIMULATOR = async ({
     purpose,
   });
 
-  console.log("aws url for the upload : ", url);
 
   // const response = await Http.put(url, uploadedImg);
 
@@ -89,7 +85,6 @@ export const uploadImageToS3_SIMULATOR = async ({
     // setUploading(false);
   }
 
-  // console.log("response", response?.data);
 
   return s3Key;
 };
