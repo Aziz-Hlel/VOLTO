@@ -57,7 +57,7 @@ services:
       ONE_SIGNAL_APP_SECRET: ${ONE_SIGNAL_APP_SECRET}
       ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
 
-    command: sh -c "sleep infinity"
+    command: sh -c "pnpm prisma migrate deploy && pnpm run seed:prod && node dist/main.js"
 
     depends_on:
       db:
