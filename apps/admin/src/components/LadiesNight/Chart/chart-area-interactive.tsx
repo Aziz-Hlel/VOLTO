@@ -46,7 +46,7 @@ export function ChartAreaInteractive() {
   const handlePeriodChange = (value: LadiesNightStatsPeriod) =>
     setPeriod(value as LadiesNightStatsPeriod);
 
-  const { data, isFetched, isLoading } = useQuery({
+  const { data, } = useQuery({
     queryKey: ["ladies-night", "period", period],
     queryFn: async () => await ladiesNightService.statsByPeriod({ period }),
     enabled: true,
@@ -96,10 +96,10 @@ export function ChartAreaInteractive() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 aspect-auto w-full">
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 aspect-auto w-full min-h-[250px]">
         {!chartData && <Spinner />}
         {chartData && (
-          <ChartContainer config={chartConfig} className="aspect-auto h-[250px]  w-full">
+          <ChartContainer config={chartConfig} className="aspect-auto  h-[250px]  w-full">
             <AreaChart data={filteredData}>
               <defs>
                 <linearGradient id="filltotalParticipants" x1="0" y1="0" x2="0" y2="1">

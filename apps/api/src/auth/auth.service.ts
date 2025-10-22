@@ -11,6 +11,7 @@ import { EntityType, MediaPurpose, User } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 import { UpdateUserDto } from 'src/users/Dto/update-user';
 import { MediaService } from 'src/media/media.service';
+import { ChangePasswordRequestDto } from 'src/users/Dto/change-password-request.dto';
 
 @Injectable()
 export class AuthService {
@@ -128,5 +129,9 @@ export class AuthService {
 
   async updateMe(userId: string, updateUserDto: UpdateUserDto) {
     return await this.usersService.updateUser(userId, updateUserDto);
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordRequestDto) {
+    return await this.usersService.changePassword(userId, dto);
   }
 }

@@ -98,7 +98,7 @@ export function ChartAreaInteractive() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 aspect-auto w-full">
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 aspect-auto w-full  min-h-[250px]">
         {!chartData && <Spinner />}
         {chartData && (
           <ChartContainer config={chartConfig} className="aspect-auto h-[250px]  w-full">

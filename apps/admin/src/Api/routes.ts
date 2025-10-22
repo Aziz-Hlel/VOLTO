@@ -46,6 +46,7 @@ const apiRoutes = {
 
   account: {
     updateAccount: () => "/auth/me" as const,
+    changePassword: () => "/auth/change-password" as const,
   },
 
   media: {

@@ -20,7 +20,8 @@ import { toast } from "sonner";
 import { PhoneInput } from "../ui/phone-input";
 
 const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  firstName: z.string().min(2, "First Name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last Name must be at least 2 characters"),
   email: z.email("Invalid email address"),
   subject: z.string().min(5, "Subject must be at least 5 characters"),
   phoneNumber: z
@@ -36,7 +37,7 @@ const ContactForm = () => {
   const form = useForm<formData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      name: "",
+      firstName: "",
       email: "",
       phoneNumber: "",
       subject: "",
@@ -92,14 +93,33 @@ const ContactForm = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             <FormField
               control={form.control}
-              name="name"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       type="text"
-                      name="name"
-                      placeholder="Name"
+                      name="firstName"
+                      placeholder="First Name"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white placeholder:text-gray-400 border border-gray-700 focus-visible:border-yellow-500 focus-visible:ring-1 focus-visible:ring-yellow-500 outline-none transition-all"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+     <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      name="lastName"
+                      placeholder="Last Name"
                       className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white placeholder:text-gray-400 border border-gray-700 focus-visible:border-yellow-500 focus-visible:ring-1 focus-visible:ring-yellow-500 outline-none transition-all"
                       {...field}
                     />

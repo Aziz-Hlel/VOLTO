@@ -8,30 +8,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Edit, Trash2, MoreHorizontal, Search } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { LadiesNightStatsResponse } from "@/types/ladiesNight/LadiesNightStatsResponse";
 import type { GetLadiesNightDataQueryDto } from "@/types/ladiesNight/GetLadiesNightDataQueryDto";
+import { Spinner } from "../ui/spinner";
 
 interface EventsDataTableProps {
-  data: LadiesNightStatsResponse[];
+  data?: LadiesNightStatsResponse[];
   count: number;
   query: GetLadiesNightDataQueryDto;
   setQuery: (query: GetLadiesNightDataQueryDto) => void;
 }
 
-export const EventsDataTable: React.FC<EventsDataTableProps> = ({
-  data,
-  count,
-  query,
-  setQuery,
-}) => {
+export const DataTable: React.FC<EventsDataTableProps> = ({ data, count, query, setQuery }) => {
   const getdisplayedDate = (event: LadiesNightStatsResponse) => {
     const date = new Date(event.startDate);
 
@@ -94,7 +82,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                   </TableRow>
                 ))}
 
-              {data.length !== 0 &&
+              {data.length === 0 &&
                 Array.from({ length: 7 - data.length }).map((_, i) => (
                   <TableRow
                     key={`empty-${i}`}

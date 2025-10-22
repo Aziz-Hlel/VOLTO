@@ -7,6 +7,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/comp
 import { Link } from "react-router-dom";
 import { CollapseMenuButton } from "./collapse-menu-button";
 import { getMenuList } from "@/lib/menu-list";
+import { useAuth } from "@/context/AuthContext";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -15,6 +16,8 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = ""; //! usePathname();
   const menuList = getMenuList(pathname);
+
+  const {logout}= useAuth();
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -97,19 +100,20 @@ export function Menu({ isOpen }: MenuProps) {
               <Tooltip delayDuration={100}>
                 <TooltipTrigger asChild>
                   <Button
-                    onClick={() => {}}
+                    onClick={logout}
                     variant="outline"
                     className={cn(
-                      "w-full justify-center h-10 mt-5 font-semibold rounded-lg shadow-md transition-all",
-                      "bg-gradient-to-r from-red-400 to-red-600 text-white hover:from-red-500 hover:to-red-700",
+                      "w-full justify-center h-10 mt-5 font-semibold rounded-lg shadow-md transition-all cursor-pointer ",
+                      "bg-gradient-to-r from-red-400 to-red-600 text-white hover:from-red-500 hover:to-red-700 hover:text-white",
                     )}
+                    
                   >
                     <span className={cn(isOpen === false ? "" : "mr-4")}>
                       <LogOut size={18} />
                     </span>
                     <p
                       className={cn(
-                        "whitespace-nowrap",
+                        "whitespace-nowrap  ",
                         isOpen === false ? "opacity-0 hidden" : "opacity-100",
                       )}
                     >
@@ -117,7 +121,7 @@ export function Menu({ isOpen }: MenuProps) {
                     </p>
                   </Button>
                 </TooltipTrigger>
-                {isOpen === false && <TooltipContent side="right">Sign out</TooltipContent>}
+                {isOpen === false && <TooltipContent side="right" className="cursor-pointer " onClick={logout}>Sign out</TooltipContent>}
               </Tooltip>
             </TooltipProvider>
           </li>

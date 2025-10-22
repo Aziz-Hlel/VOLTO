@@ -23,6 +23,7 @@ import { REDIS_HASHES } from 'src/redis/hashes';
 import { ConfirmPasswordRequestDto } from './Dto/confirm-password-request.dto';
 import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto';
 import { UpdateUserDto } from './Dto/update-user';
+import { ChangePasswordRequestDto } from './Dto/change-password-request.dto';
 
 @Injectable()
 export class UsersService {
@@ -391,6 +392,32 @@ export class UsersService {
       });
 
       return userDto;
+    } catch (e) {
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordRequestDto) {
+    const user = await this.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    const isPasswordMatching = await bcrypt.compare(dto.currentPassword, user.password);
+    if (!isPasswordMatching) throw new UnauthorizedException('Current password is incorrect');
+
+    const hashedNewPassword = await bcrypt.hash(dto.newPassword, 10);
+
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          password: hashedNewPassword,
+        },
+      });
+      return {
+        success: true,
+        message: 'Password changed successfully',
+      };
     } catch (e) {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);

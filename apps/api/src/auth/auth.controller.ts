@@ -9,6 +9,7 @@ import {
   Delete,
   Put,
   BadRequestException,
+  Patch,
 } from '@nestjs/common';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { Role } from '@prisma/client';
@@ -20,6 +21,7 @@ import { Roles } from './decorators/roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { LoginRequestDto } from './dto/loginRequestDto';
 import { UpdateUserDto } from 'src/users/Dto/update-user';
+import { ChangePasswordRequestDto } from 'src/users/Dto/change-password-request.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -98,6 +100,16 @@ export class AuthController {
       message: 'You are authenticated and authorized!',
       user,
     };
+  }
+
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @HttpCode(200)
+  @Patch('change-password')
+  async changePassword(@CurrentUser() user: AuthUser, @Body() dto: ChangePasswordRequestDto) {
+    const userId = user.id;
+    const response = await this.authService.changePassword(userId, dto);
+    return response;
   }
 
   @UseGuards(JwtAccessGuard)

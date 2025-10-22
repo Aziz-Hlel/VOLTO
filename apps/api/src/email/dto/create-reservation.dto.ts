@@ -23,7 +23,10 @@ export class NbrGuestsDto {
 
 export class CreateReservationDto {
   @IsString()
-  username: string;
+  firstName: string;
+
+  @IsString()
+  lastName: string;
 
   @IsEmail()
   email: string;

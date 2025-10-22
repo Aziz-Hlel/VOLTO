@@ -22,6 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import accountService from "@/Api/services/account.service";
 import { toast } from "sonner";
+import { useState } from "react";
+import ChangePassword from "./ChangePassword";
 
 const formSchema = z.object({
   firstName: z.string().min(1),
@@ -53,11 +55,11 @@ const EditAccount = ({ me }: { me: User }) => {
     resolver: zodResolver(formSchema),
     defaultValues: formDefaultValue,
   });
-  
+
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
     mutationFn: accountService.update,
-    onSuccess:async () => {
+    onSuccess: async () => {
       toast.success("Profile updated successfully.");
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
       await queryClient.refetchQueries({ queryKey: ["auth"] });
@@ -72,12 +74,15 @@ const EditAccount = ({ me }: { me: User }) => {
     }
   };
 
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+  console.log("openchangepass", openChangePassword);
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6 sm:p-10 border border-gray-100">
         <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-indigo-500 bg-clip-text text-transparent mb-8">
           Edit Profile
         </h2>
+        {openChangePassword && <ChangePassword closeDrawer={() => setOpenChangePassword(false)} />}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -119,8 +124,8 @@ const EditAccount = ({ me }: { me: User }) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormDescription>Staff email</FormDescription>
-                  <FormControl >
-                    <Input placeholder="john.doe@volto.com" {...field} disabled  />
+                  <FormControl>
+                    <Input placeholder="john.doe@volto.com" {...field} disabled />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,7 +197,14 @@ const EditAccount = ({ me }: { me: User }) => {
                   Cancel
                 </Button>
               </Link>
-              <Button variant="link" className="w-fit cursor-pointer">
+              <Button
+                variant="link"
+                className="w-fit cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpenChangePassword(true);
+                }}
+              >
                 Change Password
               </Button>
               <Button
