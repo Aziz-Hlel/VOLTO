@@ -25,7 +25,7 @@ export class CreateUserDto {
   email: string;
 
   @IsOptional()
-  @Matches(/^[0-9]+$/, { message: 'Phone number must contain only numbers' })
+  @Matches(/^\+[0-9]+$/, { message: 'Phone number must start with + and contain only numbers' })
   phoneNumber?: string;
 
   @IsString()
