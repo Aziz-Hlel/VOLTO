@@ -46,6 +46,7 @@ export class UsersService {
         firstName: username?.split(' ')[0] ?? 'User',
         lastName: username?.split(' ')[1] ?? ' ',
       };
+      delete newObject.username;
       const newUser = await this.prisma.user.create({
         data: {
           ...newObject,
@@ -59,7 +60,7 @@ export class UsersService {
       return newUser;
     } catch (e) {
       console.log(e.message);
-      throw new InternalServerErrorException(e.message, 'Failed to Confirm Avatar');
+      throw new InternalServerErrorException(e.message, 'Failed to create user');
     }
   }
 
