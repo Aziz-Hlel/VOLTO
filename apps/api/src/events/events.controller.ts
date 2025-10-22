@@ -83,7 +83,7 @@ export class EventsController {
     )
       throw new BadRequestException('cronStartDate and cronEndDate are required for weekly events');
 
-    const response = await this.eventsService.update2(updateEventDto);
+    const response = await this.eventsService.update(updateEventDto);
 
     return response;
   }

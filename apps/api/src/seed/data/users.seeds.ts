@@ -55,8 +55,8 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
   },
   {
     id: '7b9e2c6a-41cf-4a87-91fd-4f6e2f9c1a3b',
-    firstName: 'Salma Hayek',
-    lastName: 'Example',
+    firstName: 'Salma',
+    lastName: 'Hayek',
     email: 'hkouma2011@gmail.com',
     password: await hashPassword('11111111'),
     role: Role.USER,

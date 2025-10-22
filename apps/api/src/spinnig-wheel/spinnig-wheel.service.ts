@@ -153,8 +153,8 @@ export class SpinnigWheelService {
 
   update = async (updateSpinnigWheelDto: UpdateSpinnigWheelDto) => {
     // ! enable this shit when you done from dev mode
-    // if((await this.isSpinningWheelAvailable()).isAvailable)
-    //   throw new BadRequestException('Cannot update while spinning wheel event is active');
+    if ((await this.isSpinningWheelAvailable()).isAvailable)
+      throw new BadRequestException('Cannot update while spinning wheel event is active');
 
     const spinnigWheel = await this.prisma.spinningWheel.findFirst({
       where: {

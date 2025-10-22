@@ -6,6 +6,7 @@ import cronParser from 'cron-parser';
 import cron, { ScheduledTask } from 'node-cron';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
+import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
 
 @Injectable()
 export class LadiesNightDataMqService implements OnModuleInit {
@@ -22,6 +23,7 @@ export class LadiesNightDataMqService implements OnModuleInit {
   public constructor(
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
     private readonly prisma: PrismaService,
+    private readonly ladiesNightService: LadiesNightService,
   ) {}
 
   private async updateLadiesNightData({
@@ -114,6 +116,14 @@ export class LadiesNightDataMqService implements OnModuleInit {
         this.currentWorkingTask = null;
         this.logger.debug('Ladies Night Stats Data Collector stopped as event ended');
         await task.stop();
+      }
+      const isLadiesNightActive = await this.ladiesNightService.isLadiesNightActive();
+      if (!isLadiesNightActive) {
+        this.currentWorkingTask = null;
+        await task.stop();
+        this.logger.debug(
+          'Ladies Night Stats Data Collector stopped as event is no more active based on isLadiesNightActive function',
+        );
       }
       const startDateParsed = cronParser.parse(job.data.cronStartDate);
       const currentEventStartDate = startDateParsed.prev().toDate();

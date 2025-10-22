@@ -46,7 +46,7 @@ export function ChartAreaInteractive() {
   const handlePeriodChange = (value: LadiesNightStatsPeriod) =>
     setPeriod(value as LadiesNightStatsPeriod);
 
-  const { data, } = useQuery({
+  const { data } = useQuery({
     queryKey: ["ladies-night", "period", period],
     queryFn: async () => await ladiesNightService.statsByPeriod({ period }),
     enabled: true,
