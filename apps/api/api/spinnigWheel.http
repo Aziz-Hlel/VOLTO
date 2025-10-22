@@ -1,6 +1,6 @@
 
 @baseUrl = http://localhost:3000/api
-# @baseUrl = https://voltobahrain.online/api
+@baseUrl = https://voltobahrain.online/api
 
 
 
@@ -34,11 +34,11 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 {
     "id": "{{getSpinnigWheelInstance.response.body.id}}",
-    "name":"Spinning Wheel Name Updated",
-    "startDate": "2025-10-22T17:12:00.999Z",
-    "endDate": "2025-10-22T17:15:00.999Z",
-  "rewardList":[
-   {
+    "name":"Spinning Wheel Test",
+    "startDate": "2025-10-22T18:18:00.999Z",
+    "endDate": "2025-10-22T18:19:00.999Z",
+    "rewardList":[
+        {
             "id": "{{getSpinnigWheelInstance.response.body.rewardList[0].id}}",
             "name": "10% OFF Next Drink"
         },
@@ -144,5 +144,14 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
   "code" :"{{getUserSpinningWheelQuota.response.body.code}}"
 }
+
+
+
+
+### Get Spin Wheel Available
+# @name isSpinningWheelAvailable
+GET       {{baseUrl}}/spinning-wheel/
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}
 
 

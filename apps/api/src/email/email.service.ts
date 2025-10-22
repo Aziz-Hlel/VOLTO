@@ -159,7 +159,8 @@ export class EmailService {
     }).format(payload.date);
 
     const content = `Client Info :\n
-    Username : ${payload.firstName} ${payload.lastName}\n
+    First name : ${payload.firstName}\n
+    Last name : ${payload.lastName}\n
     Email : ${payload.email}\n
     Phone Number : ${payload.phoneNumber}\n
     NbrGuests : \n

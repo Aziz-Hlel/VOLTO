@@ -22,7 +22,7 @@ const OpeningHours = () => {
                   Sunday to Tuesday
                 </h6>
                 <div className="space-y-1 text-[#777]">
-                  <span>10:00</span>-<span>22:00</span>
+                  <span>18:00</span>-<span>03:00</span>
                 </div>
               </div>
 
@@ -37,7 +37,7 @@ const OpeningHours = () => {
                   Friday to Saturday
                 </h6>
                 <div className="space-y-1 text-[#777]">
-                  <span>12:00</span>-<span>19:00</span>
+                  <span>18:00</span>-<span>03:00</span>
                 </div>
               </div>
             </div>
@@ -51,15 +51,15 @@ const OpeningHours = () => {
 
             <p className="text-sm md:text-base text-[#777] mt-5 text-center">
               You can also call:{" "}
-              <a href="tel:+8551004444" className="text-[#C19D60] underline">
-                855 100 4444
+              <a href="tel:+97334588466" className="text-[#C19D60] underline">
+                  
               </a>{" "}
               to make a reservation.
             </p>
 
             <p className="text-sm md:text-base text-[#777] flex items-center justify-center gap-2 mt-3 text-center">
               <MapPin className="text-[#C19D60] h-5 w-5" />
-              <span>1616 Broadway NY, New York 10001 USA</span>
+              <span>Shop 2, Building، 436 Road 3815, Manama, Bahrain</span>
             </p>
           </div>
         </div>

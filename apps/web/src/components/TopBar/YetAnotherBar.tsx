@@ -342,7 +342,7 @@ const CardNav: React.FC<CardNavProps> = ({
             className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none"
             to={"/"}
           >
-            <img src={logo} alt={logoAlt} className="logo h-24 md:h-40" />
+            <img src={logo} alt={logoAlt} className="logo h-24 md:h-26" />
             {/* <span className="text-3xl font-sans font-heading">VOLTO</span>    */}
           </Link>
 

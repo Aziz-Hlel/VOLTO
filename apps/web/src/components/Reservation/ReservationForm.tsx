@@ -15,7 +15,8 @@ import { Spinner } from "../ui/spinner";
 import axiosInstance from "@/api/axiosInstance";
 
 const reservationSchema = z.object({
-  username: z.string().min(2, "Username must be at least 2 characters"),
+  firstName: z.string().min(2, "First Name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last Name must be at least 2 characters"),
   email: z.email("Invalid email address"),
   phoneNumber: z.string().min(8, "Phone number must be at least 8 digits"),
   nbrGuests: z.object({
@@ -37,7 +38,7 @@ const ReservationForm = () => {
   const form = useForm({
     resolver: zodResolver(reservationSchema),
     defaultValues: {
-      username: "",
+      firstName: "",
       email: "",
       phoneNumber: "",
       nbrGuests: { men: 0, women: 0 },
@@ -121,13 +122,13 @@ const ReservationForm = () => {
             <div className="flex flex-col gap-6">
               <FormField
                 control={form.control}
-                name="username"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Name"
+                        placeholder="First Name"
                         {...field}
                         className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700  focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:border-yellow-500 outline-none transition-all"
                       />
@@ -137,6 +138,24 @@ const ReservationForm = () => {
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Last Name"
+                        {...field}
+                        className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700  focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:border-yellow-500 outline-none transition-all"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <FormField
                 control={form.control}
                 name="email"
