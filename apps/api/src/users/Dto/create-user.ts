@@ -5,7 +5,6 @@ import {
   IsOptional,
   IsString,
   Matches,
-  Max,
   MaxLength,
   MinLength,
   ValidateNested,

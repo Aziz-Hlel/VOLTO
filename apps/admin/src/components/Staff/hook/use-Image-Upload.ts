@@ -61,7 +61,6 @@ const useImageUpload = ({
     setImageKey(currentImgKey);
   };
 
-
   const Crop_OptimizeImage = async () => {
     if (!croppedAreaPixels || !file) {
       return;

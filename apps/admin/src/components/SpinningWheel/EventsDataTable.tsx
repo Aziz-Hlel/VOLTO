@@ -64,10 +64,7 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
             <TableBody>
               {data.length === 0 && (
                 <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center py-8 text-muted-foreground"
-                  >
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     No Data yet
                   </TableCell>
                 </TableRow>
@@ -96,7 +93,6 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                   </TableRow>
                 ))}
             </TableBody>
-
           </Table>
           <div className=" w-full flex justify-end p-2 gap-x-2 ">
             <div className="flex items-center justify-end">
@@ -123,11 +119,10 @@ export const EventsDataTable: React.FC<EventsDataTableProps> = ({
                 Next
               </Button>
             </div>
-
           </div>
           <div></div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };

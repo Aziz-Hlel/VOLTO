@@ -152,5 +152,4 @@ export default function RangeEventDate({
       </div>
     </div>
   );
-
 }

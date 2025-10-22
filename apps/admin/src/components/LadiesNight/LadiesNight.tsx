@@ -44,10 +44,7 @@ const LadiesNight = () => {
           <p className="text-sm sm:text-base mt-1 text-purple-100">Welcome back VIP</p>
         </div>
         <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-15">
-          <CountDown
-            ladiesNight={ladiesNight}
-            isFetched={ladiesNightDataIsFetched}
-          />
+          <CountDown ladiesNight={ladiesNight} isFetched={ladiesNightDataIsFetched} />
           <Button
             variant="default"
             onClick={() => setOpenUpdateDrinkQuota(true)}
@@ -63,7 +60,6 @@ const LadiesNight = () => {
             )}
           </Button>
         </div>
-
       </header>
 
       {/* Main Content */}

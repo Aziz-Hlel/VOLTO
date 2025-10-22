@@ -62,7 +62,6 @@ export const uploadImageToS3_SIMULATOR = async ({
     purpose,
   });
 
-
   // const response = await Http.put(url, uploadedImg);
 
   try {
@@ -84,7 +83,6 @@ export const uploadImageToS3_SIMULATOR = async ({
   } finally {
     // setUploading(false);
   }
-
 
   return s3Key;
 };

@@ -148,19 +148,21 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
                             <FormItem className="flex-1">
                               <FormLabel
                                 className={`text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r
-      ${index === 0
-                                    ? "from-pink-400 to-rose-500"
-                                    : index === 1
-                                      ? "from-blue-400 to-cyan-500"
-                                      : index === 2
-                                        ? "from-green-400 to-emerald-500"
-                                        : index === 3
-                                          ? "from-purple-400 to-indigo-500"
-                                          : "from-orange-400 to-amber-500"
-                                  } flex items-center gap-2`}
+      ${
+        index === 0
+          ? "from-pink-400 to-rose-500"
+          : index === 1
+            ? "from-blue-400 to-cyan-500"
+            : index === 2
+              ? "from-green-400 to-emerald-500"
+              : index === 3
+                ? "from-purple-400 to-indigo-500"
+                : "from-orange-400 to-amber-500"
+      } flex items-center gap-2`}
                               >
                                 <Gift
-                                  className={`w-5 h-5 ${index === 0
+                                  className={`w-5 h-5 ${
+                                    index === 0
                                       ? "text-rose-500"
                                       : index === 1
                                         ? "text-cyan-500"
@@ -169,7 +171,7 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
                                           : index === 3
                                             ? "text-indigo-500"
                                             : "text-amber-500"
-                                    }`}
+                                  }`}
                                   strokeWidth={2.2}
                                 />
                                 Reward N°{index + 1}
@@ -180,27 +182,26 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
                                   placeholder="Reward name"
                                   {...field}
                                   className={`focus:ring-2 focus:border-transparent transition duration-200
-        ${index === 0
-                                      ? "focus:ring-rose-400"
-                                      : index === 1
-                                        ? "focus:ring-cyan-400"
-                                        : index === 2
-                                          ? "focus:ring-emerald-400"
-                                          : index === 3
-                                            ? "focus:ring-indigo-400"
-                                            : "focus:ring-amber-400"
-                                    }`}
+        ${
+          index === 0
+            ? "focus:ring-rose-400"
+            : index === 1
+              ? "focus:ring-cyan-400"
+              : index === 2
+                ? "focus:ring-emerald-400"
+                : index === 3
+                  ? "focus:ring-indigo-400"
+                  : "focus:ring-amber-400"
+        }`}
                                 />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
-
                           )}
                         />
                       </div>
                     ))}
                   </div>
-
                 </div>
               </div>
 
@@ -210,7 +211,11 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button disabled={loading} type="submit" className="enabled:cursor-pointer bg-blue-500">
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  className="enabled:cursor-pointer bg-blue-500"
+                >
                   {loading ? <Spinner /> : "Save"}
                 </Button>
               </DialogFooter>

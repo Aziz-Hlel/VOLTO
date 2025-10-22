@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const NotFound = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 px-4 text-center">
-
       {/* Animated 404 */}
       <svg
         className="w-64 md:w-96 h-64 md:h-96"
@@ -17,15 +16,10 @@ const NotFound = () => {
           cx="256"
           cy="256"
           r="200"
-          stroke="#D8BFAF"  // couleur douce
+          stroke="#D8BFAF" // couleur douce
           strokeWidth="12"
         >
-          <animate
-            attributeName="r"
-            values="190;210;190"
-            dur="3s"
-            repeatCount="indefinite"
-          />
+          <animate attributeName="r" values="190;210;190" dur="3s" repeatCount="indefinite" />
         </circle>
 
         {/* Cross inside circle */}

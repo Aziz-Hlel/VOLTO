@@ -7,6 +7,11 @@ export type User = {
   lastName: string;
   email: string;
   role: Roles;
+  phoneNumber?: string;
   gender: "M" | "F";
   tier: Tier;
+  avatar?: {
+    s3Key: string;
+    url: string;
+  };
 };

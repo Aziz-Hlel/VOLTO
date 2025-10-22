@@ -190,7 +190,7 @@ const WeeklyEventForm = ({
                         <CheckIcon
                           className={cn(
                             "mr-2 h-4 w-4",
-                            day === dayOfWeek.value ? "opacity-100" : "opacity-0"
+                            day === dayOfWeek.value ? "opacity-100" : "opacity-0",
                           )}
                         />
                         {dayOfWeek.label}
@@ -249,7 +249,6 @@ const WeeklyEventForm = ({
       </div>
     </>
   );
-
 };
 
 export default WeeklyEventForm;

@@ -107,7 +107,8 @@ class ApiService {
   }
 
   private throwErrorAlert = (statusCode: number, error: string) => {
-    alert(`Request failed with status ${statusCode} - error message: ${error}`);
+    if (ENV.NODE_ENV !== "production")
+      alert(`Request failed with status ${statusCode} - error message: ${error}`);
   };
 
   // Refresh access token

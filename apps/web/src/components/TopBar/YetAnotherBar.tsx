@@ -419,19 +419,20 @@ const CardNav: React.FC<CardNavProps> = ({
             </div>
           ))}
           <div
-            className=" w-full flex justify-center items-center gap-2  text-white text-md  bg-black/85 rounded-md md:hidden "
+            className=" w-full grid grid-cols-2 justify-center items-center gap-2  text-white text-center text-md   md:hidden "
             onClick={isMobile ? handleOpenApp : handleDesktopRedirect}
           >
-            <span>
 
-            Get App
-            </span>
 
-            <a href="">
+            <a href="https://apps.apple.com/app/id6753715978"className="bg-black/85 rounded-md flex items-center  justify-center"
+            target="_blank" rel="noopener noreferrer"
+            >
             <FaApple className=" text-white h-8  " />
-
             </a>
-<a href="">
+
+<a href="https://play.google.com/store/apps/details?id=com.techno.volto" className="bg-black/85 rounded-md flex items-center  justify-center"
+target="_blank" rel="noopener noreferrer"
+ >
             <AiFillAndroid className=" text-white h-8  " />
 
 </a>

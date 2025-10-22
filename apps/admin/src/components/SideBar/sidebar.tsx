@@ -28,7 +28,6 @@ export function Sidebar() {
 
   return (
     <>
-
       {/* 🔹 Bouton burger stylé – visible uniquement sur mobile */}
       {/* 🔹 Bouton burger stylé – visible uniquement sur mobile */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
@@ -39,7 +38,7 @@ export function Sidebar() {
           className={cn(
             "relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300", // taille réduite
             "bg-gradient-to-r from-zinc-800 to-zinc-700 text-white shadow-sm hover:scale-105 hover:shadow-md",
-            "dark:from-zinc-200 dark:to-zinc-300 dark:text-zinc-900"
+            "dark:from-zinc-200 dark:to-zinc-300 dark:text-zinc-900",
           )}
         >
           {/* Animation du burger / croix */}
@@ -48,28 +47,26 @@ export function Sidebar() {
             <span
               className={cn(
                 "absolute top-0 left-0 w-4 h-[2px] bg-current rounded transition-all duration-300",
-                mobileOpen ? "rotate-45 top-[7px]" : "rotate-0 top-0"
+                mobileOpen ? "rotate-45 top-[7px]" : "rotate-0 top-0",
               )}
             />
             {/* Barre du milieu */}
             <span
               className={cn(
                 "absolute top-[7px] left-0 w-4 h-[2px] bg-current rounded transition-all duration-300",
-                mobileOpen ? "opacity-0" : "opacity-100"
+                mobileOpen ? "opacity-0" : "opacity-100",
               )}
             />
             {/* Barre du bas */}
             <span
               className={cn(
                 "absolute bottom-0 left-0 w-4 h-[2px] bg-current rounded transition-all duration-300",
-                mobileOpen ? "-rotate-45 bottom-[7px]" : "rotate-0 bottom-0"
+                mobileOpen ? "-rotate-45 bottom-[7px]" : "rotate-0 bottom-0",
               )}
             />
           </div>
         </Button>
       </div>
-
-
 
       {/* 🔹 Sidebar */}
       <aside
@@ -82,7 +79,7 @@ export function Sidebar() {
           !getOpenState() ? "lg:w-[90px]" : "lg:w-72",
           // Largeur fixe sur mobile
           "w-72",
-          settings.disabled && "hidden"
+          settings.disabled && "hidden",
         )}
       >
         {/* 🔸 Bouton Toggle (desktop only) */}
@@ -100,7 +97,7 @@ export function Sidebar() {
           <Button
             className={cn(
               "transition-transform ease-in-out duration-300 mb-1",
-              !getOpenState() ? "translate-x-1" : "translate-x-0"
+              !getOpenState() ? "translate-x-1" : "translate-x-0",
             )}
             variant="link"
             asChild
@@ -118,7 +115,7 @@ export function Sidebar() {
                     ? "translate-x-0 opacity-100"
                     : !getOpenState()
                       ? "-translate-x-96 opacity-0 hidden"
-                      : "translate-x-0 opacity-100"
+                      : "translate-x-0 opacity-100",
                 )}
               >
                 Volto

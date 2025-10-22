@@ -79,6 +79,18 @@ export class AuthController {
     return userDto;
   }
 
+
+  @UseGuards(JwtAccessGuard)
+  @HttpCode(200)
+  @Put('me')
+  async updateMe(@CurrentUser() user: AuthUser, @Body() updateUserDto: UpdateUserDto) {
+
+    const userId = user.id;
+    const userDto = this.authService.updateMe(userId,updateUserDto);
+
+    return userDto;
+  }
+
   @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @HttpCode(200)

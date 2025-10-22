@@ -1,7 +1,9 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
+const NODE_ENV = import.meta.env.VITE_NODE_ENV;
 
 const ENV = {
   BASE_URL,
+  NODE_ENV,
 };
 
 (Object.keys(ENV) as Array<keyof typeof ENV>).forEach((key) => {

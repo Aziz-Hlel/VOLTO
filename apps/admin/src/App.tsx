@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";
 import { AuthProvider } from "./context/AuthContext";
 import Login from "./components/Login/Login";
@@ -15,6 +14,8 @@ import StaffMainContent from "./components/Staff/StaffMainContent";
 import AddStaffWrapper from "./components/Staff/AddStaffWrapper";
 import LadiesNight from "./components/LadiesNight/LadiesNight";
 import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
+import NotFound from "./components/NotFound/NotFound";
+import EditAccountWrapper from "./components/EditAccount/EditAccountWrapper";
 
 const queryClient = new QueryClient();
 
@@ -47,9 +48,9 @@ function App() {
 
                 <Route path="ladies-night" element={<LadiesNight />} />
                 <Route path="spinning-wheel" element={<SpinningWheel />} />
-
-                <Route path="*" element={<NotFound />} />
+                <Route path="account" element={<EditAccountWrapper />} />
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </Router>

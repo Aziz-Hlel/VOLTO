@@ -44,6 +44,10 @@ const apiRoutes = {
     statsByPeriod: () => "/spinning-wheel-stats/periodic" as const,
   },
 
+  account: {
+    updateAccount: () => "/auth/me" as const,
+  },
+
   media: {
     presignedUrl: () => "/media/presigned-url" as const,
   },

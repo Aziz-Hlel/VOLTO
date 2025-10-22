@@ -12,7 +12,7 @@ const NavBar619 = () => {
   const APP_SCHEME = `${url}/mobile/home`;
   const APP_STORE_URL = "https://apps.apple.com/app/id6753715978";
   const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.techno.volto";
-  const LANDING_PAGE_URL = "https://yourdomain.com/get-app";
+  const LANDING_PAGE_URL = "https://voltobahrain.online";
 
   const openAppOrRedirect = (storeUrl: string) => {
     const now = Date.now();

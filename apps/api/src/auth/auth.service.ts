@@ -125,4 +125,11 @@ export class AuthService {
   async updateUser(userId: string, updateUserDto: UpdateUserDto) {
     return await this.usersService.updateUser(userId, updateUserDto);
   }
+
+
+  async updateMe(userId:string,updateUserDto: UpdateUserDto) {
+
+    return await this.usersService.updateUser(userId, updateUserDto);
+
+  }
 }
