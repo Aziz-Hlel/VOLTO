@@ -163,8 +163,8 @@ export class EmailService {
     Email : ${payload.email}\n
     Phone Number : ${payload.phoneNumber}\n
     NbrGuests : \n
-      \tMen : ${payload.nbrGuests.Men}
-      \n\tWomen : ${payload.nbrGuests.Women}\n
+      \tMen : ${payload.nbrGuests.men}
+      \n\tWomen : ${payload.nbrGuests.women}\n
     Date : ${formattedDate}\n
     
     `;

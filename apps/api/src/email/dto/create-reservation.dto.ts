@@ -15,11 +15,11 @@ import {
 export class NbrGuestsDto {
   @IsNumber()
   @IsPositive()
-  Men: number;
+  men: number;
 
   @IsNumber()
   @IsPositive()
-  Women: number;
+  women: number;
 }
 
 export class CreateReservationDto {

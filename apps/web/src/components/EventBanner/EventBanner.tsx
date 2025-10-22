@@ -11,7 +11,7 @@ interface EventBannerProps {
 const EventBanner: FC<EventBannerProps> = (props) => {
   return (
     <Link to="/events" className="select-none h-fit">
-      <img className="w-full h-56 md:h-[560px] " src={props.img} />
+      <img className="w-full h-56 md:h-[560px] object-cover" src={props.img} />
       <div className="absolute w-full top-0 h-full  bg-black/50 text-white  ">
         <div className=" flex flex-col w-full h-full items-center justify-center">
           <h6 className="text-xs md:text-2xl text-[#C19D60] mb-4">{props.type}</h6>

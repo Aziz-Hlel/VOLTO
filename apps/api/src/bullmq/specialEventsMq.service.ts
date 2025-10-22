@@ -65,7 +65,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
 
     const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
 
-    const mobilePath = { screen: job.data.isSpinningWheelEvent ? 'spin wheel' : 'event' };
+    const mobilePath = { screen: job.data.isSpinningWheelEvent ? 'spinning-wheel' : 'event' };
 
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
