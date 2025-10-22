@@ -71,12 +71,13 @@ export class SpinningWheelDataMqService implements OnModuleInit {
     this.logger.debug(`📥 Spinning Wheel weekly Job for Data Recording has started `);
 
     await this.resetSpinningWheelStats(job.data.startDate);
+    const endDate = new Date(job.data.endDate);
 
     const task = cron.schedule('*/1 * * * *', async () => {
       // ! change to 15 min later
       this.logger.debug(`🕒1mn passed : Updating Spinning Wheel Data...`);
       const currentDate = new Date();
-      const endDate = new Date(job.data.endDate);
+
       if (currentDate > endDate) {
         this.currentWorkingTask = null;
         this.logger.debug(

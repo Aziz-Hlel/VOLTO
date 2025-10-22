@@ -31,8 +31,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private eventWorker: Worker<SpecialEventJobData>;
 
   private readonly _hour = 1000 * 60 * 60;
-  private readonly firstNotificationDelay = this._hour * 24;
-  private readonly secondNotificationDelay = this._hour * 1;
+  private readonly firstNotificationDelay = 1000 * 10// !this._hour * 24;
+  private readonly secondNotificationDelay = 1000 // ! this._hour * 1; 
 
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
@@ -65,7 +65,10 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
 
     const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
 
-    const mobilePath = { screen: job.data.isSpinningWheelEvent ? 'spinning-wheel' : 'event' };
+    const mobilePath:{screen: 'event' | 'spinning-wheel',eventId: string | undefined} = {
+       screen: job.data.isSpinningWheelEvent ? 'spinning-wheel' : 'event',
+        eventId: job.data.isSpinningWheelEvent ? undefined : job.data.eventId
+     };
 
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
