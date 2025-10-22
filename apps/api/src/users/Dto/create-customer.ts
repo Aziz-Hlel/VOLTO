@@ -12,30 +12,21 @@ import {
 import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateCustomerDto {
-  // ! to satisfy the mobile old version
-  @IsOptional()
-  @IsString()
-  @MinLength(2)
-  firstName?: string;
 
-  // ! to satisfy the mobile old version
-  @IsOptional()
   @IsString()
   @MinLength(2)
-  lastName?: string;
+  firstName: string;
 
-  // ! to satisfy the mobile old version
-  @IsOptional()
   @IsString()
   @MinLength(2)
-  username?: string;
+  lastName: string;
 
   @IsString()
   @MinLength(2)
   email: string;
 
   @IsOptional()
-  @Matches(/^[0-9]+$/, { message: 'Phone number must contain only numbers' })
+    @Matches(/^\+[0-9]+$/, { message: 'Phone number must start with + and contain only numbers' })
   phoneNumber?: string;
 
   @IsString()

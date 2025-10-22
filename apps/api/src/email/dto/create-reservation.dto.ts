@@ -8,6 +8,7 @@ import {
   IsNumber,
   IsPositive,
   IsString,
+  Matches,
   ValidateNested,
 } from 'class-validator';
 
@@ -32,6 +33,7 @@ export class CreateReservationDto {
   email: string;
 
   @IsString()
+  @Matches(/^\+[0-9]+$/, { message: 'Phone number must start with + and contain only numbers' })
   phoneNumber: string;
 
   @IsDefined({ message: 'nbrGuests is required' })

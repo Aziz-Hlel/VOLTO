@@ -244,7 +244,7 @@ export const Card = ({
 
               <AspectRatio ratio={4 / 3} className=" bg-muted w-full rounded-t-2xl">
                 <video
-                  src={"/img/events/volto-brunch-1.mp4"}
+                  src={event.media.video.url}
                   controls
                   autoPlay
                   muted

@@ -269,10 +269,10 @@ export class EventsService {
     if (existingEvent.isLadiesNight && updateEventDto.type === 'SPECIAL') {
       throw new BadRequestException('Ladies Night Event must be of type WEEKLY');
     }
-    if ( existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
-        throw new BadRequestException('Cannot Update Ladies Night Event while active');
-      }
-      
+    // if ( existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
+    //     throw new BadRequestException('Cannot Update Ladies Night Event while active');
+    //   }
+
     // ? Disable checking active event for updates
     // if (existingEvent.type === 'SPECIAL') {
     //   if (currentDate > existingEvent.startDate! && currentDate < existingEvent.endDate!) {

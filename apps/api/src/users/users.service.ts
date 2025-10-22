@@ -40,19 +40,14 @@ export class UsersService {
 
   async createCustomer(dto: CreateCustomerDto, hashedPassword: string) {
     try {
-      const { username, ...newDto } = dto;
-      // ! To satisfy the mobile old version
-      const newObject = {
-        ...dto,
-        firstName: username?.split(' ')[0] ?? 'User',
-        lastName: username?.split(' ')[1] ?? ' ',
-      };
-      delete newObject.username;
+      const phoneNumber = dto.phoneNumber ? dto.phoneNumber.replace('+', '') : null;
+
       const newUser = await this.prisma.user.create({
         data: {
-          ...newObject,
+          ...dto,
           role: Role.USER,
           password: hashedPassword,
+          phoneNumber: phoneNumber,
         },
       });
       if (dto.avatar?.s3Key)
@@ -66,12 +61,20 @@ export class UsersService {
   }
 
   async createUser(dto: CreateUserDto, hashedPassword: string) {
-    return this.prisma.user.create({
-      data: {
-        ...dto,
-        password: hashedPassword,
-      },
-    });
+    const phoneNumber = dto.phoneNumber ? dto.phoneNumber.replace('+', '') : null;
+    try{
+
+      return await this.prisma.user.create({
+        data: {
+          ...dto,
+          password: hashedPassword,
+          phoneNumber: phoneNumber,
+        },
+      });
+    } catch (e) {
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message, 'Failed to create user');
+    }
   }
 
   async registerCustomer(dto: CreateCustomerDto) {
@@ -206,9 +209,12 @@ export class UsersService {
         mediaPurpose: MediaPurpose.AVATAR,
       });
 
+      const newPhoneNumber = dto.phoneNumber ? dto.phoneNumber.replace('+', '') : null;
+
       const userDto = UserMapper.toResponse({
         ...savedUser,
         avatar: updatedUserAvatar ?? undefined,
+        phoneNumber: newPhoneNumber,
       });
 
       return userDto;

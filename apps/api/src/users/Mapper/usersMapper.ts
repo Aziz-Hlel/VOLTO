@@ -9,8 +9,7 @@ export class UserMapper {
     const { password, createdAt, updatedAt, ...result } = user; // exclude password
     return {
       ...result,
-      phoneNumber: result.phoneNumber === null ? undefined : result.phoneNumber,
-      username: `${result.firstName} ${result.lastName}`, // ! to satisfy the mobile old version
+      phoneNumber: result.phoneNumber === null ? undefined : `+${result.phoneNumber}`,
     };
   }
 
@@ -21,7 +20,6 @@ export class UserMapper {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
-      username: `${user.firstName} ${user.lastName}`,
     };
   }
 

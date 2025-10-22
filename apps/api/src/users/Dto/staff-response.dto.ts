@@ -17,8 +17,6 @@ export class StaffResponseDto {
 
   tier: Tier;
 
-  username: string; // ! to satisfy the mobile old version
-
   createdAt: Date;
 
   updatedAt: Date;
@@ -30,6 +28,5 @@ export class StaffResponseDto {
 
   constructor(user: User) {
     Object.assign(this, user); // apply the utility
-    this.username = `${this.firstName} ${this.lastName}`; // ! to satisfy the mobile old version
   }
 }

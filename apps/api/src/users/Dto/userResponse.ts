@@ -9,8 +9,6 @@ export class UserResponseDto {
 
   phoneNumber?: string;
 
-  username: string; // ! to satisfy the mobile old version
-
   firstName: string;
 
   lastName: string;
