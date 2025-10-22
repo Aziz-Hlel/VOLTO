@@ -180,8 +180,7 @@ export class EmailService {
     return response;
   }
 
-
-  async sendContactMessageEmailToAdmin(payload:CreateContactDto){
+  async sendContactMessageEmailToAdmin(payload: CreateContactDto) {
     const content = `A Client has sent a contact message :\n
     Name : ${payload.name}\n
     Email : ${payload.email}\n

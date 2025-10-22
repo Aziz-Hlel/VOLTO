@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { WeeklyEventJobData } from './weeklyEventsMq.service';
 import { Job, Queue, Worker } from 'bullmq';
 import cronParser from 'cron-parser';
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 
@@ -12,6 +12,8 @@ export class LadiesNightDataMqService implements OnModuleInit {
   private readonly logger = new Logger(LadiesNightDataMqService.name);
 
   private readonly queueName = 'LadiesEventData-recorder';
+
+  private currentWorkingTask: ScheduledTask | null;
 
   private eventQueue: Queue<WeeklyEventJobData>;
 
@@ -73,9 +75,18 @@ export class LadiesNightDataMqService implements OnModuleInit {
       [REDIS_HASHES.LADIES_NIGHT.STATS.DRINK_QUOTA()]: ladiesNight_DrinkQuota,
     });
 
-    const ladiesNightData = await this.prisma.ladiesNightData.create({
-      data: {
+    const ladiesNightData = await this.prisma.ladiesNightData.upsert({
+      where: {
         startDate: startDate,
+      },
+      create: {
+        startDate: startDate,
+        totalParticipants: 0,
+        participantWithAllRedeemedDrinks: 0,
+        totalDrinksConsumed: 0,
+        drinkQuota: Number(ladiesNight_DrinkQuota),
+      },
+      update: {
         totalParticipants: 0,
         participantWithAllRedeemedDrinks: 0,
         totalDrinksConsumed: 0,
@@ -96,9 +107,14 @@ export class LadiesNightDataMqService implements OnModuleInit {
     await this.resetLadiesNightStats(currentEventStartDate);
 
     const task = cron.schedule('*/1 * * * *', async () => {
+      // ! change to 15 min later
       this.logger.debug(`🕒1mn passed : Updating ladies night data...`);
       const currentDate = new Date();
-      if (currentDate > currentEventEndDate) task.stop();
+      if (currentDate > currentEventEndDate) {
+        this.currentWorkingTask = null;
+        this.logger.debug('Ladies Night Stats Data Collector stopped as event ended');
+        await task.stop();
+      }
       const startDateParsed = cronParser.parse(job.data.cronStartDate);
       const currentEventStartDate = startDateParsed.prev().toDate();
 
@@ -124,10 +140,18 @@ export class LadiesNightDataMqService implements OnModuleInit {
     });
 
     await task.execute();
+
+    this.currentWorkingTask = task;
   }
 
   async deletePreviousJob(jobId: string) {
     this.logger.debug(`📥 Preparing to delete previous Ladies Night job data collecting`);
+
+    if (this.currentWorkingTask) {
+      this.currentWorkingTask.stop();
+      this.currentWorkingTask = null;
+      this.logger.debug('Deleted and stopped Current Ladies Night Stats working task');
+    }
 
     const allJobSchedulers = await this.eventQueue.getJobSchedulers();
 

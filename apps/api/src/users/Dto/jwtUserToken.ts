@@ -9,5 +9,7 @@ export class jwtUserToken {
 
   lastName: string;
 
+  username: string; // ! to satisfy the mobile old version
+
   role: Role;
 }

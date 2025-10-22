@@ -1,21 +1,18 @@
-import { IsEmail, IsPhoneNumber, IsString } from "class-validator";
-
+import { IsEmail, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateContactDto {
+  @IsString()
+  name: string;
 
-    @IsString()
-    name: string;
+  @IsEmail()
+  email: string;
 
-    @IsEmail()
-    email: string;
-    
-    @IsPhoneNumber()
-    phoneNumber: string;
- 
-    @IsString()
-    subject: string;
-    
-    @IsString()
-    message: string;
+  @IsPhoneNumber()
+  phoneNumber: string;
 
+  @IsString()
+  subject: string;
+
+  @IsString()
+  message: string;
 }

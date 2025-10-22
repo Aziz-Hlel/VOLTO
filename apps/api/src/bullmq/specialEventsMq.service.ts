@@ -18,6 +18,7 @@ export interface SpecialEventJobData {
   startDate: string;
   endDate: string;
   delay: 'firstDelay' | 'secondDelay';
+  isSpinningWheelEvent?: boolean;
 }
 
 @Injectable()
@@ -30,8 +31,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private eventWorker: Worker<SpecialEventJobData>;
 
   private readonly _hour = 1000 * 60 * 60;
-  private readonly firstNotificationDelay = 0; // ! this._hour * 24;
-  private readonly secondNotificationDelay = 1000 * 60; // ! this._hour * 1;
+  private readonly firstNotificationDelay = this._hour * 24;
+  private readonly secondNotificationDelay = this._hour * 1;
 
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 
@@ -45,6 +46,18 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
       `Job started for Special Event : ${job.data.eventName} in Queue ${this.queueName}`,
     );
 
+    const now = Date.now();
+    const maxDelay = 5 * 60 * 1000; // 1 minute tolerance
+    const scheduledAt = job.timestamp;
+
+    if (scheduledAt - now > maxDelay) {
+      this.logger.warn(
+        `Job for Special Event : ${job.data.eventName} is running late. Scheduled at ${new Date(
+          scheduledAt,
+        ).toISOString()}, now is ${new Date(now).toISOString()} \n\t Canceling notification to avoid confusion.`,
+      );
+      return;
+    }
     const headings = this.commonEventsMq.getNotifcationHeadings({
       delay: job.data.delay,
       eventName: job.data.eventName,
@@ -52,12 +65,14 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
 
     const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
 
+    const mobilePath = { screen: job.data.isSpinningWheelEvent ? 'spin wheel' : 'event' };
+
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
       target_channel: 'push',
       headings: headings,
       included_segments: ['All'],
-      data: { screen: 'event' },
+      data: mobilePath,
       contents: content,
     };
 

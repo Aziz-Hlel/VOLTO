@@ -15,8 +15,7 @@ export class GetEventsPageDto {
   @Max(50)
   limit = 10;
 
-
-  @IsEnum( EventType )
+  @IsEnum(EventType)
   @IsOptional()
-  type?:EventType
+  type?: EventType;
 }

@@ -12,13 +12,23 @@ import {
 import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateCustomerDto {
+  // ! to satisfy the mobile old version
+  @IsOptional()
   @IsString()
   @MinLength(2)
-  firstName: string;
+  firstName?: string;
 
+  // ! to satisfy the mobile old version
+  @IsOptional()
   @IsString()
   @MinLength(2)
-  lastName: string;
+  lastName?: string;
+
+  // ! to satisfy the mobile old version
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  username?: string;
 
   @IsString()
   @MinLength(2)

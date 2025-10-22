@@ -1,4 +1,11 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { EntityType, Event, EventType, MediaPurpose, Prisma } from '@prisma/client';
 import { MediaService } from 'src/media/media.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -15,6 +22,7 @@ import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
 
 @Injectable()
 export class EventsService {
+  private readonly logger = new Logger(EventsService.name);
   constructor(
     private prisma: PrismaService,
     private readonly mediaService: MediaService,
@@ -109,7 +117,6 @@ export class EventsService {
   }
 
   async findPage(query: GetEventsPageDto) {
-
     let filter = {};
     if (query.type) {
       filter = {
@@ -153,6 +160,95 @@ export class EventsService {
     };
   }
 
+  async update2(updateEventDto: UpdateEventDto) {
+    const { thumbnail, video, ...eventDto } = updateEventDto;
+
+    const existingEvent = await this.getById(updateEventDto.id);
+
+    if (existingEvent.isLadiesNight && updateEventDto.type === 'SPECIAL') {
+      throw new BadRequestException('Ladies Night Event must be of type WEEKLY');
+    }
+
+    try {
+      let updateThumbnail: Promise<void>;
+      let updateVideo: Promise<void>;
+
+      const updatedEvent = await this.prisma.$transaction(async (tx) => {
+        if (existingEvent.thumbnail.s3Key !== thumbnail.s3Key) {
+          updateThumbnail = this.mediaService.updateEntityMedia({
+            entityId: updateEventDto.id,
+            entityType: EntityType.EVENT,
+            mediaPurpose: MediaPurpose.THUMBNAIL,
+            newMediaS3Key: updateEventDto.thumbnail.s3Key,
+          });
+        }
+        if (existingEvent.video.s3Key !== video.s3Key) {
+          updateVideo = this.mediaService.updateEntityMedia({
+            entityId: updateEventDto.id,
+            entityType: EntityType.EVENT,
+            mediaPurpose: MediaPurpose.VIDEO,
+            newMediaS3Key: updateEventDto.video.s3Key,
+          });
+        }
+
+        const updatedEvent = this.prisma.event.update({
+          where: { id: updateEventDto.id },
+          data: {
+            ...eventDto,
+          },
+        });
+
+        await Promise.all([updateThumbnail, updateVideo, updatedEvent]);
+
+        return updatedEvent;
+      });
+
+      if (updatedEvent.type === 'WEEKLY') {
+        const newEventJobParams = {
+          eventId: updatedEvent.id,
+          eventName: updatedEvent.name,
+          cronStartDate: updatedEvent.cronStartDate!,
+          cronEndDate: updatedEvent.cronEndDate!,
+          isLadiesNight: updatedEvent.isLadiesNight,
+        };
+        try {
+          await this.weeklyEventsMq.addWeeklyEventNotification(newEventJobParams);
+        } catch (err) {
+          this.logger.fatal('Error adding weekly event notification job', err);
+          new InternalServerErrorException('Error adding weekly event notification job');
+        }
+      } else {
+        const newEventJobParams = {
+          eventId: updatedEvent.id,
+          eventName: updatedEvent.name,
+          startDate: updatedEvent.startDate!,
+          endDate: updatedEvent.endDate!,
+        };
+        try {
+          await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
+        } catch (err) {
+          this.logger.fatal('Error adding special event notification job', err);
+          new InternalServerErrorException('Error adding special event notification job');
+        }
+      }
+
+      if (existingEvent.isLadiesNight) {
+        await this.redis.del(REDIS_HASHES.LADIES_NIGHT.DATE.HASH());
+      }
+
+      if (
+        existingEvent.isLadiesNight &&
+        (existingEvent.cronStartDate !== updatedEvent.cronStartDate ||
+          existingEvent.cronEndDate !== updatedEvent.cronEndDate)
+      ) {
+        await this.deleteUserHashes();
+      }
+    } catch (error) {
+      this.logger.fatal('Error updating event', error);
+      throw new InternalServerErrorException('Error updating event');
+    }
+  }
+
   update = async (updateEventDto: UpdateEventDto) => {
     const { thumbnail, video, ...eventDto } = updateEventDto;
 
@@ -170,91 +266,86 @@ export class EventsService {
       throw new BadRequestException('Ladies Night Event must be of type WEEKLY');
     }
 
-    if (existingEvent.type === 'SPECIAL') {
-      if (currentDate > existingEvent.startDate! && currentDate < existingEvent.endDate!) {
-        throw new BadRequestException('Cannot Update Event while active');
-      }
-    }
+    // ? Disable checking active event for updates
+    // if (existingEvent.type === 'SPECIAL') {
+    //   if (currentDate > existingEvent.startDate! && currentDate < existingEvent.endDate!) {
+    //     throw new BadRequestException('Cannot Update Event while active');
+    //   }
+    // }
 
-    if (existingEvent.type === 'WEEKLY') {
-      const nextStartDate = cronParser.parse(existingEvent.cronStartDate!).next().toDate();
-      const nextEndDate = cronParser.parse(existingEvent.cronEndDate!).next().toDate();
-      if (nextEndDate < nextStartDate) {
-        throw new BadRequestException('Cannot Update Event while active');
-      }
-    }
+    // if (existingEvent.type === 'WEEKLY') {
+    //   const nextStartDate = cronParser.parse(existingEvent.cronStartDate!).next().toDate();
+    //   const nextEndDate = cronParser.parse(existingEvent.cronEndDate!).next().toDate();
+    //   if (nextEndDate < nextStartDate) {
+    //     throw new BadRequestException('Cannot Update Event while active');
+    //   }
+    // }
 
     if (!existingEvent) throw new Error(`Event with ID ${updateEventDto.id} not found`);
 
-    return this.prisma.$transaction(async (tx) => {
-      if (existingEvent.thumbnail.s3Key !== thumbnail.s3Key) {
-        await this.mediaService.updateEntityMedia({
-          entityId: updateEventDto.id,
-          entityType: EntityType.EVENT,
-          mediaPurpose: MediaPurpose.THUMBNAIL,
-          newMediaS3Key: updateEventDto.thumbnail.s3Key,
-        });
-      }
-      if (existingEvent.video.s3Key !== video.s3Key) {
-        await this.mediaService.updateEntityMedia({
-          entityId: updateEventDto.id,
-          entityType: EntityType.EVENT,
-          mediaPurpose: MediaPurpose.VIDEO,
-          newMediaS3Key: updateEventDto.video.s3Key,
-        });
-      }
+    try {
+      const updatedEvent = await this.prisma.$transaction(async (tx) => {
+        if (existingEvent.thumbnail.s3Key !== thumbnail.s3Key) {
+          await this.mediaService.updateEntityMedia({
+            entityId: updateEventDto.id,
+            entityType: EntityType.EVENT,
+            mediaPurpose: MediaPurpose.THUMBNAIL,
+            newMediaS3Key: updateEventDto.thumbnail.s3Key,
+          });
+        }
+        if (existingEvent.video.s3Key !== video.s3Key) {
+          await this.mediaService.updateEntityMedia({
+            entityId: updateEventDto.id,
+            entityType: EntityType.EVENT,
+            mediaPurpose: MediaPurpose.VIDEO,
+            newMediaS3Key: updateEventDto.video.s3Key,
+          });
+        }
 
-      const updatedEvent: Event = await this.prisma.event.update({
-        where: { id: updateEventDto.id },
-        data: {
-          ...eventDto,
-        },
+        const updatedEvent: Event = await this.prisma.event.update({
+          where: { id: updateEventDto.id },
+          data: {
+            ...eventDto,
+          },
+        });
+
+        if (updatedEvent.type === 'WEEKLY') {
+          const newEventJobParams = {
+            eventId: updatedEvent.id,
+            eventName: updatedEvent.name,
+            cronStartDate: updatedEvent.cronStartDate!,
+            cronEndDate: updatedEvent.cronEndDate!,
+            isLadiesNight: updatedEvent.isLadiesNight,
+          };
+          await this.weeklyEventsMq.addWeeklyEventNotification(newEventJobParams);
+        } else {
+          const newEventJobParams = {
+            eventId: updatedEvent.id,
+            eventName: updatedEvent.name,
+            startDate: updatedEvent.startDate!,
+            endDate: updatedEvent.endDate!,
+          };
+          await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
+        }
+
+        if (existingEvent.isLadiesNight) {
+          await this.redis.del(REDIS_HASHES.LADIES_NIGHT.DATE.HASH());
+        }
+
+        if (
+          existingEvent.isLadiesNight &&
+          (existingEvent.cronStartDate !== updatedEvent.cronStartDate ||
+            existingEvent.cronEndDate !== updatedEvent.cronEndDate)
+        ) {
+          await this.deleteUserHashes();
+        }
+
+        return updatedEvent;
       });
-
-      if (
-        existingEvent.type === 'WEEKLY' &&
-        existingEvent.cronStartDate !== updatedEvent.cronStartDate
-      ) {
-        await this.weeklyEventsMq.removeWeeklyEventNotification(existingEvent.id);
-      }
-
-      if (existingEvent.type === 'SPECIAL' && existingEvent.startDate !== updatedEvent.startDate) {
-        await this.specialEventsMq.removeExistingJob(existingEvent.id);
-      }
-
-      if (updatedEvent.type === 'WEEKLY') {
-        const newEventJobParams = {
-          eventId: updatedEvent.id,
-          eventName: updatedEvent.name,
-          cronStartDate: updatedEvent.cronStartDate!,
-          cronEndDate: updatedEvent.cronEndDate!,
-          isLadiesNight: updatedEvent.isLadiesNight,
-        };
-        await this.weeklyEventsMq.addWeeklyEventNotification(newEventJobParams);
-      } else {
-        const newEventJobParams = {
-          eventId: updatedEvent.id,
-          eventName: updatedEvent.name,
-          startDate: updatedEvent.startDate!,
-          endDate: updatedEvent.endDate!,
-        };
-        await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
-      }
-
-      if (existingEvent.isLadiesNight) {
-        await this.redis.del(REDIS_HASHES.LADIES_NIGHT.DATE.HASH());
-      }
-
-      if (
-        existingEvent.isLadiesNight &&
-        (existingEvent.cronStartDate !== updatedEvent.cronStartDate ||
-          existingEvent.cronEndDate !== updatedEvent.cronEndDate)
-      ) {
-        await this.deleteUserHashes();
-      }
-
-      return updatedEvent;
-    });
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error updating event');
+    }
   };
 
   async deleteUserHashes() {

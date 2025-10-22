@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SpecialEventJobData } from './specialEventsMq.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 
 @Injectable()
 export class SpinningWheelDataMqService implements OnModuleInit {
@@ -15,6 +15,8 @@ export class SpinningWheelDataMqService implements OnModuleInit {
   private eventQueue: Queue<SpecialEventJobData>;
 
   private eventWorker: Worker<SpecialEventJobData>;
+
+  private currentWorkingTask: ScheduledTask | null;
 
   public constructor(
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
@@ -49,11 +51,18 @@ export class SpinningWheelDataMqService implements OnModuleInit {
       [REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED()]: 0,
     });
 
-    await this.prisma.spinningWheelData.create({
-      data: {
+    await this.prisma.spinningWheelData.upsert({
+      create: {
         startDate: startDate,
         totalParticipants: 0,
         participantsRedeemedCode: 0,
+      },
+      update: {
+        totalParticipants: 0,
+        participantsRedeemedCode: 0,
+      },
+      where: {
+        startDate: startDate,
       },
     });
   }
@@ -64,10 +73,19 @@ export class SpinningWheelDataMqService implements OnModuleInit {
     await this.resetSpinningWheelStats(job.data.startDate);
 
     const task = cron.schedule('*/1 * * * *', async () => {
+      // ! change to 15 min later
       this.logger.debug(`🕒1mn passed : Updating Spinning Wheel Data...`);
       const currentDate = new Date();
       const endDate = new Date(job.data.endDate);
-      if (currentDate > endDate) task.stop();
+      if (currentDate > endDate) {
+        this.currentWorkingTask = null;
+        this.logger.debug(
+          `⏹ Spinning Wheel Data Recording Task stopped as end date ${job.data.endDate} reached`,
+        );
+        await task.stop();
+        return;
+      }
+
       const statHash = REDIS_HASHES.SPINNING_WHEEL.STATS.HASH();
 
       const pipeline = this.redis.pipeline();
@@ -79,9 +97,7 @@ export class SpinningWheelDataMqService implements OnModuleInit {
         REDIS_HASHES.SPINNING_WHEEL.STATS.TOTAL_PARTICIPANTS(),
         REDIS_HASHES.SPINNING_WHEEL.STATS.PARTICIPANTS_WITH_CODE_REDEEMED(),
       );
-      this.logger.debug(
-        `Current stats from redis are, total :  ${totalParticipants}, redeemed : ${participantsWithRedeemedCode}`,
-      );
+
       await this.prisma.spinningWheelData.upsert({
         where: {
           startDate: new Date(job.data.startDate),
@@ -99,10 +115,16 @@ export class SpinningWheelDataMqService implements OnModuleInit {
     });
 
     await task.start();
+
+    this.currentWorkingTask = task;
   }
 
   private async deletePreviousJob(jobId: string) {
-    // ! ouble check this cuz i forgot but ti tihkin this is not weekly so doesnt need to be this way
+    if (this.currentWorkingTask) {
+      await this.currentWorkingTask.stop();
+      this.currentWorkingTask = null;
+      this.logger.debug('Stopped Current running spinning wheel data recorder task');
+    }
 
     const firstDelayJob = await this.eventQueue.getJob(jobId);
 
@@ -121,13 +143,11 @@ export class SpinningWheelDataMqService implements OnModuleInit {
 
     const delayInMs = new Date(jobData.startDate).getTime() - Date.now();
 
-    if (delayInMs > 0) {
-      await this.eventQueue.add(jobData.eventId, jobData, {
-        jobId: jobData.eventId,
-        repeatJobKey: jobData.eventId,
-        delay: delayInMs,
-      });
-    }
+    await this.eventQueue.add(jobData.eventId, jobData, {
+      jobId: jobData.eventId,
+      repeatJobKey: jobData.eventId,
+      delay: delayInMs,
+    });
   }
 
   private initWorker() {
@@ -136,7 +156,7 @@ export class SpinningWheelDataMqService implements OnModuleInit {
       async (job: Job<SpecialEventJobData>) => await this.addDataScheduler(job),
       {
         connection: this.redis,
-        concurrency: 2,
+        concurrency: 1,
       },
     );
 

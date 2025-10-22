@@ -10,6 +10,7 @@ export class UserMapper {
     return {
       ...result,
       phoneNumber: result.phoneNumber === null ? undefined : result.phoneNumber,
+      username: `${result.firstName} ${result.lastName}`, // ! to satisfy the mobile old version
     };
   }
 
@@ -20,6 +21,7 @@ export class UserMapper {
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role,
+      username: `${user.firstName} ${user.lastName}`,
     };
   }
 

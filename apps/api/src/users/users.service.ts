@@ -39,9 +39,16 @@ export class UsersService {
 
   async createCustomer(dto: CreateCustomerDto, hashedPassword: string) {
     try {
+      const { username, ...newDto } = dto;
+      // ! To satisfy the mobile old version
+      const newObject = {
+        ...dto,
+        firstName: username?.split(' ')[0] ?? 'User',
+        lastName: username?.split(' ')[1] ?? ' ',
+      };
       const newUser = await this.prisma.user.create({
         data: {
-          ...dto,
+          ...newObject,
           role: Role.USER,
           password: hashedPassword,
         },

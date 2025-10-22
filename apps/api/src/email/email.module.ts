@@ -4,7 +4,7 @@ import { ReservationController } from './reservation.controller';
 import { ContactController } from './contact.controller';
 
 @Module({
-  controllers: [ReservationController,ContactController],
+  controllers: [ReservationController, ContactController],
   providers: [EmailService],
   exports: [EmailService],
 })
