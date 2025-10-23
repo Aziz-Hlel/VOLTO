@@ -16,7 +16,7 @@ const EventBanner: FC<EventBannerProps> = (props) => {
         <div className=" flex flex-col w-full h-full items-center justify-center">
           <h6 className="text-xs md:text-2xl text-[#C19D60] mb-4">{props.type}</h6>
           <h2 className="text-base md:text-6xl mb-8">{props.name}</h2>
-          <p className="text-xs md:text-2xl md:w-1/2">{props.description}</p>
+          {/* <p className="text-xs md:text-2xl md:w-1/2">{props.description}</p> */}
         </div>
       </div>
     </Link>
