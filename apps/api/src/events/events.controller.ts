@@ -21,6 +21,7 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
+import { GetEventsStatusDto } from './dto/get-evets-table.dto';
 
 @Controller('events')
 export class EventsController {
@@ -59,6 +60,13 @@ export class EventsController {
     response.setHeader('X-Total-Count', data.count.toString());
 
     return data.payload;
+  }
+
+  @Get('filter')
+  async find(@Query() query: GetEventsStatusDto) {
+    const response = await this.eventsService.findByStatus(query);
+
+    return response;
   }
 
   @Get('closest-event')

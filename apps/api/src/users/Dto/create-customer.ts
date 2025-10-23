@@ -12,7 +12,6 @@ import {
 import { CreateObjectWithMediaRequestDto } from 'src/media/dto/MediaRequest.dto';
 
 export class CreateCustomerDto {
-
   @IsString()
   @MinLength(2)
   firstName: string;

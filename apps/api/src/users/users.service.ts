@@ -62,8 +62,7 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto, hashedPassword: string) {
     const phoneNumber = dto.phoneNumber ? dto.phoneNumber.replace('+', '') : null;
-    try{
-
+    try {
       return await this.prisma.user.create({
         data: {
           ...dto,

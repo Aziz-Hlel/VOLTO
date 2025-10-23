@@ -19,6 +19,7 @@ import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
 import { WeeklyEventMq } from 'src/bullmq/weeklyEventsMq.service';
 import cronParser from 'cron-parser';
 import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
+import { GetEventsStatusDto } from './dto/get-evets-table.dto';
 
 @Injectable()
 export class EventsService {
@@ -116,6 +117,79 @@ export class EventsService {
     return await Promise.all(eventWithMedia);
   }
 
+async findByStatus(
+  query: GetEventsStatusDto,
+): Promise<{ data: Event[]; pagination: { total: number } }> {
+  if (query.status === 'upcoming') {
+    return this.findUpcomingEvents(query);
+  }
+
+  return this.findPastEvents(query);
+}
+
+private async findUpcomingEvents(
+  query: GetEventsStatusDto,
+): Promise<{ data: Event[]; pagination: { total: number } }> {
+  const limit = query.limit;
+  const offset = (query.page - 1) * limit;
+
+  // Fetch all data we might need (this will be paginated in application logic)
+  // In production, consider caching weekly events or fetching them separately
+  const [allWeeklyEvents, allSpecialUpcomingEvents] = await Promise.all([
+    this.prisma.event.findMany({
+      where: { type: EventType.WEEKLY },
+      orderBy: { createdAt: 'desc' },
+    }),
+    this.prisma.event.findMany({
+      where: {
+        type: EventType.SPECIAL,
+        endDate: { gte: new Date() },
+      },
+      orderBy: { startDate: 'asc' },
+    }),
+  ]);
+
+  // Combine in priority order: weekly first, then special
+  const combinedEvents = [...allWeeklyEvents, ...allSpecialUpcomingEvents];
+  const total = combinedEvents.length;
+
+  // Apply pagination in application layer
+  const paginatedData = combinedEvents.slice(offset, offset + limit);
+
+  return {
+    data: paginatedData,
+    pagination: { total },
+  };
+}
+
+private async findPastEvents(
+  query: GetEventsStatusDto,
+): Promise<{ data: Event[]; pagination: { total: number } }> {
+  // Past events are only special events (weekly recurring events never go to "past")
+  const [events, total] = await Promise.all([
+    this.prisma.event.findMany({
+      where: {
+        type: EventType.SPECIAL,
+        endDate: { lte: new Date() },
+      },
+      skip: (query.page - 1) * query.limit,
+      take: query.limit,
+      orderBy: { endDate: 'desc' },
+    }),
+    this.prisma.event.count({
+      where: {
+        type: EventType.SPECIAL,
+        endDate: { lte: new Date() },
+      },
+    }),
+  ]);
+
+  return {
+    data: events,
+    pagination: { total },
+  };
+}
+
   async findPage(query: GetEventsPageDto) {
     let filter = {};
     if (query.type) {
@@ -169,10 +243,10 @@ export class EventsService {
       throw new BadRequestException('Ladies Night Event must be of type WEEKLY');
     }
 
-    if ( existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
-        throw new BadRequestException('Cannot Update Ladies Night Event while active');
-      }
-      
+    if (existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
+      throw new BadRequestException('Cannot Update Ladies Night Event while active');
+    }
+
     try {
       let updateThumbnail: Promise<void>;
       let updateVideo: Promise<void>;

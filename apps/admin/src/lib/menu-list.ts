@@ -1,7 +1,7 @@
 import {
   Users,
   Settings,
-  LayoutGrid,
+  UserCog ,
   type LucideIcon,
   CalendarDays,
   Images,
@@ -30,17 +30,7 @@ type Group = {
 
 export function getMenuList(pathname: string): Group[] {
   return [
-    // {
-    //   groupLabel: "",
-    //   menus: [
-    //     {
-    //       href: "/dashboard",
-    //       label: "Dashboard",
-    //       icon: LayoutGrid,
-    //       submenus: [],
-    //     },
-    //   ],
-    // },
+
     {
       groupLabel: "Contents",
       menus: [
@@ -48,22 +38,7 @@ export function getMenuList(pathname: string): Group[] {
           href: "/events",
           label: "Events",
           icon: CalendarDays,
-          // submenus: [
-          //   {
-          //     href: "/posts",
-          //     label: "All Posts"
-          //   },
-          //   {
-          //     href: "/posts/new",
-          //     label: "New Post"
-          //   }
-          // ]
         },
-        // {
-        //   href: "/Gallery",
-        //   label: "Gallery",
-        //   icon: Images,
-        // },
       ],
     },
     {
@@ -87,12 +62,21 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "/staff",
           label: "Staff",
-          icon: Users,
+          icon: UserCog,
         },
         {
           href: "/account",
           label: "Account",
           icon: Settings,
+        },
+      ],
+    },    {
+      groupLabel: "Management",
+      menus: [
+        {
+          href: "/users",
+          label: "Users",
+          icon: Users,
         },
       ],
     },

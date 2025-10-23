@@ -143,3 +143,8 @@ GET     {{baseUrl}}/events/closest-event
 Content-Type: application/json
 
 
+### Get Upcoming or Past Event
+# @name getEventsByStatus
+GET     {{baseUrl}}/events/filter?status=past&limit=2&page=1
+Content-Type: application/json
+

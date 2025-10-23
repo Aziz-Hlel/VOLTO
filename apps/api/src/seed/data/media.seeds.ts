@@ -96,7 +96,6 @@ export const newYearEveThumbnail = (entityId: string): IMediaType => ({
   entityId,
 });
 
-
 export const newYearEveVideo = (entityId: string): IMediaType => ({
   s3Key: 'events/volto-video3.mp4',
   mimeType: 'video/mp4',
@@ -110,7 +109,6 @@ export const newYearEveVideo = (entityId: string): IMediaType => ({
   entityId,
 });
 
-
 export const eidThumbnail = (entityId: string): IMediaType => ({
   s3Key: 'events/eid-event.jpg',
   mimeType: 'image/jpeg',
@@ -123,7 +121,6 @@ export const eidThumbnail = (entityId: string): IMediaType => ({
   confirmedAt: null,
   entityId,
 });
-
 
 export const eidVideo = (entityId: string): IMediaType => ({
   s3Key: 'events/volto-video4.mp4',
@@ -149,7 +146,7 @@ export const halloweenThumbnail = (entityId: string): IMediaType => ({
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
   entityId,
-})
+});
 
 export const halloweenVideo = (entityId: string): IMediaType => ({
   s3Key: 'events/volto-halloween.mp4',
@@ -162,13 +159,11 @@ export const halloweenVideo = (entityId: string): IMediaType => ({
   status: MediaStatus.CONFIRMED,
   confirmedAt: null,
   entityId,
-})
-
+});
 
 export const seedMedia = async (media: IMediaType) =>
   prisma.media.upsert({
     where: { s3Key: media.s3Key },
     update: media,
     create: media,
-});
-
+  });

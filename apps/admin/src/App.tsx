@@ -48,6 +48,7 @@ function App() {
 
                 <Route path="ladies-night" element={<LadiesNight />} />
                 <Route path="spinning-wheel" element={<SpinningWheel />} />
+                <Route path="users" element={<SpinningWheel />} />
                 <Route path="account" element={<EditAccountWrapper />} />
               </Route>
               <Route path="*" element={<NotFound />} />

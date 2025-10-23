@@ -100,8 +100,8 @@ const eventSeeds: IEventSeeds[] = [
   },
   {
     id: '8f14a2b5-b2e3-4a6e-9f72-2cfcb7e9d31f',
-    name:'Halloween Night',
-    description:`Halloween Night at Volto invites you to step into a world of spook, style, and celebration. Dress to impress in your most creative costumes and enjoy signature cocktails, haunting beats from our DJ, and a lively atmosphere that sets the stage for an unforgettable night. Whether you’re dancing, socializing, or simply soaking in the spooky vibes, Volto is the place to celebrate Halloween with flair, fun, and friends.`,
+    name: 'Halloween Night',
+    description: `Halloween Night at Volto invites you to step into a world of spook, style, and celebration. Dress to impress in your most creative costumes and enjoy signature cocktails, haunting beats from our DJ, and a lively atmosphere that sets the stage for an unforgettable night. Whether you’re dancing, socializing, or simply soaking in the spooky vibes, Volto is the place to celebrate Halloween with flair, fun, and friends.`,
     startDate: new Date('2025-03-28T00:00:00.000Z'),
     endDate: new Date('2025-03-30T23:59:59.999Z'),
     cronStartDate: null,
@@ -110,7 +110,7 @@ const eventSeeds: IEventSeeds[] = [
     isLadiesNight: false,
     thumnail: halloweenThumbnail('8f14a2b5-b2e3-4a6e-9f72-2cfcb7e9d31f'),
     video: halloweenVideo('8f14a2b5-b2e3-4a6e-9f72-2cfcb7e9d31f'),
-  }
+  },
 ];
 
 const seedEvents = async () => {
