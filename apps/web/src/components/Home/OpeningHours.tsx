@@ -51,10 +51,8 @@ const OpeningHours = () => {
 
             <p className="text-sm md:text-base text-[#777] mt-5 text-center">
               You can also call:{" "}
-              <a href="tel:+97334588466" className="text-[#C19D60] underline">
-                  
-              </a>{" "}
-              to make a reservation.
+              <a href="tel:+97334588466" className="text-[#C19D60] underline"></a> to make a
+              reservation.
             </p>
 
             <p className="text-sm md:text-base text-[#777] flex items-center justify-center gap-2 mt-3 text-center">

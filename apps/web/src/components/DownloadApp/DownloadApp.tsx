@@ -1,12 +1,6 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 
-const DownloadApp = ({closeDialog}:{closeDialog:()=>void}) => {
+const DownloadApp = ({ closeDialog }: { closeDialog: () => void }) => {
   return (
     <Dialog open={true} onOpenChange={closeDialog}>
       <DialogContent className="sm:max-w-[425px]">
@@ -17,8 +11,11 @@ const DownloadApp = ({closeDialog}:{closeDialog:()=>void}) => {
         <section className="text-gray-600 body-font">
           <div className="container px-5  mx-auto flex items-center md:flex-row flex-col">
             <div className="flex md:ml-auto md:mr-0 mx-auto items-center flex-shrink-0 space-x-4">
-              <a className="bg-gray-100 inline-flex py-3 px-5 rounded-lg items-center hover:bg-gray-200 focus:outline-none cursor-pointer"
-                href="https://play.google.com/store/apps/details?id=com.techno.volto" target="_blank" rel="noopener noreferrer"
+              <a
+                className="bg-gray-100 inline-flex py-3 px-5 rounded-lg items-center hover:bg-gray-200 focus:outline-none cursor-pointer"
+                href="https://play.google.com/store/apps/details?id=com.techno.volto"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -33,8 +30,11 @@ const DownloadApp = ({closeDialog}:{closeDialog:()=>void}) => {
                   <span className="title-font font-medium">Google Play</span>
                 </span>
               </a>
-              <a className="bg-gray-100 inline-flex py-3 px-5 rounded-lg items-center hover:bg-gray-200 focus:outline-none cursor-pointer"
-                href="https://apps.apple.com/app/id6753715978" target="_blank" rel="noopener noreferrer"
+              <a
+                className="bg-gray-100 inline-flex py-3 px-5 rounded-lg items-center hover:bg-gray-200 focus:outline-none cursor-pointer"
+                href="https://apps.apple.com/app/id6753715978"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

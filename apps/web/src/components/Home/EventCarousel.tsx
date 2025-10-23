@@ -41,16 +41,15 @@ const events = [
 ];
 
 export function EventCarousel() {
-
-
-  const {data}= useQuery({
+  const { data } = useQuery({
     queryKey: ["events-carousel"],
-    queryFn: async () => await axiosInstance.get<Event[]>("/events/list",{
-      params:{
-        type:"WEEKLY"
-      }
-    }),
-  })
+    queryFn: async () =>
+      await axiosInstance.get<Event[]>("/events/list", {
+        params: {
+          type: "WEEKLY",
+        },
+      }),
+  });
 
   const events = data?.data || [];
 

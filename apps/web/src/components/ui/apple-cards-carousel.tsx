@@ -10,6 +10,8 @@ import { AspectRatio } from "./aspect-ratio";
 import type { ICard } from "../Events/Events";
 import EventCategory from "@/types/EventCategory";
 import { Link } from "react-router-dom";
+import parser from "cron-parser";
+import { toZonedTime, format } from "date-fns-tz";
 
 interface CarouselProps {
   events: JSX.Element[];
@@ -196,23 +198,49 @@ export const Card = ({
     { prefix: "MON", suffix: "DAY" },
     { prefix: "TUE", suffix: "DAY" },
     { prefix: "WEDNES", suffix: "DAY" },
-    { prefix: "THU", suffix: "DAY" },
+    { prefix: "THURS", suffix: "DAY" },
     { prefix: "FRI", suffix: "DAY" },
     { prefix: "SATUR", suffix: "DAY" },
   ];
 
-  const wekklyEventDay = event.category === "WEEKLY" && event.startDate.getDay();
+  const timeZone = "Asia/Bahrain";
+
+  let weekday: number = 0;
+  let startHour: string = "7AM";
+  let endHour: string = "7AM";
+  let month: string | null = null;
+
+  if (event.type === "WEEKLY") {
+    const parsedCronStartDate = parser.parse(event.cronStartDate);
+    const parsedCronEndDate = parser.parse(event.cronEndDate);
+    weekday = isNaN(Number(parsedCronStartDate.fields.dayOfWeek.values[0]))
+      ? 0
+      : Number(parsedCronStartDate.fields.dayOfWeek.values[0]);
+
+    const utcStartDate = parsedCronStartDate.next().toDate();
+    const bahrainStartDate = toZonedTime(utcStartDate, timeZone);
+    startHour = format(bahrainStartDate, "h a", { timeZone });
+
+    const utcEndDate = parsedCronEndDate.next().toDate();
+    const bahrainEndDate = toZonedTime(utcEndDate, timeZone);
+    endHour = format(bahrainEndDate, "h a", { timeZone });
+  }
+
+  if (event.type === "SPECIAL") {
+    month = event.startDate.toLocaleString("default", { month: "long" }).toUpperCase().slice(0, 3);
+
+    const bahrainStartDate = toZonedTime(event.startDate, timeZone);
+    startHour = format(bahrainStartDate, "h a", { timeZone });
+
+    const bahrainEndDate = toZonedTime(event.endDate, timeZone);
+    endHour = format(bahrainEndDate, "h a", { timeZone });
+  }
+
   const isRecurring =
-    event.category === "SPECIAL" && event.startDate.getDate() !== event.endDate.getDate();
+    event.type === "SPECIAL" && event.startDate.getDate() !== event.endDate.getDate();  const startDay = event.type === "SPECIAL" && event.startDate?.getDate();
+  const endDay = event.type === "SPECIAL" && event.endDate?.getDate();
+  const isUpcommingEvent = event.type === "WEEKLY" || event.endDate > new Date();
 
-  const startDay = event.startDate.getDate();
-  const endDay = event.endDate.getDate();
-  const month = event.startDate
-    .toLocaleString("default", { month: "long" })
-    .toUpperCase()
-    .slice(0, 3);
-
-  const isUpcommingEvent = event.category === "WEEKLY" || event.endDate > new Date();
 
   return (
     <>
@@ -264,7 +292,7 @@ export const Card = ({
                       layoutId={layout ? `category-${event.title}` : undefined}
                       className="text-pretty  text-xs font-light  md:text-base md:font-medium text-neutral-700 sm:text-black"
                     >
-                      {EventCategory[event.category]}
+                      {EventCategory[event.type]}
                     </motion.p>
                     <motion.p
                       layoutId={layout ? `title-${event.title}` : undefined}
@@ -275,7 +303,7 @@ export const Card = ({
                   </div>
 
                   <div className=" col-span-1 flex flex-col items-end  justify-end w-full ">
-                    {event.category === "SPECIAL" && !isRecurring && (
+                    {event.type === "SPECIAL" && !isRecurring && (
                       <>
                         <div className=" text-xs sm:text-base font-extralight sm:font-medium">
                           {month}
@@ -286,7 +314,7 @@ export const Card = ({
                       </>
                     )}
 
-                    {event.category === "WEEKLY" && (
+                    {event.type === "WEEKLY" && (
                       <>
                         <div className="flex text-sm gap-1">
                           <span className=" text-xs sm:text-base font-thin text-neutral-700 sm:text-black">
@@ -298,24 +326,17 @@ export const Card = ({
                         <div>
                           <span className="text-lg sm:text-2xl md:text-4xl ">
                             {" "}
-                            {days[wekklyEventDay as number].prefix}
+                            {days[weekday].prefix}
                           </span>
                           <span className="text-lg sm:text-2xl md:text-4xl text-pink-700">
-                            {days[wekklyEventDay as number].suffix}
+                            {days[weekday].suffix}
                           </span>
                         </div>
                       </>
                     )}
 
-                    {/* <div className="flex flex-col items-end text-sm gap-1">
-                                            <span className="text-neutral-500">EVERY</span>
-                                            <div className="flex items-center gap-1">
-                                                <CalendarSync className="stroke-2 size-4 text-pink-700" />
-                                                <span className="text-neutral-500">THURSDAY</span>
-                                            </div>
-                                        </div> */}
 
-                    {event.category === "SPECIAL" && isRecurring && (
+                    {event.type === "SPECIAL" && isRecurring && (
                       <div className="flex flex-col items-end ">
                         <div className=" text-xs sm:text-sm font-extralight sm:font-semibold text-neutral-700 sm:text-black ">
                           {month}
@@ -331,7 +352,8 @@ export const Card = ({
                   </div>
                   <div className="col-span-2 h-fit" />
                   <div className="text-xs font-light sm:text-sm col-span-1 h-fit  text-neutral-500 text-right">
-                    From 6PM to 10PM
+                    From {startHour} to {endHour}
+                    <div className=" text-gray-400 font-light text-xs">* Bahrein Time</div>
                   </div>
                 </div>
 
@@ -339,13 +361,7 @@ export const Card = ({
                   {/* {event.content} */}
                   <>
                     <p className=" text-xs leading-6 tracking-wide   pb-8 sm:pb-12">
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid praesentium
-                      expedita fuga nostrum. Unde vero saepe fugiat nemo, architecto, accusantium
-                      repellendus rem asperiores, est dolorum alias aliquid eos exercitationem
-                      tenetur! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid
-                      praesentium expedita fuga nostrum. Unde vero saepe fugiat nemo, architecto,
-                      accusantium repellendus rem asperiores, est dolorum alias aliquid eos
-                      exercitationem tenetur!
+                      {event.description}
                     </p>
 
                     {isUpcommingEvent && (
@@ -403,13 +419,13 @@ export const Card = ({
             layoutId={layout ? `category-${event.id}` : undefined}
             className="text-left font-sans text-sm font-medium md:text-base bg-gradient-to-r from-[#FFD700] to-[#FFA500] bg-clip-text text-transparent "
           >
-            {event.category}
+            {event.type}
           </motion.p>
           <motion.p
             layoutId={layout ? `title-${event.title}` : undefined}
             className={cn(
               "relative mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl",
-              event.category === "SPECIAL" &&
+              event.type === "SPECIAL" &&
                 "before:absolute before:inset-0 before:z-0 before:bg-gray-600 opacity-80 before:rounded-md",
             )}
           >

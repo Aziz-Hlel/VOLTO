@@ -300,15 +300,14 @@ const CardNav: React.FC<CardNavProps> = ({
 
   const isMobile = platform === "ios" || platform === "android";
 
-
   const [openDownloadAppDialog, setOpenDownloadAppDialog] = useState(false);
 
   return (
     <div
       className={`card-nav-container mx-auto mt-3 w-[90%] max-w-[800px] z-[90] top-[1.2em] md:top-[2em]  ${className}`}
     >
-      {openDownloadAppDialog && <DownloadApp  closeDialog={() => setOpenDownloadAppDialog(false)}/>}
-        
+      {openDownloadAppDialog && <DownloadApp closeDialog={() => setOpenDownloadAppDialog(false)} />}
+
       <nav
         ref={navRef}
         className={`card-nav ${isOpen ? "open" : ""} block  h-[60px] p-0 rounded-xl bg-white/75 shadow-md relative overflow-hidden will-change-[height]`}
@@ -351,7 +350,7 @@ const CardNav: React.FC<CardNavProps> = ({
             className="card-nav-cta-button hidden md:inline-flex md:justify-center md:items-center border-0 rounded-[calc(0.75rem-0.2rem)] px-4 h-full font-medium cursor-pointer transition-colors duration-300 bg-black/85 text-white hover:bg-black/95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black/50"
             style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
             aria-label="Get mobile app"
-            onClick={()=>setOpenDownloadAppDialog(true)}
+            onClick={() => setOpenDownloadAppDialog(true)}
           >
             Get App
           </button>
@@ -420,22 +419,24 @@ const CardNav: React.FC<CardNavProps> = ({
           ))}
           <div
             className=" w-full grid grid-cols-2 justify-center items-center gap-2  text-white text-center text-md   md:hidden "
-            onClick={isMobile ? handleOpenApp : handleDesktopRedirect}
           >
-
-
-            <a href="https://apps.apple.com/app/id6753715978"className="bg-black/85 rounded-md flex items-center  justify-center"
-            target="_blank" rel="noopener noreferrer"
+            <a
+              href="https://apps.apple.com/app/id6753715978"
+              className="bg-black/85 rounded-md flex items-center  justify-center"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-            <FaApple className=" text-white h-8  " />
+              <FaApple className=" text-white h-8  " />
             </a>
 
-<a href="https://play.google.com/store/apps/details?id=com.techno.volto" className="bg-black/85 rounded-md flex items-center  justify-center"
-target="_blank" rel="noopener noreferrer"
- >
-            <AiFillAndroid className=" text-white h-8  " />
-
-</a>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.techno.volto"
+              className="bg-black/85 rounded-md flex items-center  justify-center"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AiFillAndroid className=" text-white h-8  " />
+            </a>
           </div>
         </div>
       </nav>

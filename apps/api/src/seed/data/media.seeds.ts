@@ -138,6 +138,32 @@ export const eidVideo = (entityId: string): IMediaType => ({
   entityId,
 });
 
+export const halloweenThumbnail = (entityId: string): IMediaType => ({
+  s3Key: 'events/halloween-event.jpg',
+  mimeType: 'image/jpeg',
+  fileSize: 65257,
+  fileType: '.jpg',
+  originalName: 'halloween-event.jpg',
+  entityType: EntityType.EVENT,
+  mediaPurpose: MediaPurpose.THUMBNAIL,
+  status: MediaStatus.CONFIRMED,
+  confirmedAt: null,
+  entityId,
+})
+
+export const halloweenVideo = (entityId: string): IMediaType => ({
+  s3Key: 'events/volto-halloween.mp4',
+  mimeType: 'video/mp4',
+  fileSize: 3769471,
+  fileType: '.mp4',
+  originalName: 'volto-halloween.mp4',
+  entityType: EntityType.EVENT,
+  mediaPurpose: MediaPurpose.VIDEO,
+  status: MediaStatus.CONFIRMED,
+  confirmedAt: null,
+  entityId,
+})
+
 
 export const seedMedia = async (media: IMediaType) =>
   prisma.media.upsert({
