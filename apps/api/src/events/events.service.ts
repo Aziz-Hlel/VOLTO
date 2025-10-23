@@ -121,10 +121,54 @@ async findByStatus(
   query: GetEventsStatusDto,
 ): Promise<{ data: Event[]; pagination: { total: number } }> {
   if (query.status === 'upcoming') {
-    return this.findUpcomingEvents(query);
+    const payload = await this.findUpcomingEvents(query);
+
+    const eventWithMedia = payload.data.map(async (event) => {
+      const thumbnail = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.EVENT,
+        entityId: event.id,
+        mediaPurpose: MediaPurpose.THUMBNAIL,
+      });
+
+      const video = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.EVENT,
+        entityId: event.id,
+        mediaPurpose: MediaPurpose.VIDEO,
+      });
+
+      return { ...event, thumbnail, video };
+    });
+
+    return {
+      data: await Promise.all(eventWithMedia),
+      pagination: payload.pagination,
+    };
   }
 
-  return this.findPastEvents(query);
+  const payload =await this.findPastEvents(query);
+
+
+    const eventWithMedia = payload.data.map(async (event) => {
+      const thumbnail = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.EVENT,
+        entityId: event.id,
+        mediaPurpose: MediaPurpose.THUMBNAIL,
+      });
+
+      const video = await this.mediaService.getMediaKeyAndUrl({
+        entityType: EntityType.EVENT,
+        entityId: event.id,
+        mediaPurpose: MediaPurpose.VIDEO,
+      });
+
+      return { ...event, thumbnail, video };
+    });
+
+    return {
+      data: await Promise.all(eventWithMedia),
+      pagination: payload.pagination,
+    };
+
 }
 
 private async findUpcomingEvents(
