@@ -43,7 +43,7 @@ const ChefRecommendation = () => {
           <div className="text-center mb-8 relative">
             <div className="absolute w-full text-center text-4xl opacity-10 top-0 ">Menu</div>
             <div className="text-[12px] uppercase tracking-[3px] text-[#C19D60] mb-2">
-              Should to Try
+              Try Our Menu
             </div>
             <div className="text-6xl text-[#1b1b1b] leading-none font-serif font-extralight">
               Chef Recommends

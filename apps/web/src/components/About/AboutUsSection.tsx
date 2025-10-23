@@ -9,9 +9,9 @@ const AboutUsSection = () => {
           <div className="lg:w-1/2 space-y-6">
             <div className="mb-6">
               <div className="text-sm tracking-[3px] text-[#C19D60] uppercase mb-2">
-                Volto Restaurant
+                
               </div>
-              <h2 className="text-4xl font-serif text-[#1b1b1b]">Few Words About Us</h2>
+              <h2 className="text-4xl font-serif text-[#C19D60] tracking-[3px] ">Volto Restaurant </h2>
             </div>
             <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
               Volto Bahrain is more than a restaurant – it is an experience. With world-class

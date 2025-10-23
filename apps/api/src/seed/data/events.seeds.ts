@@ -2,6 +2,8 @@ import type { Event, Media } from '@prisma/client';
 import { EntityType, EventType, MediaStatus, PrismaClient } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import {
+  eidThumbnail,
+  eidVideo,
   fridayBrunchThumbnail,
   fridayBrunchVideo,
   hookasNightThumbnail,
@@ -81,6 +83,19 @@ const eventSeeds: IEventSeeds[] = [
     thumnail: newYearEveThumbnail('b6d1e3f4-5a7c-4f2b-8e1a-9c3b2d4f5a6e'),
     video: newYearEveVideo('b6d1e3f4-5a7c-4f2b-8e1a-9c3b2d4f5a6e'),
   },
+  {
+    id: 'e3b6f5b4-9c5b-4a1e-9212-35d764cfc731',
+    name: "Eid Celebration",
+    description: "Eid Celebration",
+    startDate: new Date('2025-08-12T00:00:00.000Z'),
+    endDate: new Date('2025-08-15T23:59:59.999Z'),
+    cronStartDate: null,
+    cronEndDate: null,
+    type: EventType.SPECIAL,
+    isLadiesNight: false,
+    thumnail: eidThumbnail('e3b6f5b4-9c5b-4a1e-9212-35d764cfc731'),
+    video: eidVideo('e3b6f5b4-9c5b-4a1e-9212-35d764cfc731'),
+  }
 ];
 
 const seedEvents = async () => {
