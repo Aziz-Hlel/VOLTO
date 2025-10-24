@@ -1,7 +1,7 @@
 import {
   Users,
   Settings,
-  UserCog ,
+  UserCog,
   type LucideIcon,
   CalendarDays,
   Images,
@@ -30,7 +30,6 @@ type Group = {
 
 export function getMenuList(pathname: string): Group[] {
   return [
-
     {
       groupLabel: "Contents",
       menus: [
@@ -70,7 +69,8 @@ export function getMenuList(pathname: string): Group[] {
           icon: Settings,
         },
       ],
-    },    {
+    },
+    {
       groupLabel: "Management",
       menus: [
         {

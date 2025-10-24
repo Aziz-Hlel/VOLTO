@@ -17,6 +17,10 @@ const apiRoutes = {
     delete: (staffId: string) => `/staff/${staffId}` as const,
   },
 
+  user: {
+    getPage: () => "/users" as const,
+  },
+
   gallery: {
     list: () => "/gallery/" as const,
   },

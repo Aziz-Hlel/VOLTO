@@ -10,7 +10,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from 'src/users/Dto/create-user';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { EntityType, MediaPurpose, Role } from '@prisma/client';
+import { EntityType, MediaPurpose, Prisma, Role } from '@prisma/client';
 import { MediaService } from 'src/media/media.service';
 import { CreateCustomerDto } from './Dto/create-customer';
 import { UserMapper } from './Mapper/usersMapper';
@@ -24,6 +24,7 @@ import { ConfirmPasswordRequestDto } from './Dto/confirm-password-request.dto';
 import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto';
 import { UpdateUserDto } from './Dto/update-user';
 import { ChangePasswordRequestDto } from './Dto/change-password-request.dto';
+import { GetUsersQuery, Sort } from './Dto/get-users-query';
 
 @Injectable()
 export class UsersService {
@@ -429,10 +430,60 @@ export class UsersService {
     }
   }
 
+  async getUsers(query: GetUsersQuery) {
+    const skip = (query.page - 1) * query.limit;
 
+    const take = query.limit;
 
+    const where: Prisma.UserWhereInput = {
+      role: query.role,
+      OR: query.search
+        ? [
+            { firstName: { contains: query.search, mode: 'insensitive' } },
+            { lastName: { contains: query.search, mode: 'insensitive' } },
+            { email: { contains: query.search, mode: 'insensitive' } },
+          ]
+        : undefined,
+    };
 
-  async getUsers(){
-    
+    const orderBy = () => {
+      if (query.sort) {
+        const sort = String(query.sort) as keyof Sort;
+        return {
+          [sort]: query.order ?? 'asc',
+        };
+      }
+      return {
+        createdAt: 'desc' as const,
+      };
+    };
+    try {
+      const usersQuery = this.prisma.user.findMany({
+        where,
+        orderBy: orderBy(),
+
+        skip,
+        take,
+      });
+
+      const countQuery = this.prisma.user.count({
+        where,
+        orderBy: orderBy(),
+      });
+
+      const [users, count] = await Promise.all([usersQuery, countQuery]);
+
+      return {
+        data: users,
+        pagination: {
+          total: count,
+          page: query.page,
+          limit: query.limit,
+        },
+      };
+    } catch (e) {
+      console.log(e.message);
+      throw new InternalServerErrorException(e.message);
+    }
   }
 }

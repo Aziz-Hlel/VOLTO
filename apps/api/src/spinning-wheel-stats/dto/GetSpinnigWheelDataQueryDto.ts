@@ -2,13 +2,13 @@ import { Type } from 'class-transformer';
 import { IsDateString, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 export class GetSpinnigWheelDataQueryDto {
-  @Type(() => Date)
   @IsOptional()
+  @Type(() => Date)
   @IsDateString()
   startDate?: Date;
 
-  @Type(() => Date)
   @IsOptional()
+  @Type(() => Date)
   @IsDateString()
   endDate?: Date;
 

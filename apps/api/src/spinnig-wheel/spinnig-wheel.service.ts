@@ -192,6 +192,7 @@ export class SpinnigWheelService {
         eventName: updatedWheel.name ? updatedWheel.name : 'Spinnig Wheel',
         startDate: updatedWheel.startDate!,
         endDate: updatedWheel.endDate!,
+        isSpinningWheelEvent: true,
       });
 
       await this.spinningWheelDataMqService.addJob({
@@ -200,6 +201,7 @@ export class SpinnigWheelService {
         endDate: updatedWheel.endDate!.toISOString(),
         eventName: updatedWheel.name ? updatedWheel.name : 'Spinnig Wheel',
         delay: 'firstDelay',
+        isSpinningWheelEvent: true,
       });
     }
     return updatedWheel;

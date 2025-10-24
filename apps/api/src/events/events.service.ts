@@ -58,6 +58,7 @@ export class EventsService {
             eventName: createdEvent.name,
             startDate: createdEvent.startDate!,
             endDate: createdEvent.endDate!,
+            isSpinningWheelEvent: false,
           });
         }
 
@@ -117,11 +118,35 @@ export class EventsService {
     return await Promise.all(eventWithMedia);
   }
 
-async findByStatus(
-  query: GetEventsStatusDto,
-): Promise<{ data: Event[]; pagination: { total: number } }> {
-  if (query.status === 'upcoming') {
-    const payload = await this.findUpcomingEvents(query);
+  async findByStatus(
+    query: GetEventsStatusDto,
+  ): Promise<{ data: Event[]; pagination: { total: number } }> {
+    if (query.status === 'upcoming') {
+      const payload = await this.findUpcomingEvents(query);
+
+      const eventWithMedia = payload.data.map(async (event) => {
+        const thumbnail = await this.mediaService.getMediaKeyAndUrl({
+          entityType: EntityType.EVENT,
+          entityId: event.id,
+          mediaPurpose: MediaPurpose.THUMBNAIL,
+        });
+
+        const video = await this.mediaService.getMediaKeyAndUrl({
+          entityType: EntityType.EVENT,
+          entityId: event.id,
+          mediaPurpose: MediaPurpose.VIDEO,
+        });
+
+        return { ...event, thumbnail, video };
+      });
+
+      return {
+        data: await Promise.all(eventWithMedia),
+        pagination: payload.pagination,
+      };
+    }
+
+    const payload = await this.findPastEvents(query);
 
     const eventWithMedia = payload.data.map(async (event) => {
       const thumbnail = await this.mediaService.getMediaKeyAndUrl({
@@ -145,94 +170,68 @@ async findByStatus(
     };
   }
 
-  const payload =await this.findPastEvents(query);
+  private async findUpcomingEvents(
+    query: GetEventsStatusDto,
+  ): Promise<{ data: Event[]; pagination: { total: number } }> {
+    const limit = query.limit;
+    const offset = (query.page - 1) * limit;
 
+    // Fetch all data we might need (this will be paginated in application logic)
+    // In production, consider caching weekly events or fetching them separately
+    const [allWeeklyEvents, allSpecialUpcomingEvents] = await Promise.all([
+      this.prisma.event.findMany({
+        where: { type: EventType.WEEKLY },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.event.findMany({
+        where: {
+          type: EventType.SPECIAL,
+          endDate: { gte: new Date() },
+        },
+        orderBy: { startDate: 'asc' },
+      }),
+    ]);
 
-    const eventWithMedia = payload.data.map(async (event) => {
-      const thumbnail = await this.mediaService.getMediaKeyAndUrl({
-        entityType: EntityType.EVENT,
-        entityId: event.id,
-        mediaPurpose: MediaPurpose.THUMBNAIL,
-      });
+    // Combine in priority order: weekly first, then special
+    const combinedEvents = [...allWeeklyEvents, ...allSpecialUpcomingEvents];
+    const total = combinedEvents.length;
 
-      const video = await this.mediaService.getMediaKeyAndUrl({
-        entityType: EntityType.EVENT,
-        entityId: event.id,
-        mediaPurpose: MediaPurpose.VIDEO,
-      });
-
-      return { ...event, thumbnail, video };
-    });
+    // Apply pagination in application layer
+    const paginatedData = combinedEvents.slice(offset, offset + limit);
 
     return {
-      data: await Promise.all(eventWithMedia),
-      pagination: payload.pagination,
+      data: paginatedData,
+      pagination: { total },
     };
+  }
 
-}
+  private async findPastEvents(
+    query: GetEventsStatusDto,
+  ): Promise<{ data: Event[]; pagination: { total: number } }> {
+    // Past events are only special events (weekly recurring events never go to "past")
+    const [events, total] = await Promise.all([
+      this.prisma.event.findMany({
+        where: {
+          type: EventType.SPECIAL,
+          endDate: { lte: new Date() },
+        },
+        skip: (query.page - 1) * query.limit,
+        take: query.limit,
+        orderBy: { endDate: 'desc' },
+      }),
+      this.prisma.event.count({
+        where: {
+          type: EventType.SPECIAL,
+          endDate: { lte: new Date() },
+        },
+      }),
+    ]);
 
-private async findUpcomingEvents(
-  query: GetEventsStatusDto,
-): Promise<{ data: Event[]; pagination: { total: number } }> {
-  const limit = query.limit;
-  const offset = (query.page - 1) * limit;
-
-  // Fetch all data we might need (this will be paginated in application logic)
-  // In production, consider caching weekly events or fetching them separately
-  const [allWeeklyEvents, allSpecialUpcomingEvents] = await Promise.all([
-    this.prisma.event.findMany({
-      where: { type: EventType.WEEKLY },
-      orderBy: { createdAt: 'desc' },
-    }),
-    this.prisma.event.findMany({
-      where: {
-        type: EventType.SPECIAL,
-        endDate: { gte: new Date() },
-      },
-      orderBy: { startDate: 'asc' },
-    }),
-  ]);
-
-  // Combine in priority order: weekly first, then special
-  const combinedEvents = [...allWeeklyEvents, ...allSpecialUpcomingEvents];
-  const total = combinedEvents.length;
-
-  // Apply pagination in application layer
-  const paginatedData = combinedEvents.slice(offset, offset + limit);
-
-  return {
-    data: paginatedData,
-    pagination: { total },
-  };
-}
-
-private async findPastEvents(
-  query: GetEventsStatusDto,
-): Promise<{ data: Event[]; pagination: { total: number } }> {
-  // Past events are only special events (weekly recurring events never go to "past")
-  const [events, total] = await Promise.all([
-    this.prisma.event.findMany({
-      where: {
-        type: EventType.SPECIAL,
-        endDate: { lte: new Date() },
-      },
-      skip: (query.page - 1) * query.limit,
-      take: query.limit,
-      orderBy: { endDate: 'desc' },
-    }),
-    this.prisma.event.count({
-      where: {
-        type: EventType.SPECIAL,
-        endDate: { lte: new Date() },
-      },
-    }),
-  ]);
-
-  return {
-    data: events,
-    pagination: { total },
-  };
-}
+    return {
+      data: events,
+      pagination: { total },
+    };
+  }
 
   async findPage(query: GetEventsPageDto) {
     let filter = {};
@@ -345,6 +344,7 @@ private async findPastEvents(
           eventName: updatedEvent.name,
           startDate: updatedEvent.startDate!,
           endDate: updatedEvent.endDate!,
+          isSpinningWheelEvent: false,
         };
         try {
           await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
@@ -449,6 +449,8 @@ private async findPastEvents(
             eventName: updatedEvent.name,
             startDate: updatedEvent.startDate!,
             endDate: updatedEvent.endDate!,
+            isSpinningWheelEvent:false
+
           };
           await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
         }

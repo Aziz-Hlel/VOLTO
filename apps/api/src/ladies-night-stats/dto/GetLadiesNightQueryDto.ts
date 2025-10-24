@@ -2,13 +2,13 @@ import { Type } from 'class-transformer';
 import { IsOptional, IsDateString, IsNumberString, IsPositive, IsNumber } from 'class-validator';
 
 export class GetLadiesNightDataQueryDto {
-  @Type(() => Date)
   @IsOptional()
+  @Type(() => Date)
   @IsDateString()
   startDate?: Date;
 
-  @Type(() => Date)
   @IsOptional()
+  @Type(() => Date)
   @IsDateString()
   endDate?: Date;
 

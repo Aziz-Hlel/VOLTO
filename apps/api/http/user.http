@@ -1,0 +1,22 @@
+
+@baseUrl = http://localhost:3000/api
+
+
+### Login request
+### Step 1: Get access token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "12345678"
+}
+
+
+
+### Query Users
+# @name queryUsers
+GET  {{baseUrl}}/users?search=salma
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.accessToken}}

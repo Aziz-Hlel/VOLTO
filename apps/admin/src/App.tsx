@@ -16,6 +16,8 @@ import LadiesNight from "./components/LadiesNight/LadiesNight";
 import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
 import NotFound from "./components/NotFound/NotFound";
 import EditAccountWrapper from "./components/EditAccount/EditAccountWrapper";
+import { DataTableDemo } from "./components/Users/TableExample";
+import UsersTable from "./components/Users/Users";
 
 const queryClient = new QueryClient();
 
@@ -48,8 +50,8 @@ function App() {
 
                 <Route path="ladies-night" element={<LadiesNight />} />
                 <Route path="spinning-wheel" element={<SpinningWheel />} />
-                <Route path="users" element={<SpinningWheel />} />
                 <Route path="account" element={<EditAccountWrapper />} />
+                <Route path="users" element={<UsersTable />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Route>

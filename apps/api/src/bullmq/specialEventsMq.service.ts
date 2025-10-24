@@ -10,6 +10,7 @@ export interface IAddSpecialEvent {
   eventName: string;
   startDate: Date;
   endDate: Date;
+  isSpinningWheelEvent: boolean;
 }
 
 export interface SpecialEventJobData {
@@ -18,7 +19,7 @@ export interface SpecialEventJobData {
   startDate: string;
   endDate: string;
   delay: 'firstDelay' | 'secondDelay';
-  isSpinningWheelEvent?: boolean;
+  isSpinningWheelEvent: boolean;
 }
 
 @Injectable()
@@ -213,6 +214,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
         startDate: data.startDate.toUTCString(),
         endDate: data.endDate.toUTCString(),
         delay: 'firstDelay',
+        isSpinningWheelEvent: data.isSpinningWheelEvent,
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, { jobId: jobId, delay: firstDelay });
     }
@@ -225,6 +227,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
         startDate: data.startDate.toUTCString(),
         endDate: data.endDate.toUTCString(),
         delay: 'secondDelay',
+        isSpinningWheelEvent:data.isSpinningWheelEvent
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, {
         jobId: jobId,

@@ -7,9 +7,10 @@ ARG APP_PATH=apps/web
 WORKDIR /app
 
 COPY ./shared/ ./shared/
-COPY ${APP_PATH}/package.json ${APP_PATH}/pnpm-lock.yaml ${APP_PATH}/
 
 WORKDIR /app/${APP_PATH}
+COPY ${APP_PATH}/package.json  ./
+COPY ${APP_PATH}/pnpm-lock.yaml ./
 RUN pnpm install
 
 COPY ${APP_PATH} .
