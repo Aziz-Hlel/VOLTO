@@ -227,7 +227,7 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
         startDate: data.startDate.toUTCString(),
         endDate: data.endDate.toUTCString(),
         delay: 'secondDelay',
-        isSpinningWheelEvent:data.isSpinningWheelEvent
+        isSpinningWheelEvent: data.isSpinningWheelEvent,
       };
       await this.eventQueue.add(data.eventId, eventJobPayload, {
         jobId: jobId,

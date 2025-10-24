@@ -15,9 +15,9 @@ export class GetUsersQuery {
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  @Min(2)
+  @Min(4)
   @IsPositive()
-  limit: number = 2;
+  limit: number = 5; 
 
   @IsOptional()
   @Type(() => String)

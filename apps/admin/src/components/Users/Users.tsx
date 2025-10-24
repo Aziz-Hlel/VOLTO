@@ -11,7 +11,18 @@ import {
   getPaginationRowModel,
   flexRender,
   type Updater,
+  type PaginationState,
 } from "@tanstack/react-table";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { ArrowUp, ArrowUpDown, ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { useMemo, useState } from "react";
@@ -26,38 +37,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { useQuery } from "@tanstack/react-query";
 import { userService } from "@/Api/services/user.service";
 import { useSearchParams } from "react-router-dom";
-const data: User[] = [
-  {
-    id: "1",
-    email: "q8a9g@example.com",
-    firstName: "John",
-    lastName: "Doe",
-    role: "WAITER",
-    phoneNumber: "1234567890",
-    gender: "M",
-    tier: "GOLD",
-  },
-  {
-    id: "2",
-    email: "eoBtG@example.com",
-    firstName: "Jane",
-    lastName: "Doe",
-    role: "WAITER",
-    phoneNumber: "1234567890",
-    gender: "F",
-    tier: "GOLD",
-  },
-  {
-    id: "3",
-    email: "oBtG@example.com",
-    firstName: "John",
-    lastName: "Doe",
-    role: "WAITER",
-    phoneNumber: "1234567890",
-    gender: "M",
-    tier: "GOLD",
-  },
-];
+
 const columnsRows: ColumnDef<User>[] = [
   {
     accessorKey: "email",
@@ -158,9 +138,10 @@ const UsersTable = () => {
 
   const { data: response } = useQuery({
     queryKey: ["users", searchParams.toString()],
-    queryFn: async () => await userService.getUsers(searchParams.toString()),
+    queryFn: async () => await userService.getUsers(searchParams),
   });
-
+  const tableData = response?.data.data ?? [];
+  const pagination = response?.data.pagination ?? { limit: 0, page: 0, total: 0, totalPages: 0 };
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
@@ -189,23 +170,23 @@ const UsersTable = () => {
       ];
     }
     return [];
-  },[searchParams])
+  }, [searchParams]);
 
   const columnFilters = useMemo(() => {
-    if(searchParams.get("search")) {
+    const searchValue = searchParams.get("search");
+    if (searchValue !== "") {
       return [
         {
-          id: "search",
-          value: searchParams.get("search") as string,
+          id: "email",
+          value: searchValue,
         },
       ];
     }
     return [];
-  },[searchParams])
+  }, [searchParams]);
 
   const onColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
     const newColumnFiltersState = typeof updater === "function" ? updater(columnFilters) : updater;
-
     const searchValue = (newColumnFiltersState[0]?.value as string) ?? "";
 
     setSearchParams((prev) => {
@@ -215,8 +196,46 @@ const UsersTable = () => {
     });
   };
 
-  const tableData = response?.data.data ?? [];
-  const pagination = response?.data.pagination ?? { limit: 0, page: 0, total: 0 };
+  const pageSize = useMemo(() => {
+    const page = Number(searchParams.get("limit"));
+    if (page < 1) {
+      searchParams.set("limit", "5");
+    }
+    return page;
+  }, [searchParams]);
+
+  const pageIndex = useMemo(() => {
+    const page = Number(searchParams.get("page"));
+    if (page < 1) {
+      searchParams.set("page", "1");
+    }
+    return page;
+  }, [searchParams]);
+
+  const changePage = (direc: "next" | "prev" | number) => {
+    if (pageIndex === 1 && direc === "prev") return;
+    if (pageIndex === pagination.totalPages && direc === "next") return;
+
+    let newPage: number = pagination.page;
+    if (direc === "next") newPage = pagination.page + 1;
+    if (direc === "prev") newPage = pagination.page - 1;
+    if (typeof direc === "number") newPage = direc;
+
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set("page", String(newPage));
+      return params;
+    });
+  };
+
+  const onPageSizeChange = (limit: string) => {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set("limit", String(limit));
+      params.set("page", "1");
+      return params;
+    });
+  };
 
   const table = useReactTable({
     data: tableData,
@@ -230,8 +249,7 @@ const UsersTable = () => {
     onColumnVisibilityChange: setColumnVisibility,
     // onRowSelectionChange: setRowSelection,
     state: {
-      sorting:sorting,
-      columnFilters:columnFilters,
+      sorting: sorting,
       columnVisibility,
       rowSelection,
     },
@@ -290,7 +308,7 @@ const UsersTable = () => {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {table.getRowModel().rows?.length &&
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                     {row.getVisibleCells().map((cell) => (
@@ -299,8 +317,22 @@ const UsersTable = () => {
                       </TableCell>
                     ))}
                   </TableRow>
-                ))
-              ) : (
+                ))}
+              {table.getRowModel().rows?.length !== 0 &&
+                pageSize - table.getRowModel().rows?.length > 0 &&
+                Array.from({ length: pageSize - table.getRowModel().rows.length }).map(
+                  (_, index) => (
+                    <TableRow key={index}>
+                      <TableCell
+                        colSpan={columnsRows.length}
+                        className=" h-full text-center invisible"
+                      >
+                        No results
+                      </TableCell>
+                    </TableRow>
+                  ),
+                )}
+              {table.getRowModel().rows?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={columnsRows.length} className="h-24 text-center">
                     No results.
@@ -318,22 +350,46 @@ const UsersTable = () => {
             {pagination.limit * (pagination.page - 1) + tableData.length} of {pagination.total}{" "}
             results
           </div>
+          <Select onValueChange={onPageSizeChange} value={String(pageSize)}>
+            <SelectTrigger className="w-fit">
+              <SelectValue placeholder="Select Rows" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Showing</SelectLabel>
+                <SelectItem value="5"> 5</SelectItem>
+                <SelectItem value="10"> 10</SelectItem>
+                <SelectItem value="15"> 15</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
           <div className="space-x-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              onClick={() => changePage("prev")}
+              disabled={pageIndex === 1}
             >
-              Previous
+              {"<"}
             </Button>
+            {[...Array(pagination.totalPages)].map((_, index) => (
+              <Button
+                key={index}
+                variant={pagination.page === index + 1 ? "default" : "outline"}
+                size="sm"
+                onClick={() => changePage(index + 1)}
+              >
+                {index + 1}
+              </Button>
+            ))}
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              onClick={() => changePage("next")}
+              disabled={pageIndex === pagination.totalPages}
             >
-              Next
+              {">"}
             </Button>
           </div>
         </div>

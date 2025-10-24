@@ -478,6 +478,7 @@ export class UsersService {
         pagination: {
           total: count,
           page: query.page,
+          totalPages: Math.ceil(count / query.limit),
           limit: query.limit,
         },
       };

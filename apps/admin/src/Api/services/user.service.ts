@@ -3,10 +3,10 @@ import { apiService } from "../apiService";
 import apiRoutes from "../routes";
 
 export const userService = {
-  getUsers: (queryParams: string) => {
+  getUsers: (queryParams: URLSearchParams) => {
     return apiService.getThrowable<{
       data: User[];
-      pagination: { page: number; limit: number; total: number };
+      pagination: { page: number; limit: number; total: number; totalPages: number };
     }>(apiRoutes.user.getPage(), { params: queryParams });
   },
 };

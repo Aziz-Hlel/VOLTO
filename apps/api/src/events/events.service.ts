@@ -449,8 +449,7 @@ export class EventsService {
             eventName: updatedEvent.name,
             startDate: updatedEvent.startDate!,
             endDate: updatedEvent.endDate!,
-            isSpinningWheelEvent:false
-
+            isSpinningWheelEvent: false,
           };
           await this.specialEventsMq.addSpecialEventNotification(newEventJobParams);
         }
