@@ -258,128 +258,135 @@ const UsersTable = () => {
 
   return (
     <>
-<div className="mt-6 mx-4 p-6 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl shadow-lg text-white mb-6">
-  <div className="flex items-center justify-between">
-    <div>
-      <h1 className="text-2xl font-bold">Users Dashboard</h1>
-      <p className="text-sm opacity-90">Welcome back VIP 👋</p>
-    </div>
-    <div className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold shadow-md">
-      Total Users: {pagination.total}
-    </div>
-  </div>
-</div>
+      <div className="mt-6 mx-4 p-6 bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl shadow-lg text-white mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Users Dashboard</h1>
+            <p className="text-sm opacity-90">Welcome back VIP 👋</p>
+          </div>
+          <div className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold shadow-md">
+            Total Users: {pagination.total}
+          </div>
+        </div>
+      </div>
 
-    <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 mt-8 mx-8">
-  <div className="flex items-center justify-between mb-4">
-    <Input
-      placeholder="🔍 Search by email..."
-      value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-      onChange={(event) => table.getColumn("email")?.setFilterValue(event.target.value)}
-      className="max-w-sm border-gray-300 focus:ring-purple-500"
-    />
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2 text-gray-700">
-          Columns <ChevronDown className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-md shadow-lg">
-        {table
-          .getAllColumns()
-          .filter((column) => column.getCanHide())
-          .map((column) => (
-            <DropdownMenuCheckboxItem
-              key={column.id}
-              className="capitalize"
-              checked={column.getIsVisible()}
-              onCheckedChange={(value) => column.toggleVisibility(!!value)}
+      <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 mt-8 mx-8">
+        <div className="flex items-center justify-between mb-4">
+          <Input
+            placeholder="🔍 Search by email..."
+            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("email")?.setFilterValue(event.target.value)}
+            className="max-w-sm border-gray-300 focus:ring-purple-500"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2 text-gray-700">
+                Columns <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-white border border-gray-200 rounded-md shadow-lg"
             >
-              {column.id}
-            </DropdownMenuCheckboxItem>
-          ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  </div>
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
-  <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
-    <Table className="w-full text-gray-800">
-      <TableHeader className="bg-gray-50">
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <TableHead key={header.id} className="text-gray-600 font-semibold text-sm">
-                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} className="hover:bg-gray-100 transition">
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className="py-3 px-4">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
+        <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+          <Table className="w-full text-gray-800">
+            <TableHeader className="bg-gray-50">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id} className="text-gray-600 font-semibold text-sm">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={columnsRows.length} className="text-center py-6 text-gray-500">
-              No results.
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
-  </div>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="hover:bg-gray-100 transition">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="py-3 px-4">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columnsRows.length}
+                    className="text-center py-6 text-gray-500"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
-  <div className="flex items-center justify-between mt-6">
-    <div className="text-sm text-gray-500">
-      Showing {pagination.limit * (pagination.page - 1) + 1}-
-      {pagination.limit * (pagination.page - 1) + tableData.length} of {pagination.total} results
-    </div>
+        <div className="flex items-center justify-between mt-6">
+          <div className="text-sm text-gray-500">
+            Showing {pagination.limit * (pagination.page - 1) + 1}-
+            {pagination.limit * (pagination.page - 1) + tableData.length} of {pagination.total}{" "}
+            results
+          </div>
 
-    <div className="flex items-center gap-2">
-      <Select onValueChange={onPageSizeChange} value={String(pageSize)}>
-        <SelectTrigger className="w-[80px]">
-          <SelectValue placeholder="Rows" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Show</SelectLabel>
-            <SelectItem value="5">5</SelectItem>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="15">15</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-<div className="space-x-2">
-  <Button
-    size="sm"
-    onClick={() => changePage("prev")}
-    disabled={pageIndex === 1}
-    className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-  >
-    Prev
-  </Button>
-  <Button
-    size="sm"
-    onClick={() => changePage("next")}
-    disabled={pageIndex === pagination.totalPages}
-    className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-  >
-    Next
-  </Button>
-</div>
-
-    </div>
-  </div>
-</div>
-
+          <div className="flex items-center gap-2">
+            <Select onValueChange={onPageSizeChange} value={String(pageSize)}>
+              <SelectTrigger className="w-[80px]">
+                <SelectValue placeholder="Rows" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Show</SelectLabel>
+                  <SelectItem value="5">5</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="15">15</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <div className="space-x-2">
+              <Button
+                size="sm"
+                onClick={() => changePage("prev")}
+                disabled={pageIndex === 1}
+                className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              >
+                Prev
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => changePage("next")}
+                disabled={pageIndex === pagination.totalPages}
+                className="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

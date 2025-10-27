@@ -27,7 +27,7 @@ export default function SingleEventDate({
     return Math.floor(hours); // truncate to integer
   };
 
-  const startDate = watch(startDateFieldName) ? (new Date(watch(startDateFieldName))) : new Date();
+  const startDate = watch(startDateFieldName) ? new Date(watch(startDateFieldName)) : new Date();
 
   const endDate = watch(endDateFieldName)
     ? new Date(watch(endDateFieldName))
