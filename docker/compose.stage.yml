@@ -142,6 +142,49 @@ services:
           - '${SMTP_PORT:-1025}:${SMTP_PORT:-1025}'
 
 
+  scheduler:
+    image: mcuadros/ofelia:latest
+    container_name: scheduler
+    depends_on:
+      - db
+      - app
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - app-network
+
+
+
+  backup-job:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile.backup
+    container_name: schoolranking-backup
+    depends_on:
+      - db
+    environment:
+      PROD__POSTGRES_USER: ${PROD__POSTGRES_USER}
+      PROD__POSTGRES_PASSWORD: ${PROD__POSTGRES_PASSWORD}
+      PROD__POSTGRES_DB: ${PROD__POSTGRES_DB}
+      PROD__POSTGRES_PORT: ${PROD__POSTGRES_PORT}
+    volumes:
+      - ./backups:/app/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - app-network
+    # Ofelia labels - this is how you schedule the job
+    labels:
+      ofelia: "enabled"
+      ofelia.enabled: "true"
+      ofelia.job-exec.backup.schedule: "@daily" # or "0 2 * * *" for 2 AM daily
+      ofelia.job-exec.backup.command: "/bin/bash /app/backup.sh"
+      ofelia.job-exec.backup.overlap-action: "forbid" # Prevent overlapping backups
+    # Container stays running but doesn't do anything except wait for Ofelia signals
+    entrypoint: ["/bin/bash", "-c", "trap : TERM INT; sleep 9999999999 & wait"]
+
+
+
 volumes:
   db_stage_volume:
     driver: local

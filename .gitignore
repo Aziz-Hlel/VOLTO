@@ -3,3 +3,10 @@
 
 config/.env.stage
 config/.env.prod
+
+
+
+**/node_modules
+**/dist
+backup
+
