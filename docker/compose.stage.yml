@@ -60,7 +60,7 @@ services:
       ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
 
 
-    command: sh -c "pnpm prisma migrate deploy && pnpm run seed:prod && node dist/main.js"
+    command: sh -c "pnpm prisma migrate deploy && node dist/main.js"
 
     depends_on:
       db:
@@ -138,50 +138,33 @@ services:
       image: axllent/mailpit
       restart: unless-stopped
       ports:
-          - 8025:8025 # Web UI
+          - 8025:8025
           - '${SMTP_PORT:-1025}:${SMTP_PORT:-1025}'
 
 
-  scheduler:
-    image: mcuadros/ofelia:latest
-    container_name: scheduler
+
+  db-backup:
+    image: postgres:alpine
     depends_on:
-      - db
-      - app
-    command: daemon --docker
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - app-network
-
-
-
-  backup-job:
-    build:
-      context: ./scripts
-      dockerfile: Dockerfile.backup
-    container_name: schoolranking-backup
-    depends_on:
-      - db
+      db:
+        condition: service_healthy
+    
     environment:
-      PROD__POSTGRES_USER: ${PROD__POSTGRES_USER}
-      PROD__POSTGRES_PASSWORD: ${PROD__POSTGRES_PASSWORD}
-      PROD__POSTGRES_DB: ${PROD__POSTGRES_DB}
-      PROD__POSTGRES_PORT: ${PROD__POSTGRES_PORT}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DB_CONTAINER_NAME: db
+    
     volumes:
-      - ./backups:/app/backups
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - app-network
-    # Ofelia labels - this is how you schedule the job
-    labels:
-      ofelia: "enabled"
-      ofelia.enabled: "true"
-      ofelia.job-exec.backup.schedule: "@daily" # or "0 2 * * *" for 2 AM daily
-      ofelia.job-exec.backup.command: "/bin/bash /app/backup.sh"
-      ofelia.job-exec.backup.overlap-action: "forbid" # Prevent overlapping backups
-    # Container stays running but doesn't do anything except wait for Ofelia signals
-    entrypoint: ["/bin/bash", "-c", "trap : TERM INT; sleep 9999999999 & wait"]
+      - ${PROJECT_ROOT}/script/backup.sh:/backup.sh
+      - ${PROJECT_ROOT}/script/restore.sh:/restore.sh
+      - ${PROJECT_ROOT}/backup:/backup
+    
+    entrypoint: /bin/bash
+    command: -c "while true; chmod +x /backup.sh;chmod +x /restore.sh; do /backup.sh; sleep 86400; done"
+
+    
+    restart: unless-stopped
 
 
 

@@ -3,6 +3,6 @@
 **/.env*
 **/.git
 **/.vscode
-**/scripts
+# **/scripts
 **/makefiles
 docker-compose*.yml

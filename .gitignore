@@ -8,5 +8,5 @@ config/.env.prod
 
 **/node_modules
 **/dist
-backup
+backup/**
 
