@@ -146,8 +146,15 @@ const EventTableRow: FC<EventTableRowProps> = ({ event, setEventForEdit, setEven
     if (event.type === EventType.SPECIAL) {
       const start = new Date(event.startDate);
       const end = new Date(event.endDate);
-      return `${start.toLocaleDateString()} → ${end.toLocaleDateString()}`;
+      const dateDisplay = Intl.DateTimeFormat("en-US", {
+        month: "long", // October
+        day: "numeric", // 1
+        year: "numeric", // 2025
+        hour: "numeric",
+      });
+      return `${dateDisplay.format(start)} → ${dateDisplay.format(end)}`;
     }
+
     return cronstrue.toString(event.cronStartDate);
   };
 

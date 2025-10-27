@@ -128,7 +128,8 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
                 {/* rewardList array field */}
                 <div>
                   <FormLabel className="flex items-center gap-2 text-gray-700 font-semibold text-lg">
-                    <Gift className="w-5 h-5 text-indigo-400" /> Rewards
+                    <Gift className="w-5 h-5 text-indigo-400" />
+                    Rewards
                   </FormLabel>
                   <FormDescription>Add one or more rewards for this wheel.</FormDescription>
 
@@ -145,18 +146,17 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
                           render={({ field }) => (
                             <FormItem className="flex-1">
                               <FormLabel
-                                className={`text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r
-      ${
-        index === 0
-          ? "from-pink-400 to-rose-500"
-          : index === 1
-            ? "from-blue-400 to-cyan-500"
-            : index === 2
-              ? "from-green-400 to-emerald-500"
-              : index === 3
-                ? "from-purple-400 to-indigo-500"
-                : "from-orange-400 to-amber-500"
-      } flex items-center gap-2`}
+                                className={`text-lg font-semibold bg-clip-text text-transparent bg-gradient-to-r${
+                                  index === 0
+                                    ? "from-pink-400 to-rose-500"
+                                    : index === 1
+                                      ? "from-blue-400 to-cyan-500"
+                                      : index === 2
+                                        ? "from-green-400 to-emerald-500"
+                                        : index === 3
+                                          ? "from-purple-400 to-indigo-500"
+                                          : "from-orange-400 to-amber-500"
+                                } flex items-center gap-2`}
                               >
                                 <Gift
                                   className={`w-5 h-5 ${
