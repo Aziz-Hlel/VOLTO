@@ -18,6 +18,8 @@ import {
 import type { EventResponseDto } from "@/types/events/eventResponse.dto";
 import cronstrue from "cronstrue";
 import { EventType } from "@/types/events/EventType";
+import parser from "cron-parser";
+import { format, parseISO } from "date-fns";
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
@@ -153,9 +155,25 @@ const EventTableRow: FC<EventTableRowProps> = ({ event, setEventForEdit, setEven
         hour: "numeric",
       });
       return `${dateDisplay.format(start)} → ${dateDisplay.format(end)}`;
+
+      return `${start.toLocaleTimeString()} → ${end.toLocaleDateString()}`;
     }
 
-    return cronstrue.toString(event.cronStartDate);
+    const opts = { tz: "UTC" };
+
+    const startInterval = parser.parseExpression(event.cronStartDate, opts);
+    const nextStartDate = startInterval.next().toDate();
+    const startLocalTime = format(nextStartDate, "hh:mm a"); // e.g., "02:30 PM"
+    const dayOfWeek = format(nextStartDate, "EEEE"); // e.g., "Monday"
+
+    const endInterval = parser.parseExpression(event.cronEndDate, opts);
+    const endStartDate = endInterval.next().toDate();
+    const endLocalTime = format(endStartDate, "hh:mm a"); // e.g., "02:30 PM"
+
+    // Return whatever format you want:
+    return `${dayOfWeek} at ${startLocalTime} → ${endLocalTime}`;
+
+    return `${cronstrue.toString(event.cronStartDate)} (UTC time)`;
   };
 
   return (

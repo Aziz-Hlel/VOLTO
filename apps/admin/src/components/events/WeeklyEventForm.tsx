@@ -22,6 +22,8 @@ const daysOfTheWeek = [
   { value: 6, label: "Saturday" },
 ] as const;
 
+const cronOpts = { tz: "UTC" };
+
 const WeeklyEventForm = ({
   startDateFieldName,
   endDateFieldName,
@@ -39,14 +41,10 @@ const WeeklyEventForm = ({
   const dayOfWeekFromCron = (cron: string): number => {
     if (!cron) return 0;
     try {
-      const interval = parser.parseExpression(cron);
-      console.log("t5l tryyyyyy, interval : ", cron);
+      const interval = parser.parseExpression(cron, cronOpts);
       const next = interval.next().toDate();
-      console.log("next date : ", next);
-      console.log("day ::::: ", next.getDay());
       return next.getDay();
     } catch (err) {
-      console.error("Error parsing cron expression:", err);
       return 0; // Default to Sunday on error
     }
   };
@@ -54,8 +52,8 @@ const WeeklyEventForm = ({
   const getInitHoursFromCron = (cron: string): number => {
     if (!cron) return 8;
     try {
-      const interval = parser.parseExpression(cron);
-      const next = interval.next();
+      const interval = parser.parseExpression(cron, cronOpts);
+      const next = interval.next().toDate();
       return next.getHours() % 12;
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -66,8 +64,8 @@ const WeeklyEventForm = ({
   const getInitAMPMFromCron = (cron: string): "AM" | "PM" => {
     if (!cron) return "PM";
     try {
-      const interval = parser.parseExpression(cron);
-      const next = interval.next();
+      const interval = parser.parseExpression(cron, cronOpts);
+      const next = interval.next().toDate();
       return next.getHours() >= 12 ? "PM" : "AM";
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -78,12 +76,10 @@ const WeeklyEventForm = ({
   const getInitialDurationFromCron = (cronStartDate: string, cronEndDate: string): number => {
     if (!cronStartDate || !cronEndDate) return 8;
     try {
-      console.log("getInitialDurationFromCron called with: ", { cronStartDate, cronEndDate });
       const startInterval = parser.parseExpression(cronStartDate);
       const endInterval = parser.parseExpression(cronEndDate);
       const start = startInterval.next().toDate();
       const end = endInterval.next().toDate();
-      console.log("start : ", start, " end : ", end);
       return (end.getTime() - start.getTime()) / _1hour;
     } catch (err) {
       console.error("Error parsing cron expression:", err);
@@ -92,7 +88,6 @@ const WeeklyEventForm = ({
   };
 
   const initialDay = cronStartDate && cronEndDate ? dayOfWeekFromCron(cronStartDate) : 0;
-  console.log("initialDay : ", initialDay);
 
   const {
     startingHour,
@@ -111,26 +106,46 @@ const WeeklyEventForm = ({
   const [open, setOpen] = useState(false);
 
   const [day, setDay] = useState<number>(initialDay);
-  console.log("l day bidou fil state : ", day);
+
+  const createCronExpressionUTC = (day: number, hour: number, ampm: "AM" | "PM") => {
+    let localHour = ampm === "PM" ? (hour % 12) + 12 : hour % 12;
+
+    // Get the user's timezone offset in hours
+    const now = new Date();
+    const tzOffsetHours = now.getTimezoneOffset() / 60; // getTimezoneOffset() returns minutes **behind UTC**
+
+    // Convert local hour to UTC hour
+    let utcHour = localHour + tzOffsetHours;
+
+    // Handle wrap-around (0-23)
+    if (utcHour >= 24) utcHour -= 24;
+    if (utcHour < 0) utcHour += 24;
+
+    // Cron uses 0=Sunday ... 6=Saturday, keep day as user selected
+    return `0 ${Math.floor(utcHour)} * * ${day}`;
+  };
 
   const createCronExpression = (day: number, hour: number, ampm: "AM" | "PM") => {
     const adjustedHour = ampm === "PM" ? (hour % 12) + 12 : hour % 12;
     return `0 ${adjustedHour} * * ${day}`;
   };
-
   const updateFormFields = () => {
     try {
-      const newCronStartDateExpression = createCronExpression(day, startingHour, amPM);
+      const newCronStartDateExpression = createCronExpressionUTC(day, startingHour, amPM);
       const cronStartDate = parser.parseExpression(newCronStartDateExpression);
-      const startDateExampleStr = cronStartDate.next().toString();
+      const startDateExampleStr = cronStartDate.next().toDate();
+      console.log("str : ", startDateExampleStr);
       const startDateExample = new Date(startDateExampleStr);
-      const endDateExample = new Date(startDateExample.getTime() + duration * 60 * 60 * 1000);
+      const endDateExample = new Date(startDateExampleStr.getTime() + duration * 60 * 60 * 1000);
+      console.log("end example : ", endDateExample);
 
       const endDayOfWeek = endDateExample.getDay();
       const endHour = endDateExample.getHours() % 12;
       const endAMPM = endDateExample.getHours() >= 12 ? "PM" : "AM";
       const newCronEndDateExpression = createCronExpression(endDayOfWeek, endHour, endAMPM);
 
+      console.log("cro start Values :", newCronEndDateExpression);
+      console.log("cron end values :", newCronEndDateExpression);
       setValue(startDateFieldName, newCronStartDateExpression, { shouldDirty: true });
       setValue(endDateFieldName, newCronEndDateExpression, { shouldDirty: true });
     } catch (err) {
@@ -139,10 +154,6 @@ const WeeklyEventForm = ({
       setValue(endDateFieldName, "0 10 * * 0", { shouldDirty: true });
     }
   };
-
-  useEffect(() => {
-    console.log("cronStartDate : ", cronStartDate, " cronEndDate : ", cronEndDate);
-  }, []);
 
   const handleDayChange = (day: string) => {
     const dayNumber = parseInt(day, 10);

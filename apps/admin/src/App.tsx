@@ -16,7 +16,6 @@ import LadiesNight from "./components/LadiesNight/LadiesNight";
 import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
 import NotFound from "./components/NotFound/NotFound";
 import EditAccountWrapper from "./components/EditAccount/EditAccountWrapper";
-import { DataTableDemo } from "./components/Users/TableExample";
 import UsersTable from "./components/Users/Users";
 
 const queryClient = new QueryClient();
