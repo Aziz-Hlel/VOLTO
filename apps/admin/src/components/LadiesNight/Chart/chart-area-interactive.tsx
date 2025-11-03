@@ -1,9 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, Area, AreaChart, YAxis } from "recharts";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   type ChartConfig,
   ChartContainer,
@@ -24,8 +31,7 @@ import { ladiesNightService } from "@/Api/services/ladiesNight.service";
 import type { LadiesNightStatsPeriod } from "@/types/ladiesNight/GetLadiesNightByPeriodDto";
 import { useQuery } from "@tanstack/react-query";
 import type { LadiesNightStatsResponse } from "@/types/ladiesNight/LadiesNightStatsResponse";
-
-export const description = "An interactive area chart";
+import { Tooltip } from "@/components/ui/tooltip";
 
 const chartConfig = {
   visitors: {
@@ -42,7 +48,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ChartAreaInteractive() {
-  const [period, setPeriod] = React.useState<LadiesNightStatsPeriod>("365d");
+  const [period, setPeriod] = React.useState<LadiesNightStatsPeriod>("90d");
   const handlePeriodChange = (value: LadiesNightStatsPeriod) =>
     setPeriod(value as LadiesNightStatsPeriod);
 
@@ -60,6 +66,13 @@ export function ChartAreaInteractive() {
       totalParticipants: item.totalParticipants,
       participantWithAllRedeemedDrinks: item.participantWithAllRedeemedDrinks,
     })) ?? undefined;
+
+  const dataMax =
+    filteredData && filteredData.length
+      ? Math.max(...filteredData.map((d) => d.totalParticipants ?? 0))
+      : 0;
+
+  const yAxisMax = Math.ceil((dataMax || 1) * 1.2); // 1.8 = 180% of dataMax; increase to make bars shorter
 
   return (
     <Card className="pt-0">
@@ -99,80 +112,51 @@ export function ChartAreaInteractive() {
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 aspect-auto w-full min-h-[250px]">
         {!chartData && <Spinner />}
         {chartData && (
-          <ChartContainer config={chartConfig} className="aspect-auto  h-[250px]  w-full">
-            <AreaChart data={filteredData}>
-              <defs>
-                <linearGradient id="filltotalParticipants" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-totalParticipants)" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="var(--color-totalParticipants)" stopOpacity={0.1} />
-                </linearGradient>
-                <linearGradient
-                  id="fillparticipantWithAllRedeemedDrinks"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop
-                    offset="5%"
-                    stopColor="var(--color-participantWithAllRedeemedDrinks)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--color-participantWithAllRedeemedDrinks)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="date"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                minTickGap={32}
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  });
-                }}
+          <BarChart
+            data={filteredData}
+            width={1000}
+            height={300}
+            margin={{ top: 0, right: 5, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tick={{ fill: "#6b7280", fontSize: 13 }}
+              axisLine={{ stroke: "#d1d5db" }}
+            />
+            <YAxis domain={[0, yAxisMax]} tick={{ fill: "#6b7280", fontSize: 13 }} tickCount={5} />
+            <Tooltip
+              cursor={{ fill: "rgba(255, 215, 0, 0.08)" }}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Bar
+              dataKey="totalParticipants"
+              fill="url(#goldGradientLight)"
+              radius={[8, 8, 0, 0]}
+              barSize={55}
+            >
+              <LabelList
+                position="top"
+                offset={4}
+                className="fill-[#c5a100] font-semibold"
+                fontSize={12}
               />
-              <ChartTooltip
-                cursor={false}
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      });
-                    }}
-                    indicator="dot"
-                  />
-                }
-              />
-              <Area
-                dataKey="participantWithAllRedeemedDrinks"
-                type="natural"
-                fill="url(#fillparticipantWithAllRedeemedDrinks)"
-                stroke="var(--color-participantWithAllRedeemedDrinks)"
-                stackId="a"
-              />
-              <Area
-                dataKey="totalParticipants"
-                type="natural"
-                fill="url(#filltotalParticipants)"
-                stroke="var(--color-totalParticipants)"
-                stackId="a"
-              />
-              <ChartLegend content={<ChartLegendContent payload={undefined} />} />
-            </AreaChart>
-          </ChartContainer>
+            </Bar>
+
+            <defs>
+              <linearGradient id="goldGradientLight" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ffdd55" />
+                <stop offset="100%" stopColor="#e6c200" />
+              </linearGradient>
+            </defs>
+          </BarChart>
         )}
       </CardContent>
+      <CardFooter className="text-sm text-gray-600 border-t border-[#e6d8a2]/70 px-2 py-1 bg-[#fffdf6]/70">
+        Showing total participants for the last {period === "90d" ? 3 : period === "180d" ? 6 : 12}{" "}
+        months
+      </CardFooter>
     </Card>
   );
 }

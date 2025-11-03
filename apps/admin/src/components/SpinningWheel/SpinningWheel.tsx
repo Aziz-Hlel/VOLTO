@@ -7,7 +7,6 @@ import { useState } from "react";
 import CountDown from "./CountDown";
 import UpdateSpinningWheel from "./UpdateSpinningWheel";
 import SpinningWheelDataTableWrapper from "./SpinningWheelDataTableWrapper";
-import { ChartAreaInteractive } from "./Chart/chart-area-interactive";
 import { ChartAreaInteractive2 } from "./Chart2/chart-area-interactive2";
 
 const SpinningWheel = () => {
