@@ -22,6 +22,7 @@ import type { LadiesNightStatsPeriod } from "@/types/ladiesNight/GetLadiesNightB
 import { useQuery } from "@tanstack/react-query";
 import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
 import type { SpinningWheelStatsResponse } from "@/types/spinnigWheel/SpinningWheelStatsResponse";
+import { Tooltip } from "@/components/ui/tooltip";
 
 export const description = "An interactive area chart";
 
@@ -103,37 +104,73 @@ export function ChartAreaInteractive2() {
   const yAxisMax = Math.ceil((dataMax || 1) * 1.2); // 1.8 = 180% of dataMax; increase to make bars shorter
 
   return (
-    <Card className="pt-0">
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-        <CardTitle>Spinnig Wheel Chart</CardTitle>
-        <CardDescription>{`${firstInstanceDisplay} - ${lastInstanceDisplay}`}</CardDescription>
+    <Card
+      id="chart-card"
+      className="w-full rounded-xl shadow-md border border-[#e6d8a2]/50 overflow-hidden h-135"
+    >
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-[#e6d8a2]/70 px-2 py-1">
+        <div>
+          <CardTitle className="text-lg font-semibold bg-gradient-to-r from-[#d4af37] to-[#f4e38c] bg-clip-text text-transparent">
+            Spinning Wheel Chart
+          </CardTitle>
+          <CardDescription className="text-gray-600 text-sm">
+            {`${firstInstanceDisplay} - ${lastInstanceDisplay}`}
+          </CardDescription>
+        </div>
+        <div className="text-xs text-gray-500 italic whitespace-nowrap">
+          Updated live • {new Date().toLocaleDateString()}
+        </div>
       </CardHeader>
-      <CardContent className="h-fit px-2 pt-4 sm:px-6 sm:pt-6">
-        {!chartData && <Spinner />}
-        <ChartContainer config={chartConfig2}>
+
+      <CardContent className="p-0 flex items-center justify-center h-full">
+        {!filteredData || filteredData.length === 0 ? (
+          <Spinner />
+        ) : (
           <BarChart
             data={filteredData}
-            width={600} // optional: control width if you want
-            height={220} // chart height (smaller height also helps)
-            margin={{ top: 20, right: 12, left: 0, bottom: 0 }}
+            width={1000}
+            height={300}
+            margin={{ top: 0, right: 5, left: 0, bottom: 0 }}
           >
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="month" tickLine={false} tickMargin={5} axisLine={false} />
-            {/* IMPORTANT: set YAxis domain to a value *larger* than your data max */}
-            <YAxis domain={[0, yAxisMax]} hide={false} tickCount={5} />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tick={{ fill: "#6b7280", fontSize: 13 }}
+              axisLine={{ stroke: "#d1d5db" }}
+            />
+            <YAxis domain={[0, yAxisMax]} tick={{ fill: "#6b7280", fontSize: 13 }} tickCount={5} />
+            <Tooltip
+              cursor={{ fill: "rgba(255, 215, 0, 0.08)" }}
+              content={<ChartTooltipContent hideLabel />}
+            />
             <Bar
               dataKey="totalParticipants"
-              fill="var(--color-totalParticipants)"
-              radius={8}
-              barSize={70} // controls bar thickness (width)
+              fill="url(#goldGradientLight)"
+              radius={[8, 8, 0, 0]}
+              barSize={55}
             >
-              <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} />
+              <LabelList
+                position="top"
+                offset={4}
+                className="fill-[#c5a100] font-semibold"
+                fontSize={12}
+              />
             </Bar>
+
+            <defs>
+              <linearGradient id="goldGradientLight" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ffdd55" />
+                <stop offset="100%" stopColor="#e6c200" />
+              </linearGradient>
+            </defs>
           </BarChart>
-        </ChartContainer>
+        )}
       </CardContent>
-      <CardFooter>Showing total Participants for the last 3 months</CardFooter>
+
+      <CardFooter className="text-sm text-gray-600 border-t border-[#e6d8a2]/70 px-2 py-1 bg-[#fffdf6]/70">
+        Showing total participants for the last 3 months
+      </CardFooter>
     </Card>
   );
 }
