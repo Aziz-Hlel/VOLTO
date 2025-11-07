@@ -48,6 +48,7 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     });
 
     const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
+    // ! jid l eventId field fl data so that users can be routed directly to the vent page when clicking on the mobile notification
 
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
