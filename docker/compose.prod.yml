@@ -68,7 +68,7 @@ services:
 
 
   db:
-    image: postgres:latest
+    image: postgres:15
   
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
