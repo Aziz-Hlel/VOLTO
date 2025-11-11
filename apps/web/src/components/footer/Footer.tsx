@@ -92,9 +92,9 @@ const Footer = () => {
               <span className="font-semibold text-gray-300">Phone:</span>{" "}
               <a href="tel:+97334588466">+973 3458 8466</a>
             </li>
-            <li>
-              <span className="font-semibold text-gray-300">Email:</span>{" "}
-              support@voltobahrain.online
+            <li className=" space-x-2">
+              <span className="font-semibold text-gray-300">Email:</span>
+              <a href="mailto:voltobahrain@gmail.com">voltobahrain@gmail.com</a>
             </li>
           </ul>
         </div>

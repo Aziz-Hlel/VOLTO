@@ -83,7 +83,7 @@ services:
 
 
   db:
-    image: postgres:latest
+    image: postgres:15
   
     env_file:
     - ${PROJECT_ROOT}/config/.env.dev

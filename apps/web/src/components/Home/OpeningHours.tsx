@@ -17,27 +17,16 @@ const OpeningHours = () => {
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-10">
               {/* Sunday to Tuesday */}
-              <div className="text-center">
-                <h6 className="text-sm md:text-base font-semibold text-[#1b1b1b] uppercase mb-3">
-                  Sunday to Tuesday
-                </h6>
-                <div className="space-y-1 text-[#777]">
-                  <span>18:00</span>-<span>03:00</span>
-                </div>
-              </div>
-
-              {/* Vertical Line */}
-              <div className="hidden md:flex justify-center">
-                <div className="h-20 border-l-2 border-[#C19D60]"></div>
-              </div>
 
               {/* Friday to Saturday */}
               <div className="text-center">
-                <h6 className="text-sm md:text-base font-semibold text-[#1b1b1b] uppercase mb-3">
-                  Friday to Saturday
+                <h6 className="text-sm md:text-2xl font-semibold text-[#1b1b1b] uppercase mb-3">
+                  Everyday
                 </h6>
-                <div className="space-y-1 text-[#777]">
-                  <span>18:00</span>-<span>03:00</span>
+                <div className="space-y-1 space-x-1 text-[#777] text-lg">
+                  <span>7:00 PM</span>
+                  <span>-</span>
+                  <span>3:00 AM</span>
                 </div>
               </div>
             </div>

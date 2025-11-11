@@ -399,9 +399,9 @@ export const Card = ({
               <div className=" w-full flex justify-center items-center gap-2 text-xs py-8">
                 <Info className=" text-pink-700" />
                 <div className=" flex flex-col">
-                  <span>Dress Code : Smart casual </span>
-                  <span>No shorts and no open shoes </span>
-                  <span>Age Required - 18+</span>
+                  <span>Dress code : Elegant smart casual </span>
+                  <span> Short, caps and open shoes not allowed.</span>
+                  <span>Age Required : 21+</span>
                 </div>
               </div>
             </motion.div>
