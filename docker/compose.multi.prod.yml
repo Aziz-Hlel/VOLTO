@@ -15,8 +15,8 @@ services:
 
     volumes:
       # - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy-prod-data:/data
-      - caddy-prod-config:/config
+      - volto-caddy-data:/data
+      - volto-caddy-config:/config
 
     networks:
       - default
@@ -88,7 +88,7 @@ services:
       timeout: 5s
 
     volumes:
-      - db_prod_volume:/var/lib/postgresql/data
+      - volto-db-volume:/var/lib/postgresql/data
 
     networks:
       - default
@@ -123,7 +123,7 @@ services:
     image: redis:7.4-alpine
 
     volumes:
-      - redis_prod_volume:/data
+      - volto-redis-volume:/data
     
     command: ['redis-server', '--appendonly', 'yes'] # enables persistence
 
@@ -131,13 +131,13 @@ services:
       - default
 
 volumes:
-  db_prod_volume:
+  volto-db-volume:
     driver: local
-  redis_prod_volume:
+  volto-redis-volume:
     driver: local
-  caddy-prod-data:
+  volto-caddy-data:
     driver: local
-  caddy-prod-config:
+  volto-caddy-config:
     driver: local
 
 
