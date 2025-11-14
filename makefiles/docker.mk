@@ -64,3 +64,15 @@ docker-prod-up:
 # 	@echo "VAL: $$PROJECT_ROOT" # Print an environment variable
 	@docker compose -f $(DOCKER_ROOT)/compose.prod.yml up --build
 	@echo "${GREEN}✅ "
+
+
+
+docker-multi-prod-up:
+	@echo "${YELLOW}🚀 Starting Docker in Prod Env For multi Domains..."
+	@cd $(ROOT) 
+	@touch $(ENV_LOCAL) $(ENV_ROOT) $(ENV_PROD)
+	@set -a && . $(ENV_PROD) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
+	@export PROJECT_ROOT=$(ROOT)
+# 	@echo "VAL: $$PROJECT_ROOT" # Print an environment variable
+	@docker compose -f $(DOCKER_ROOT)/compose.multi.prod.yml up --build
+	@echo "${GREEN}✅ "
