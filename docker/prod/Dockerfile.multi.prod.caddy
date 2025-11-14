@@ -59,4 +59,4 @@ COPY --from=admin_build /app/apps/admin/dist /srv/admin
 
 COPY ./.well-known /srv/.well-known
 
-COPY ./proxy/Caddyfile.multiple /etc/caddy/Caddyfile
+COPY ./proxy/Caddyfile.multi /etc/caddy/Caddyfile
