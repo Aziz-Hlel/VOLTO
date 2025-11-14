@@ -44,6 +44,17 @@ docker-stage-up:
 	@echo "${GREEN}✅ "
 
 
+docker-multi-stage-up:
+	@echo "${YELLOW}🚀 Starting Docker in Stage Env..."
+	@cd $(ROOT) 
+	@touch $(ENV_LOCAL) $(ENV_ROOT) $(ENV_STAGE)
+	@set -a && . $(ENV_STAGE) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
+	@export PROJECT_ROOT=$(ROOT)
+# 	@echo "VAL: $$PROJECT_ROOT" # Print an environment variable
+	@docker compose -f $(DOCKER_ROOT)/compose.multi.stage.yml up --build
+	@echo "${GREEN}✅ "
+
+
 docker-prod-up:
 	@echo "${YELLOW}🚀 Starting Docker in Prod Env..."
 	@cd $(ROOT) 

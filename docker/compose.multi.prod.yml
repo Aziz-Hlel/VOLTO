@@ -2,21 +2,25 @@
 services:
 
   reverse-proxy:
+    container_name: volto-reverse-proxy
     build:
       context: ${PROJECT_ROOT}
-      dockerfile: ./docker/prod/Dockerfile.prod.caddy
+      dockerfile: ./docker/prod/Dockerfile.multi.prod.caddy
       args:
         VITE_NODE_ENV: ${NODE_ENV}
         VITE_API_URL: ${API_URL}
 
-    ports:
-      - 443:443
-      - 80:80
+    expose:
+      - 3001
 
     volumes:
       # - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy-prod-data:/data
       - caddy-prod-config:/config
+
+    networks:
+      - default
+
 
   api :
     build:
@@ -65,6 +69,8 @@ services:
       redis:
         condition: service_started
   
+    networks:
+      - default
 
 
   db:
@@ -83,6 +89,9 @@ services:
 
     volumes:
       - db_prod_volume:/var/lib/postgresql/data
+
+    networks:
+      - default
 
 
   db-backup:
@@ -107,6 +116,8 @@ services:
 
     restart: unless-stopped
 
+    networks:
+      - default
 
   redis:
     image: redis:7.4-alpine
@@ -116,7 +127,8 @@ services:
     
     command: ['redis-server', '--appendonly', 'yes'] # enables persistence
 
-
+    networks:
+      - default
 
 volumes:
   db_prod_volume:
@@ -127,3 +139,8 @@ volumes:
     driver: local
   caddy-prod-config:
     driver: local
+
+
+networks:
+  default:
+    name: volto-network
