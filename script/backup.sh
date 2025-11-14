@@ -1,52 +1,96 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# --- Configurable Variables ---
-RETENTION_DAYS=7   # 🧹 Delete backups older than this many days
-BACKUP_DIR="backup"
+# --- Configuration ---
+RETENTION_DAYS=7
+BACKUP_DIR="./backup"
 DB_HOST="${DB_CONTAINER_NAME:-db}"
 DB_USER="${POSTGRES_USER}"
 DB_PASS="${POSTGRES_PASSWORD}"
 DB_NAME="${POSTGRES_DB}"
 
+# --- Validation ---
+: "${DB_HOST:?ERROR: Missing DB_HOST}"
+: "${DB_USER:?ERROR: Missing DB_USER}"
+: "${DB_NAME:?ERROR: Missing DB_NAME}"
+: "${DB_PASS:?ERROR: Missing DB_PASS}"
 
-#  Validation
-: "${DB_HOST:?Missing DB_HOST}"
-: "${DB_USER:?Missing DB_USER}"
-: "${DB_NAME:?Missing DB_NAME}"
-: "${DB_PASS:?Missing DB_PASS}"
-
-
-# --- Derived values ---
+# --- Setup ---
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-BACKUP_FILE="$BACKUP_DIR/backup_${TIMESTAMP}.sql"
-BACKUP_COMPRESSED="$BACKUP_FILE.gz"
-
-# --- Ensure backup directory exists ---
+# Use .dump extension for custom format (more reliable than .sql.gz)
+BACKUP_FILE="$BACKUP_DIR/backup_${TIMESTAMP}.dump"
 mkdir -p "$BACKUP_DIR"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🚀 Starting database backup..."
+log_with_timestamp() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
+}
 
-# --- Export password for non-interactive access ---
+log_with_timestamp "🚀 Starting database backup for: $DB_NAME"
+
+# --- Export password for pg_dump ---
 export PGPASSWORD="$DB_PASS"
 
-# --- Create backup with gzip compression ---
-if pg_dump -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" \
-    --verbose \
-    --format=plain \
-    | gzip > "$BACKUP_COMPRESSED"; then
+# --- Create backup using CUSTOM format (industry standard) ---
+# Why custom format?
+# - Binary format = smaller, faster
+# - Includes metadata for proper restoration
+# - Allows parallel restore with pg_restore
+# - More resilient to version differences
+# - Can selectively restore tables/schemas
 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Backup completed: $BACKUP_COMPRESSED"
-    
-    # Log backup size
-    SIZE=$(du -h "$BACKUP_COMPRESSED" | cut -f1)
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 📦 Backup size: $SIZE"
-    
-    # --- Cleanup old backups ---
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🧹 Deleting backups older than $RETENTION_DAYS days..."
-    find "$BACKUP_DIR" -name "backup_${DB_NAME}_*.sql.gz" -type f -mtime +$RETENTION_DAYS -print -delete
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🧾 Cleanup complete."
+if pg_dump \
+    -h "$DB_HOST" \
+    -U "$DB_USER" \
+    -d "$DB_NAME" \
+    --format=custom \
+    --compress=6 \
+    --verbose \
+    --no-owner \
+    --no-acl \
+    --file="$BACKUP_FILE" 2>&1; then
+
+    # Verify the backup file was created and has content
+    if [ -s "$BACKUP_FILE" ]; then
+        SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+        log_with_timestamp "✅ Backup completed: $BACKUP_FILE"
+        log_with_timestamp "📦 Backup size: $SIZE"
+        
+        # Verify backup integrity using pg_restore
+        if pg_restore --list "$BACKUP_FILE" > /dev/null 2>&1; then
+            log_with_timestamp "✅ Backup integrity verified"
+            
+            # Count objects in backup for logging
+            OBJECT_COUNT=$(pg_restore --list "$BACKUP_FILE" 2>/dev/null | grep -c "^[0-9]" || echo "unknown")
+            log_with_timestamp "📊 Database objects backed up: $OBJECT_COUNT"
+        else
+            log_with_timestamp "⚠️  WARNING: Backup file may be corrupted!"
+            exit 1
+        fi
+    else
+        log_with_timestamp "❌ ERROR: Backup file is empty!"
+        exit 1
+    fi
 else
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ❌ ERROR: Backup failed!"
+    log_with_timestamp "❌ ERROR: Backup failed!"
     exit 1
 fi
+
+# --- Cleanup old backups ---
+log_with_timestamp "🧹 Cleaning up backups older than $RETENTION_DAYS days..."
+DELETED_COUNT=$(find "$BACKUP_DIR" -name "backup_*.dump" -type f -mtime +$RETENTION_DAYS -print -delete 2>/dev/null | wc -l)
+
+if [ "$DELETED_COUNT" -gt 0 ]; then
+    log_with_timestamp "🗑️  Deleted $DELETED_COUNT old backup(s)"
+else
+    log_with_timestamp "ℹ️  No old backups to delete"
+fi
+
+# --- List current backups ---
+BACKUP_COUNT=$(find "$BACKUP_DIR" -name "backup_*.dump" -type f 2>/dev/null | wc -l)
+TOTAL_SIZE=$(du -sh "$BACKUP_DIR" 2>/dev/null | cut -f1)
+log_with_timestamp "📊 Total backups: $BACKUP_COUNT (Total size: $TOTAL_SIZE)"
+
+log_with_timestamp "✨ Backup process completed successfully!"
+
+# Cleanup password from environment
+unset PGPASSWORD
