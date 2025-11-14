@@ -1,48 +1,48 @@
 
 
 
-# voltobahrain.online {
-
-#     # -----------------------
-#     # Well-known files
-#     # -----------------------
-#     handle /.well-known/* {
-#         root * /srv/.well-known
-#         uri strip_prefix /.well-known
-#         file_server
-#     }
-
-
-#     handle /socket.io/* {
-#         reverse_proxy api:3000
-#     }
-
-#     # -----------------------
-#     # API reverse proxy
-#     # -----------------------
-#     handle /api/* {
-#         reverse_proxy api:3000
-#     }
-
-
-#     # -----------------------
-#     # Web SPA
-#     # -----------------------
-#     handle {
-#         root * /srv/web
-#         encode gzip
-#         file_server
-#         try_files {path} /index.html
-#     }
-
-#     log {
-# 		level ERROR
-#         format console
-#     }
-# }
-
-
 :3001 {
+
+    # -----------------------
+    # Well-known files
+    # -----------------------
+    handle /.well-known/* {
+        root * /srv/.well-known
+        uri strip_prefix /.well-known
+        file_server
+    }
+
+
+    handle /socket.io/* {
+        reverse_proxy api:3000
+    }
+
+    # -----------------------
+    # API reverse proxy
+    # -----------------------
+    handle /api/* {
+        reverse_proxy api:3000
+    }
+
+
+    # -----------------------
+    # Web SPA
+    # -----------------------
+    handle {
+        root * /srv/web
+        encode gzip
+        file_server
+        try_files {path} /index.html
+    }
+
+    log {
+		level ERROR
+        format console
+    }
+}
+
+
+:3002 {
     root * /srv/admin
     encode gzip
     file_server

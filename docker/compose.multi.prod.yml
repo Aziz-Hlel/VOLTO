@@ -11,6 +11,7 @@ services:
         VITE_API_URL: ${API_URL}
 
     expose:
+      - 3002
       - 3001
 
     volumes:
@@ -96,6 +97,7 @@ services:
 
   db-backup:
     image: postgres:alpine
+    container_name: volto-db-backup
     depends_on:
       db:
         condition: service_healthy
