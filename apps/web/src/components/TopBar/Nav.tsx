@@ -49,12 +49,14 @@ const NavBar619 = () => {
 
   const navRef = useRef<HTMLDivElement | null>(null);
 
+  const isDesktop = window.innerWidth >= 1024;
+
   const navBarItems: CardNavItem[] = [
     {
       label: "",
       bgColor: "#1b1a2f",
       textColor: "#F8F8F8",
-      image: "/img/navbar/home.jpeg",
+      image: isDesktop ? "/img/navbar2/ysar.jpg" : "/img/navbar2/fou9.jpg",
       links: [
         { label: "Home", href: "/", ariaLabel: "Home", type: "Link" },
         { label: "About", href: "/about", ariaLabel: "About", type: "Link" },
@@ -65,7 +67,7 @@ const NavBar619 = () => {
       label: "",
       bgColor: "#14122a",
       textColor: "#F8F8F8",
-      image: "/img/navbar/menu.jpg",
+      image: isDesktop ? "img/navbar2/mid.jpg" : "/img/navbar2/wost.jpg",
       links: [
         { label: "Menu", href: "/menu", ariaLabel: "Menu", type: "Link" },
         { label: "Gallery", href: "/gallery", ariaLabel: "Gallery", type: "Link" },
@@ -76,7 +78,7 @@ const NavBar619 = () => {
       label: "",
       bgColor: "#0f0e22",
       textColor: "#F8F8F8",
-      image: "/img/navbar/contact2.jpeg",
+      image: isDesktop ? "img/navbar2/ymin.jpg" : "/img/navbar2/louta.jpg",
       links: [
         {
           label: "Instagram",

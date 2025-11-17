@@ -13,6 +13,8 @@ import { MenuCarousel } from "./components/Menu/MenuCarousel";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotFound from "./components/NotFound/NotFound";
 import { Toaster } from "sonner";
+import { Skiper48 } from "./components/Menu/Skiper48";
+import CocktailSwiper from "./components/Menu/CocktailSwiper";
 
 const queryClient = new QueryClient();
 
@@ -30,8 +32,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Outlet />}>
               <Route index element={<Menu />} />
+              <Route path="cocktails" element={<CocktailSwiper />} />
               <Route path="food" element={<MenuCarousel menuType="Food" />} />
-              <Route path="cocktails" element={<MenuCarousel menuType="Cocktails" />} />
               <Route path="hookah" element={<MenuCarousel menuType="Hookah" />} />
             </Route>
             <Route path="/about" element={<About />} />

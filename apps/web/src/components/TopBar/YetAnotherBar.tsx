@@ -228,7 +228,6 @@ const CardNav: React.FC<CardNavProps> = ({
 
     return "unknown";
   };
-  console.log("platform : ", getPlatform());
 
   // Configuration - update with your actual app details
   const APP_CONFIG = {
