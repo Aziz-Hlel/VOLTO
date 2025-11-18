@@ -96,6 +96,10 @@ const Footer = () => {
               <span className="font-semibold text-gray-300">Email:</span>
               <a href="mailto:voltobahrain@gmail.com">voltobahrain@gmail.com</a>
             </li>
+            <li className=" space-x-2">
+              <span className="font-semibold text-gray-300">CR no :</span>
+              <span>142116-2</span>
+            </li>
           </ul>
         </div>
 
