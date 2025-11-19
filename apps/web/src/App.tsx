@@ -33,6 +33,7 @@ function App() {
             <Route path="/menu" element={<Outlet />}>
               <Route index element={<Menu />} />
               <Route path="cocktails" element={<CocktailSwiper />} />
+              <Route path="cocktails/all" element={<MenuCarousel menuType="Cocktails" />} />
               <Route path="food" element={<MenuCarousel menuType="Food" />} />
               <Route path="hookah" element={<MenuCarousel menuType="Hookah" />} />
             </Route>
