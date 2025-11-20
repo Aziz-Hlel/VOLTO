@@ -96,7 +96,7 @@ services:
 
 
   db-backup:
-    container_name: schoolranking-db-backup
+    container_name: volto-db-backup
     build:
       context: ${PROJECT_ROOT}
       dockerfile: docker/prod/Dockerfile.dbBackup.prod
