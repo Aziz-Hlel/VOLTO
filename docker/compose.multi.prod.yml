@@ -96,26 +96,21 @@ services:
 
 
   db-backup:
-    image: postgres:alpine
-    container_name: volto-db-backup
-    depends_on:
-      db:
-        condition: service_healthy
-    
+    container_name: schoolranking-db-backup
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: docker/prod/Dockerfile.dbBackup.prod
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       DB_CONTAINER_NAME: db
-    
-    volumes:
-      - ${PROJECT_ROOT}/script/backup.sh:/backup.sh
-      - ${PROJECT_ROOT}/script/restore.sh:/restore.sh
-      - ${PROJECT_ROOT}/backup:/backup
-    
-    entrypoint: /bin/bash
-    command: -c "while true; chmod +x /backup.sh;chmod +x /restore.sh; do /backup.sh; sleep 86400; done"
 
+    volumes:
+      - ${PROJECT_ROOT}/backup:/backup
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
     networks:
