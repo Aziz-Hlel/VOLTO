@@ -5,7 +5,11 @@ const CeoSection = () => {
         <div className="flex flex-col lg:flex-row gap-10 items-center">
           {/* Left Image */}
           <div className="lg:w-5/12">
-            <img src="https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg" alt="Chef" className="w-full" />
+            <img
+              src="https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg"
+              alt="Chef"
+              className="w-full"
+            />
           </div>
 
           {/* Right Text */}
@@ -25,7 +29,7 @@ const CeoSection = () => {
             <div className="flex items-center gap-4 mt-6">
               <img src="img/signature.svg" alt="Signature" className="h-12" />
               <div>
-                <div className="text-lg font-bold text-white">vjmp3</div>
+                <div className="text-lg font-bold text-white">Mohamed Khaled Ahmed Al-Mahraqi</div>
                 <div className="text-sm text-[#C19D60]">Multi-Award Wining DJ</div>
               </div>
             </div>

@@ -37,7 +37,7 @@ const TeamMemberCard = ({ teamMember }: { teamMember: TeamMember }) => {
 
 const MeetTeam = () => {
   const { data } = useQuery({
-    queryKey: ["events-carousel"],
+    queryKey: ["team-members"],
     queryFn: async () => await axiosInstance.get<TeamMember[]>("/public/locales/en/team.json"),
   });
 

@@ -18,7 +18,7 @@ export function EventCarousel() {
       }),
   });
 
-  const events =  [] // ! ikd why but it s returning the fkcing team instead data?.data || [];
+  const events =  data?.data || [] // ! ikd why but it s returning the fkcing team instead data?.data || [];
 
   return (
     <div className=" w-full flex   justify-center cursor-pointer" dir="ltr">
