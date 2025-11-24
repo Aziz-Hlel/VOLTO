@@ -14,7 +14,7 @@
     "role": "مدير العمليات",
     "description": "سعد يضمن سير العمليات بسلاسة خلف الكواليس، ويحافظ على سير كل شيء مثل عقارب الساعة.",
     "instagramTag": "saad_operations",
-    "isCeo": true,
+    "isCeo": false,
     "image": {
       "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
     }
@@ -24,7 +24,7 @@
     "role": "المدير العام",
     "description": "إلياس يضمن السير السلس لفولتو، ويدير العمليات بخبرة وتفان.",
     "instagramTag": "elias_manager",
-    "isCeo": true,
+    "isCeo": false,
     "image": {
       "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
     }
@@ -34,7 +34,7 @@
     "role": "الشيف التنفيذي",
     "description": "آندي يجلب التميز والإبداع الطهي إلى مطبخ فولتو، ويصنع أطباقاً تسعد الحواس.",
     "instagramTag": "andy_chef",
-    "isCeo": true,
+    "isCeo": false,
     "image": {
       "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
     }

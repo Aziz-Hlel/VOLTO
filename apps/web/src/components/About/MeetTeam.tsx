@@ -9,8 +9,7 @@ const TeamMemberCard = ({ teamMember }: { teamMember: TeamMember }) => {
   const gif =
     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWlodTF3MjJ3NnJiY3Rlc2J0ZmE0c28yeWoxc3gxY2VtZzA5ejF1NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/syEfLvksYQnmM/giphy.gif";
 
-
-
+  const [bgImage, setBgImage] = useState(teamMember.image.url);
 
   return (
     <div className="">
@@ -21,11 +20,11 @@ const TeamMemberCard = ({ teamMember }: { teamMember: TeamMember }) => {
           "transition-all duration-500 w-72 aspect-[9/16]",
         )}
         style={{
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
         // 💻 Desktop hover
-        // 📱 Mobile click/touch
       >
         <div className="text relative z-50 bg-gradient-to-t from-black/25 to-black/50">
           <h1 className="font-bold text-xl md:text-3xl text-gray-50 relative">{teamMember.name}</h1>
@@ -59,9 +58,11 @@ const MeetTeam = () => {
         </p>
 
         <div className="flex flex-wrap justify-center gap-8 mx-auto">
-          {team.map((member, index) => (
-            <TeamMemberCard key={index} teamMember={member} />
-          ))}
+          {team
+            .filter((member) => !member.isCeo)
+            .map((member, index) => (
+              <TeamMemberCard key={index} teamMember={member} />
+            ))}
         </div>
 
         <div className="flex flex-col items-center mt-10">

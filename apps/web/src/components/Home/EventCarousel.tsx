@@ -18,7 +18,7 @@ export function EventCarousel() {
       }),
   });
 
-  const events = data?.data || [];
+  const events =  [] // ! ikd why but it s returning the fkcing team instead data?.data || [];
 
   return (
     <div className=" w-full flex   justify-center cursor-pointer" dir="ltr">
@@ -33,7 +33,7 @@ export function EventCarousel() {
         interval={2000}
         className=" w-full  h-fit"
       >
-        {/* {events.map((event) => (
+        {events?.map((event) => (
           <EventBanner
             key={event.id}
             name={event.name}
@@ -41,7 +41,7 @@ export function EventCarousel() {
             img={event.thumbnail.url}
             description={event.description}
           />
-        ))} */}
+        ))}
       </Carousel>
     </div>
   );

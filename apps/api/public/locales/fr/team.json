@@ -14,7 +14,7 @@
     "role": "Responsable des Opérations",
     "description": "Saad assure le bon fonctionnement en coulisses, maintenant tout en marche comme une horloge.",
     "instagramTag": "saad_operations",
-    "isCeo": true,
+    "isCeo": false,
     "image": {
       "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
     }
@@ -24,7 +24,7 @@
     "role": "Directeur Général",
     "description": "Elias assure le bon fonctionnement de Volto, gérant les opérations avec expertise et dévouement.",
     "instagramTag": "elias_manager",
-    "isCeo": true,
+    "isCeo": false,
     "image": {
       "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
     }
@@ -34,7 +34,7 @@
     "role": "Chef Exécutif",
     "description": "Andy apporte l'excellence culinaire et la créativité à la cuisine de Volto, créant des plats qui ravissent les sens.",
     "instagramTag": "andy_chef",
-    "isCeo": true,
+    "isCeo": false,
     "image": {
       "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
     }
