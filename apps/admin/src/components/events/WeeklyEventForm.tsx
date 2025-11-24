@@ -11,6 +11,9 @@ import { useFormContext } from "react-hook-form";
 
 import parser from "cron-parser";
 import useCronTimeHook from "./hooks/use-cron-time-hook";
+import { BAHRAIN_TIMEZONE, formatInBahrainTime } from "@/utils/dateUtils";
+import { toDate, toZonedTime, fromZonedTime } from "date-fns-tz";
+import { setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
 
 const daysOfTheWeek = [
   { value: 0, label: "Sunday" },
@@ -22,7 +25,7 @@ const daysOfTheWeek = [
   { value: 6, label: "Saturday" },
 ] as const;
 
-const cronOpts = { tz: "UTC" };
+const utcTimezone = { tz: "UTC" };
 
 const WeeklyEventForm = ({
   startDateFieldName,
@@ -41,9 +44,11 @@ const WeeklyEventForm = ({
   const dayOfWeekFromCron = (cron: string): number => {
     if (!cron) return 0;
     try {
-      const interval = parser.parseExpression(cron, cronOpts);
+      const interval = parser.parseExpression(cron, utcTimezone);
       const next = interval.next().toDate();
-      return next.getDay();
+      const bahrainNext = toZonedTime(next, "Asia/Bahrain");
+
+      return bahrainNext.getDay();
     } catch (err) {
       return 0; // Default to Sunday on error
     }
@@ -52,9 +57,10 @@ const WeeklyEventForm = ({
   const getInitHoursFromCron = (cron: string): number => {
     if (!cron) return 8;
     try {
-      const interval = parser.parseExpression(cron, cronOpts);
+      const interval = parser.parseExpression(cron, utcTimezone);
       const next = interval.next().toDate();
-      return next.getHours() % 12;
+      const bahrainNext = formatInBahrainTime(next, "h");
+      return parseInt(bahrainNext, 10);
     } catch (err) {
       console.error("Error parsing cron expression:", err);
       return 0; // Default to 0 on error
@@ -64,9 +70,10 @@ const WeeklyEventForm = ({
   const getInitAMPMFromCron = (cron: string): "AM" | "PM" => {
     if (!cron) return "PM";
     try {
-      const interval = parser.parseExpression(cron, cronOpts);
+      const interval = parser.parseExpression(cron, utcTimezone);
       const next = interval.next().toDate();
-      return next.getHours() >= 12 ? "PM" : "AM";
+      const bahrainNext = formatInBahrainTime(next, "a");
+      return bahrainNext.toUpperCase() as "AM" | "PM";
     } catch (err) {
       console.error("Error parsing cron expression:", err);
       return "PM"; // Default to PM on error
@@ -76,8 +83,8 @@ const WeeklyEventForm = ({
   const getInitialDurationFromCron = (cronStartDate: string, cronEndDate: string): number => {
     if (!cronStartDate || !cronEndDate) return 8;
     try {
-      const startInterval = parser.parseExpression(cronStartDate);
-      const endInterval = parser.parseExpression(cronEndDate);
+      const startInterval = parser.parseExpression(cronStartDate, utcTimezone);
+      const endInterval = parser.parseExpression(cronEndDate, utcTimezone);
       const start = startInterval.next().toDate();
       const end = endInterval.next().toDate();
       return (end.getTime() - start.getTime()) / _1hour;
@@ -107,22 +114,45 @@ const WeeklyEventForm = ({
 
   const [day, setDay] = useState<number>(initialDay);
 
-  const createCronExpressionUTC = (day: number, hour: number, ampm: "AM" | "PM") => {
-    let localHour = ampm === "PM" ? (hour % 12) + 12 : hour % 12;
+  const createCronExpressionUTC = (
+    day: number, // 0–6 (Sun=0)
+    hour12: number, // 1–12
+    ampm: "AM" | "PM",
+  ): string => {
+    const tz = "Asia/Bahrain";
 
-    // Get the user's timezone offset in hours
+    // 1. Convert 12h → 24h
+    let hour24 = hour12 % 12;
+    if (ampm === "PM") hour24 += 12;
+
     const now = new Date();
-    const tzOffsetHours = now.getTimezoneOffset() / 60; // getTimezoneOffset() returns minutes **behind UTC**
 
-    // Convert local hour to UTC hour
-    let utcHour = localHour + tzOffsetHours;
+    // 2. Convert NOW to Bahrain local time
+    const bahrainNow = toZonedTime(now, tz); // works like utcToZonedTime
 
-    // Handle wrap-around (0-23)
-    if (utcHour >= 24) utcHour -= 24;
-    if (utcHour < 0) utcHour += 24;
+    // 3. Compute the next occurrence of requested weekday
+    const todayDow = bahrainNow.getDay(); // 0–6 local Bahrain DOW
+    const diff = (day - todayDow + 7) % 7;
 
-    // Cron uses 0=Sunday ... 6=Saturday, keep day as user selected
-    return `0 ${Math.floor(utcHour)} * * ${day}`;
+    // 4. Build a Bahrain-local wall-clock timestamp
+    const localBahrain = new Date(
+      bahrainNow.getFullYear(),
+      bahrainNow.getMonth(),
+      bahrainNow.getDate() + diff,
+      hour24,
+      0,
+      0,
+    );
+
+    // 5. Convert Bahrain-local → true UTC Date
+    const utcDate = fromZonedTime(localBahrain, tz);
+
+    // 6. Extract UTC fields for cron
+    const utcHour = utcDate.getUTCHours();
+    const utcDow = utcDate.getUTCDay();
+
+    // 7. Build cron: sec min hour dom mon dow
+    return `0 ${utcHour} * * ${utcDow}`;
   };
 
   const createCronExpression = (day: number, hour: number, ampm: "AM" | "PM") => {
@@ -134,22 +164,17 @@ const WeeklyEventForm = ({
       const newCronStartDateExpression = createCronExpressionUTC(day, startingHour, amPM);
       const cronStartDate = parser.parseExpression(newCronStartDateExpression);
       const startDateExampleStr = cronStartDate.next().toDate();
-      console.log("str : ", startDateExampleStr);
-      const startDateExample = new Date(startDateExampleStr);
+
       const endDateExample = new Date(startDateExampleStr.getTime() + duration * 60 * 60 * 1000);
-      console.log("end example : ", endDateExample);
 
       const endDayOfWeek = endDateExample.getDay();
       const endHour = endDateExample.getHours() % 12;
       const endAMPM = endDateExample.getHours() >= 12 ? "PM" : "AM";
       const newCronEndDateExpression = createCronExpression(endDayOfWeek, endHour, endAMPM);
 
-      console.log("cro start Values :", newCronEndDateExpression);
-      console.log("cron end values :", newCronEndDateExpression);
       setValue(startDateFieldName, newCronStartDateExpression, { shouldDirty: true });
       setValue(endDateFieldName, newCronEndDateExpression, { shouldDirty: true });
     } catch (err) {
-      console.log("Something went wrong with updating cron expressions");
       setValue(startDateFieldName, "0 8 * * 0", { shouldDirty: true });
       setValue(endDateFieldName, "0 10 * * 0", { shouldDirty: true });
     }
@@ -182,7 +207,7 @@ const WeeklyEventForm = ({
                 aria-expanded={open}
                 className="w-full justify-between"
               >
-                {day
+                {day !== null && day !== undefined
                   ? daysOfTheWeek.find((dayOfWeek) => dayOfWeek.value === day)?.label
                   : "Select Day of the week... "}
                 <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

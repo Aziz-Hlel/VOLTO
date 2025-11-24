@@ -7,7 +7,7 @@ import { UserMapper } from 'src/users/Mapper/usersMapper';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { UserResponseDto } from 'src/users/Dto/userResponse';
 import ENV from 'src/config/env';
-import { EntityType, MediaPurpose, User } from '@prisma/client';
+import { EntityType, MediaPurpose, Role, User } from '@prisma/client';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 import { UpdateUserDto } from 'src/users/Dto/update-user';
 import { MediaService } from 'src/media/media.service';
@@ -42,6 +42,22 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const validatedUser = await this.validateUser(email, password);
+
+    const { accessToken, refreshToken } = this.getTokens(validatedUser);
+
+    const userDto = UserMapper.toResponse({
+      ...validatedUser,
+      avatar: validatedUser.avatar ?? undefined,
+    });
+
+    return { accessToken, refreshToken, user: userDto };
+  }
+
+  async loginAdmin(email: string, password: string) {
+    const validatedUser = await this.validateUser(email, password);
+    if (validatedUser.role !== Role.ADMIN && validatedUser.role !== Role.SUPER_ADMIN) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
 
     const { accessToken, refreshToken } = this.getTokens(validatedUser);
 

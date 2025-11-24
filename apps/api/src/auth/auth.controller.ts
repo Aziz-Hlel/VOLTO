@@ -54,6 +54,14 @@ export class AuthController {
   }
 
   @HttpCode(200)
+  @Post('login/admin')
+  async loginAdmin(@Body() dto: LoginRequestDto) {
+    const payload = await this.authService.loginAdmin(dto.email, dto.password);
+
+    return payload;
+  }
+
+  @HttpCode(200)
   @Post('refresh')
   async refresh(@Body() payload: { refreshToken: string }) {
     if (!payload.refreshToken && typeof payload.refreshToken !== 'string')

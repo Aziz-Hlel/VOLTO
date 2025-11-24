@@ -1,47 +1,42 @@
 [
   {
-    "name": "فران",
-    "role": "مصمم الرقصات",
-    "description": "فران هو العقل المبدع وراء استعراضات فولتو المذهلة، حيث يدمج بين الفن والدقة الرياضية.",
-    "instagramTag": "fran_dancer",
+    "name": "محمد خالد أحمد المحرقي",
+    "role": "المدير التنفيذي والمؤسس المشارك",
+    "description": "محمد هو العقل المبدع وراء عروض فولتو المذهلة، حيث يمزج بين الفن والدقة الرياضية.",
+    "instagramTag": "vjmp3",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/04/FRAN-ELIU-COREOGRAFO.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg"
     }
   },
   {
-    "name": "بوسولا",
-    "role": "فنانة استعراض",
-    "description": "بوسولا تنير المسرح بحركاتها القوية وحضورها الجذاب.",
-    "instagramTag": "busola_performer",
+    "name": "سعد الرميحي",
+    "role": "مدير العمليات",
+    "description": "سعد يضمن سير العمليات بسلاسة خلف الكواليس، ويحافظ على سير كل شيء مثل عقارب الساعة.",
+    "instagramTag": "saad_operations",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/BUSOLA.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
     }
   },
   {
-    "name": "كارلوس",
-    "role": "مغني",
-    "description": "صوت كارلوس هو ما يحمل تجربة فولتو، ممزوجًا بالروح والطاقة في كل أداء.",
-    "instagramTag": "carlos_music",
+    "name": "إلياس فرنانديز",
+    "role": "المدير العام",
+    "description": "إلياس يضمن السير السلس لفولتو، ويدير العمليات بخبرة وتفان.",
+    "instagramTag": "elias_manager",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/CARLOS.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
     }
   },
   {
-    "name": "ميريلا",
-    "role": "راقصة",
-    "description": "ميريلا تجلب الأناقة والحماس إلى المسرح في كل أداء.",
-    "instagramTag": "mirela_star",
+    "name": "آندي",
+    "role": "الشيف التنفيذي",
+    "description": "آندي يجلب التميز والإبداع الطهي إلى مطبخ فولتو، ويصنع أطباقاً تسعد الحواس.",
+    "instagramTag": "andy_chef",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/MIRELA-1.jpg"
-    }
-  },
-  {
-    "name": "روبرت",
-    "role": "بهلوان",
-    "description": "حركات روبرت البهلوانية تتحدى الجاذبية، مما يجلب الإثارة والحماس ليالي فولتو.",
-    "instagramTag": "robert_acrobat",
-    "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2025/04/ROBERT.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
     }
   }
 ]

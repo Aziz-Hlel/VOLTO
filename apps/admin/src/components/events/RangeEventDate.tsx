@@ -9,6 +9,9 @@ import { useFormContext } from "react-hook-form";
 import useTimeHook from "./hooks/use-time-hook";
 import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
+import { BAHRAIN_TIMEZONE, formatInBahrainTime } from "@/utils/dateUtils";
+import { toZonedTime } from "date-fns-tz/toZonedTime";
+import { fromZonedTime } from "date-fns-tz/fromZonedTime";
 
 export default function RangeEventDate({
   startDateFieldName,
@@ -24,8 +27,11 @@ export default function RangeEventDate({
   const endDate = watch(endDateFieldName)
     ? new Date(watch(endDateFieldName))
     : new Date(startDate.getTime() + 8 * _1hour);
-  const initStartTimeDayPeriod = startDate.getHours() >= 12 ? "PM" : "AM";
-  const initEndTimeDayPeriod = endDate.getHours() >= 12 ? "PM" : "AM";
+
+  const starTimeBahrain = formatInBahrainTime(startDate, "hh");
+  const endTimeBahrain = formatInBahrainTime(endDate, "hh");
+  const initStartTimeDayPeriod = parseInt(starTimeBahrain) >= 12 ? "PM" : "AM";
+  const initEndTimeDayPeriod = parseInt(endTimeBahrain) >= 12 ? "PM" : "AM";
 
   const [range, setRange] = useState<DateRange>({ from: startDate, to: endDate });
 
@@ -39,8 +45,8 @@ export default function RangeEventDate({
     handleStartTimeDayPeriod,
     handleEndTimeDayPeriod,
   } = useTimeHook({
-    initStartingHour: startDate.getHours() % 12 === 0 ? 12 : startDate.getHours() % 12,
-    initEndingHour: endDate.getHours() % 12 === 0 ? 12 : endDate.getHours() % 12,
+    initStartingHour: parseInt(starTimeBahrain) % 12 === 0 ? 12 : parseInt(starTimeBahrain) % 12,
+    initEndingHour: parseInt(endTimeBahrain) % 12 === 0 ? 12 : parseInt(endTimeBahrain) % 12,
     initStartTimeDayPeriod: initStartTimeDayPeriod,
     initEndTimeDayPeriod: initEndTimeDayPeriod,
   });
@@ -53,20 +59,26 @@ export default function RangeEventDate({
   const updateFormFields = () => {
     if (!range.from || !range.to) return;
 
-    const newStartDate = new Date(range.from);
-    newStartDate.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
-    newStartDate.setMinutes(0);
-    newStartDate.setSeconds(0);
+    const newStartDate = range.from;
+    const newStartDateUtc = toZonedTime(newStartDate, BAHRAIN_TIMEZONE); // works like utcToZonedTime
 
-    const newEndDate = new Date(range.to);
-    newEndDate.setHours(endTimeDayPeriod === "PM" ? endTime + 12 : endTime);
-    newEndDate.setMinutes(0);
-    newEndDate.setSeconds(0);
+    newStartDateUtc.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
+    newStartDateUtc.setMinutes(0);
+    newStartDateUtc.setSeconds(0);
 
-    setValue(startDateFieldName, newStartDate);
-    setValue(endDateFieldName, newEndDate);
+    const newStartDateInBahrain = fromZonedTime(newStartDateUtc, BAHRAIN_TIMEZONE);
 
-    console.log("newStartDate : ", newStartDate, " newEndDate : ", newEndDate);
+    const newEndDate = range.to;
+    const newEndDateUtc = toZonedTime(newEndDate, BAHRAIN_TIMEZONE);
+
+    newEndDateUtc.setHours(endTimeDayPeriod === "PM" ? endTime + 12 : endTime);
+    newEndDateUtc.setMinutes(0);
+    newEndDateUtc.setSeconds(0);
+    const newEndDateInBahrain = fromZonedTime(newEndDateUtc, BAHRAIN_TIMEZONE);
+
+    setValue(startDateFieldName, newStartDateInBahrain);
+    setValue(endDateFieldName, newEndDateInBahrain);
+
   };
 
   useEffect(() => {
@@ -93,6 +105,7 @@ export default function RangeEventDate({
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
             <Calendar
               mode="range"
+              timeZone={BAHRAIN_TIMEZONE}
               selected={range}
               captionLayout="dropdown"
               onSelect={handleRangeDateChange}

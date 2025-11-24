@@ -10,11 +10,8 @@ const useTimeHook = ({
   initStartTimeDayPeriod: "AM" | "PM";
   initDuration: number;
 }) => {
-  console.log(" useTimeHook called with: ", {
-    initStartingHour,
-    initStartTimeDayPeriod,
-    initDuration,
-  });
+
+  
   const [startTime, setStartTime] = useState<number>(initStartingHour ?? 8);
   const [StartTimeDayPeriod, setStartTimeDayPeriod] = useState<"AM" | "PM">(
     initStartTimeDayPeriod ?? "PM",

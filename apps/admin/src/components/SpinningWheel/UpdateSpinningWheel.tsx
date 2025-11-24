@@ -1,4 +1,23 @@
 import React from "react";
+import z from "zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { SpinningWheelResponseDto } from "@/types/spinnigWheel/SpinningWheel.response";
+import { Gift } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
+import type { UpdateSpinnigWheelDto } from "@/types/spinnigWheel/UpdateSpinnigWheel.dto";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -9,27 +28,8 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Spinner } from "../ui/spinner";
-import { Button } from "../ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
 import { Input } from "../ui/input";
-import z from "zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { SpinningWheelResponseDto } from "@/types/spinnigWheel/SpinningWheel.response";
 import SingleEventDate from "./SingleEventDate";
-import { Gift } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SpinningWheelService } from "@/Api/services/SpinningWheel.service";
-import type { UpdateSpinnigWheelDto } from "@/types/spinnigWheel/UpdateSpinnigWheel.dto";
-import { toast } from "sonner";
 
 interface UpdateSpinningWheelProps {
   initialSpinningWheel: SpinningWheelResponseDto;
@@ -47,7 +47,7 @@ const UpdateSpinningWheelSchema = z.object({
 
 type UpdateSpinnigWheelRequestDto = z.infer<typeof UpdateSpinningWheelSchema>;
 
-const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpinningWheelProps) => {
+function UpdateSpinningWheel({ initialSpinningWheel, open, setOpen }: UpdateSpinningWheelProps) {
   const { mutateAsync } = useMutation({
     mutationFn: (updatedSpiningWheel: UpdateSpinnigWheelDto) =>
       SpinningWheelService.update(updatedSpiningWheel),
@@ -82,11 +82,7 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
     } catch (error) {
       toast.error(error?.error ?? "Error updating Spinig Wheel");
     }
-
-    console.log(data);
   };
-
-  console.log("error:", form.formState.errors);
 
   const loading = false;
   return (
@@ -223,6 +219,6 @@ const UpdateSpinningWheel = ({ initialSpinningWheel, open, setOpen }: UpdateSpin
       </Dialog>
     </>
   );
-};
+}
 
 export default UpdateSpinningWheel;

@@ -75,7 +75,6 @@ const EditAccount = ({ me }: { me: User }) => {
   };
 
   const [openChangePassword, setOpenChangePassword] = useState(false);
-  console.log("openchangepass", openChangePassword);
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6 sm:p-10 border border-gray-100">

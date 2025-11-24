@@ -76,6 +76,7 @@ export class EventsController {
     return response;
   }
 
+  @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
@@ -96,6 +97,7 @@ export class EventsController {
     return response;
   }
 
+  @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {

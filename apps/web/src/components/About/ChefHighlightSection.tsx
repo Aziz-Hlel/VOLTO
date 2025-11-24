@@ -4,8 +4,8 @@ const CeoSection = () => {
       <div className="max-w-[1140px] mx-auto px-4">
         <div className="flex flex-col lg:flex-row gap-10 items-center">
           {/* Left Image */}
-          <div className="lg:w-1/2">
-            <img src="img/about/ceoImg.jpg" alt="Chef" className="w-full" />
+          <div className="lg:w-5/12">
+            <img src="https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg" alt="Chef" className="w-full" />
           </div>
 
           {/* Right Text */}

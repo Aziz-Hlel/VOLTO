@@ -16,10 +16,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { EventResponseDto } from "@/types/events/eventResponse.dto";
-import cronstrue from "cronstrue";
 import { EventType } from "@/types/events/EventType";
 import parser from "cron-parser";
-import { format, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+import { formatInBahrainTime } from "@/utils/dateUtils";
 
 interface EventsDataTableProps {
   data: EventResponseDto[];
@@ -146,34 +146,26 @@ interface EventTableRowProps {
 const EventTableRow: FC<EventTableRowProps> = ({ event, setEventForEdit, setEventForDeletion }) => {
   const getDisplayDate = (event: EventResponseDto) => {
     if (event.type === EventType.SPECIAL) {
-      const start = new Date(event.startDate);
-      const end = new Date(event.endDate);
-      const dateDisplay = Intl.DateTimeFormat("en-US", {
-        month: "long", // October
-        day: "numeric", // 1
-        year: "numeric", // 2025
-        hour: "numeric",
-      });
-      return `${dateDisplay.format(start)} → ${dateDisplay.format(end)}`;
+      const start = formatInBahrainTime(event.startDate, "MMM d, yyyy, h a");
+      const end = formatInBahrainTime(event.endDate, "MMM d, yyyy, h a");
 
-      return `${start.toLocaleTimeString()} → ${end.toLocaleDateString()}`;
+      return `${start} → ${end}`;
     }
 
     const opts = { tz: "UTC" };
 
     const startInterval = parser.parseExpression(event.cronStartDate, opts);
     const nextStartDate = startInterval.next().toDate();
-    const startLocalTime = format(nextStartDate, "hh:mm a"); // e.g., "02:30 PM"
-    const dayOfWeek = format(nextStartDate, "EEEE"); // e.g., "Monday"
+
+    const startLocalTime = formatInBahrainTime(nextStartDate, "hh:mm a"); // e.g., "02:30 PM"
+    const dayOfWeek = formatInBahrainTime(nextStartDate, "EEEE"); // e.g., "Monday"
 
     const endInterval = parser.parseExpression(event.cronEndDate, opts);
     const endStartDate = endInterval.next().toDate();
-    const endLocalTime = format(endStartDate, "hh:mm a"); // e.g., "02:30 PM"
+    const endLocalTime = formatInBahrainTime(endStartDate, "hh:mm a"); // e.g., "02:30 PM"
 
     // Return whatever format you want:
     return `${dayOfWeek} at ${startLocalTime} → ${endLocalTime}`;
-
-    return `${cronstrue.toString(event.cronStartDate)} (UTC time)`;
   };
 
   return (

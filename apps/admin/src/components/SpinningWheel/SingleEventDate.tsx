@@ -1,5 +1,4 @@
 import { ChevronDownIcon } from "lucide-react";
-import { type DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -9,6 +8,8 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
 import useTimeHook from "./hooks/use-time-hook";
+import { BAHRAIN_TIMEZONE, formatInBahrainTime } from "@/utils/dateUtils";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 export default function SingleEventDate({
   startDateFieldName,
@@ -35,7 +36,9 @@ export default function SingleEventDate({
 
   const initDuration = diffInHours(startDate, endDate);
 
-  const initStartTimeDayPeriod = startDate.getHours() >= 12 ? "PM" : "AM";
+  const starTimeBahrain = formatInBahrainTime(startDate, "hh");
+  const endTimeBahrain = formatInBahrainTime(endDate, "hh");
+  const initStartTimeDayPeriod = parseInt(starTimeBahrain) >= 12 ? "PM" : "AM";
 
   const [day, setDay] = useState<Date>(startDate ?? new Date());
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -48,8 +51,8 @@ export default function SingleEventDate({
     handleStartTimeChange,
     handleStartTimeDayPeriod,
   } = useTimeHook({
-    initStartingHour: startDate.getHours() % 12 === 0 ? 12 : startDate.getHours() % 12,
-    initEndingHour: endDate.getHours() % 12 === 0 ? 12 : endDate.getHours() % 12,
+    initStartingHour: parseInt(starTimeBahrain) % 12 === 0 ? 12 : parseInt(starTimeBahrain) % 12,
+    initEndingHour: parseInt(endTimeBahrain) % 12 === 0 ? 12 : parseInt(endTimeBahrain) % 12,
     initStartTimeDayPeriod: initStartTimeDayPeriod,
     initDuration: initDuration,
   });
@@ -60,18 +63,24 @@ export default function SingleEventDate({
 
   const updateFormFields = () => {
     const newStartDate = day;
-    newStartDate.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
-    newStartDate.setMinutes(31);
-    newStartDate.setSeconds(0);
+    const newStartDateUtc = toZonedTime(newStartDate, BAHRAIN_TIMEZONE); // works like utcToZonedTime
+
+    newStartDateUtc.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
+    newStartDateUtc.setMinutes(0);
+    newStartDateUtc.setSeconds(0);
+
+    const newStartDateInBahrain = fromZonedTime(newStartDateUtc, BAHRAIN_TIMEZONE);
 
     const newEndDate = new Date(day);
-    newEndDate.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
-    newEndDate.setMinutes(0);
-    newEndDate.setSeconds(0);
-    newEndDate.setHours(newEndDate.getHours() + duration);
+    const newEndDateUtc = toZonedTime(newEndDate, BAHRAIN_TIMEZONE);
+    newEndDateUtc.setHours(StartTimeDayPeriod === "PM" ? startTime + 12 : startTime);
+    newEndDateUtc.setMinutes(0);
+    newEndDateUtc.setSeconds(0);
+    newEndDateUtc.setHours(newEndDateUtc.getHours() + duration);
+    const newEndDateInBahrain = fromZonedTime(newEndDateUtc, BAHRAIN_TIMEZONE);
 
-    setValue(startDateFieldName, newStartDate.toUTCString());
-    setValue(endDateFieldName, newEndDate.toUTCString());
+    setValue(startDateFieldName, newStartDateInBahrain.toUTCString());
+    setValue(endDateFieldName, newEndDateInBahrain.toUTCString());
   };
 
   useEffect(() => {
@@ -99,6 +108,7 @@ export default function SingleEventDate({
             <Calendar
               mode="single"
               selected={day}
+              timeZone={BAHRAIN_TIMEZONE}
               captionLayout="dropdown"
               onSelect={(e) => {
                 setOpenCalendar(false);

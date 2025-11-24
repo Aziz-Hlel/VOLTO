@@ -1,8 +1,10 @@
 export type TeamMember = {
   name: string;
-  position: string;
-  media: {
-    imageUrl: string;
-    gifUrl: string;
+  role: string;
+  instagramTag: string;
+  isCeo: boolean;
+  description: string;
+  image: {
+    url: string;
   };
 };

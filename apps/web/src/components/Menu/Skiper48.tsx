@@ -18,46 +18,63 @@ import { Link } from "react-router-dom";
 const Skiper48 = () => {
   const cocktails = [
     {
-      src: "/img/menu/carousel/cocktail/taki69.png",
-      alt: "Taki 69 Cocktail",
-      title: "Taki 69",
+      src: "/img/menu/cocktail/sube.jpg",
+      alt: "Sube Cocktail",
+      title: "Sube",
       price: "8 BD",
-      description: "White rum, Dark rum, Overproof rum, Orange juice, Grenadine syrup",
+      description: "White rum, Strawberry syrup, Coconut syrup, Lemon juice",
     },
     {
-      src: "/img/menu/carousel/cocktail/greenHill.png",
-      alt: "Green Hill Cocktail",
-      title: "Green Hill",
+      src: "/img/menu/cocktail/black_volto.jpg",
+      alt: "Black Volto Cocktail",
+      title: "Black Volto",
       price: "8 BD",
-      description: "Vodka, Basil, Cucumber, Sour mix",
+      description: "Tequila, Triple sec, Lemongrass,  Lemon Juice, Charcoal powder",
+    },
+
+    {
+      src: "/img/menu/cocktail/thyme_time.jpg",
+      alt: "Thyme Time Cocktail",
+      title: "Thyme Time",
+      price: "8 BD",
+      description: "Gin, Fresh thyme, Lemon juice",
+    },
+
+    {
+      src: "/img/menu/cocktail/huka.jpg",
+      alt: "HUKA Cocktail",
+      title: "HUKA",
+      price: "8 BD",
+      description: "White rum, Kiwi fresh, Coconut syrup, Blue curacao, Lemon juice",
     },
     {
-      src: "/img/menu/carousel/cocktail/LaVolto.png",
+      src: "/img/menu/cocktail/butterfly.jpg",
+      alt: "Butterfly Cocktail",
+      title: "Butterfly",
+      price: "8 BD",
+      description: "Gin, Maraschino, Lavender syrup, Lemon juice",
+    },
+
+    {
+      src: "/img/menu/cocktail/LaVolto.png",
       alt: "La Volto Cocktail",
       title: "La Volto",
       price: "8 BD",
       description: "White rum, Dark rum, Malibu, Blue curacao",
     },
     {
-      src: "/img/menu/carousel/cocktail/taki69.png",
+      src: "/img/menu/cocktail/taki69.png",
       alt: "Taki 69 Cocktail",
       title: "Taki 69",
       price: "8 BD",
       description: "White rum, Dark rum, Overproof rum, Orange juice, Grenadine syrup",
     },
     {
-      src: "/img/menu/carousel/cocktail/greenHill.png",
+      src: "/img/menu/cocktail/greenHill.png",
       alt: "Green Hill Cocktail",
       title: "Green Hill",
       price: "8 BD",
       description: "Vodka, Basil, Cucumber, Sour mix",
-    },
-    {
-      src: "/img/menu/carousel/cocktail/LaVolto.png",
-      alt: "La Volto Cocktail",
-      title: "La Volto",
-      price: "8 BD",
-      description: "White rum, Dark rum, Malibu, Blue curacao",
     },
   ];
 

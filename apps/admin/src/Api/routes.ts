@@ -5,7 +5,7 @@ const apiRoutes = {
 
   auth: {
     me: () => "/auth/me" as const,
-    login: () => "/auth/login" as const,
+    login: () => "/auth/login/admin" as const,
     refresh: () => "/auth/refresh" as const,
     signUp: () => "/auth/register/" as const,
   },

@@ -12,6 +12,8 @@ import EventCategory from "@/types/EventCategory";
 import { Link } from "react-router-dom";
 import parser from "cron-parser";
 import { toZonedTime, format } from "date-fns-tz";
+import { formatInTimeZone } from "date-fns-tz";
+import { formatInBahrainTime } from "@/utils/dateUtils";
 
 interface CarouselProps {
   events: JSX.Element[];
@@ -203,7 +205,7 @@ export const Card = ({
     { prefix: "SATUR", suffix: "DAY" },
   ];
 
-  const timeZone = "Asia/Bahrain";
+  const CRON_TZ_IN = "UTC";
 
   let weekday: number = 0;
   let startHour: string = "7AM";
@@ -211,36 +213,33 @@ export const Card = ({
   let month: string | null = null;
 
   if (event.type === "WEEKLY") {
-    const parsedCronStartDate = parser.parse(event.cronStartDate);
-    const parsedCronEndDate = parser.parse(event.cronEndDate);
-    weekday = isNaN(Number(parsedCronStartDate.fields.dayOfWeek.values[0]))
-      ? 0
-      : Number(parsedCronStartDate.fields.dayOfWeek.values[0]);
+    const parsedCronStart = parser.parse(event.cronStartDate, { tz: CRON_TZ_IN });
+    const parsedCronEnd = parser.parse(event.cronEndDate, { tz: CRON_TZ_IN });
 
-    const utcStartDate = parsedCronStartDate.next().toDate();
-    const bahrainStartDate = toZonedTime(utcStartDate, timeZone);
-    startHour = format(bahrainStartDate, "h a", { timeZone });
+    const nextStart = parsedCronStart.next().toDate(); // absolute instant (correct)
+    const nextEnd = parsedCronEnd.next().toDate();
+    // Format into Bahrain — don't do toZonedTime + format with tz; format with tz is enough
+    startHour = formatInBahrainTime(nextStart, "h a");
+    endHour = formatInBahrainTime(nextEnd, "h a");
 
-    const utcEndDate = parsedCronEndDate.next().toDate();
-    const bahrainEndDate = toZonedTime(utcEndDate, timeZone);
-    endHour = format(bahrainEndDate, "h a", { timeZone });
+    const bahrainNextStart = toZonedTime(nextStart, "Asia/Bahrain");
+    weekday = bahrainNextStart.getDay();
   }
 
   if (event.type === "SPECIAL") {
-    month = event.startDate.toLocaleString("default", { month: "long" }).toUpperCase().slice(0, 3);
+    month = formatInBahrainTime(event.startDate, "MMM").toUpperCase();
+    // const bahrainStartDate = toZonedTime(event.startDate, timeZone);
+    startHour = formatInBahrainTime(event.startDate, "h a");
 
-    const bahrainStartDate = toZonedTime(event.startDate, timeZone);
-    startHour = format(bahrainStartDate, "h a", { timeZone });
-
-    const bahrainEndDate = toZonedTime(event.endDate, timeZone);
-    endHour = format(bahrainEndDate, "h a", { timeZone });
+    // const bahrainEndDate = toZonedTime(event.endDate, timeZone);
+    endHour = formatInBahrainTime(event.endDate, "h a");
   }
 
   const isRecurring =
-    event.type === "SPECIAL" && event.startDate.getDate() !== event.endDate.getDate();  const startDay = event.type === "SPECIAL" && event.startDate?.getDate();
+    event.type === "SPECIAL" && event.startDate.getDate() !== event.endDate.getDate();
+  const startDay = event.type === "SPECIAL" && event.startDate?.getDate();
   const endDay = event.type === "SPECIAL" && event.endDate?.getDate();
   const isUpcommingEvent = event.type === "WEEKLY" || event.endDate > new Date();
-
 
   return (
     <>
@@ -280,7 +279,7 @@ export const Card = ({
                 />
               </AspectRatio>
               {/* <motion.p
-                                layoutId={layout ? `src-${card.src}` : undefined}
+                                layoutId={layout ? src-${card.src} : undefined}
                                 className="mt-4 text-2xl font-semibold rounded-t-2xl text-neutral-700 md:text-5xl"
                             >
                             </motion.p> */}
@@ -334,7 +333,6 @@ export const Card = ({
                         </div>
                       </>
                     )}
-
 
                     {event.type === "SPECIAL" && isRecurring && (
                       <div className="flex flex-col items-end ">
@@ -426,7 +424,7 @@ export const Card = ({
             className={cn(
               "relative mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl",
               event.type === "SPECIAL" &&
-                "before:absolute before:inset-0 before:z-0 before:bg-gray-600 opacity-80 before:rounded-md",
+                "relative z-10 before:absolute before:inset-0 before:-z-10 before:bg-[#FFD700]/45 whitespace-nowrap before:blur-sm  px-1",
             )}
           >
             <span className="relative z-10">{event.title}</span>

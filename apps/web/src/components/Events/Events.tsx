@@ -98,7 +98,7 @@ const Events = () => {
   );
 
   const previousEventsDataComponents: ICard[] = previousEventsData.map((event, index) => {
-    const a:
+    const eventDates:
       | { type: "WEEKLY"; cronStartDate: string; cronEndDate: string }
       | { type: "SPECIAL"; startDate: Date; endDate: Date } =
       event.type === "SPECIAL"
@@ -114,7 +114,7 @@ const Events = () => {
           };
 
     return {
-      ...a,
+      ...eventDates,
       id: event.id,
       title: event.name,
       description: event.description,

@@ -1,47 +1,42 @@
 [
   {
-    "name": "Fran",
-    "role": "Coreógrafo",
-    "description": "Fran es la mente creativa detrás de las espectaculares rutinas de Volto, combinando arte con precisión atlética.",
-    "instagramTag": "fran_dancer",
+    "name": "Mohamed Khaled Ahmed Al-Mahraqi",
+    "role": "CEO y Cofundador",
+    "description": "Mohamed es la mente creativa detrás de las impresionantes actuaciones de Volto, combinando arte y precisión atlética.",
+    "instagramTag": "vjmp3",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/04/FRAN-ELIU-COREOGRAFO.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg"
     }
   },
   {
-    "name": "Busola",
-    "role": "Artista",
-    "description": "Busola ilumina el escenario con movimientos poderosos y una presencia cautivadora.",
-    "instagramTag": "busola_performer",
+    "name": "Saad Alromihi",
+    "role": "Gerente de Operaciones",
+    "description": "Saad asegura operaciones fluidas tras bambalinas, manteniendo todo funcionando como un reloj.",
+    "instagramTag": "saad_operations",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/BUSOLA.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
     }
   },
   {
-    "name": "Carlos",
-    "role": "Cantante",
-    "description": "La voz de Carlos lleva la experiencia Volto, mezclando alma y energía en cada actuación.",
-    "instagramTag": "carlos_music",
+    "name": "Elias Fernandes",
+    "role": "Gerente General",
+    "description": "Elias asegura el funcionamiento fluido de Volto, gestionando las operaciones con experiencia y dedicación.",
+    "instagramTag": "elias_manager",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/CARLOS.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
     }
   },
   {
-    "name": "Mirela",
-    "role": "Bailarina",
-    "description": "Mirela aporta elegancia y fuego al escenario con cada actuación.",
-    "instagramTag": "mirela_star",
+    "name": "Andy",
+    "role": "Chef Ejecutivo",
+    "description": "Andy aporta excelencia culinaria y creatividad a la cocina de Volto, creando platos que deleitan los sentidos.",
+    "instagramTag": "andy_chef",
+    "isCeo": true,
     "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2024/05/MIRELA-1.jpg"
-    }
-  },
-  {
-    "name": "Robert",
-    "role": "Acróbata",
-    "description": "Las acrobacias de Robert desafían la gravedad, aportando emoción y emoción a las noches Volto.",
-    "instagramTag": "robert_acrobat",
-    "image": {
-      "url": "https://www.liogroup.com/wp-content/uploads/2025/04/ROBERT.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
     }
   }
 ]
