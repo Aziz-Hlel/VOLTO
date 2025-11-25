@@ -108,9 +108,8 @@ export class LadiesNightDataMqService implements OnModuleInit {
 
     await this.resetLadiesNightStats(currentEventStartDate);
 
-    const task = cron.schedule('*/1 * * * *', async () => {
-      // ! change to 15 min later
-      this.logger.debug(`🕒1mn passed : Updating ladies night data...`);
+    const task = cron.schedule('*/15 * * * *', async () => {
+      this.logger.debug(`🕒15 mn passed : Updating ladies night data...`);
       const currentDate = new Date();
       if (currentDate > currentEventEndDate) {
         this.currentWorkingTask = null;
