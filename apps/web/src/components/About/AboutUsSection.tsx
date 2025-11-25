@@ -14,14 +14,15 @@ const AboutUsSection = () => {
               </h2>
             </div>
             <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
-              Volto Bahrain is more than a restaurant – it is an experience. With world-class
-              design, an electric atmosphere, and a fusion of fine dining and music, Volto has
-              quickly become a landmark destination in the Kingdom of Bahrain.
+              Volto Bahrain is a curator of exceptional experiences, merging world-class culinary
+              artistry with an electrifying atmosphere. A landmark destination where fine dining and
+              pulsating music create unparalleled luxury.
             </p>
             <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
-              Our team of award-winning chefs, mixologists, and performers craft unforgettable
-              nights. From signature cocktails to live DJ sets, every detail at Volto is designed to
-              deliver luxury, style, and energy.
+              Our award-winning team crafts nights that resonate. Honored as the *Favourite
+              Experience* at the FACT Dining Awards Bahrain 2025, Volto is a beacon of style and
+              energy, delivering an unforgettable journey from bespoke cocktails to immersive DJ
+              sets.
             </p>
           </div>
 
@@ -29,7 +30,7 @@ const AboutUsSection = () => {
           <div className="lg:w-1/2 grid grid-cols-2 gap-8 items-start">
             <AspectRatio ratio={3 / 4} className="bg-muted rounded-none  h-full mt-24">
               <img
-                src="img/about/volto-outside.webp"
+                src="img/about/volto-about.webp"
                 alt="About 2"
                 className=" h-full w-full rounded-none object-cover"
               />
@@ -37,7 +38,7 @@ const AboutUsSection = () => {
 
             <AspectRatio ratio={3 / 4} className="bg-muted rounded-none">
               <img
-                src="img/about/volto-about2.webp"
+                src="img/about/volto-outside.webp"
                 alt="About"
                 className=" h-full w-full rounded-none object-cover"
               />
