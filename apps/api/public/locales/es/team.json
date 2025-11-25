@@ -6,7 +6,7 @@
     "instagramTag": "vjmp3",
     "isCeo": true,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.webp"
     }
   },
   {
@@ -15,7 +15,7 @@
     "description": "Saad asegura operaciones fluidas tras bambalinas, manteniendo todo funcionando como un reloj.",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.webp"
     }
   },
   {
@@ -24,7 +24,7 @@
     "description": "Andy aporta excelencia culinaria y creatividad a la cocina de Volto, creando platos que deleitan los sentidos.",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.webp"
     }
   },
   {
@@ -33,7 +33,7 @@
     "description": "Elias asegura el funcionamiento fluido de Volto, gestionando las operaciones con experiencia y dedicación.",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.webp"
     }
   }
 ]

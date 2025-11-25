@@ -6,7 +6,7 @@
     "instagramTag": "vjmp3",
     "isCeo": true,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.webp"
     }
   },
   {
@@ -15,7 +15,7 @@
     "description": "سعد يضمن سير العمليات بسلاسة خلف الكواليس، ويحافظ على سير كل شيء مثل عقارب الساعة.",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.webp"
     }
   },
   {
@@ -24,7 +24,7 @@
     "description": "آندي يجلب التميز والإبداع الطهي إلى مطبخ فولتو، ويصنع أطباقاً تسعد الحواس.",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.webp"
     }
   },
   {
@@ -33,7 +33,7 @@
     "description": "إلياس يضمن السير السلس لفولتو، ويدير العمليات بخبرة وتفان.",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.web"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.webp"
     }
   }
 ]
