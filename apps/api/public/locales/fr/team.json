@@ -6,7 +6,7 @@
     "instagramTag": "vjmp3",
     "isCeo": true,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.webp"
     }
   },
   {
@@ -16,17 +16,7 @@
     "instagramTag": "saad_operations",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
-    }
-  },
-  {
-    "name": "Elias Fernandes",
-    "role": "Directeur Général",
-    "description": "Elias assure le bon fonctionnement de Volto, gérant les opérations avec expertise et dévouement.",
-    "instagramTag": "elias_manager",
-    "isCeo": false,
-    "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.webp"
     }
   },
   {
@@ -36,7 +26,17 @@
     "instagramTag": "andy_chef",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.webp"
+    }
+  },
+  {
+    "name": "Elias Fernandes",
+    "role": "Directeur Général",
+    "description": "Elias assure le bon fonctionnement de Volto, gérant les opérations avec expertise et dévouement.",
+    "instagramTag": "elias_manager",
+    "isCeo": false,
+    "image": {
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.webp"
     }
   }
 ]

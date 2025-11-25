@@ -9,7 +9,7 @@ const TeamMemberCard = ({ teamMember }: { teamMember: TeamMember }) => {
   const gif =
     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWlodTF3MjJ3NnJiY3Rlc2J0ZmE0c28yeWoxc3gxY2VtZzA5ejF1NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/syEfLvksYQnmM/giphy.gif";
 
-  const [bgImage, setBgImage] = useState(teamMember.image.url);
+  const bgImage = teamMember.image.url;
 
   return (
     <div className="">
@@ -17,7 +17,7 @@ const TeamMemberCard = ({ teamMember }: { teamMember: TeamMember }) => {
         className={cn(
           "group cursor-pointer overflow-hidden relative card rounded-md shadow-xl mx-auto flex flex-col justify-end p-4 border border-transparent dark:border-neutral-800",
           "hover:after:content-[''] hover:after:absolute hover:after:inset-0 hover:after:bg-black hover:after:opacity-50",
-          "transition-all duration-500 w-72 aspect-[9/16]",
+          "transition-all duration-500 w-72 aspect-[3/5]",
         )}
         style={{
           backgroundImage: `url(${bgImage})`,

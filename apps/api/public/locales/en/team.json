@@ -6,37 +6,34 @@
     "instagramTag": "vjmp3",
     "isCeo": true,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.webp"
     }
   },
   {
     "name": "Saad Alromihi",
     "role": "Operations Manager",
     "description": "Saad ensures smooth operations behind the scenes, keeping everything running like clockwork.",
-    "instagramTag": "saad_operations",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
-    }
-  },
-  {
-    "name": "Elias Fernandes",
-    "role": "General Manager",
-    "description": "Elias ensures the smooth running of Volto, managing operations with expertise and dedication.",
-    "instagramTag": "elias_manager",
-    "isCeo": false,
-    "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.webp"
     }
   },
   {
     "name": "Andy",
     "role": "Executive chef",
     "description": "Andy brings culinary excellence and creativity to Volto’s kitchen, crafting dishes that delight the senses.",
-    "instagramTag": "andy_chef",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.webp"
+    }
+  },
+  {
+    "name": "Elias Fernandes",
+    "role": "General Manager",
+    "description": "Elias ensures the smooth running of Volto, managing operations with expertise and dedication.",
+    "isCeo": false,
+    "image": {
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.webp"
     }
   }
 ]

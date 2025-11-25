@@ -6,37 +6,34 @@
     "instagramTag": "vjmp3",
     "isCeo": true,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/vjmp3.web"
     }
   },
   {
     "name": "سعد الرميحي",
     "role": "مدير العمليات",
     "description": "سعد يضمن سير العمليات بسلاسة خلف الكواليس، ويحافظ على سير كل شيء مثل عقارب الساعة.",
-    "instagramTag": "saad_operations",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.jpg"
-    }
-  },
-  {
-    "name": "إلياس فرنانديز",
-    "role": "المدير العام",
-    "description": "إلياس يضمن السير السلس لفولتو، ويدير العمليات بخبرة وتفان.",
-    "instagramTag": "elias_manager",
-    "isCeo": false,
-    "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Saad.web"
     }
   },
   {
     "name": "آندي",
     "role": "الشيف التنفيذي",
     "description": "آندي يجلب التميز والإبداع الطهي إلى مطبخ فولتو، ويصنع أطباقاً تسعد الحواس.",
-    "instagramTag": "andy_chef",
     "isCeo": false,
     "image": {
-      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.jpg"
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Andy.web"
+    }
+  },
+  {
+    "name": "إلياس فرنانديز",
+    "role": "المدير العام",
+    "description": "إلياس يضمن السير السلس لفولتو، ويدير العمليات بخبرة وتفان.",
+    "isCeo": false,
+    "image": {
+      "url": "https://d23gfwidwdh7y.cloudfront.net/TEAM/Fernandes.web"
     }
   }
 ]
