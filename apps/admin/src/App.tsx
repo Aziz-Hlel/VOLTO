@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "";
 
 import Home from "./pages/Home";
 import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";
@@ -17,6 +16,7 @@ import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
 import NotFound from "./components/NotFound/NotFound";
 import EditAccountWrapper from "./components/EditAccount/EditAccountWrapper";
 import UsersTable from "./components/Users/Users";
+import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
