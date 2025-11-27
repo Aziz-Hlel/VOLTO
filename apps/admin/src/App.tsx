@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
+import { Toaster } from "";
 
 import Home from "./pages/Home";
 import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";

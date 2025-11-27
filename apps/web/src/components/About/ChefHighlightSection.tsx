@@ -29,8 +29,7 @@ const CeoSection = () => {
             <div className="flex items-center gap-4 mt-6">
               <img src="img/signature.svg" alt="Signature" className="h-12" />
               <div>
-                <div className="text-lg font-bold text-white">Mohamed Khaled Ahmed Al-Mahraqi</div>
-                <div className="text-sm text-[#C19D60]">Multi-Award Wining DJ</div>
+                <div className="text-lg font-bold text-white">Mohamed Khalid AlMuharraqi</div>
               </div>
             </div>
           </div>
