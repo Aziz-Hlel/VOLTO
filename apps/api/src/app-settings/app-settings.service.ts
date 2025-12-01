@@ -11,6 +11,9 @@ import Redis from 'ioredis';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
 import { IAppSettings } from './types/AppSettings';
+import { CheckAppVersionDto } from './dto/check-app-version-dto';
+import ENV from 'src/config/env';
+import { CheckAppVersionResponseDto } from './dto/check-app-version-response-dto';
 
 @Injectable()
 export class AppSettingsService {
@@ -72,5 +75,16 @@ export class AppSettingsService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  getAppVersion(checkAppVersionDto: CheckAppVersionDto): CheckAppVersionResponseDto {
+    const userPlatformMinVersion =
+      checkAppVersionDto.platform === 'ios'
+        ? ENV.IOS_MIN_SUPPORTED_VER
+        : ENV.ANDROID_MIN_SUPPORTED_VER;
+
+    return {
+      minSupportedVersion: userPlatformMinVersion,
+    };
   }
 }

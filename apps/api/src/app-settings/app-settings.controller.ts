@@ -3,6 +3,7 @@ import { AppSettingsService } from './app-settings.service';
 import { CreateAppSettingDto } from './dto/create-app-setting.dto';
 import { UpdateAppSettingDto } from './dto/update-app-setting.dto';
 import { UpdateDrinkQuotaDto } from './dto/update-drink-quota.dto';
+import { CheckAppVersionDto } from './dto/check-app-version-dto';
 
 @Controller('app-settings')
 export class AppSettingsController {
@@ -14,6 +15,14 @@ export class AppSettingsController {
     const res = await this.appSettingsService.updateLadiesNightDrinkQuota(
       updateDrinkQuotaDto.quota,
     );
+
+    return res;
+  }
+
+  @HttpCode(200)
+  @Post('/version')
+  getAppVersion(@Body() checkAppVersionDto: CheckAppVersionDto) {
+    const res = this.appSettingsService.getAppVersion(checkAppVersionDto);
 
     return res;
   }

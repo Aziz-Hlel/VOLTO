@@ -42,6 +42,13 @@ export const envSchema = z
 
     ONE_SIGNAL_APP_SECRET: z.string().default(''),
     ONE_SIGNAL_APP_ID: z.string().default(''),
+
+    IOS_MIN_SUPPORTED_VER: z.string().regex(/^\d+\.\d+\.\d+$/, {
+      message: 'IOS_MIN_SUPPORTED_VER must be in the format x.y.z',
+    }),
+    ANDROID_MIN_SUPPORTED_VER: z.string().regex(/^\d+\.\d+\.\d+$/, {
+      message: 'ANDROID_MIN_SUPPORTED_VER must be in the format x.y.z',
+    }),
   })
   .refine(
     (data) => !['stage', 'production'].includes(data.NODE_ENV) || data.ONE_SIGNAL_APP_SECRET !== '',

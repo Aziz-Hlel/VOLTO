@@ -383,28 +383,42 @@ export class EventsService {
     // if (existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
     //   throw new BadRequestException('Cannot Update Ladies Night Event while active');
     // }
+    const isChangingLadiesNightToSpecial =
+      existingEvent.isLadiesNight && updateEventDto.type === 'SPECIAL';
 
-    if (existingEvent.isLadiesNight && updateEventDto.type === 'SPECIAL') {
+    if (isChangingLadiesNightToSpecial) {
       throw new BadRequestException('Ladies Night Event must be of type WEEKLY');
     }
-    // if ( existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive())) {
-    //     throw new BadRequestException('Cannot Update Ladies Night Event while active');
-    //   }
+
+    const isUpdatingLadiesNightWhileActive =
+      existingEvent.isLadiesNight && (await this.ladiesNightService.isLadiesNightActive());
+
+    if (isUpdatingLadiesNightWhileActive) {
+      throw new BadRequestException('Cannot Update Ladies Night Event while active');
+    }
 
     // ? Disable checking active event for updates
-    // if (existingEvent.type === 'SPECIAL') {
-    //   if (currentDate > existingEvent.startDate! && currentDate < existingEvent.endDate!) {
-    //     throw new BadRequestException('Cannot Update Event while active');
-    //   }
-    // }
+    const isSpecialEventActive =
+      existingEvent.type === 'SPECIAL' &&
+      currentDate > existingEvent.startDate! &&
+      currentDate < existingEvent.endDate!;
 
-    // if (existingEvent.type === 'WEEKLY') {
-    //   const nextStartDate = cronParser.parse(existingEvent.cronStartDate!).next().toDate();
-    //   const nextEndDate = cronParser.parse(existingEvent.cronEndDate!).next().toDate();
-    //   if (nextEndDate < nextStartDate) {
-    //     throw new BadRequestException('Cannot Update Event while active');
-    //   }
-    // }
+    if (isSpecialEventActive) {
+      throw new BadRequestException('Cannot Update Event while active');
+    }
+
+    const isEventWeekly = existingEvent.type === 'WEEKLY';
+
+    if (isEventWeekly) {
+      const nextStartDate = cronParser.parse(existingEvent.cronStartDate!).next().toDate();
+      const nextEndDate = cronParser.parse(existingEvent.cronEndDate!).next().toDate();
+
+      const isWeeklyEventActive = currentDate > nextStartDate && currentDate < nextEndDate;
+
+      if (isWeeklyEventActive) {
+        throw new BadRequestException('Cannot Update Event while active');
+      }
+    }
 
     if (!existingEvent) throw new Error(`Event with ID ${updateEventDto.id} not found`);
 
@@ -488,7 +502,7 @@ export class EventsService {
     } while (cursor !== '0');
   }
 
-  async remove(eventId: string) {
+  async deleteEvent(eventId: string) {
     return this.prisma.$transaction(async (tx) => {
       try {
         const event = await this.prisma.event.findUnique({
@@ -515,7 +529,12 @@ export class EventsService {
           entityId: eventId,
           entityType: EntityType.EVENT,
         });
-
+        if (event.type === EventType.WEEKLY) {
+          await this.weeklyEventsMq.removeWeeklyEventNotification(eventId);
+        }
+        if (event.type === EventType.SPECIAL) {
+          await this.specialEventsMq.removeExistingJob(eventId);
+        }
         await Promise.all([deleteEvent, deleteAssociatedMedias]);
       } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {

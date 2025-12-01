@@ -86,10 +86,10 @@ export default function RangeEventDate({
   }, [range, startTime, StartTimeDayPeriod, endTime, endTimeDayPeriod]);
 
   return (
-    <div className="flex flex-col md:flex-row md:items-start gap-6 w-full">
+    <div className="flex flex-col items-baseline  md:flex-row md:items-end gap-6 w-full">
       {/* Sélection de date */}
-      <div className="flex flex-col gap-2 md:w-64">
-        <Label htmlFor="dates" className="px-1 flex flex-col">
+      <div className="flex flex-col  gap-2 md:w-80">
+        <Label htmlFor="dates" className="px-1 flex ">
           Select Event's Days
           <span className="text-xs font-thin">* Double click to select one day</span>
         </Label>

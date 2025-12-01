@@ -103,7 +103,7 @@ export class EventsController {
   async remove(@Param('id') id: string) {
     if (!id) throw new BadRequestException('id is required');
 
-    const response = await this.eventsService.remove(id);
+    const response = await this.eventsService.deleteEvent(id);
     return response;
   }
 

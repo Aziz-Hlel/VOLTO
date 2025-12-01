@@ -32,8 +32,8 @@ export class SpecialEventMq implements OnModuleInit, OnModuleDestroy {
   private eventWorker: Worker<SpecialEventJobData>;
 
   private readonly _hour = 1000 * 60 * 60;
-  private readonly firstNotificationDelay = 1000 * 10; // !this._hour * 24;
-  private readonly secondNotificationDelay = 1000; // ! this._hour * 1;
+  private readonly firstNotificationDelay = this._hour * 24;
+  private readonly secondNotificationDelay = this._hour * 1;
 
   private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
 

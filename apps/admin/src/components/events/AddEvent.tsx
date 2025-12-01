@@ -35,14 +35,20 @@ const formSchema = z.object({
   endDate: z.date().optional(),
   cronStartDate: z.string().optional(),
   cronEndDate: z.string().optional(),
-  thumbnail: z.object({
-    s3Key: z.string().min(1, "Thumbnail is required"),
-    url: z.string().optional(),
-  }),
-  video: z.object({
-    s3Key: z.string().min(1, "Video is required"),
-    url: z.string(),
-  }),
+  thumbnail: z.object(
+    {
+      s3Key: z.string({ error: "Thumbnail is required" }).min(1, "Thumbnail is required"),
+      url: z.string().optional(),
+    },
+    { error: "Thumbnail is required" },
+  ),
+  video: z.object(
+    {
+      s3Key: z.string({ error: "Video is required" }).min(1, "Video is required"),
+      url: z.string(),
+    },
+    { error: "Video is required" },
+  ),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -97,7 +103,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
       toast.error(error?.error ?? "Failed to submit the form. Please try again.");
     }
   };
-
+  // console.log(form.formState.errors);
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6 sm:p-10 border border-gray-100">
@@ -181,9 +187,13 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
             />
 
             {/* Dates */}
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-              <div className="flex items-center gap-2 mb-2 text-blue-600 font-semibold">
-                <CalendarDays className="w-5 h-5" /> Event Schedule
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 ">
+              <div className="flex items-baseline justify-start gap-2 mb-2 text-blue-600 font-semibold">
+                <CalendarDays className="w-5 h-5" />
+                <span>Event Schedule</span>
+                <span className="text-xs text-gray-600">
+                  Please enter all times in Bahrain timezone - GMT+3
+                </span>
               </div>
               {eventType === "WEEKLY" ? (
                 <WeeklyEventForm

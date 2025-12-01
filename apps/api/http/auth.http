@@ -74,3 +74,13 @@ GET {{baseUrl}}/auth/me
 Authorization: Bearer {{login.response.body.accessToken}}
 
 
+
+
+
+### Get App Version
+POST {{baseUrl}}/app-settings/version
+Content-Type: application/json
+
+{
+    "platform": "android",
+}
