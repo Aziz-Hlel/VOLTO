@@ -62,6 +62,9 @@ services:
       ONE_SIGNAL_APP_SECRET: ${ONE_SIGNAL_APP_SECRET}
       ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
 
+      IOS_MIN_SUPPORTED_VER: ${IOS_MIN_SUPPORTED_VER}
+      ANDROID_MIN_SUPPORTED_VER: ${ANDROID_MIN_SUPPORTED_VER}
+
     command: sh -c "pnpm prisma migrate deploy && node dist/main.js"
 
     depends_on:

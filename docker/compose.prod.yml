@@ -1,6 +1,4 @@
-
 services:
-
   reverse-proxy:
     build:
       context: ${PROJECT_ROOT}
@@ -18,7 +16,7 @@ services:
       - caddy-prod-data:/data
       - caddy-prod-config:/config
 
-  api :
+  api:
     build:
       context: ${PROJECT_ROOT}
       dockerfile: ./docker/prod/Dockerfile.prod.api
@@ -57,6 +55,9 @@ services:
       ONE_SIGNAL_APP_SECRET: ${ONE_SIGNAL_APP_SECRET}
       ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
 
+      IOS_MIN_SUPPORTED_VER: ${IOS_MIN_SUPPORTED_VER}
+      ANDROID_MIN_SUPPORTED_VER: ${ANDROID_MIN_SUPPORTED_VER}
+
     command: sh -c "pnpm prisma migrate deploy && node dist/main.js"
 
     depends_on:
@@ -64,19 +65,17 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-  
-
 
   db:
     image: postgres:15
-  
+
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} "] 
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} "]
       interval: 5s
       retries: 10
       timeout: 5s
@@ -84,39 +83,35 @@ services:
     volumes:
       - db_prod_volume:/var/lib/postgresql/data
 
-
   db-backup:
     image: postgres:alpine
     depends_on:
       db:
         condition: service_healthy
-    
+
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       DB_CONTAINER_NAME: db
-    
+
     volumes:
       - ${PROJECT_ROOT}/script/backup.sh:/backup.sh
       - ${PROJECT_ROOT}/script/restore.sh:/restore.sh
       - ${PROJECT_ROOT}/backup:/backup
-    
+
     entrypoint: /bin/bash
     command: -c "while true; chmod +x /backup.sh;chmod +x /restore.sh; do /backup.sh; sleep 86400; done"
 
     restart: unless-stopped
-
 
   redis:
     image: redis:7.4-alpine
 
     volumes:
       - redis_prod_volume:/data
-    
-    command: ['redis-server', '--appendonly', 'yes'] # enables persistence
 
-
+    command: ["redis-server", "--appendonly", "yes"] # enables persistence
 
 volumes:
   db_prod_volume:
