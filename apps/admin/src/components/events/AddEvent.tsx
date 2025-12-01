@@ -28,9 +28,9 @@ import { CalendarDays, Video, Image as ImageIcon } from "lucide-react";
 
 const formSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
-  type: z.enum(["WEEKLY", "SPECIAL"]),
+  name: z.string({ error: "Name is required" }).min(1, "Name is required"),
+  description: z.string({ error: "Description is required" }).min(1, "Description is required"),
+  type: z.enum(["WEEKLY", "SPECIAL"], { error: "Event type is required" }),
   startDate: z.date().optional(),
   endDate: z.date().optional(),
   cronStartDate: z.string().optional(),
@@ -45,7 +45,7 @@ const formSchema = z.object({
   video: z.object(
     {
       s3Key: z.string({ error: "Video is required" }).min(1, "Video is required"),
-      url: z.string(),
+      url: z.string().optional(),
     },
     { error: "Video is required" },
   ),
@@ -103,7 +103,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
       toast.error(error?.error ?? "Failed to submit the form. Please try again.");
     }
   };
-  // console.log(form.formState.errors);
+  console.log(form.formState.errors);
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-100 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6 sm:p-10 border border-gray-100">
@@ -214,6 +214,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
                 <ImageUpload
                   imgKeyFieldName="thumbnail.s3Key"
                   imgUrlFieldName="thumbnail.url"
+                  rootFieldName="thumbnail"
                   entityType="EVENT"
                   imgPurpose="THUMBNAIL"
                 />
@@ -226,6 +227,7 @@ export default function EventAddForm({ event }: { event: EventResponseDto | unde
                 <VideoUpload
                   videoKeyFieldName="video.s3Key"
                   videoUrlFieldName="video.url"
+                  rootFieldName="video"
                   entityType="EVENT"
                   videoPurpose="VIDEO"
                 />

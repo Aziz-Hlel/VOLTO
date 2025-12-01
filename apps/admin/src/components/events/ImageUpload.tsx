@@ -20,11 +20,13 @@ import { useMemo } from "react";
 const ImageUpload = ({
   imgKeyFieldName,
   imgUrlFieldName,
+  rootFieldName,
   imgPurpose,
   entityType,
 }: {
   imgKeyFieldName: string;
   imgUrlFieldName: string;
+  rootFieldName: string;
   imgPurpose: MediaPurpose;
   entityType: EntityType;
 }) => {
@@ -41,9 +43,10 @@ const ImageUpload = ({
     multiple: false,
   };
 
-  const { getFieldState } = useFormContext();
+  const { getFieldState,clearErrors } = useFormContext();
 
   const fieldErrorMessage = getFieldState(imgKeyFieldName).error?.message;
+  const rootFieldErrorMessage = getFieldState(rootFieldName).error?.message;
   const {
     currentDisplayed,
     file,
@@ -59,10 +62,12 @@ const ImageUpload = ({
     onCropComplete,
     onFileChange,
   } = useImageUpload({
-    imgUrlFieldName: imgUrlFieldName,
-    imgKeyFieldName: imgKeyFieldName,
-    entityType: entityType,
-    imgPurpose: imgPurpose,
+    imgUrlFieldName,
+    imgKeyFieldName,
+    rootFieldName,
+    entityType,
+    imgPurpose,
+    clearErrors,
   });
 
   const imgUrl: string | undefined = useMemo(
@@ -72,7 +77,7 @@ const ImageUpload = ({
 
   return (
     <>
-      <div className=" h-96 ">
+      <div className=" ">
         {currentDisplayed === "fileUpload" && (
           <FormItem className="">
             <FormLabel>Thumbnail</FormLabel>
@@ -204,7 +209,8 @@ const ImageUpload = ({
           </div>
         )}
       </div>
-      <div className="text-red-500">{fieldErrorMessage}</div>
+      <div className="text-red-500 text-sm">{fieldErrorMessage}</div>
+      <div className="text-red-500 text-sm">{rootFieldErrorMessage}</div>
     </>
   );
 };

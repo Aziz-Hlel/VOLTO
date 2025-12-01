@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, type FieldValues, type UseFormClearErrors } from "react-hook-form";
 import { uploadImageToS3_SIMULATOR as uploadImage } from "../getSignedUrlUpload";
 import { toast } from "sonner";
 import type { EntityType } from "@/types/enums/EntityType";
@@ -8,17 +8,21 @@ import type { MediaPurpose } from "@/types/enums/MediaPurpose";
 type IuseImageUpload = {
   videoUrlFieldName: string;
   videoKeyFieldName: string;
+  rootFieldName: string;
   entityType: EntityType;
   videoPurpose: MediaPurpose;
   maxDuration: number;
+  clearErrors: UseFormClearErrors<FieldValues>;
 };
 
 const useVideoUpload = ({
   videoUrlFieldName,
-  videoKeyFieldName: imgKeyFieldName,
+  videoKeyFieldName,
+  rootFieldName,
   entityType,
   videoPurpose,
   maxDuration,
+  clearErrors,
 }: IuseImageUpload) => {
   const { watch, setValue } = useFormContext();
 
@@ -26,7 +30,7 @@ const useVideoUpload = ({
 
   const initImg = useMemo(() => video, []);
   const setImageUrl = (img?: string) => setValue(videoUrlFieldName, img);
-  const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
+  const setImageKey = (imgKey?: string) => setValue(videoKeyFieldName, imgKey);
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -58,8 +62,13 @@ const useVideoUpload = ({
     });
   }
 
-  const onFileChange = async (value: File | null) =>
-    (await validateVideoDuration(value)) && setFile(value);
+  const onFileChange = async (value: File | null) => {
+    const isValid = await validateVideoDuration(value);
+    if (isValid) {
+      setFile(value);
+      clearErrors([videoKeyFieldName, videoUrlFieldName, rootFieldName]);
+    }
+  };
 
   const [progress, setProgress] = useState(0);
 

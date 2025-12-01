@@ -18,11 +18,13 @@ import useVideoUpload from "./hooks/use-Video-Upload";
 const VideoUpload = ({
   videoKeyFieldName,
   videoUrlFieldName,
+  rootFieldName,
   videoPurpose,
   entityType,
 }: {
   videoKeyFieldName: string;
   videoUrlFieldName: string;
+  rootFieldName: string;
   videoPurpose: MediaPurpose;
   entityType: EntityType;
 }) => {
@@ -40,9 +42,9 @@ const VideoUpload = ({
     multiple: false,
   };
 
-  const { getFieldState, getValues } = useFormContext();
-
+  const { getFieldState, clearErrors } = useFormContext();
   const fieldErrorMessage = getFieldState(videoKeyFieldName).error?.message;
+  const rootFieldErrorMessage = getFieldState(rootFieldName).error?.message;
 
   const {
     currentDisplayed,
@@ -55,14 +57,16 @@ const VideoUpload = ({
   } = useVideoUpload({
     videoUrlFieldName,
     videoKeyFieldName,
+    rootFieldName,
     entityType,
     videoPurpose,
     maxDuration: videoMaxDuration,
+    clearErrors,
   });
 
   return (
     <>
-      <div className=" h-96 ">
+      <div className=" ">
         {currentDisplayed === "fileUpload" && (
           <FormItem className="">
             <FormLabel>Video</FormLabel>
@@ -172,7 +176,8 @@ const VideoUpload = ({
           </div>
         )}
       </div>
-      <div className="text-red-500">{fieldErrorMessage}</div>
+      <div className="text-red-500 text-sm">{fieldErrorMessage}</div>
+      <div className="text-red-500 text-sm">{rootFieldErrorMessage}</div>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Area, Point } from "react-easy-crop";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, type FieldValues, type UseFormClearErrors } from "react-hook-form";
 import getCroppedImg from "../cropImg.func";
 import prepareImageForUpload from "../prepareImageForUpload";
 import { uploadImageToS3_SIMULATOR } from "../getSignedUrlUpload";
@@ -11,15 +11,19 @@ import type { MediaPurpose } from "@/types/enums/MediaPurpose";
 type IuseImageUpload = {
   imgUrlFieldName: string;
   imgKeyFieldName: string;
+  rootFieldName: string;
   entityType: EntityType;
   imgPurpose: MediaPurpose;
+  clearErrors: UseFormClearErrors<FieldValues>;
 };
 
 const useImageUpload = ({
   imgUrlFieldName,
   imgKeyFieldName,
+  rootFieldName,
   entityType,
   imgPurpose,
+  clearErrors,
 }: IuseImageUpload) => {
   const { setValue, getValues } = useFormContext();
 
@@ -31,7 +35,10 @@ const useImageUpload = ({
   const setImageKey = (imgKey?: string) => setValue(imgKeyFieldName, imgKey);
 
   const [file, setFile] = useState<File | null>(null);
-  const onFileChange = (value: File | null) => setFile(value);
+  const onFileChange = (value: File | null) => {
+    setFile(value);
+    clearErrors([imgKeyFieldName, imgUrlFieldName, rootFieldName]);
+  };
 
   const [zoom, setZoom] = useState(1);
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -93,6 +100,7 @@ const useImageUpload = ({
 
       setImageUrl(URL.createObjectURL(croppedImage));
       setImageKey(s3Key);
+      clearErrors([imgKeyFieldName, imgUrlFieldName, rootFieldName]);
     } catch (e) {
       console.error(e);
       toast("Something Went Wrong", {
