@@ -16,7 +16,7 @@ function enableCors(app: INestApplication<any>) {
   const allowedOrigins = [ENV.ADMIN_URL, ENV.WEB_URL];
 
   app.enableCors({
-    origin: '*',
+    origin: '*', // ! baddelha wtf
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-total-count'],
     allowedOrigins,
