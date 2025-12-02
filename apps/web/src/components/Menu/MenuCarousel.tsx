@@ -11,6 +11,11 @@ import "swiper/css/navigation";
 import "swiper/css";
 import "swiper/css/effect-cards";
 
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import "yet-another-react-lightbox/styles.css";
+
 import { cn } from "@/lib/utils";
 import { menuImages } from "./menu-images";
 
@@ -54,104 +59,108 @@ const MenuCarousel = ({
   }
 
 `;
+
+  const [open, setOpen] = React.useState(false);
+  const [index, setIndex] = React.useState(0);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, translateY: 20 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{
-        duration: 0.3,
-        delay: 0.5,
-      }}
-      className={cn("relative w-full h-full  px-5 my-auto", className)}
-    >
-      <style>{css}</style>
+    <>
+      <Lightbox
+        open={open}
+        close={() => setOpen(false)}
+        index={index}
+        slides={images.map((src) => ({ src }))}
+        plugins={[Zoom, Fullscreen]}
+        controller={{ closeOnPullDown: true, closeOnBackdropClick: true }}
+        animation={{ fade: 300, swipe: 100 }}
+      />
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="w-full"
+        initial={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{
+          duration: 0.3,
+          delay: 0.5,
+        }}
+        className={cn("relative w-full h-full  px-5 my-auto", className)}
       >
-        <Swiper
-          spaceBetween={spaceBetween}
-          autoplay={
-            autoplay
-              ? {
-                  delay: 1500,
-                  disableOnInteraction: true,
-                }
-              : false
-          }
-          effect="coverflow"
-          grabCursor={true}
-          slidesPerView="auto"
-          centeredSlides={true}
-          loop={loop}
-          coverflowEffect={{
-            rotate: 40,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: true,
-          }}
-          pagination={
-            showPagination
-              ? {
-                  clickable: true,
-                }
-              : false
-          }
-          navigation={
-            showNavigation
-              ? {
-                  nextEl: ".swiper-button-next",
-                  prevEl: ".swiper-button-prev",
-                }
-              : false
-          }
-          className="Carousal_003 h-[30rem] w-[40rem] "
-          modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
+        <style>{css}</style>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="w-full"
         >
-          {images.map((image, index) => (
-            <SwiperSlide key={index} className=" h-full">
-              <img
-                className="h-[30rem] w-[40rem] object-cover"
-                src={image}
-                // alt={image.alt}
-              />
-            </SwiperSlide>
-          ))}
-          {showNavigation && (
-            <div>
-              <div className="swiper-button-next after:hidden">
-                <ChevronRightIcon className="h-6 w-6 text-white" />
+          <Swiper
+            spaceBetween={spaceBetween}
+            autoplay={
+              autoplay
+                ? {
+                    delay: 1500,
+                    disableOnInteraction: true,
+                  }
+                : false
+            }
+            effect="coverflow"
+            grabCursor={true}
+            slidesPerView="auto"
+            centeredSlides={true}
+            loop={loop}
+            coverflowEffect={{
+              rotate: 40,
+              stretch: 0,
+              depth: 100,
+              modifier: 1,
+              slideShadows: true,
+            }}
+            pagination={
+              showPagination
+                ? {
+                    clickable: true,
+                  }
+                : false
+            }
+            navigation={
+              showNavigation
+                ? {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                  }
+                : false
+            }
+            className="Carousal_003 h-[30rem] w-[40rem] "
+            modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
+          >
+            {images.map((image, index) => (
+              <SwiperSlide key={index} className=" h-full">
+                <img
+                  className="h-[30rem] w-[40rem] object-cover"
+                  src={image}
+                  onClick={() => {
+                    setIndex(index);
+                    setOpen(true);
+                  }}
+
+                  // alt={image.alt}
+                />
+              </SwiperSlide>
+            ))}
+            {showNavigation && (
+              <div>
+                <div className="swiper-button-next after:hidden">
+                  <ChevronRightIcon className="h-6 w-6 text-white" />
+                </div>
+                <div className="swiper-button-prev after:hidden">
+                  <ChevronLeftIcon className="h-6 w-6 text-white" />
+                </div>
               </div>
-              <div className="swiper-button-prev after:hidden">
-                <ChevronLeftIcon className="h-6 w-6 text-white" />
-              </div>
-            </div>
-          )}
-        </Swiper>
+            )}
+          </Swiper>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </>
   );
 };
 
 export { MenuCarousel };
-
-/**
- * Skiper 49 Carousel_003 — React + Swiper
- * Built with Swiper.js - Read docs to learn more https://swiperjs.com/
- * Illustrations by AarzooAly - https://x.com/AarzooAly
- *
- * License & Usage:
- * - Free to use and modify in both personal and commercial projects.
- * - Attribution to Skiper UI is required when using the free version.
- * - No attribution required with Skiper UI Pro.
- *
- * Feedback and contributions are welcome.
- *
- * Author: @gurvinder-singh02
- * Website: https://gxuri.in
- * Twitter: https://x.com/Gur__vi
- */

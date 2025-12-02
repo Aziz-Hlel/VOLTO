@@ -181,6 +181,7 @@ const EditAccount = ({ me }: { me: User }) => {
               <ImageUpload
                 imgKeyFieldName="avatar.s3Key"
                 imgUrlFieldName="avatar.url"
+                rootFieldName="avatar"
                 entityType="USER"
                 imgPurpose="AVATAR"
               />
