@@ -107,7 +107,7 @@ class ApiService {
   }
 
   private throwErrorAlert = (statusCode: number, error: string) => {
-    if (ENV.NODE_ENV !== "production")
+    if (["production", "prod"].includes(ENV.NODE_ENV))
       alert(`Request failed with status ${statusCode} - error message: ${error}`);
   };
 

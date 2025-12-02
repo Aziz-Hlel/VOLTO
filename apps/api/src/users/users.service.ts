@@ -380,12 +380,14 @@ export class UsersService {
           newMediaS3Key: avatar.s3Key,
         });
       }
+
       const savedUser = await this.prisma.user.update({
         where: { id: userId },
         data: {
           ...newStaffData,
         },
       });
+
       const updatedUserAvatar = await this.mediaService.getMediaKeyAndUrlNoException({
         entityType: EntityType.USER,
         entityId: savedUser.id,

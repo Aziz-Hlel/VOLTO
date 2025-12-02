@@ -39,7 +39,7 @@ const EventMainContent = () => {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">🍾 Events Dashboard</h1>
           <p className="text-sm sm:text-base mt-1 text-blue-100">
             Manage your upcoming events easily.{" "}
-            <div className="text-red-300 font-medium">* You cannot edit a live event.</div>
+            <div className="text-red-300 font-medium">* Cannot update an event while it is currently active.</div>
             <div className="text-red-300 font-medium">* All times displayed in Bahrain timezone</div>
           </p>
         </div>
