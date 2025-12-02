@@ -156,8 +156,8 @@ services:
       DB_CONTAINER_NAME: db
     
     volumes:
-      - ${PROJECT_ROOT}/script/backup.sh:/backup.sh
-      - ${PROJECT_ROOT}/script/restore.sh:/restore.sh
+      - ${PROJECT_ROOT}/scripts/backup.sh:/backup.sh
+      - ${PROJECT_ROOT}/scripts/restore.sh:/restore.sh
       - ${PROJECT_ROOT}/backup:/backup
     
     entrypoint: /bin/bash
