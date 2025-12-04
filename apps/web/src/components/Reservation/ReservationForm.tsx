@@ -9,25 +9,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { PhoneInput } from "../ui/phone-input";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
 import axiosInstance from "@/api/axiosInstance";
 
-const reservationSchema = z.object({
-  firstName: z.string().min(2, "First Name must be at least 2 characters"),
-  lastName: z.string().min(2, "Last Name must be at least 2 characters"),
-  email: z.email("Invalid email address"),
-  phoneNumber: z.string().min(8, "Phone number must be at least 8 digits"),
-  nbrGuests: z.object({
-    men: z.number().default(0),
-    women: z.number().default(0),
-  }),
-  isVip: z.boolean().default(false),
-  date: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid date",
-  }),
-});
+const reservationSchema = z
+  .object({
+    firstName: z.string().min(2, "First Name must be at least 2 characters"),
+    lastName: z.string().min(2, "Last Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    phoneNumber: z.string().min(8, "Phone number must be at least 8 digits"),
+    nbrGuests: z.object({
+      men: z.number().min(0),
+      women: z.number().min(0),
+    }),
+    isVip: z.boolean().default(false),
+    date: z.string().refine((date) => !isNaN(Date.parse(date)), {
+      message: "Invalid date",
+    }),
+  })
+  .refine((data) => data.nbrGuests.men + data.nbrGuests.women > 0, {
+    message: "At least one guest must be selected",
+    path: ["nbrGuests"],
+  });
 
 type IForm = z.infer<typeof reservationSchema>;
 
@@ -260,9 +264,13 @@ const ReservationForm = () => {
                             ))}
                           </select>
                         </div>
+                        <div className="text-xs mx-auto w-full text-center text-gray-400 py-0.5">* ( Including Yourself )</div>
                       </motion.div>
                     )}
                   </AnimatePresence>
+                  <div className="text-red-500 text-sm mt-1">
+                    {form.formState.errors.nbrGuests?.message}
+                  </div>
                 </div>
               </div>
             </div>

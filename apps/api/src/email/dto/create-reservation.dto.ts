@@ -6,19 +6,19 @@ import {
   IsEmail,
   IsNotEmptyObject,
   IsNumber,
-  IsPositive,
   IsString,
   Matches,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
 export class NbrGuestsDto {
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   men: number;
 
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   women: number;
 }
 
