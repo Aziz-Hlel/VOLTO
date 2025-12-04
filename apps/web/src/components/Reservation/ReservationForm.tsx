@@ -15,10 +15,10 @@ import axiosInstance from "@/api/axiosInstance";
 
 const reservationSchema = z
   .object({
-    firstName: z.string().min(2, "First Name must be at least 2 characters"),
-    lastName: z.string().min(2, "Last Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    phoneNumber: z.string().min(8, "Phone number must be at least 8 digits"),
+    firstName: z.string({error:"First Name is required"}).min(2, "First Name must be at least 2 characters"),
+    lastName: z.string({error:"Last Name is required"}).min(2, "Last Name must be at least 2 characters"),
+    email: z.email("Invalid email address"),
+    phoneNumber: z.string({error:"Phone number is required"}).min(8, "Phone number must be at least 8 digits"),
     nbrGuests: z.object({
       men: z.number().min(0),
       women: z.number().min(0),
