@@ -295,7 +295,7 @@ const ReservationForm = () => {
             <div className="text-center text-gray-300 text-sm bg-gray-800/60 border border-gray-700 rounded-xl py-4 px-5 my-4">
               <p className="text-yellow-400 font-semibold mb-1">Dress Code : Smart casual</p>
               <p>No shorts and no open shoes</p>
-              <p className="mt-1 font-medium">Age Required - 18+</p>
+              <p className="mt-1 font-medium">Age Required - 21+</p>
             </div>
 
             {/* Boutons */}
