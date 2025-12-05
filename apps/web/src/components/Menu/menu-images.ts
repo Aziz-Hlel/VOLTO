@@ -16,6 +16,12 @@ export const menuImages: { [key in MenuCarouselTypes]: string[] } = {
     "/img/menu/cards/cocktails/volto_beverages_page-0005.jpg",
     "/img/menu/cards/cocktails/volto_beverages_page-0006.jpg",
     "/img/menu/cards/cocktails/volto_beverages_page-0007.jpg",
+    "/img/menu/cards/cocktails/volto_beverages_page-0008.jpg",
+    "/img/menu/cards/cocktails/volto_beverages_page-0009.jpg",
+    "/img/menu/cards/cocktails/volto_beverages_page-0010.jpg",
+    "/img/menu/cards/cocktails/volto_beverages_page-0011.jpg",
+    "/img/menu/cards/cocktails/volto_beverages_page-0012.jpg",
+    "/img/menu/cards/cocktails/volto_beverages_page-0013.jpg",
   ],
   Hookah: [
     "/img/menu/cards/hooka/V1.3_page-0001.jpg",
