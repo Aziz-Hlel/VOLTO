@@ -12,13 +12,20 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
 import axiosInstance from "@/api/axiosInstance";
+import SuccessfulReservationModal from "./SuccessfulReservationModal";
 
 const reservationSchema = z
   .object({
-    firstName: z.string({error:"First Name is required"}).min(2, "First Name must be at least 2 characters"),
-    lastName: z.string({error:"Last Name is required"}).min(2, "Last Name must be at least 2 characters"),
+    firstName: z
+      .string({ error: "First Name is required" })
+      .min(2, "First Name must be at least 2 characters"),
+    lastName: z
+      .string({ error: "Last Name is required" })
+      .min(2, "Last Name must be at least 2 characters"),
     email: z.email("Invalid email address"),
-    phoneNumber: z.string({error:"Phone number is required"}).min(8, "Phone number must be at least 8 digits"),
+    phoneNumber: z
+      .string({ error: "Phone number is required" })
+      .min(8, "Phone number must be at least 8 digits"),
     nbrGuests: z.object({
       men: z.number().min(0),
       women: z.number().min(0),
@@ -58,6 +65,8 @@ const ReservationForm = () => {
   const womenGuests = watch("nbrGuests").women;
   const totalGuests = menGuests + womenGuests;
 
+  const [openModal, setOpenModal] = useState(false);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -72,10 +81,7 @@ const ReservationForm = () => {
     mutationKey: ["create-reservation"],
     mutationFn: async (data: IForm) => await axiosInstance.post("/reservation", data),
     onSuccess: () => {
-      toast("Reservation created successfully!", {
-        description:
-          "We’ve received your reservation request. A member of Volto team will be in touch with you shortly to confirm the details..",
-      });
+      setOpenModal(true);
       form.reset();
     },
     onError: (error) => {
@@ -91,6 +97,7 @@ const ReservationForm = () => {
   return (
     <div className="relative min-h-screen flex justify-center items-center px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-black via-gray-900 to-yellow-600">
       {/* Points lumineux décoratifs */}
+      {openModal && <SuccessfulReservationModal />}
       <div className="absolute inset-0">
         {Array.from({ length: 15 }).map((_, i) => (
           <div
@@ -264,7 +271,9 @@ const ReservationForm = () => {
                             ))}
                           </select>
                         </div>
-                        <div className="text-xs mx-auto w-full text-center text-gray-400 py-0.5">* ( Including Yourself )</div>
+                        <div className="text-xs mx-auto w-full text-center text-gray-400 py-0.5">
+                          * ( Including Yourself )
+                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -301,9 +310,11 @@ const ReservationForm = () => {
 
             {/* Dress Code */}
             <div className="text-center text-gray-300 text-sm bg-gray-800/60 border border-gray-700 rounded-xl py-4 px-5 my-4">
-              <p className="text-yellow-400 font-semibold mb-1">Dress Code : Smart casual</p>
-              <p>No shorts and no open shoes</p>
-              <p className="mt-1 font-medium">Age Required - 21+</p>
+              <p className="text-yellow-400 font-semibold mb-1">
+                Dress code : Elegant smart casual
+              </p>
+              <p>Shorts, caps and open shoes not allowed.</p>
+              <p className="mt-1 font-medium">Age Required: 21+</p>
             </div>
 
             {/* Boutons */}

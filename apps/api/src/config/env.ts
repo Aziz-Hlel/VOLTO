@@ -9,6 +9,7 @@ export const envSchema = z
     API_URL: z.string(),
     WEB_URL: z.string(),
     ADMIN_URL: z.string(),
+    ALLOWED_ORIGIN_PATTERNS: z.string(),
 
     JWT_ACCESS_SECRET: z.string(),
     JWT_REFRESH_SECRET: z.string(),
@@ -63,6 +64,17 @@ export const envSchema = z
       path: ['ONE_SIGNAL_APP_ID'],
       message: 'ONE_SIGNAL_APP_ID is required in stage or production environments',
     },
+  )
+  .refine(
+    (data) => {
+      try {
+        new RegExp(data.ALLOWED_ORIGIN_PATTERNS);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    },
+    { error: 'ALLOWED_ORIGIN_PATTERNS must be a valid regular expression' },
   );
 
 const validatedEnv = envSchema.safeParse(process.env);

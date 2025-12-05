@@ -13,13 +13,20 @@ const gloabalValidationPipe = new ValidationPipe({
 });
 
 function enableCors(app: INestApplication<any>) {
-  const allowedOrigins = [ENV.ADMIN_URL, ENV.WEB_URL];
-
+  const allowedOrigins = ENV.ALLOWED_ORIGIN_PATTERNS.split(',').map(
+    (pattern) => new RegExp(pattern.trim()),
+  );
   app.enableCors({
-    origin: '*', // ! baddelha wtf
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-total-count'],
-    allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow curl/postman requests
+
+      const allowed = allowedOrigins.some((regex) => regex.test(origin));
+      if (allowed) return callback(null, true);
+
+      callback(new Error('Not allowed by CORS'));
+    },
     credentials: true, // if you need cookies/authorization headers
   });
 }
