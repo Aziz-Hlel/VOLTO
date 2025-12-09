@@ -14,10 +14,11 @@ const Home = () => {
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <video
           className="w-screen h-screen object-cover"
-          poster="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
           autoPlay
           loop
           muted
+          playsInline
+          webkit-playsinline
         >
           <source src="/landingVideo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
