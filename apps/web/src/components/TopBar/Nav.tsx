@@ -59,8 +59,7 @@ const NavBar619 = () => {
       image: isDesktop ? "/img/navbar2/ysar.jpg" : "/img/navbar2/fou9.jpg",
       links: [
         { label: "Home", href: "/", ariaLabel: "Home", type: "Link" },
-        { label: "About", href: "/about", ariaLabel: "About", type: "Link" },
-        { label: "Contact Us", href: "/contact", ariaLabel: "Contact Us", type: "Link" },
+        { label: "Menu", href: "/menu", ariaLabel: "Menu", type: "Link" },
       ],
     },
     {
@@ -69,8 +68,8 @@ const NavBar619 = () => {
       textColor: "#F8F8F8",
       image: isDesktop ? "img/navbar2/mid.jpg" : "/img/navbar2/wost.jpg",
       links: [
-        { label: "Menu", href: "/menu", ariaLabel: "Menu", type: "Link" },
-        { label: "Gallery", href: "/gallery", ariaLabel: "Gallery", type: "Link" },
+        { label: "About", href: "/about", ariaLabel: "About", type: "Link" },
+        // { label: "Gallery", href: "/gallery", ariaLabel: "Gallery", type: "Link" },
         { label: "Events", href: "/events", ariaLabel: "Events", type: "Link" },
       ],
     },
@@ -80,14 +79,16 @@ const NavBar619 = () => {
       textColor: "#F8F8F8",
       image: isDesktop ? "img/navbar2/ymin.jpg" : "/img/navbar2/louta.jpg",
       links: [
-        {
-          label: "Instagram",
-          href: "https://www.instagram.com/voltobahrain/?hl=en",
-          ariaLabel: "Instagram",
-          type: "a",
-        },
-        { label: "Whatsapp", href: "https://wa.me/+97334588466", ariaLabel: "Whatsapp", type: "a" },
+        // {
+        //   label: "Instagram",
+        //   href: "https://www.instagram.com/voltobahrain/?hl=en",
+        //   ariaLabel: "Instagram",
+        //   type: "a",
+        // },
         { label: "Book A Table", href: "/reservation", ariaLabel: "Book A Table", type: "Link" },
+        { label: "Contact Us", href: "/contact", ariaLabel: "Contact Us", type: "Link" },
+
+        // { label: "Whatsapp", href: "https://wa.me/+97334588466", ariaLabel: "Whatsapp", type: "a" },
       ],
     },
   ];

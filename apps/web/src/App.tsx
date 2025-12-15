@@ -15,6 +15,9 @@ import NotFound from "./components/NotFound/NotFound";
 import { Toaster } from "sonner";
 import { Skiper48 } from "./components/Menu/Skiper48";
 import CocktailSwiper from "./components/Menu/CocktailSwiper";
+import WhatsAppFloatingButton from "./components/SocialsBubble/WhatsAppFloatingButton";
+import IgFloatingButton from "./components/SocialsBubble/IgFloatingButton";
+import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +28,7 @@ function App() {
         <Router>
           <ScrollToTop />
           <Toaster />
-
+          <SocialsFloatingButton />
           <NavBar619 />
 
           <Routes>
@@ -38,7 +41,7 @@ function App() {
               <Route path="hookah" element={<MenuCarousel menuType="Hookah" />} />
             </Route>
             <Route path="/about" element={<About />} />
-            <Route path="/gallery" element={<Gallery />} />
+            {/* <Route path="/gallery" element={<Gallery />} /> */}
             <Route path="/events" element={<Events />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/reservation" element={<Reservation />} />

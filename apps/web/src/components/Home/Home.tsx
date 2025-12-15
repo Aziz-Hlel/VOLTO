@@ -1,11 +1,6 @@
-import { Link } from "react-router-dom";
 import AboutUsSection from "../About/AboutUsSection";
-import MeetTeam from "../About/MeetTeam";
-import ChefRecommendation from "./ChefRecommendation";
 import { EventCarousel } from "./EventCarousel";
-import MeetOurChefs from "./MeetOurChefs";
 import OpeningHours from "./OpeningHours";
-import WineBanner from "./WineBanner";
 import Footer from "../footer/Footer";
 
 const Home = () => {
@@ -24,12 +19,12 @@ const Home = () => {
           Your browser does not support the video tag.
         </video>
       </div>
-      {/* <WineBanner /> */}
+      {/* <WineBanner /> */}  
       <AboutUsSection />
-      <ChefRecommendation />
+      {/* <ChefRecommendation /> */}
       <OpeningHours />
       {/* <Menu /> */}
-      <MeetTeam />
+      {/* <MeetTeam /> */}
       <EventCarousel />
       <Footer />
     </>
