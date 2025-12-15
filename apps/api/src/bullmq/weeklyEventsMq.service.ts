@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Queue, Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 import ENV from 'src/config/env';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CommonEventsMqService } from './CommonEventsMq.service';
 import { LadiesNightDataMqService } from './LadiesNightDataMq.service';
 
@@ -48,14 +47,13 @@ export class WeeklyEventMq implements OnModuleInit, OnModuleDestroy {
     });
 
     const content = this.commonEventsMq.getNotificationContent({ delay: job.data.delay });
-    // ! jid l eventId field fl data so that users can be routed directly to the vent page when clicking on the mobile notification
 
     const notificationPayload = {
       app_id: ENV.ONE_SIGNAL_APP_ID,
       target_channel: 'push',
       headings: headings,
       included_segments: ['All'],
-      data: { screen: 'event' },
+      data: { screen: 'event', eventId: job.data.eventId },
       contents: content,
     };
 
