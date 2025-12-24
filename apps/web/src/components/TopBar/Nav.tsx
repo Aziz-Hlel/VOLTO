@@ -57,6 +57,7 @@ const NavBar619 = () => {
       bgColor: "#1b1a2f",
       textColor: "#F8F8F8",
       image: isDesktop ? "/img/navbar2/ysar.jpg" : "/img/navbar2/fou9.jpg",
+      overlayImage: "/img/navbar2/filler/top.png",
       links: [
         { label: "Home", href: "/", ariaLabel: "Home", type: "Link" },
         { label: "Menu", href: "/menu", ariaLabel: "Menu", type: "Link" },
@@ -67,6 +68,7 @@ const NavBar619 = () => {
       bgColor: "#14122a",
       textColor: "#F8F8F8",
       image: isDesktop ? "img/navbar2/mid.jpg" : "/img/navbar2/wost.jpg",
+      overlayImage: "/img/navbar2/filler/middle.png",
       links: [
         { label: "About", href: "/about", ariaLabel: "About", type: "Link" },
         // { label: "Gallery", href: "/gallery", ariaLabel: "Gallery", type: "Link" },
@@ -78,6 +80,7 @@ const NavBar619 = () => {
       bgColor: "#0f0e22",
       textColor: "#F8F8F8",
       image: isDesktop ? "img/navbar2/ymin.jpg" : "/img/navbar2/louta.jpg",
+      overlayImage: "/img/navbar2/filler/bottom.png",
       links: [
         // {
         //   label: "Instagram",

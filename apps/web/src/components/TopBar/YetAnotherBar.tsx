@@ -18,6 +18,7 @@ export type CardNavItem = {
   label: string;
   bgColor: string;
   textColor: string;
+  overlayImage: string;
   image: string;
   links: CardNavLink[];
 };
@@ -366,9 +367,19 @@ const CardNav: React.FC<CardNavProps> = ({
               key={`nav-card-${idx}`}
               className="nav-card select-none  relative flex flex-col gap-2 p-[8px_12px] text-white rounded-sm min-w-0 flex-[1_1_auto] h-auto min-h-[40px] md:h-full md:min-h-0 md:flex-[1_1_0%] md:p-[12px_16px]"
               ref={setCardRef(idx)}
-              style={{ backgroundImage: `url(${item.image})`, backgroundSize: "cover" }}
             >
-              <div className="absolute inset-0 bg-black/25 -z-10 rounded-sm"></div>
+              {/* Background image */}
+              <div
+                className="absolute  bg-cover bg-center -z-10 inset-0"
+                style={{ backgroundImage: `url(${item.image})` }}
+              />
+
+              <div
+                className="absolute bg-cover z-20 bg-center opacity-10 pointer-events-none inset-0"
+                style={{ backgroundImage: `url(${item.overlayImage})` }}
+              />
+
+              <div className="absolute  bg-cover bg-black/25 -z-10 rounded-sm inset-0"></div>
 
               {item.label && (
                 <div className="nav-card-label font-normal tracking-[-0.5px] text-[18px] md:text-[22px]">
@@ -416,9 +427,7 @@ const CardNav: React.FC<CardNavProps> = ({
               </div>
             </div>
           ))}
-          <div
-            className=" w-full grid grid-cols-2 justify-center items-center gap-2  text-white text-center text-md   md:hidden "
-          >
+          <div className=" w-full grid grid-cols-2 justify-center items-center gap-2  text-white text-center text-md   md:hidden ">
             <a
               href="https://apps.apple.com/app/id6753715978"
               className="bg-black/85 rounded-md flex items-center  justify-center"

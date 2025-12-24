@@ -13,16 +13,29 @@ const AboutUsSection = () => {
                 Volto Restaurant{" "}
               </h2>
             </div>
-            <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
-              Volto Bahrain is a curator of exceptional experiences, merging world-class culinary
-              artistry with an electrifying atmosphere. A landmark destination where fine dining and
-              pulsating music create unparalleled luxury.
+            <p className="mx-auto text-justify max-w-6xl mt-4 mb-2 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-md">
+              Located in the heart of Adliya, Bahrain, Volto is a dining and entertainment
+              destination designed for guests who want more than just a meal.
             </p>
-            <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
-              Our award-winning team crafts nights that resonate. Honored as the *Favorite
-              Experience* at the FACT Dining Awards Bahrain 2025, Volto is a beacon of style and
-              energy, delivering an unforgettable journey from bespoke cocktails to immersive DJ
-              sets.
+            <p className="mx-auto text-justify max-w-6xl mt-4 mb-2 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-md">
+              Volto offers a distinctive menu, crafted cocktails, and a level of entertainment you
+              will not find anywhere else in Bahrain. Every detail is created to deliver a complete
+              night out, where food, drinks, music, and atmosphere come together seamlessly.
+            </p>
+
+            <p className="mx-auto text-justify max-w-6xl mt-4 mb-2 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-md">
+              From relaxed dinners to high-energy nights, Volto is a place to gather, celebrate, and
+              stay longer than planned. Whether you are joining for an occasion or a spontaneous
+              night out, Volto delivers an experience that feels elevated, immersive, and memorable.
+            </p>
+
+            <p className="mx-auto text-justify max-w-6xl mt-4 mb-2 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-md">
+              Recognized as Favourite Experience at the FACT Dining Awards Bahrain 2025, Volto
+              continues to set the standard for dining-led entertainment in Bahrain.
+            </p>
+            <p className="mx-auto text-justify max-w-6xl mt-4 mb-2 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-md">
+              If you are looking for a venue that combines quality, energy, and atmosphere in one
+              place, Volto is where the night begins.
             </p>
           </div>
 
