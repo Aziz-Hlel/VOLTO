@@ -19,7 +19,7 @@ const AboutUsSection = () => {
               pulsating music create unparalleled luxury.
             </p>
             <p className="mx-auto text-justify leading-relaxed max-w-6xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
-              Our award-winning team crafts nights that resonate. Honored as the *Favourite
+              Our award-winning team crafts nights that resonate. Honored as the *Favorite
               Experience* at the FACT Dining Awards Bahrain 2025, Volto is a beacon of style and
               energy, delivering an unforgettable journey from bespoke cocktails to immersive DJ
               sets.
@@ -38,7 +38,7 @@ const AboutUsSection = () => {
 
             <AspectRatio ratio={3 / 4} className="bg-muted rounded-none">
               <img
-                src="img/about/volto-outside.webp"
+                src="img/about/Front_view_fixed_with beams.jpg"
                 alt="About"
                 className=" h-full w-full rounded-none object-cover"
               />

@@ -179,7 +179,7 @@ const Carousel_006 = ({
             : []
         }
       >
-        <CarouselContent className="flex h-[600px] w-full">
+        <CarouselContent className="flex h-[600px] lg:h-[550px] w-full">
           {images.map((img, index) => (
             <CarouselItem
               key={index}
@@ -223,7 +223,9 @@ const Carousel_006 = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-
+        <div className=" w-fit mx-auto text-muted-foreground text-center">
+          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Lavy
+        </div>
         {/* Pagination */}
         {showPagination && (
           <div className="flex w-full items-center justify-center mt-4">
@@ -266,21 +268,3 @@ const Carousel_006 = ({
 };
 
 export { Skiper48 };
-
-/**
- * Skiper 48 Carousel_006 — React + Framer Motion
- * Built with shadcn/ui And Embla Carousel - Read docs to learn more https://ui.shadcn.com/docs/components/carousel https://embla-carousel.com/
- *
- * Illustrations by AarzooAly - https://x.com/AarzooAly
- *
- * License & Usage:
- * - Free to use and modify in both personal and commercial projects.
- * - Attribution to Skiper UI is required when using the free version.
- * - No attribution required with Skiper UI Pro.
- *
- * Feedback and contributions are welcome.
- *
- * Author: @gurvinder-singh02
- * Website: https://gxuri.in
- * Twitter: https://x.com/Gur__vi
- */

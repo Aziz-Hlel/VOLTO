@@ -1,6 +1,5 @@
 import type { Event, Media } from '@prisma/client';
-import { EntityType, EventType, MediaStatus, PrismaClient } from '@prisma/client';
-import { randomUUID } from 'crypto';
+import { EventType, PrismaClient } from '@prisma/client';
 import {
   eidThumbnail,
   eidVideo,
@@ -61,8 +60,8 @@ const eventSeeds: IEventSeeds[] = [
   // },
   {
     id: '3f7a1d5c-2b6e-4a8f-9c1b-5d2e3f4a6b7c',
-    name: 'Chichas Night',
-    description: `Chichas Night at Volto is the perfect midweek escape where smooth flavors, chilled vibes, and great company come together. Ladies enjoy a complimentary Chicha as they relax and socialize, while our resident DJ provides the perfect soundtrack for a lively yet laid-back evening. Whether you’re unwinding after work or catching up with friends, Volto’s Chichas Night is your go-to spot to savor the night in style.`,
+    name: 'Shisha Night',
+    description: `Shisha Night at Volto is the perfect midweek escape where smooth flavors, chilled vibes, and great company come together. Ladies enjoy a complimentary Shisha as they relax and socialize, while our resident DJ provides the perfect soundtrack for a lively yet laid-back evening. Whether you’re unwinding after work or catching up with friends, Volto’s Shisha Night is your go-to spot to savor the night in style.`,
     startDate: null,
     endDate: null,
     cronStartDate: '0 17 * * 1',

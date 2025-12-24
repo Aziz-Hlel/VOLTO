@@ -4,7 +4,8 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "prisma.pinToPrisma6": true
+  "prisma.pinToPrisma6": true,
+  "cSpell.words": ["VOLTO"]
 
   //   "editor.formatOnSave": true,
   //   "editor.codeActionsOnSave": {

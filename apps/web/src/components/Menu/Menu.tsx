@@ -10,21 +10,21 @@ type ImenuCategories = {
 };
 const menuCategories: ImenuCategories[] = [
   {
-    title: "VOLTO Special Cocktails",
-    image: "/img/menuWallpaper/cocktail1.png",
-    color: "from-orange-400/40 to-yellow-600/30",
+    title: "Signature Cocktails Menu ",
+    image: "/img/menuWallpaper/cocktail_banner.jpeg",
+    color: "transparent",
     menuType: "Cocktails",
   },
   {
-    title: "VOLTO Food Cuisine",
-    image: "/img/menuWallpaper/hamburger.jpg",
-    color: "from-red-600/40 to-emerald-700/30",
+    title: "Food Menu",
+    image: "/img/menuWallpaper/food_banner.jpeg",
+    color: "transparent",
     menuType: "Food",
   },
   {
-    title: "VOLTO Hookah",
-    image: "/img/menuWallpaper/hookaItem1.jpeg",
-    color: "from-blue-500/40 to-red-700/30",
+    title: "Shisha Menu",
+    image: "/img/menuWallpaper/shisha_banner.jpeg",
+    color: "transparent",
     menuType: "Hookah",
   },
 ];
@@ -42,15 +42,12 @@ const Menu = () => {
       {/* Header */}
       <div className="relative w-full z-10 mt-20 px-4 sm:px-6 lg:px-8 text-center">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-semibold leading-snug text-white">
-          Menu Book
+          Menu
         </h1>
-        <p className="text-xs sm:text-sm md:text-base lg:text-lg text-[#C19D60] font-medium mt-1">
-          Food & Wine Selection
-        </p>
       </div>
 
       {/* Horizontal cards */}
-      <div className="flex flex-row justify-center gap-8 w-full max-w-7xl flex-wrap sm:flex-nowrap z-10">
+      <div className="flex flex-row justify-center gap-8 w-full max-w-7xl flex-wrap sm:flex-nowrap z-10 ">
         {menuCategories.map((item, index) => (
           <div
             key={index}
@@ -58,11 +55,11 @@ const Menu = () => {
             onClick={() => navigate("/menu/" + item.menuType.toLocaleLowerCase())}
           >
             {/* Image */}
-            <img
-              src={item.image}
-              alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-              onClick={() => navigate("/menu/" + item.menuType.toLocaleLowerCase())}
+            <img        
+              src={item.image}        
+              alt={item.title}        
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"        
+              onClick={() => navigate("/menu/" + item.menuType.toLocaleLowerCase())}        
             />
 
             {/* Overlay */}
@@ -73,9 +70,7 @@ const Menu = () => {
             {/* Text */}
             <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end">
               <h2 className="text-2xl sm:text-3xl font-serif font-semibold mb-1">{item.title}</h2>
-              <p className="text-gray-300 text-sm sm:text-base tracking-wide">
-                Discover the flavors
-              </p>
+           
             </div>
           </div>
         ))}
