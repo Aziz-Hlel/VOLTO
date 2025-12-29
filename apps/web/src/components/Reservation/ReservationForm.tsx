@@ -121,7 +121,7 @@ const ReservationForm = () => {
               Reservation
             </h1>
             <p className="text-gray-300 text-base sm:text-lg leading-relaxed max-w-md mx-auto">
-              Fill in the form below to reserve your spot and enjoy an unforgettable experience.
+              Reserve your table below and enjoy an unforgettable experience
             </p>
           </div>
         </div>
@@ -311,13 +311,12 @@ const ReservationForm = () => {
             {/* Dress Code */}
             <div className="text-center text-gray-300 text-sm bg-gray-800/60 border border-gray-700 rounded-xl py-4 px-5 my-4">
               <p className="text-yellow-400 font-semibold mb-1">
-                Dress code : Elegant smart casual
+                Volto maintains a smart casual dress code
               </p>
-              <p>Shorts, caps and open shoes not allowed.</p>
+              <p>Entry is subject to appropriate dress. Caps, sportswear, and shorts are not permitted.</p>
               <p className="mt-1 font-medium">Age Required: 21+</p>
             </div>
 
-            {/* Boutons */}
             <div className="flex flex-col sm:flex-row justify-between gap-4 mt-4">
               <button
                 type="submit"

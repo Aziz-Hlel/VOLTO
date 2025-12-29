@@ -28,8 +28,8 @@ const VideoUpload = ({
   videoPurpose: MediaPurpose;
   entityType: EntityType;
 }) => {
-  const maxSizeInMB = 5;
-  const videoMaxDuration = 45;
+  const maxSizeInMB = 80;
+  const videoMaxDuration = 450;
 
   const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 

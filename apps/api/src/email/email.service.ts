@@ -16,22 +16,22 @@ class ExceptionOptions {
   throwable: boolean = true;
 }
 
-class IsendEmail {
-  email: string;
+class ISendEmail {
+  to: string | string[];
   subject: string;
   content: string;
   ExceptionOptions: ExceptionOptions;
 }
 
-abstract class AbsctractServiceResponse {
+abstract class AbstractServiceResponse {
   abstract success: boolean;
 }
 
-class SuccessResponse extends AbsctractServiceResponse {
+class SuccessResponse extends AbstractServiceResponse {
   success: true;
 }
 
-class ErrorResponse extends AbsctractServiceResponse {
+class ErrorResponse extends AbstractServiceResponse {
   success: false;
   error: unknown;
 }
@@ -45,7 +45,8 @@ export class EmailService {
   >;
 
   private readonly EMAIL_ADDRESSES = {
-    support: 'support@voltobahrain.online',
+    sender: 'booking@voltobahrain.com', // the email to send all mails from
+    recipient: ['pr.voltobahrain@gmail.com','m.aziz.hlel@gmail.com'], // the email to receive contact and reservations
   };
 
   constructor() {
@@ -70,7 +71,7 @@ export class EmailService {
       });
   }
 
-  async sendEmail<T extends IsendEmail>(
+  async sendEmail<T extends ISendEmail>(
     payload: T,
   ): Promise<
     T['ExceptionOptions'] extends { throwable: true }
@@ -79,8 +80,8 @@ export class EmailService {
   > {
     try {
       const info = await this.transporter.sendMail({
-        from: this.EMAIL_ADDRESSES.support,
-        to: payload.email,
+        from: this.EMAIL_ADDRESSES.sender,
+        to: payload.to,
         subject: payload.subject,
         text: payload.content,
       });
@@ -132,7 +133,7 @@ export class EmailService {
     const to = [recipient];
 
     const mailOptions = {
-      from: `"${companyName} Team" <${this.EMAIL_ADDRESSES.support}>`,
+      from: `"${companyName} Team" <${this.EMAIL_ADDRESSES.sender}>`,
       to,
       subject,
       html,
@@ -171,8 +172,10 @@ export class EmailService {
     `;
     const subject = payload.isVip ? 'VIP Reservation Request' : 'Reservation Request (Non VIP)';
 
+    const emailRecipient =
+      ENV.NODE_ENV === 'production' ? this.EMAIL_ADDRESSES.recipient : this.EMAIL_ADDRESSES.sender;
     const response = await this.sendEmail({
-      email: this.EMAIL_ADDRESSES.support,
+      to: emailRecipient,
       subject,
       content,
       ExceptionOptions: { throwable: true },
@@ -183,15 +186,17 @@ export class EmailService {
 
   async sendContactMessageEmailToAdmin(payload: CreateContactDto) {
     const content = `A Client has sent a contact message :\n
-    Name : ${payload.name}\n
+    Name : ${payload.firstName} ${payload.lastName}\n
     Email : ${payload.email}\n
     Subject : ${payload.subject}\n
     Message : ${payload.message}\n
     `;
     const subject = `New Contact Message: ${payload.subject}`;
 
+    const emailRecipient =
+      ENV.NODE_ENV === 'production' ? this.EMAIL_ADDRESSES.recipient : this.EMAIL_ADDRESSES.sender;
     const response = await this.sendEmail({
-      email: this.EMAIL_ADDRESSES.support,
+      to: emailRecipient,
       subject,
       content,
       ExceptionOptions: { throwable: false },

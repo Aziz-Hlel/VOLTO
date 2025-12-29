@@ -16,7 +16,7 @@ const CeoSection = () => {
           <div className="lg:w-1/2 space-y-6">
             <div>
               <div className="text-sm tracking-[3px] text-[#C19D60] uppercase mb-2">
-                10 Year of Experience
+                10 Years of Experience
               </div>
               <h2 className="text-6xl font-serif text-white">Ceo & Co-Founder</h2>
             </div>

@@ -10,7 +10,7 @@ export class PreSignedUrlRequest {
   mimeType: string;
 
   @IsPositive()
-  @Max(10 * PreSignedUrlRequest.oneMb) // 10 MB
+  @Max(80 * PreSignedUrlRequest.oneMb)
   fileSize: number;
 
   @IsEnum(FileType, {

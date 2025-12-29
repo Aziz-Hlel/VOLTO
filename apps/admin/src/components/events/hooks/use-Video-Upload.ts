@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { useFormContext, type FieldValues, type UseFormClearErrors } from "react-hook-form";
-import { uploadImageToS3_SIMULATOR as uploadImage } from "../getSignedUrlUpload";
+import { uploadImageToS3_SIMULATOR as uploadMedia } from "../getSignedUrlUpload";
 import { toast } from "sonner";
 import type { EntityType } from "@/types/enums/EntityType";
 import type { MediaPurpose } from "@/types/enums/MediaPurpose";
 
-type IuseImageUpload = {
+type IUseImageUpload = {
   videoUrlFieldName: string;
   videoKeyFieldName: string;
   rootFieldName: string;
@@ -23,7 +23,7 @@ const useVideoUpload = ({
   videoPurpose,
   maxDuration,
   clearErrors,
-}: IuseImageUpload) => {
+}: IUseImageUpload) => {
   const { watch, setValue } = useFormContext();
 
   const video = watch(videoUrlFieldName) as string | undefined;
@@ -34,10 +34,10 @@ const useVideoUpload = ({
 
   const [file, setFile] = useState<File | null>(null);
 
-  function validateVideoDuration(file: File | null): Promise<boolean> {
+  function validateVideo(file: File | null): Promise<boolean> {
     if (!file) return Promise.resolve(true);
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const url = URL.createObjectURL(file);
       const video = document.createElement("video");
 
@@ -46,24 +46,46 @@ const useVideoUpload = ({
 
       video.onloadedmetadata = () => {
         URL.revokeObjectURL(url);
+
         const duration = video.duration;
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+
+        // 1. Duration
         if (duration > maxDuration) {
           toast.error(`Video must be less than ${maxDuration} seconds`);
-          resolve(false);
+          return resolve(false);
+        }
+
+        // // 2. Aspect ratio check (9:16 with tolerance)
+        // const aspectRatio = width / height;
+        // const targetRatio = 9 / 16;
+        // const tolerance = 0.02; // ~2%
+
+        // if (Math.abs(aspectRatio - targetRatio) > tolerance) {
+        //   toast.error("Video must be in 9:16 aspect ratio");
+        //   return resolve(false);
+        // }
+
+        // 3. Max resolution
+        if (width > 2000 || height > 2000) {
+          toast.error("Max resolution is 2000x2000 pixels");
+          return resolve(false);
         }
 
         resolve(true);
       };
 
-      video.onerror = (err) => {
+      video.onerror = () => {
         URL.revokeObjectURL(url);
-        reject(err);
+        toast.error("Invalid video file");
+        resolve(false);
       };
     });
   }
 
   const onFileChange = async (value: File | null) => {
-    const isValid = await validateVideoDuration(value);
+    const isValid = await validateVideo(value);
     if (isValid) {
       setFile(value);
       clearErrors([videoKeyFieldName, videoUrlFieldName, rootFieldName]);
@@ -99,7 +121,7 @@ const useVideoUpload = ({
 
       setProgress(10);
 
-      const s3Key = await uploadImage({
+      const s3Key = await uploadMedia({
         uploadedImg: file,
         name: fileName,
         entityType: entityType,

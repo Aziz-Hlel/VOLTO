@@ -10,19 +10,19 @@ type ImenuCategories = {
 };
 const menuCategories: ImenuCategories[] = [
   {
-    title: "Signature Cocktails Menu ",
+    title: "Signature Cocktails",
     image: "/img/menuWallpaper/cocktail_banner.jpeg",
     color: "transparent",
     menuType: "Cocktails",
   },
   {
-    title: "Food Menu",
+    title: "Food",
     image: "/img/menuWallpaper/food_banner.jpeg",
     color: "transparent",
     menuType: "Food",
   },
   {
-    title: "Shisha Menu",
+    title: "Shisha",
     image: "/img/menuWallpaper/shisha_banner.jpeg",
     color: "transparent",
     menuType: "Hookah",
