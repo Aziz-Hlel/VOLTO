@@ -45,8 +45,20 @@ export class EmailService {
   >;
 
   private readonly EMAIL_ADDRESSES = {
-    sender: 'booking@voltobahrain.com', // the email to send all mails from
-    recipient: ['pr.voltobahrain@gmail.com','m.aziz.hlel@gmail.com'], // the email to receive contact and reservations
+    sender: 'no-reply@voltobahrain.com', // the email to send all mails from
+    devRecipients: ['m.aziz.hlel@gmail.com'],
+    prodRecipients: ['pr.voltobahrain@gmail.com', 'm.aziz.hlel@gmail.com', 'tigana137@gmail.com'],
+  };
+
+  getRecipientEmail() {
+    return ENV.NODE_ENV === 'production'
+      ? this.EMAIL_ADDRESSES.prodRecipients
+      : this.EMAIL_ADDRESSES.devRecipients;
+  }
+
+  private readonly EmailMessageDetails = {
+    from: `VOLTO <${this.EMAIL_ADDRESSES.sender}>`,
+    to: this.getRecipientEmail(),
   };
 
   constructor() {
@@ -172,10 +184,8 @@ export class EmailService {
     `;
     const subject = payload.isVip ? 'VIP Reservation Request' : 'Reservation Request (Non VIP)';
 
-    const emailRecipient =
-      ENV.NODE_ENV === 'production' ? this.EMAIL_ADDRESSES.recipient : this.EMAIL_ADDRESSES.sender;
     const response = await this.sendEmail({
-      to: emailRecipient,
+      to: this.getRecipientEmail(),
       subject,
       content,
       ExceptionOptions: { throwable: true },
@@ -193,10 +203,8 @@ export class EmailService {
     `;
     const subject = `New Contact Message: ${payload.subject}`;
 
-    const emailRecipient =
-      ENV.NODE_ENV === 'production' ? this.EMAIL_ADDRESSES.recipient : this.EMAIL_ADDRESSES.sender;
     const response = await this.sendEmail({
-      to: emailRecipient,
+      to: this.getRecipientEmail(),
       subject,
       content,
       ExceptionOptions: { throwable: false },
