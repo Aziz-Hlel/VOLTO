@@ -70,6 +70,10 @@ export class EmailService {
         user: ENV.SMTP_USER,
         pass: ENV.SMTP_PASS,
       },
+      headers: {
+        'X-SES-CONFIGURATION-SET':
+          ENV.NODE_ENV === 'production' ? 'voltobahrain-prod' : 'voltobahrain-dev',
+      }, // required for SMTP
     });
 
     this.transporter

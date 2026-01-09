@@ -18,4 +18,3 @@ echo "Uploading seed files..."
 mc cp --recursive ./seed/* local/$MINIO_BUCKET/ || echo "No seed files found when uploading seed files to minio❗❗❗"
 
 echo "Initialization complete."
-
