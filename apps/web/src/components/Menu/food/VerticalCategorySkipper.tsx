@@ -1,0 +1,95 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useState } from "react";
+import "swiper/css";
+import "swiper/css/effect-creative";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
+
+import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+
+const CategorySkipper = ({
+  images,
+  className,
+}: {
+  images: { src: string; alt: string; category: string; path: string }[];
+  className?: string;
+}) => {
+  const [activeImage, setActiveImage] = useState<number | null>(0);
+
+  const navigate = useNavigate();
+
+  const handleClick = (index: number) => {
+    if (activeImage === index) {
+      const path = images[index].path;
+      navigate("/menu/food/" + path);
+    }
+    setActiveImage(index);
+  };
+  return (
+    <motion.div
+      initial={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{
+        duration: 0.3,
+        delay: 0.5,
+      }}
+      className={cn("relative w-full max-w-6xl px-5", className)}
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-full"
+      >
+        <div className="flex w-full flex-col items-center justify-center gap-1">
+          {images.map((image, index) => (
+            <motion.div
+              key={index}
+              className="group relative cursor-pointer overflow-hidden rounded-3xl"
+              initial={{ height: "2.5rem", width: "24rem" }}
+              animate={{
+                height: activeImage === index ? "24rem" : "2.5rem",
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              onClick={() => handleClick(index)}
+              onHoverStart={() => setActiveImage(index)}
+            >
+              <AnimatePresence>
+                {activeImage === index && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute h-full w-full bg-gradient-to-t from-black/50 to-transparent"
+                  />
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {activeImage === index && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="absolute flex h-full w-full flex-col items-end justify-end px-4 pb-5"
+                  ></motion.div>
+                )}
+              </AnimatePresence>
+              <div className=" w-full h-full absolute inset-0 bg-gradient-to-b to-black/80 transition-opacity duration-300" />
+              {activeImage === index && (
+                <div className=" absolute bottom-0 w-full text-white p-8 text-2xl font-semibold">
+                  {image.category}
+                </div>
+              )}
+              <img src={image.src} className="size-full object-cover" alt={image.alt} />
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default CategorySkipper;

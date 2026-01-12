@@ -224,7 +224,7 @@ const Carousel_006 = ({
           ))}
         </CarouselContent>
         <div className=" w-fit mx-auto text-muted-foreground text-center">
-          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Lavy
+          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Levy
         </div>
         {/* Pagination */}
         {showPagination && (

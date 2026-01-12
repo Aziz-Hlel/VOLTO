@@ -7,6 +7,17 @@ export type FoodItem = {
   src: string;
 };
 
+export const foodCategories = {
+  Snacks: "Snacks",
+  Oysters: "Oysters",
+  CaviarService: "Caviar Service",
+  Appetizers: "Appetizers",
+  Sushi: "Sushi",
+  Pasta: "Pasta",
+  Grill: "Grill",
+  Dessert: "Dessert",
+};
+
 export const foodData = [
   {
     src: "/img/menu/food_menu/edameme_sea_salt.jpeg",
@@ -15,6 +26,7 @@ export const foodData = [
     price: "4 BD",
     category: "Snacks",
     description: "Sea salt",
+    allergies: "SO, E, S",
   },
   {
     src: "/img/menu/food_menu/edamame_sweet_miso.jpeg",
@@ -23,6 +35,7 @@ export const foodData = [
     price: "4.5 BD",
     category: "Snacks",
     description: "Sweet miso sauce, sesame seeds",
+    allergies: "SO, E, S",
   },
   {
     src: "/img/menu/food_menu/olives.jpeg",
@@ -31,6 +44,7 @@ export const foodData = [
     price: "3.6 BD",
     category: "Snacks",
     description: "Mixed pitted cocktail olives",
+    allergies: "V",
   },
   {
     src: "/img/menu/food_menu/chicken_croquettes.jpeg",
@@ -39,6 +53,7 @@ export const foodData = [
     price: "4.5 BD",
     category: "Snacks",
     description: "Chicken, leek, truffle, garlic mayonnaise, and parmesan cheese",
+    allergies: "G, D, E",
   },
   {
     src: "/img/menu/food_menu/avocado_chips.jpeg",
@@ -47,6 +62,7 @@ export const foodData = [
     price: "4.8 BD",
     category: "Snacks",
     description: "Crispy avocado fries, spring onion, sriracha and yoghurt dip",
+    allergies: "G, D, E, V",
   },
   {
     src: "/img/menu/food_menu/volto_nuts.jpeg",
@@ -55,6 +71,7 @@ export const foodData = [
     price: "3.6 BD",
     category: "Snacks",
     description: "House-roasted and spiced cashew nuts, almond nuts, and walnuts",
+    allergies: "N, V",
   },
   {
     src: "/img/menu/food_menu/prawn_pops.jpeg",
@@ -63,6 +80,7 @@ export const foodData = [
     price: "4.8 BD",
     category: "Snacks",
     description: "Crispy prawn bites, chives, and teriyaki sauce",
+    allergies: "G, D, S, SO",
   },
   {
     src: "/img/menu/food_menu/padron_peppers.jpeg",
@@ -71,6 +89,7 @@ export const foodData = [
     price: "4.5 BD",
     category: "Snacks",
     description: "Fried Spanish green peppers with olive oil and coarse salt",
+    allergies: "V",
   },
   {
     src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpeg",
@@ -80,6 +99,7 @@ export const foodData = [
     category: "Oysters",
     description:
       "Choice of sauces. Pomegranate, shallot and mint oil lemon, chilli and crispy bacon Rockefeller",
+    allergies: "S,D,G",
   },
   {
     src: "/img/menu/food_menu/fin_de_claire_oysters_half_a_dozen.jpeg",
@@ -89,6 +109,7 @@ export const foodData = [
     category: "Oysters",
     description:
       "Choice of sauces. Pomegranate, shallot and mint oil lemon, chilli and crispy bacon Rockefeller",
+    allergies: "S,D,G",
   },
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
@@ -97,6 +118,7 @@ export const foodData = [
     price: "89 BD",
     category: "Caviar Service",
     description: "Blinis, shallots, chives, sour cream, egg, capers",
+    allergies: "E, G, D",
   },
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
@@ -105,6 +127,7 @@ export const foodData = [
     price: "175 BD",
     category: "Caviar Service",
     description: "Blinis, shallots, chives, sour cream, egg, capers",
+    allergies: "",
   },
   {
     src: "/img/menu/food_menu/volto_greek_salad.jpeg",
@@ -113,16 +136,18 @@ export const foodData = [
     price: "8 BD",
     category: "Appetizers",
     description: "Ripe tomato, olives, charred peppers, red onion, cucumber, and Greek feta cheese",
+    allergies: "D, V",
   },
-//   {
-//     src: "N/A",
-//     alt: "BURRATA",
-//     title: "Burrata",
-//     price: "9 BD",
-//     category: "Appetizers",
-//     description:
-//       "Burrata cheese, basil marinated black berries, teen, cherry tomatoes, balsamic vinegar, and olive oil",
-//   },
+  {
+    src: "/img/menu/food_menu/burrata.jpeg",
+    alt: "BURRATA",
+    title: "Burrata",
+    price: "9 BD",
+    category: "Appetizers",
+    description:
+      "Burrata cheese, basil marinated black berries, teen, cherry tomatoes, balsamic vinegar, and olive oil",
+    allergies: "D, V, N",
+  },
   {
     src: "/img/menu/food_menu/green_volto.jpeg",
     alt: "GREEN VOLTO",
@@ -131,6 +156,7 @@ export const foodData = [
     category: "Appetizers",
     description:
       "Baby gem, asparagus, cucumber, edamame, broccolini, green herbs, and labneh dressing",
+    allergies: "D, V, SO",
   },
   {
     src: "/img/menu/food_menu/tuna_tartare.jpeg",
@@ -140,6 +166,7 @@ export const foodData = [
     category: "Appetizers",
     description:
       "Yellow fin tuna, shallots, gherkins, capers, Japanese mayonnaise, fresh herbs, and seaweed crisps",
+    allergies: "S, D, E, G",
   },
   {
     src: "/img/menu/food_menu/beef_kushiyaki.jpeg",
@@ -149,6 +176,7 @@ export const foodData = [
     category: "Appetizers",
     description:
       "Grilled wagyu beef skewers, spring onion, soy, ginger, pickled cucumber, sesame, and red onion salad",
+    allergies: "SO, SS",
   },
   {
     src: "/img/menu/food_menu/volto_wagyu_sandwich.jpeg",
@@ -158,6 +186,7 @@ export const foodData = [
     category: "Appetizers",
     description:
       "Breaded wagyu tenderloin and burger patty, volto 3.0 BBQ sauce, milk bread, and parmesan fries. Recommended medium.",
+    allergies: "G, D, SO, E",
   },
   {
     src: "/img/menu/food_menu/california.jpeg",
@@ -166,6 +195,7 @@ export const foodData = [
     price: "7.5 BD",
     category: "Sushi",
     description: "Tempura shrimp, crab, avocado, cucumber, nori, spicy mayonnaise",
+    allergies: "S. E, SO, SS",
   },
   {
     src: "/img/menu/food_menu/jianto_seafood_balls.jpeg",
@@ -174,6 +204,7 @@ export const foodData = [
     price: "8 BD",
     category: "Sushi",
     description: "Salmon, shrimp, avocado, spicy mayonnaise",
+    allergies: "S, E, SO, SS",
   },
   {
     src: "/img/menu/food_menu/summary_tuna_balls.jpeg",
@@ -182,6 +213,7 @@ export const foodData = [
     price: "8 BD",
     category: "Sushi",
     description: "Tuna, avocado, cucumber, ponzu sauce",
+    allergies: "S, SO, E, SS",
   },
   {
     src: "/img/menu/food_menu/beef_orzo.jpeg",
@@ -191,6 +223,7 @@ export const foodData = [
     category: "Pasta",
     description:
       "Pulled slow-cooked angus beef short rib, truffle, carrot, mushroom, parmesan orzo, seared foie gras, and parsley",
+    allergies: "G,D,E",
   },
   {
     src: "/img/menu/food_menu/seafood_orzo.jpeg",
@@ -199,6 +232,7 @@ export const foodData = [
     price: "21 BD",
     category: "Pasta",
     description: "Gulf shrimps, lobster tail, slow-roasted tomato, Greek feta cheese and chives",
+    allergies: "S, G, D, E",
   },
   {
     src: "/img/menu/food_menu/lobster_tagliatelle.jpeg",
@@ -208,6 +242,7 @@ export const foodData = [
     category: "Pasta",
     description:
       "Whole lobster, shellfish and saffron bisque, roasted red peppers, red chili, basil, and charred lemon.",
+    allergies: "S,G,D,E",
   },
   {
     src: "/img/menu/food_menu/wagyu_striploin.jpeg",
@@ -217,6 +252,7 @@ export const foodData = [
     category: "Grill",
     description:
       "250gr wagyu striploin grade 8-9, Australia. Chimichurri & mushroom sauce, choice of 1 side",
+    allergies: "D",
   },
   {
     src: "/img/menu/food_menu/rib_eye.jpeg",
@@ -226,6 +262,7 @@ export const foodData = [
     category: "Grill",
     description:
       "300gr wagyu rib eye grade 4-5, Australia. Chimichurri & mushroom sauce, choice of 1 side",
+    allergies: "D",
   },
   {
     src: "/img/menu/food_menu/corn_fed_chicken.jpeg",
@@ -234,6 +271,7 @@ export const foodData = [
     price: "10 BD",
     category: "Grill",
     description: "Corn fed chicken breast, chimichurri & mushroom sauce, choice of 1 side",
+    allergies: "D",
   },
   {
     src: "/img/menu/food_menu/rock_lobster.jpeg",
@@ -242,6 +280,7 @@ export const foodData = [
     price: "35 BD",
     category: "Grill",
     description: "800gr rock lobster, Oman. Chimichurri & dill butter sauce, choice of 1 side",
+    allergies: "D, S",
   },
   {
     src: "/img/menu/food_menu/prawns.jpeg",
@@ -250,6 +289,7 @@ export const foodData = [
     price: "16.5 BD",
     category: "Grill",
     description: "4 pcs U10 prawns, Gulf. Chimichurri & dill butter sauce, choice of 1 side",
+    allergies: "D, S",
   },
   {
     src: "/img/menu/food_menu/salmon.jpeg",
@@ -258,16 +298,18 @@ export const foodData = [
     price: "13.5 BD",
     category: "Grill",
     description: "160gr salmon fillet, Norway. Chimichurri & dill butter sauce, choice of 1 side",
+    allergies: "D, S",
   },
-//   {
-//     src: "N/A",
-//     alt: "SEAFOOD PLATTER",
-//     title: "Seafood Platter",
-//     price: "52 BD",
-//     category: "Grill",
-//     description:
-//       "Lobster, 2 pcs U10 prawns, salmon fillet, chimichurri & dill butter sauce, choice of 2 sides",
-//   },
+  {
+    src: "/img/menu/food_menu/seafood_platter.jpeg",
+    alt: "SEAFOOD PLATTER",
+    title: "Seafood Platter",
+    price: "52 BD",
+    category: "Grill",
+    description:
+      "Lobster, 2 pcs U10 prawns, salmon fillet, chimichurri & dill butter sauce, choice of 2 sides",
+    allergies: "D, S",
+  },
 //   {
 //     src: "N/A",
 //     alt: "GINGER SPONGE",
@@ -276,6 +318,7 @@ export const foodData = [
 //     category: "Dessert",
 //     description:
 //       "Sticky ginger & treacle sponge, fresh mango, ginger toffee sauce, and vanilla ice cream",
+//     allergies: "D, E, G",
 //   },
 //   {
 //     src: "N/A",
@@ -284,6 +327,7 @@ export const foodData = [
 //     price: "7 BD",
 //     category: "Dessert",
 //     description: "Dark chocolate cake, boozy berries and crème fraiche",
+//     allergies: "D, E, G,",
 //   },
   {
     src: "/img/menu/food_menu/fruit_platter.jpeg",
@@ -292,14 +336,16 @@ export const foodData = [
     price: "6 BD",
     category: "Dessert",
     description: "Sliced exotic fruits, berries, and grapes",
+    allergies: "V",
   },
-//   {
-//     src: "N/A",
-//     alt: "CHEESE BOARD",
-//     title: "Cheese Board",
-//     price: "8 BD",
-//     category: "Dessert",
-//     description:
-//       "Selection of hard & semi-hard European cheeses, grapes, honey, roasted walnuts, dried apricots and figs, cheese crackers",
-//   },
+  {
+    src: "/img/menu/food_menu/cheese_board.jpeg",
+    alt: "CHEESE BOARD",
+    title: "Cheese Board",
+    price: "8 BD",
+    category: "Dessert",
+    description:
+      "Selection of hard & semi-hard European cheeses, grapes, honey, roasted walnuts, dried apricots and figs, cheese crackers",
+    allergies: "D, N, G, E",
+  },
 ];

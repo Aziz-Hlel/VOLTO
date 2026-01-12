@@ -33,7 +33,15 @@ const SkipperFood = () => {
 };
 
 interface Carousel_006Props {
-  images: { src: string; alt: string; title: string; price: string; description: string }[];
+  images: {
+    src: string;
+    alt: string;
+    title: string;
+    price: string;
+    description: string;
+    allergies: string;
+    category: string;
+  }[];
   className?: string;
   autoplay?: boolean;
   loop?: boolean;
@@ -59,7 +67,7 @@ const Carousel_006 = ({
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
-  console.log('reder')
+  console.log("render");
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#313131] via-[#1a1a1a] to-[#111]">
@@ -121,12 +129,27 @@ const Carousel_006 = ({
             : []
         }
       >
-        <CarouselContent className="flex h-[600px] lg:h-[550px] w-full">
+        <CarouselContent className="flex h-[600px] lg:h-[550px] w-full mt-20">
           {images.map((img, index) => (
             <CarouselItem
               key={index}
               className="relative flex h-[81.5%] w-full basis-[73%] items-center justify-center sm:basis-[50%] md:basis-[30%] lg:basis-[25%] xl:basis-[21%]"
             >
+              {/* <AnimatePresence mode="wait">
+                {current === index && (
+                  <motion.div
+                    initial={{ opacity: 0, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute top-0 left-2 space-y-1 flex h-[14%] w-full -translate-y-16  items-center justify-center text-center font-medium tracking-tight text-white z-50"
+                  >
+                    <div className="absolute w-[200rem] max-w-screen">
+                      <h2 className=" text-4xl text-yellow-400">{img.category}</h2>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence> */}
+
               <motion.div
                 initial={false}
                 animate={{
@@ -151,13 +174,18 @@ const Carousel_006 = ({
                     initial={{ opacity: 0, filter: "blur(10px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     transition={{ duration: 0.5 }}
-                    className="absolute bottom-0 left-2 space-y-1 flex h-[14%] w-full translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-white"
+                    className="absolute bottom-0 left-2 space-y-1 flex h-[14%] w-full pt-8 translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-white"
                   >
                     <div className="absolute w-[200rem] max-w-screen">
-                      <h2 className="text-white text-lg md:text-2xl">
+                      <h2 className="text-white text-xl md:text-2xl">
                         {img.title} - {img.price}
                       </h2>
-                      <p className="text-white/80 text-xs md:text-sm max-w-screen px-4 ">{img.description}</p>
+                      <p className="text-white/80 text-sm md:text-sm max-w-screen px-4 ">
+                        {img.description}
+                      </p>
+                      <p className=" text-muted-foreground text-xs md:text-sm max-w-screen px-4 ">
+                        * Allergies : {img.allergies}
+                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -165,8 +193,8 @@ const Carousel_006 = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className=" w-fit mx-auto text-muted-foreground text-center text-sm">
-          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Lavy
+        <div className=" w-fit mx-auto text-muted-foreground text-center text-xs md:text-sm">
+          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Levy
         </div>
         {/* Pagination */}
         {showPagination && (

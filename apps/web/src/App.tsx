@@ -15,6 +15,9 @@ import { Toaster } from "sonner";
 import CocktailSwiper from "./components/Menu/CocktailSwiper";
 import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
 import FoodSwiper from "./components/Menu/food/FoodSwiper";
+import CategoryDisplay from "./components/Menu/food/CategoryDisplay";
+import { FoodCarousel } from "./components/Menu/food/FoodCarousel";
+import { foodCategories } from "./components/Menu/food/foodData";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +37,31 @@ function App() {
               <Route index element={<Menu />} />
               <Route path="cocktails" element={<CocktailSwiper />} />
               <Route path="cocktails/all" element={<MenuCarousel menuType="Cocktails" />} />
-              <Route path="food" element={<FoodSwiper />} />
+              <Route path="food" element={<CategoryDisplay />} />
+              <Route
+                path="food/snacks"
+                element={<FoodCarousel category={foodCategories.Snacks} />}
+              />
+              <Route
+                path="food/oysters"
+                element={<FoodCarousel category={foodCategories.Oysters} />}
+              />
+              <Route
+                path="food/caviar-service"
+                element={<FoodCarousel category={foodCategories.CaviarService} />}
+              />
+              <Route
+                path="food/appetizers"
+                element={<FoodCarousel category={foodCategories.Appetizers} />}
+              />
+              <Route path="food/sushi" element={<FoodCarousel category={foodCategories.Sushi} />} />
+              <Route path="food/pasta" element={<FoodCarousel category={foodCategories.Pasta} />} />
+              <Route path="food/grill" element={<FoodCarousel category={foodCategories.Grill} />} />
+              <Route
+                path="food/dessert"
+                element={<FoodCarousel category={foodCategories.Dessert} />}
+              />
+
               <Route path="hookah" element={<MenuCarousel menuType="Hookah" />} />
             </Route>
             <Route path="/about" element={<About />} />
