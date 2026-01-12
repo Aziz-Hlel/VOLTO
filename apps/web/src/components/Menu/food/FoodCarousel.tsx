@@ -71,9 +71,10 @@ export function FoodCarousel({ category }: { category: string }) {
                   <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
                     <img src={item.src} alt={item.alt} className=" rounded-xl" />
                     <div className=" text-center space-y-1">
-                      <h2 className="text-yellow-600 text-xl md:text-2xl">
-                        {item.title} - {item.price}
+                      <h2 className="text-yellow-600 text-xl md:text-xl">
+                        {item.title}
                       </h2>
+                      <div>{item.price}</div>
                       <p className="text-black/80 text-sm md:text-sm max-w-screen  ">
                         {item.description}
                       </p>

@@ -92,23 +92,21 @@ export const foodData = [
     allergies: "V",
   },
   {
-    src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpeg",
-    alt: "FIN DE CLAIRE OYSTERS DOZEN",
-    title: "Fin De Claire Oysters Dozen",
-    price: "16 BD",
-    category: "Oysters",
-    description:
-      "Choice of sauces. Pomegranate, shallot and mint oil lemon, chilli and crispy bacon Rockefeller",
-    allergies: "S,D,G",
-  },
-  {
     src: "/img/menu/food_menu/fin_de_claire_oysters_half_a_dozen.jpeg",
     alt: "FIN DE CLAIRE OYSTERS HALF A DOZEN",
     title: "Fin De Claire Oysters Half a Dozen",
+    price: "16 BD",
+    category: "Oysters",
+    description: " Pomegranite, shallot and mint oil, Lemon, chilli and crispy bacon, Rockefeller",
+    allergies: "S,D,G",
+  },
+  {
+    src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpeg",
+    alt: "FIN DE CLAIRE OYSTERS DOZEN",
+    title: "Fin De Claire Oysters Dozen",
     price: "28 BD",
     category: "Oysters",
-    description:
-      "Choice of sauces. Pomegranate, shallot and mint oil lemon, chilli and crispy bacon Rockefeller",
+    description: " Pomegranite, shallot and mint oil, Lemon, chilli and crispy bacon, Rockefeller",
     allergies: "S,D,G",
   },
   {
@@ -127,7 +125,7 @@ export const foodData = [
     price: "175 BD",
     category: "Caviar Service",
     description: "Blinis, shallots, chives, sour cream, egg, capers",
-    allergies: "",
+    allergies: "E, G, D",
   },
   {
     src: "/img/menu/food_menu/volto_greek_salad.jpeg",
@@ -310,25 +308,25 @@ export const foodData = [
       "Lobster, 2 pcs U10 prawns, salmon fillet, chimichurri & dill butter sauce, choice of 2 sides",
     allergies: "D, S",
   },
-//   {
-//     src: "N/A",
-//     alt: "GINGER SPONGE",
-//     title: "Ginger Sponge",
-//     price: "5 BD",
-//     category: "Dessert",
-//     description:
-//       "Sticky ginger & treacle sponge, fresh mango, ginger toffee sauce, and vanilla ice cream",
-//     allergies: "D, E, G",
-//   },
-//   {
-//     src: "N/A",
-//     alt: "VOLTO CHOCOLATE CAKE",
-//     title: "Volto Chocolate Cake",
-//     price: "7 BD",
-//     category: "Dessert",
-//     description: "Dark chocolate cake, boozy berries and crème fraiche",
-//     allergies: "D, E, G,",
-//   },
+  //   {
+  //     src: "N/A",
+  //     alt: "GINGER SPONGE",
+  //     title: "Ginger Sponge",
+  //     price: "5 BD",
+  //     category: "Dessert",
+  //     description:
+  //       "Sticky ginger & treacle sponge, fresh mango, ginger toffee sauce, and vanilla ice cream",
+  //     allergies: "D, E, G",
+  //   },
+  //   {
+  //     src: "N/A",
+  //     alt: "VOLTO CHOCOLATE CAKE",
+  //     title: "Volto Chocolate Cake",
+  //     price: "7 BD",
+  //     category: "Dessert",
+  //     description: "Dark chocolate cake, boozy berries and crème fraiche",
+  //     allergies: "D, E, G,",
+  //   },
   {
     src: "/img/menu/food_menu/fruit_platter.jpeg",
     alt: "FRUIT PLATTER",
