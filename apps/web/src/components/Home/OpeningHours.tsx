@@ -5,7 +5,7 @@ const OpeningHours = () => {
   return (
     <section
       className="bg-fixed bg-cover bg-center py-28 md:py-60 min-h-screen"
-      style={{ backgroundImage: "url('img/banner5.jpg')" }}
+      style={{ backgroundImage: "url('img/openingHours/background.jpg')" }}
     >
       <div className="max-w-[1140px] mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-12">
@@ -40,8 +40,9 @@ const OpeningHours = () => {
 
             <p className="text-sm md:text-base text-[#777] mt-5 text-center">
               You can also call:{" "}
-              <a href="tel:+97334588466" className="text-[#C19D60] underline"></a> to make a
-              reservation.
+              <a href="tel:+97334588466" className="text-[#C19D60] underline">
+                +973 3458 8466
+              </a>
             </p>
 
             <p className="text-sm md:text-base text-[#777] flex items-center justify-center gap-2 mt-3 text-center">

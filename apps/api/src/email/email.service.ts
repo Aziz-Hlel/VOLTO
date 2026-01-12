@@ -47,7 +47,7 @@ export class EmailService {
   private readonly EMAIL_ADDRESSES = {
     sender: 'no-reply@voltobahrain.com', // the email to send all mails from
     devRecipients: ['m.aziz.hlel@gmail.com'],
-    prodRecipients: ['pr.voltobahrain@gmail.com', 'm.aziz.hlel@gmail.com', 'tigana137@gmail.com'],
+    prodRecipients: ['pr.voltobahrain@gmail.com'],
   };
 
   getRecipientEmail() {

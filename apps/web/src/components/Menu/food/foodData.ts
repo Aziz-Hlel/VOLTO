@@ -1,0 +1,305 @@
+export type FoodItem = {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  category: string;
+  src: string;
+};
+
+export const foodData = [
+  {
+    src: "/img/menu/food_menu/edameme_sea_salt.jpeg",
+    alt: "EDAMAME",
+    title: "Edamame",
+    price: "4 BD",
+    category: "Snacks",
+    description: "Sea salt",
+  },
+  {
+    src: "/img/menu/food_menu/edamame_sweet_miso.jpeg",
+    alt: "EDAMAME",
+    title: "Edamame",
+    price: "4.5 BD",
+    category: "Snacks",
+    description: "Sweet miso sauce, sesame seeds",
+  },
+  {
+    src: "/img/menu/food_menu/olives.jpeg",
+    alt: "OLIVES",
+    title: "Olives",
+    price: "3.6 BD",
+    category: "Snacks",
+    description: "Mixed pitted cocktail olives",
+  },
+  {
+    src: "/img/menu/food_menu/chicken_croquettes.jpeg",
+    alt: "CHICKEN CROQUETTES",
+    title: "Chicken Croquettes",
+    price: "4.5 BD",
+    category: "Snacks",
+    description: "Chicken, leek, truffle, garlic mayonnaise, and parmesan cheese",
+  },
+  {
+    src: "/img/menu/food_menu/avocado_chips.jpeg",
+    alt: "AVOCADO CHIPS",
+    title: "Avocado Chips",
+    price: "4.8 BD",
+    category: "Snacks",
+    description: "Crispy avocado fries, spring onion, sriracha and yoghurt dip",
+  },
+  {
+    src: "/img/menu/food_menu/volto_nuts.jpeg",
+    alt: "VOLTO NUTS",
+    title: "Volto Nuts",
+    price: "3.6 BD",
+    category: "Snacks",
+    description: "House-roasted and spiced cashew nuts, almond nuts, and walnuts",
+  },
+  {
+    src: "/img/menu/food_menu/prawn_pops.jpeg",
+    alt: "PRAWN POPS",
+    title: "Prawn Pops",
+    price: "4.8 BD",
+    category: "Snacks",
+    description: "Crispy prawn bites, chives, and teriyaki sauce",
+  },
+  {
+    src: "/img/menu/food_menu/padron_peppers.jpeg",
+    alt: "PADRON PEPPERS",
+    title: "Padron Peppers",
+    price: "4.5 BD",
+    category: "Snacks",
+    description: "Fried Spanish green peppers with olive oil and coarse salt",
+  },
+  {
+    src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpeg",
+    alt: "FIN DE CLAIRE OYSTERS DOZEN",
+    title: "Fin De Claire Oysters Dozen",
+    price: "16 BD",
+    category: "Oysters",
+    description:
+      "Choice of sauces. Pomegranate, shallot and mint oil lemon, chilli and crispy bacon Rockefeller",
+  },
+  {
+    src: "/img/menu/food_menu/fin_de_claire_oysters_half_a_dozen.jpeg",
+    alt: "FIN DE CLAIRE OYSTERS HALF A DOZEN",
+    title: "Fin De Claire Oysters Half a Dozen",
+    price: "28 BD",
+    category: "Oysters",
+    description:
+      "Choice of sauces. Pomegranate, shallot and mint oil lemon, chilli and crispy bacon Rockefeller",
+  },
+  {
+    src: "/img/menu/food_menu/oscietra_caviar.jpeg",
+    alt: "OSCIETRA CAVIAR",
+    title: "Oscietra Caviar - 50g",
+    price: "89 BD",
+    category: "Caviar Service",
+    description: "Blinis, shallots, chives, sour cream, egg, capers",
+  },
+  {
+    src: "/img/menu/food_menu/oscietra_caviar.jpeg",
+    alt: "OSCIETRA CAVIAR",
+    title: "Oscietra Caviar - 100g",
+    price: "175 BD",
+    category: "Caviar Service",
+    description: "Blinis, shallots, chives, sour cream, egg, capers",
+  },
+  {
+    src: "/img/menu/food_menu/volto_greek_salad.jpeg",
+    alt: "VOLTO GREEK SALAD",
+    title: "Volto Greek Salad",
+    price: "8 BD",
+    category: "Appetizers",
+    description: "Ripe tomato, olives, charred peppers, red onion, cucumber, and Greek feta cheese",
+  },
+//   {
+//     src: "N/A",
+//     alt: "BURRATA",
+//     title: "Burrata",
+//     price: "9 BD",
+//     category: "Appetizers",
+//     description:
+//       "Burrata cheese, basil marinated black berries, teen, cherry tomatoes, balsamic vinegar, and olive oil",
+//   },
+  {
+    src: "/img/menu/food_menu/green_volto.jpeg",
+    alt: "GREEN VOLTO",
+    title: "Green Volto",
+    price: "6.5 BD",
+    category: "Appetizers",
+    description:
+      "Baby gem, asparagus, cucumber, edamame, broccolini, green herbs, and labneh dressing",
+  },
+  {
+    src: "/img/menu/food_menu/tuna_tartare.jpeg",
+    alt: "TUNA TARTARE",
+    title: "Tuna Tartare",
+    price: "9 BD",
+    category: "Appetizers",
+    description:
+      "Yellow fin tuna, shallots, gherkins, capers, Japanese mayonnaise, fresh herbs, and seaweed crisps",
+  },
+  {
+    src: "/img/menu/food_menu/beef_kushiyaki.jpeg",
+    alt: "BEEF KUSHIYAKI",
+    title: "Beef Kushiyaki",
+    price: "8 BD",
+    category: "Appetizers",
+    description:
+      "Grilled wagyu beef skewers, spring onion, soy, ginger, pickled cucumber, sesame, and red onion salad",
+  },
+  {
+    src: "/img/menu/food_menu/volto_wagyu_sandwich.jpeg",
+    alt: "VOLTO WAGYU SANDWICH",
+    title: "Volto Wagyu Sandwich",
+    price: "18 BD",
+    category: "Appetizers",
+    description:
+      "Breaded wagyu tenderloin and burger patty, volto 3.0 BBQ sauce, milk bread, and parmesan fries. Recommended medium.",
+  },
+  {
+    src: "/img/menu/food_menu/california.jpeg",
+    alt: "CRAZY SUSHI CALIFORNIA",
+    title: "Crazy Sushi California",
+    price: "7.5 BD",
+    category: "Sushi",
+    description: "Tempura shrimp, crab, avocado, cucumber, nori, spicy mayonnaise",
+  },
+  {
+    src: "/img/menu/food_menu/jianto_seafood_balls.jpeg",
+    alt: "JIANTO SEAFOOD BALLS",
+    title: "Jianto Seafood Balls",
+    price: "8 BD",
+    category: "Sushi",
+    description: "Salmon, shrimp, avocado, spicy mayonnaise",
+  },
+  {
+    src: "/img/menu/food_menu/summary_tuna_balls.jpeg",
+    alt: "SUMMERY TUNA BALLS",
+    title: "Summery Tuna Balls",
+    price: "8 BD",
+    category: "Sushi",
+    description: "Tuna, avocado, cucumber, ponzu sauce",
+  },
+  {
+    src: "/img/menu/food_menu/beef_orzo.jpeg",
+    alt: "BEEF ORZO",
+    title: "Beef Orzo",
+    price: "19 BD",
+    category: "Pasta",
+    description:
+      "Pulled slow-cooked angus beef short rib, truffle, carrot, mushroom, parmesan orzo, seared foie gras, and parsley",
+  },
+  {
+    src: "/img/menu/food_menu/seafood_orzo.jpeg",
+    alt: "SEAFOOD ORZO",
+    title: "Seafood Orzo",
+    price: "21 BD",
+    category: "Pasta",
+    description: "Gulf shrimps, lobster tail, slow-roasted tomato, Greek feta cheese and chives",
+  },
+  {
+    src: "/img/menu/food_menu/lobster_tagliatelle.jpeg",
+    alt: "LOBSTER TAGLIATELLE",
+    title: "Lobster Tagliatelle",
+    price: "32 BD",
+    category: "Pasta",
+    description:
+      "Whole lobster, shellfish and saffron bisque, roasted red peppers, red chili, basil, and charred lemon.",
+  },
+  {
+    src: "/img/menu/food_menu/wagyu_striploin.jpeg",
+    alt: "WAGYU STRIPLOIN",
+    title: "Wagyu Striploin",
+    price: "39 BD",
+    category: "Grill",
+    description:
+      "250gr wagyu striploin grade 8-9, Australia. Chimichurri & mushroom sauce, choice of 1 side",
+  },
+  {
+    src: "/img/menu/food_menu/rib_eye.jpeg",
+    alt: "RIB EYE",
+    title: "Rib Eye",
+    price: "26.5 BD",
+    category: "Grill",
+    description:
+      "300gr wagyu rib eye grade 4-5, Australia. Chimichurri & mushroom sauce, choice of 1 side",
+  },
+  {
+    src: "/img/menu/food_menu/corn_fed_chicken.jpeg",
+    alt: "CORN FED CHICKEN",
+    title: "Corn Fed Chicken",
+    price: "10 BD",
+    category: "Grill",
+    description: "Corn fed chicken breast, chimichurri & mushroom sauce, choice of 1 side",
+  },
+  {
+    src: "/img/menu/food_menu/rock_lobster.jpeg",
+    alt: "ROCK LOBSTER",
+    title: "Rock Lobster",
+    price: "35 BD",
+    category: "Grill",
+    description: "800gr rock lobster, Oman. Chimichurri & dill butter sauce, choice of 1 side",
+  },
+  {
+    src: "/img/menu/food_menu/prawns.jpeg",
+    alt: "PRAWNS",
+    title: "Prawns",
+    price: "16.5 BD",
+    category: "Grill",
+    description: "4 pcs U10 prawns, Gulf. Chimichurri & dill butter sauce, choice of 1 side",
+  },
+  {
+    src: "/img/menu/food_menu/salmon.jpeg",
+    alt: "SALMON",
+    title: "Salmon",
+    price: "13.5 BD",
+    category: "Grill",
+    description: "160gr salmon fillet, Norway. Chimichurri & dill butter sauce, choice of 1 side",
+  },
+//   {
+//     src: "N/A",
+//     alt: "SEAFOOD PLATTER",
+//     title: "Seafood Platter",
+//     price: "52 BD",
+//     category: "Grill",
+//     description:
+//       "Lobster, 2 pcs U10 prawns, salmon fillet, chimichurri & dill butter sauce, choice of 2 sides",
+//   },
+//   {
+//     src: "N/A",
+//     alt: "GINGER SPONGE",
+//     title: "Ginger Sponge",
+//     price: "5 BD",
+//     category: "Dessert",
+//     description:
+//       "Sticky ginger & treacle sponge, fresh mango, ginger toffee sauce, and vanilla ice cream",
+//   },
+//   {
+//     src: "N/A",
+//     alt: "VOLTO CHOCOLATE CAKE",
+//     title: "Volto Chocolate Cake",
+//     price: "7 BD",
+//     category: "Dessert",
+//     description: "Dark chocolate cake, boozy berries and crème fraiche",
+//   },
+  {
+    src: "/img/menu/food_menu/fruit_platter.jpeg",
+    alt: "FRUIT PLATTER",
+    title: "Fruit Platter",
+    price: "6 BD",
+    category: "Dessert",
+    description: "Sliced exotic fruits, berries, and grapes",
+  },
+//   {
+//     src: "N/A",
+//     alt: "CHEESE BOARD",
+//     title: "Cheese Board",
+//     price: "8 BD",
+//     category: "Dessert",
+//     description:
+//       "Selection of hard & semi-hard European cheeses, grapes, honey, roasted walnuts, dried apricots and figs, cheese crackers",
+//   },
+];

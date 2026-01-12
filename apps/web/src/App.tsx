@@ -14,6 +14,7 @@ import NotFound from "./components/NotFound/NotFound";
 import { Toaster } from "sonner";
 import CocktailSwiper from "./components/Menu/CocktailSwiper";
 import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
+import FoodSwiper from "./components/Menu/food/FoodSwiper";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,7 @@ function App() {
               <Route index element={<Menu />} />
               <Route path="cocktails" element={<CocktailSwiper />} />
               <Route path="cocktails/all" element={<MenuCarousel menuType="Cocktails" />} />
-              <Route path="food" element={<MenuCarousel menuType="Food" />} />
+              <Route path="food" element={<FoodSwiper />} />
               <Route path="hookah" element={<MenuCarousel menuType="Hookah" />} />
             </Route>
             <Route path="/about" element={<About />} />
@@ -45,7 +46,6 @@ function App() {
             <Route path="reset-password/" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        
         </Router>
       </div>
     </QueryClientProvider>
