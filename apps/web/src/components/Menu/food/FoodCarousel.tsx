@@ -77,8 +77,6 @@ export function FoodCarousel({ category }: { category: string }) {
                         <p className="text-black/80 text-sm lg:text-sm max-w-screen  ">
                           {item.description}
                         </p>
-                      </div>
-                      <div className=" h-full flex grow items-end justify-end">
                         <p className=" text-muted-foreground text-xs lg:text-sm max-w-screen px-4 ">
                           * Allergies : {item.allergies}
                         </p>
