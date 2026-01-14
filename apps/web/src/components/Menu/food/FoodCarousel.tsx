@@ -62,27 +62,27 @@ export function FoodCarousel({ category }: { category: string }) {
         <Carousel
           setApi={setApi}
           className=" lg:h-full lg:w-full "
-          opts={{ loop: true, slidesToScroll: 1,  }}
+          opts={{ loop: true, slidesToScroll: 1 }}
         >
           <CarouselContent className=" p-0 py-0">
             {food.map((item, index) => (
-              <CarouselItem key={index} className="lg:basis-1/3 py-0">
+              <CarouselItem key={index} className="lg:basis-1/3   py-0">
                 <Card className=" p-0">
-                  <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
-                    <img src={item.src} alt={item.alt} className=" rounded-xl" />
-                    <div className=" text-center space-y-1">
-                      <h2 className="text-yellow-600 text-xl lg:text-xl">
-                        {item.title}
-                      </h2>
-                      <div>{item.price}</div>
-                      <p className="text-black/80 text-sm lg:text-sm max-w-screen  ">
-                        {item.description}
-                      </p>
-                    </div>
-                    <div className=" h-full flex grow items-end justify-end">
-                      <p className=" text-muted-foreground text-xs lg:text-sm max-w-screen px-4 ">
-                        * Allergies : {item.allergies}
-                      </p>
+                  <CardContent className="p-6">
+                    <div className=" flex flex-col ">
+                      <img src={item.src} alt={item.alt} className=" rounded-xl  " />
+                      <div className=" text-center space-y-1">
+                        <h2 className="text-yellow-600 text-xl lg:text-xl">{item.title}</h2>
+                        <div>{item.price}</div>
+                        <p className="text-black/80 text-sm lg:text-sm max-w-screen  ">
+                          {item.description}
+                        </p>
+                      </div>
+                      <div className=" h-full flex grow items-end justify-end">
+                        <p className=" text-muted-foreground text-xs lg:text-sm max-w-screen px-4 ">
+                          * Allergies : {item.allergies}
+                        </p>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
