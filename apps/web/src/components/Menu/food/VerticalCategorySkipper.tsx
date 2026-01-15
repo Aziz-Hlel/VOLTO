@@ -9,12 +9,13 @@ import "swiper/css/autoplay";
 
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import type { FoodCategory } from "./foodData";
 
 const CategorySkipper = ({
   images,
   className,
 }: {
-  images: { src: string; alt: string; category: string; path: string }[];
+  images: FoodCategory[];
   className?: string;
 }) => {
   const [activeImage, setActiveImage] = useState<number | null>(0);
@@ -80,7 +81,7 @@ const CategorySkipper = ({
               <div className=" w-full h-full absolute inset-0 bg-gradient-to-b to-black/80 transition-opacity duration-300" />
               {activeImage === index && (
                 <div className=" absolute bottom-0 w-full text-white p-8 text-2xl font-semibold">
-                  {image.category}
+                  {image.name}
                 </div>
               )}
               <img src={image.src} className="size-full object-cover" alt={image.alt} />

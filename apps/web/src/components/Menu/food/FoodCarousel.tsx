@@ -11,14 +11,18 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { foodData } from "./foodData";
+import { foodCategories, foodData, type CategoriesName } from "./foodData";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
-export function FoodCarousel({ category }: { category: string }) {
+export function FoodCarousel({ category }: { category: CategoriesName }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
 
   const food = foodData.filter((item) => item.category === category);
+  const categoryData = foodCategories[category];
+  const promo = categoryData.promo;
 
   React.useEffect(() => {
     if (!api) {
@@ -34,7 +38,7 @@ export function FoodCarousel({ category }: { category: string }) {
   }, [api]);
 
   return (
-    <div className=" w-full flex items-center pt-20 min-h-screen bg-gradient-to-br from-[#313131] via-[#1a1a1a] to-[#111]">
+    <div className=" w-full flex flex-col items-center pt-20 min-h-screen bg-gradient-to-br from-[#313131] via-[#1a1a1a] to-[#111]">
       <div className="absolute inset-0 bg-[url('/textures/noise.png')] opacity-20 pointer-events-none mix-blend-soft-light" />
 
       {/* GOLD PARTICLES */}
@@ -58,7 +62,16 @@ export function FoodCarousel({ category }: { category: string }) {
         </div>
       </div>
 
-      <div className="mx-auto  lg:h-full  lg:max-w-4xl  max-w-xs px-4">
+      <div className="mx-auto flex flex-col justify-center space-y-2 my-auto  lg:h-full  lg:max-w-4xl xl:max-w-5xl  max-w-xs px-4">
+        <div className="">
+          <Button
+            className=" rounded-full bg-yellow-500 hover:bg-yellow-600 mb-4"
+            onClick={() => history.back()}
+          >
+            <ArrowLeft />
+            <span>Back</span>
+          </Button>
+        </div>
         <Carousel
           setApi={setApi}
           className=" lg:h-full lg:w-full "
@@ -90,11 +103,23 @@ export function FoodCarousel({ category }: { category: string }) {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
-        <div className="text-muted-foreground py-2 text-center text-sm">
-          Slide {current} of {count}
-        </div>
-        <div className=" w-fit mx-auto text-muted-foreground text-center text-xs lg:text-sm">
-          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Levy
+        <div className=" space-y-1">
+          <div className="text-muted-foreground py-2 text-center text-sm">
+            Slide {current} of {count}
+          </div>
+          {promo && (
+            <div className="w-fit mx-auto text-center text-xs lg:text-sm text-red-500/70">
+              * {promo}
+            </div>
+          )}
+          <div className="w-fit mx-auto text-muted-foreground text-center text-xs lg:text-sm ">
+            (D) dairy, (N) nuts, (S) fish and shellfish, (V) vegetarian, (G) gluten, (A) alcohol,
+            (SS) sesame, (SO) soy, (E) eggs
+          </div>
+          <div className=" w-fit mx-auto text-muted-foreground text-center text-xs lg:text-sm">
+            *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov.
+            Levy
+          </div>
         </div>
       </div>
     </div>
