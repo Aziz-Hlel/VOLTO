@@ -23,7 +23,7 @@ export type FoodCategory = {
 export const foodCategories: Record<CategoriesName, FoodCategory> = {
   Appetizers: {
     id: "Appetizers",
-    src: "/img/menu/food_menu/volto_nuts.jpg",
+    src: "/img/menu/food_menu/volto_wagyu_sandwich.jpg",
     name: "Snacks & Appetizers",
     alt: "Snacks & Appetizers",
     path: "appetizers",
@@ -32,7 +32,7 @@ export const foodCategories: Record<CategoriesName, FoodCategory> = {
   Oysters: {
     id: "Oysters",
     name: "Caviar & Oysters",
-    src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpg",
+    src: "/img/menu/food_menu/oscietra_caviar.jpeg",
     alt: "Caviar & Oysters",
     path: "oysters",
     sortOrder: 2,
@@ -40,7 +40,7 @@ export const foodCategories: Record<CategoriesName, FoodCategory> = {
   Mains: {
     id: "Mains",
     name: "Mains",
-    src: "/img/menu/food_menu/beef_orzo.jpg",
+    src: "/img/menu/food_menu/wagyu_striploin.jpg",
     alt: "Mains",
     path: "mains",
     sortOrder: 3,
@@ -48,7 +48,7 @@ export const foodCategories: Record<CategoriesName, FoodCategory> = {
   Dessert: {
     id: "Dessert",
     name: "Dessert",
-    src: "/img/menu/food_menu/fruit_platter.jpeg",
+    src: "/img/menu/food_menu/volto_chocolate_cake.jpeg",
     alt: "Dessert",
     path: "dessert",
     sortOrder: 4,
