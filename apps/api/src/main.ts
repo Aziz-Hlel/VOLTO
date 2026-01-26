@@ -13,9 +13,10 @@ const gloabalValidationPipe = new ValidationPipe({
 });
 
 function enableCors(app: INestApplication<any>) {
-  const allowedOrigins = ENV.ALLOWED_ORIGIN_PATTERNS.split(',').map(
-    (pattern) => new RegExp(pattern.trim()),
-  );
+  const allowedOrigins =
+    ENV.NODE_ENV === 'production'
+      ? ENV.ALLOWED_ORIGIN_PATTERNS.split(',').map((pattern) => new RegExp(pattern.trim()))
+      : [/.*/]; // allow all in non-production
   app.enableCors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-total-count'],

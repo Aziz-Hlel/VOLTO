@@ -7,6 +7,7 @@ export type FoodItem = {
   price: string;
   allergies: string;
   category: CategoriesName;
+  allergies_long: string;
   src: string;
 };
 
@@ -64,6 +65,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Sea salt",
     allergies: "SO, E, S",
+    allergies_long: "Soy, Eggs, Fish and Shellfish",
   },
   {
     src: "/img/menu/food_menu/edamame_sweet_miso.jpg",
@@ -73,6 +75,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Sweet miso sauce, sesame seeds",
     allergies: "SO, E, S",
+    allergies_long: "Soy, Eggs, Fish and Shellfish",
   },
   {
     src: "/img/menu/food_menu/olives.jpg",
@@ -82,6 +85,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Mixed pitted cocktail olives",
     allergies: "V",
+    allergies_long: "Vegetarian",
   },
   {
     src: "/img/menu/food_menu/chicken_croquettes.jpg",
@@ -91,6 +95,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Chicken, leek, truffle, garlic mayonnaise, and parmesan cheese",
     allergies: "G, D, E",
+    allergies_long: "Gluten, Dairy, Eggs",
   },
   {
     src: "/img/menu/food_menu/avocado_chips.jpg",
@@ -100,6 +105,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Crispy avocado fries, spring onion, sriracha and yoghurt dip",
     allergies: "G, D, E, V",
+    allergies_long: "Gluten, Dairy, Eggs, Vegetarian",
   },
   {
     src: "/img/menu/food_menu/volto_nuts.jpg",
@@ -109,6 +115,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "House-roasted and spiced cashew nuts, almond nuts, and walnuts",
     allergies: "N, V",
+    allergies_long: "Nuts, Vegetarian",
   },
   {
     src: "/img/menu/food_menu/prawn_pops.jpg",
@@ -118,6 +125,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Crispy prawn bites, chives, and teriyaki sauce",
     allergies: "G, D, S, SO",
+    allergies_long: "Gluten, Dairy, Fish and Shellfish, Soy",
   },
   {
     src: "/img/menu/food_menu/padron_peppers.jpg",
@@ -127,6 +135,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Fried Spanish green peppers with olive oil and coarse salt",
     allergies: "V",
+    allergies_long: "Vegetarian",
   },
   {
     src: "/img/menu/food_menu/volto_greek_salad.jpg",
@@ -136,6 +145,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Ripe tomato, olives, charred peppers, red onion, cucumber, and Greek feta cheese",
     allergies: "D, V",
+    allergies_long: "Dairy, Vegetarian",
   },
   {
     src: "/img/menu/food_menu/burrata.jpg",
@@ -146,6 +156,7 @@ export const foodData: FoodItem[] = [
     description:
       "Burrata cheese, basil marinated black berries, teen, cherry tomatoes, balsamic vinegar, and olive oil",
     allergies: "D, V, N",
+    allergies_long: "Dairy, Vegetarian, Nuts",
   },
   {
     src: "/img/menu/food_menu/green_volto.jpg",
@@ -156,6 +167,7 @@ export const foodData: FoodItem[] = [
     description:
       "Baby gem, asparagus, cucumber, edamame, broccolini, green herbs, and labneh dressing",
     allergies: "D, V, SO",
+    allergies_long: "Dairy, Vegetarian, Soy",
   },
   {
     src: "/img/menu/food_menu/tuna_tartare.jpg",
@@ -166,6 +178,7 @@ export const foodData: FoodItem[] = [
     description:
       "Yellow fin tuna, shallots, gherkins, capers, Japanese mayonnaise, fresh herbs, and seaweed crisps",
     allergies: "S, D, E, G",
+    allergies_long: "Fish and Shellfish, Dairy, Eggs, Gluten",
   },
   {
     src: "/img/menu/food_menu/beef_kushiyaki.jpg",
@@ -176,6 +189,7 @@ export const foodData: FoodItem[] = [
     description:
       "Grilled wagyu beef skewers, spring onion, soy, ginger, pickled cucumber, sesame, and red onion salad",
     allergies: "SO, SS",
+    allergies_long: "Soy, Sesame",
   },
   {
     src: "/img/menu/food_menu/volto_wagyu_sandwich.jpg",
@@ -186,6 +200,7 @@ export const foodData: FoodItem[] = [
     description:
       "Breaded wagyu tenderloin and burger patty, volto 3.0 BBQ sauce, milk bread, and parmesan fries. Recommended medium.",
     allergies: "G, D, SO, E",
+    allergies_long: "Gluten, Dairy, Soy, Eggs",
   },
   {
     src: "/img/menu/food_menu/california.jpg",
@@ -195,6 +210,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Tempura shrimp, crab, avocado, cucumber, nori, spicy mayonnaise",
     allergies: "S. E, SO, SS",
+    allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame",
   },
   {
     src: "/img/menu/food_menu/jianto_seafood_balls.jpg",
@@ -204,6 +220,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Salmon, shrimp, avocado, spicy mayonnaise",
     allergies: "S, E, SO, SS",
+    allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame",
   },
   {
     src: "/img/menu/food_menu/summary_tuna_balls.jpg",
@@ -213,6 +230,7 @@ export const foodData: FoodItem[] = [
     category: "Appetizers",
     description: "Tuna, avocado, cucumber, ponzu sauce",
     allergies: "S, SO, E, SS",
+    allergies_long: "Fish and Shellfish, Soy, Eggs, Sesame",
   },
   {
     src: "/img/menu/food_menu/fin_de_claire_oysters_half_a_dozen.jpg",
@@ -222,6 +240,7 @@ export const foodData: FoodItem[] = [
     category: "Oysters",
     description: " Pomegranite, shallot and mint oil, Lemon, chilli and crispy bacon, Rockefeller",
     allergies: "S,D,G",
+    allergies_long: "Fish and Shellfish, Dairy, Gluten",
   },
   {
     src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpg",
@@ -231,6 +250,7 @@ export const foodData: FoodItem[] = [
     category: "Oysters",
     description: " Pomegranite, shallot and mint oil, Lemon, chilli and crispy bacon, Rockefeller",
     allergies: "S,D,G",
+    allergies_long: "Fish and Shellfish, Dairy, Gluten",
   },
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
@@ -240,6 +260,7 @@ export const foodData: FoodItem[] = [
     category: "Oysters",
     description: "Blinis, shallots, chives, sour cream, egg, capers",
     allergies: "E, G, D",
+    allergies_long: "Eggs, Gluten, Dairy",
   },
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
@@ -249,6 +270,7 @@ export const foodData: FoodItem[] = [
     category: "Oysters",
     description: "Blinis, shallots, chives, sour cream, egg, capers",
     allergies: "E, G, D",
+    allergies_long: "Eggs, Gluten, Dairy",
   },
   {
     src: "/img/menu/food_menu/beef_orzo.jpg",
@@ -259,6 +281,7 @@ export const foodData: FoodItem[] = [
     description:
       "Pulled slow-cooked angus beef short rib, truffle, carrot, mushroom, parmesan orzo, seared foie gras, and parsley",
     allergies: "G,D,E",
+    allergies_long: "Gluten, Dairy, Eggs",
   },
   {
     src: "/img/menu/food_menu/seafood_orzo.jpg",
@@ -268,6 +291,7 @@ export const foodData: FoodItem[] = [
     category: "Mains",
     description: "Gulf shrimps, lobster tail, slow-roasted tomato, Greek feta cheese and chives",
     allergies: "S, G, D, E",
+    allergies_long: "Fish and Shellfish, Gluten, Dairy, Eggs",
   },
   {
     src: "/img/menu/food_menu/lobster_tagliatelle.jpg",
@@ -278,6 +302,7 @@ export const foodData: FoodItem[] = [
     description:
       "Whole lobster, shellfish and saffron bisque, roasted red peppers, red chili, basil, and charred lemon.",
     allergies: "S,G,D,E",
+    allergies_long: "Fish and Shellfish, Gluten, Dairy, Eggs",
   },
   {
     src: "/img/menu/food_menu/wagyu_striploin.jpg",
@@ -288,6 +313,7 @@ export const foodData: FoodItem[] = [
     description:
       "250gr wagyu striploin grade 8-9, Australia. Chimichurri & mushroom sauce, choice of 1 side",
     allergies: "D",
+    allergies_long: "Dairy",
   },
   {
     src: "/img/menu/food_menu/rib_eye.jpg",
@@ -298,6 +324,7 @@ export const foodData: FoodItem[] = [
     description:
       "300gr wagyu rib eye grade 4-5, Australia. Chimichurri & mushroom sauce, choice of 1 side",
     allergies: "D",
+    allergies_long: "Dairy",
   },
   {
     src: "/img/menu/food_menu/corn_fed_chicken.jpg",
@@ -307,6 +334,7 @@ export const foodData: FoodItem[] = [
     category: "Mains",
     description: "Corn fed chicken breast, chimichurri & mushroom sauce, choice of 1 side",
     allergies: "D",
+    allergies_long: "Dairy",
   },
   {
     src: "/img/menu/food_menu/rock_lobster.jpg",
@@ -316,6 +344,7 @@ export const foodData: FoodItem[] = [
     category: "Mains",
     description: "800gr rock lobster, Oman. Chimichurri & dill butter sauce, choice of 1 side",
     allergies: "D, S",
+    allergies_long: "Dairy, Fish and Shellfish",
   },
   {
     src: "/img/menu/food_menu/prawns.jpg",
@@ -325,6 +354,7 @@ export const foodData: FoodItem[] = [
     category: "Mains",
     description: "4 pcs U10 prawns, Gulf. Chimichurri & dill butter sauce, choice of 1 side",
     allergies: "D, S",
+    allergies_long: "Dairy, Fish and Shellfish",
   },
   {
     src: "/img/menu/food_menu/salmon.jpg",
@@ -334,6 +364,7 @@ export const foodData: FoodItem[] = [
     category: "Mains",
     description: "160gr salmon fillet, Norway. Chimichurri & dill butter sauce, choice of 1 side",
     allergies: "D, S",
+    allergies_long: "Dairy, Fish and Shellfish",
   },
   {
     src: "/img/menu/food_menu/seafood_platter.jpeg",
@@ -344,6 +375,7 @@ export const foodData: FoodItem[] = [
     description:
       "Lobster, 2 pcs U10 prawns, salmon fillet, chimichurri & dill butter sauce, choice of 2 sides",
     allergies: "D, S",
+    allergies_long: "Dairy, Fish and Shellfish",
   },
   {
     src: "/img/menu/food_menu/ginger_sponge.jpg",
@@ -354,6 +386,7 @@ export const foodData: FoodItem[] = [
     description:
       "Sticky ginger & treacle sponge, fresh mango, ginger toffee sauce, and vanilla ice cream",
     allergies: "D, E, G",
+    allergies_long: "Dairy, Eggs, Gluten",
   },
   {
     src: "/img/menu/food_menu/volto_chocolate_cake.jpeg",
@@ -363,6 +396,7 @@ export const foodData: FoodItem[] = [
     category: "Dessert",
     description: "Dark chocolate and roasted walnut cake, boozy berries, crème fraiche",
     allergies: "D, E, G, N",
+    allergies_long: "Dairy, Eggs, Gluten, Nuts",
   },
   {
     src: "/img/menu/food_menu/fruit_platter.jpeg",
@@ -372,6 +406,7 @@ export const foodData: FoodItem[] = [
     category: "Dessert",
     description: "Sliced exotic fruits, berries, and grapes",
     allergies: "V",
+    allergies_long: "Vegetarian",
   },
   {
     src: "/img/menu/food_menu/cheese_board.jpeg",
@@ -382,5 +417,6 @@ export const foodData: FoodItem[] = [
     description:
       "Selection of hard & semi-hard European cheeses, grapes, honey, roasted walnuts, dried apricots and figs, cheese crackers",
     allergies: "D, N, G, E",
+    allergies_long: "Dairy, Nuts, Gluten, Eggs",
   },
 ];
