@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { foodCategories, foodData, type CategoriesName, type FoodItem } from "../foodData";
-import { useEffect, useState } from "react";
+import { foodCategories, type CategoriesName, type FoodItem } from "../foodData";
+import { useCallback, useEffect, useState } from "react";
 import HsanBackground from "@/utils/HsanBackground";
 import CategoryTab from "./CategoryTabsComp";
-import FoodDisplay from "./FoodDisplay";
 import ItemCard from "./ItemCard";
+import useEmblaCarousel from "embla-carousel-react";
+import FoodCarousel from "./FoodCarousel";
 
 export type CategoriesSelection = CategoriesName | "All";
 
@@ -16,18 +16,52 @@ const FoodV2 = () => {
     "All",
     ...(Object.keys(foodCategories) as CategoriesName[]),
   ];
-  const selectedFood =
-    selectedCategory === "All"
-      ? foodData
-      : foodData.filter((item) => item.category === selectedCategory);
 
   const onCategorySelect = (category: CategoriesSelection) => {
     setSelectedCategory(category);
+    const index = categories.indexOf(category);
+    ScrollTo(index);
   };
 
   const onItemSelect = (item: FoodItem | null) => {
     setSelectedItem(item);
   };
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    align: "start",
+    skipSnaps: false,
+  });
+
+  const scrollPrev = useCallback(() => {
+    emblaApi?.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    emblaApi?.scrollNext();
+  }, [emblaApi]);
+
+  const ScrollTo = (index: number) => {
+    emblaApi?.scrollTo(index);
+    emblaApi.slidesInView();
+  };
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      const index = emblaApi.selectedScrollSnap();
+      const nextCategory = categories[index];
+
+      setSelectedCategory((prev) => (prev === nextCategory ? prev : nextCategory));
+    };
+
+    emblaApi.on("select", onSelect);
+
+    return () => {
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, categories, setSelectedCategory]);
 
   return (
     <div className="flex flex-col pt-20 gap-4 h-screen w-full items-center justify-center overflow-hidden bg-gradient-to-br from-[#313131] via-[#1a1a1a] to-[#111] bottom-0">
@@ -41,8 +75,12 @@ const FoodV2 = () => {
           onCategorySelect={onCategorySelect}
           selectedCategory={selectedCategory}
         />
-        <div className=" h-full overflow-y-auto pb-24 overscroll-contain scroll-smooth  scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-transparent hover:scrollbar-thumb-neutral-400">
-          <FoodDisplay selectedFood={selectedFood} onItemSelect={onItemSelect} />
+        <div className=" h-full ">
+          <FoodCarousel
+            emblaRef={emblaRef}
+            setSelectedItem={onItemSelect}
+            onCategorySelect={onCategorySelect}
+          />
         </div>
       </div>
       <ItemCard item={selectedItem} onItemSelect={onItemSelect} />
