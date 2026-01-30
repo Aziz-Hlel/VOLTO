@@ -256,7 +256,7 @@ export const foodData: FoodItem[] = [
     price: "16.000 BD",
     category: "CAVIAR & OYSTERS",
     description:
-      "Pomegranate, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
+      "Pomegranate, Shallots, Mint Oil \n Lemon, Chilli, and Bacon Butter\n Rockefeller-Spinach, Parmesan Cream, Crumbs",
     allergies: "S,D,G",
     allergies_long: "Fish and Shellfish, Dairy, Gluten",
     allergiesList: ["S", "D", "G"],
@@ -268,7 +268,7 @@ export const foodData: FoodItem[] = [
     price: "28.000 BD",
     category: "CAVIAR & OYSTERS",
     description:
-      "Pomegranate, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
+      "Pomegranate, Shallots, Mint Oil \n Lemon, Chilli, and Bacon Butter\n Rockefeller-Spinach, Parmesan Cream, Crumbs",
     allergies: "S,D,G",
     allergies_long: "Fish and Shellfish, Dairy, Gluten",
     allergiesList: ["S", "D", "G"],

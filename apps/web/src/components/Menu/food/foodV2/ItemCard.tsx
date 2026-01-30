@@ -1,13 +1,5 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import type { FoodItem } from "../foodData";
 
 const ItemCard = ({
@@ -33,7 +25,7 @@ const ItemCard = ({
                   {item.title}
                 </DialogTitle>
                 <div className=" flex flex-col items-center space-y-2 h-fit">
-                  <DialogDescription className="font-['Cinzel'] text-gray-900 text-md pl-2 h-fit text-center tracking-tight leading-tight">
+                  <DialogDescription className="font-['Cinzel'] text-gray-900 text-md pl-2 h-fit text-center tracking-tight leading-tight whitespace-pre-line">
                     {item.description}
                   </DialogDescription>
                   <span className="font-['Cinzel'] text-gray-900 text-2xl pl-2 h-fit text-center">
