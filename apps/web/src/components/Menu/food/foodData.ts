@@ -256,7 +256,7 @@ export const foodData: FoodItem[] = [
     price: "16.000 BD",
     category: "CAVIAR & OYSTERS",
     description:
-      "Pomagrante, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
+      "Pomegranate, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
     allergies: "S,D,G",
     allergies_long: "Fish and Shellfish, Dairy, Gluten",
     allergiesList: ["S", "D", "G"],
@@ -268,7 +268,7 @@ export const foodData: FoodItem[] = [
     price: "28.000 BD",
     category: "CAVIAR & OYSTERS",
     description:
-      "Pomagrante, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
+      "Pomegranate, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
     allergies: "S,D,G",
     allergies_long: "Fish and Shellfish, Dairy, Gluten",
     allergiesList: ["S", "D", "G"],
@@ -276,7 +276,7 @@ export const foodData: FoodItem[] = [
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
     alt: "OSCIETRA CAVIAR",
-    title: "Oscietra Caviar - 50G",
+    title: "Oscietra Caviar - 50gr",
     price: "89.000 BD",
     category: "CAVIAR & OYSTERS",
     description: "Blinis, Shallots, Capers, Sour Cream, Chives, Boiled Egg",
@@ -287,7 +287,7 @@ export const foodData: FoodItem[] = [
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
     alt: "OSCIETRA CAVIAR",
-    title: "Oscietra Caviar - 125G",
+    title: "Oscietra Caviar - 125gr",
     price: "175.000 BD",
     category: "CAVIAR & OYSTERS",
     description: "Blinis, Shallots, Capers, Sour Cream, Chives, Boiled Egg",

@@ -57,13 +57,13 @@
     "sonner": "^2.0.7",
     "swiper": "^12.0.2",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11",
     "yet-another-react-lightbox": "^3.25.0",
     "zod": "^4.1.11",
     "zoom": "link:yet-another-react-lightbox/plugins/zoom"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
+    "tailwindcss": "^4.1.11",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/node": "^24.0.12",
     "@types/react": "^19.1.8",

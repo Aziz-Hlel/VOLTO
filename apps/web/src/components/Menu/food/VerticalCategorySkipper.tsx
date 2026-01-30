@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useState } from "react";
+import { useState } from "react";
 import "swiper/css";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
@@ -11,13 +11,7 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import type { FoodCategory } from "./foodData";
 
-const CategorySkipper = ({
-  images,
-  className,
-}: {
-  images: FoodCategory[];
-  className?: string;
-}) => {
+const CategorySkipper = ({ images, className }: { images: FoodCategory[]; className?: string }) => {
   const [activeImage, setActiveImage] = useState<number | null>(0);
 
   const navigate = useNavigate();
