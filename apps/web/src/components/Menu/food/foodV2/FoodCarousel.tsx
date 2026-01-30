@@ -2,8 +2,7 @@ import useEmblaCarousel, { type EmblaViewportRefType } from "embla-carousel-reac
 import React, { useCallback, useMemo, useState } from "react";
 import { foodCategories, foodData, type CategoriesName, type FoodItem } from "../foodData";
 import FoodDisplay from "./FoodDisplay";
-
-export type CategoriesSelection = CategoriesName | "All";
+import type { CategoriesSelection } from "./FoodV2";
 
 const FoodCarousel = ({
   emblaRef,
@@ -22,8 +21,6 @@ const FoodCarousel = ({
       ),
     ];
   }, []);
-
-  
 
   return (
     <div className="relative h-full w-full overflow-hidden">

@@ -33,14 +33,6 @@ const FoodV2 = () => {
     skipSnaps: false,
   });
 
-  const scrollPrev = useCallback(() => {
-    emblaApi?.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    emblaApi?.scrollNext();
-  }, [emblaApi]);
-
   const ScrollTo = (index: number) => {
     emblaApi?.scrollTo(index);
     emblaApi.slidesInView();
