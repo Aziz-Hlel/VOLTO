@@ -6,14 +6,14 @@ import ItemCard from "./ItemCard";
 import useEmblaCarousel from "embla-carousel-react";
 import FoodCarousel from "./FoodCarousel";
 
-export type CategoriesSelection = CategoriesName | "All";
+export type CategoriesSelection = CategoriesName | "ALL";
 
 const FoodV2 = () => {
-  const [selectedCategory, setSelectedCategory] = useState<CategoriesSelection>("All");
+  const [selectedCategory, setSelectedCategory] = useState<CategoriesSelection>("ALL");
   const [selectedItem, setSelectedItem] = useState<FoodItem | null>(null);
 
   const categories: CategoriesSelection[] = [
-    "All",
+    "ALL",
     ...(Object.keys(foodCategories) as CategoriesName[]),
   ];
 

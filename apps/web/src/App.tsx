@@ -37,23 +37,6 @@ function App() {
               <Route path="cocktails" element={<CocktailSwiper />} />
               <Route path="cocktails/all" element={<MenuCarousel menuType="Cocktails" />} />
               <Route path="food" element={<FoodV2 />} />
-              <Route
-                path={`food/${foodCategories.Appetizers.path}`}
-                element={<FoodCarousel category={foodCategories.Appetizers.id} />}
-              />
-              <Route
-                path={`food/${foodCategories.Oysters.path}`}
-                element={<FoodCarousel category={foodCategories.Oysters.id} />}
-              />
-              <Route
-                path={`food/${foodCategories.Mains.path}`}
-                element={<FoodCarousel category={foodCategories.Mains.id} />}
-              />
-              <Route
-                path={`food/${foodCategories.Dessert.path}`}
-                element={<FoodCarousel category={foodCategories.Dessert.id} />}
-              />
-
               <Route path="hookah" element={<MenuCarousel menuType="Hookah" />} />
             </Route>
             <Route path="/about" element={<About />} />

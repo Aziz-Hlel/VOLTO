@@ -1,4 +1,10 @@
-export type CategoriesName = "Appetizers" | "Salads" | "Sushi" | "Oysters" | "Mains" | "Dessert";
+export type CategoriesName =
+  | "SNACKS & APPETIZERS"
+  | "SALADS"
+  | "SUSHI"
+  | "CAVIAR & OYSTERS"
+  | "MAIN COURSES"
+  | "DESSERTS";
 
 export type FoodItem = {
   alt: string;
@@ -14,61 +20,39 @@ export type FoodItem = {
 
 export type FoodCategory = {
   id: CategoriesName;
-  src: string;
   name: string;
-  alt: string;
-  path: string;
   sortOrder: number;
-  promo?: string;
 };
 
 export const foodCategories: Record<CategoriesName, FoodCategory> = {
-  Appetizers: {
-    id: "Appetizers",
-    src: "/img/menu/food_menu/volto_wagyu_sandwich.jpg",
-    name: "Snacks & Appetizers",
-    alt: "Appetizers",
-    path: "snacks-appetizers",
+  "SNACKS & APPETIZERS": {
+    id: "SNACKS & APPETIZERS",
+    name: "SNACKS & APPETIZERS",
     sortOrder: 0,
   },
-  Salads: {
-    id: "Salads",
-    name: "Salads",
-    src: "/img/menu/food_menu/volto_greek_salad.jpg",
-    alt: "Salads",
-    path: "salads",
+  SALADS: {
+    id: "SALADS",
+    name: "SALADS",
     sortOrder: 1,
   },
-  Sushi: {
-    id: "Sushi",
-    name: "Sushi",
-    src: "/img/menu/food_menu/jianto_seafood_balls.jpg",
-    alt: "Sushi",
-    path: "sushi",
+  SUSHI: {
+    id: "SUSHI",
+    name: "SUSHI",
     sortOrder: 2,
   },
-  Oysters: {
-    id: "Oysters",
-    name: "Caviar & Oysters",
-    src: "/img/menu/food_menu/oscietra_caviar.jpeg",
-    alt: "Caviar & Oysters",
-    path: "oysters",
+  "CAVIAR & OYSTERS": {
+    id: "CAVIAR & OYSTERS",
+    name: "CAVIAR & OYSTERS",
     sortOrder: 2,
   },
-  Mains: {
-    id: "Mains",
-    name: "Mains",
-    src: "/img/menu/food_menu/wagyu_striploin.jpg",
-    alt: "Mains",
-    path: "mains",
+  "MAIN COURSES": {
+    id: "MAIN COURSES",
+    name: "MAIN COURSES",
     sortOrder: 3,
   },
-  Dessert: {
-    id: "Dessert",
-    name: "Dessert",
-    src: "/img/menu/food_menu/volto_chocolate_cake.jpeg",
-    alt: "Dessert",
-    path: "dessert",
+  DESSERTS: {
+    id: "DESSERTS",
+    name: "DESSERTS",
     sortOrder: 4,
   },
 };
@@ -79,7 +63,7 @@ export const foodData: FoodItem[] = [
     alt: "EDAMAME",
     title: "Edamame",
     price: "4.000 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Sea Salt",
     allergies: "V",
     allergies_long: "Vegetarian",
@@ -90,7 +74,7 @@ export const foodData: FoodItem[] = [
     alt: "EDAMAME",
     title: "Edamame Miso",
     price: "4.500 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Sweet Miso Sauce, Sesame Seeds",
     allergies: "SO, E, SS",
     allergies_long: "Soy, Eggs, Sesame",
@@ -101,7 +85,7 @@ export const foodData: FoodItem[] = [
     alt: "OLIVES",
     title: "Cocktail Olives",
     price: "3.600 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Marinated Cocktail Olives",
     allergies: "V",
     allergies_long: "Vegetarian",
@@ -112,7 +96,7 @@ export const foodData: FoodItem[] = [
     alt: "CHICKEN CROQUETTES",
     title: "Chicken Croquettes",
     price: "4.500 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Chicken, Leek and Truffle Croquette, Garlic Mayonnaise and Parmesan Cheese",
     allergies: "G, D, E",
     allergies_long: "Gluten, Dairy, Eggs",
@@ -123,7 +107,7 @@ export const foodData: FoodItem[] = [
     alt: "AVOCADO CHIPS",
     title: "Avocado Chips",
     price: "4.800 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Crispy Avocado Fries, Yoghurt, Sriracha and Spring Onion Dipping Sauce",
     allergies: "G, D, E, V",
     allergies_long: "Gluten, Dairy, Eggs, Vegetarian",
@@ -134,7 +118,7 @@ export const foodData: FoodItem[] = [
     alt: "VOLTO NUTS",
     title: "Volto Nuts",
     price: "3.600 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Roasted and Spiced Cashew Nuts, Almond Nuts, and Peanuts",
     allergies: "N, V",
     allergies_long: "Nuts, Vegetarian",
@@ -145,7 +129,7 @@ export const foodData: FoodItem[] = [
     alt: "PRAWN POPS",
     title: "Prawn Pops",
     price: "4.800 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Crispy Prawns, Teriyaki Sauce, and Chives",
     allergies: "G, D, S, SO",
     allergies_long: "Gluten, Dairy, Fish and Shellfish, Soy",
@@ -156,7 +140,7 @@ export const foodData: FoodItem[] = [
     alt: "PADRON PEPPERS",
     title: "Padron Peppers",
     price: "4.500 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Fried Spicy Peppers, Olive Oil, and Coarse Salt",
     allergies: "V",
     allergies_long: "Vegetarian",
@@ -167,7 +151,7 @@ export const foodData: FoodItem[] = [
     alt: "CHEESE BOARD",
     title: "Cheese Board",
     price: "8.000 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Hard and Semi-Hard Cheeses, Dried Fruits, Walnuts, Grapes, Olives, and Crackers",
     allergies: "D, N, G, E",
     allergies_long: "Dairy, Nuts, Gluten, Eggs",
@@ -178,7 +162,7 @@ export const foodData: FoodItem[] = [
     alt: "TUNA TARTARE",
     title: "Yellow Fin Tuna Tartare",
     price: "9.000 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description: "Yellow Fin Tuna, Tartare Sauce, and Seaweed Crisps",
     allergies: "S, D, E, G",
     allergies_long: "Fish and Shellfish, Dairy, Eggs, Gluten",
@@ -189,7 +173,7 @@ export const foodData: FoodItem[] = [
     alt: "BEEF KUSHIYAKI",
     title: "Beef Kushiyaki",
     price: "8.000 BD",
-    category: "Appetizers",
+    category: "SNACKS & APPETIZERS",
     description:
       "Grilled Marinated Wagyu Beef Skewers, Pickled Cucumber and Red Onion Salad, Sesame Seeds",
     allergies: "SO, SS",
@@ -201,7 +185,7 @@ export const foodData: FoodItem[] = [
     alt: "VOLTO GREEK SALAD",
     title: "Volto 'Greek Salad'",
     price: "8.000 BD",
-    category: "Salads",
+    category: "SALADS",
     description:
       "Beef Tomato, Red Peppers, Cucumber, Olives, Red Onion, Greek Feta Cheese, and Olive Oil",
     allergies: "D, V",
@@ -213,7 +197,7 @@ export const foodData: FoodItem[] = [
     alt: "BURRATA",
     title: "Burrata",
     price: "9.000 BD",
-    category: "Salads",
+    category: "SALADS",
     description:
       "Burrata Cheese, Blackberries, Teen, Hairloom and Cherry Tomato, Basil Pesto, and Balsamic Vinegar Glaze",
     allergies: "D, V, N",
@@ -225,7 +209,7 @@ export const foodData: FoodItem[] = [
     alt: "GREEN VOLTO",
     title: "Green Volto Salad",
     price: "6.500 BD",
-    category: "Salads",
+    category: "SALADS",
     description:
       "Baby Gem, Asparagus, Broccolini, Edamame, Cucumber, Green Herbs and Labneh Dressing",
     allergies: "D, V, SO",
@@ -237,7 +221,7 @@ export const foodData: FoodItem[] = [
     alt: "CRAZY SUSHI CALIFORNIA",
     title: "Crazy Sushi California",
     price: "7.500 BD",
-    category: "Sushi",
+    category: "SUSHI",
     description: "Crab Stick, Avocado, Cucumber, Tobiko, Spicy Mayonnaise",
     allergies: "S. E, SO, SS",
     allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame",
@@ -248,7 +232,7 @@ export const foodData: FoodItem[] = [
     alt: "JIANTO SEAFOOD BALLS",
     title: "Jianto Seafood Balls",
     price: "8.000 BD",
-    category: "Sushi",
+    category: "SUSHI",
     description: "Salmon, Cripsy Shrimp, Avocado, Sriracha Mayonnaise",
     allergies: "S, E, SO, SS",
     allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame",
@@ -259,7 +243,7 @@ export const foodData: FoodItem[] = [
     alt: "SUMMERY TUNA BALLS",
     title: "Summery Tuna Balls",
     price: "8.000 BD",
-    category: "Sushi",
+    category: "SUSHI",
     description: "Tuna, Avocado, Cucumber, Ponzu Sauce",
     allergies: "S, SO, E, SS",
     allergies_long: "Fish and Shellfish, Soy, Eggs, Sesame",
@@ -270,7 +254,7 @@ export const foodData: FoodItem[] = [
     alt: "FIN DE CLAIRE OYSTERS HALF A DOZEN",
     title: "Fin de Claire Oysters Half a Dozen",
     price: "16.000 BD",
-    category: "Oysters",
+    category: "CAVIAR & OYSTERS",
     description:
       "Pomagrante, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
     allergies: "S,D,G",
@@ -282,7 +266,7 @@ export const foodData: FoodItem[] = [
     alt: "FIN DE CLAIRE OYSTERS DOZEN",
     title: "Fin de Claire Oysters a Dozen",
     price: "28.000 BD",
-    category: "Oysters",
+    category: "CAVIAR & OYSTERS",
     description:
       "Pomagrante, Shallots, Mint Oil, Lemon, Chilli, and Bacon Butter, Rockefeller-Spinach, Parmesan Cream, Crumbs",
     allergies: "S,D,G",
@@ -294,7 +278,7 @@ export const foodData: FoodItem[] = [
     alt: "OSCIETRA CAVIAR",
     title: "Oscietra Caviar - 50G",
     price: "89.000 BD",
-    category: "Oysters",
+    category: "CAVIAR & OYSTERS",
     description: "Blinis, Shallots, Capers, Sour Cream, Chives, Boiled Egg",
     allergies: "E, G, D",
     allergies_long: "Eggs, Gluten, Dairy",
@@ -305,7 +289,7 @@ export const foodData: FoodItem[] = [
     alt: "OSCIETRA CAVIAR",
     title: "Oscietra Caviar - 125G",
     price: "175.000 BD",
-    category: "Oysters",
+    category: "CAVIAR & OYSTERS",
     description: "Blinis, Shallots, Capers, Sour Cream, Chives, Boiled Egg",
     allergies: "E, G, D",
     allergies_long: "Eggs, Gluten, Dairy",
@@ -316,7 +300,7 @@ export const foodData: FoodItem[] = [
     alt: "BEEF ORZO",
     title: "Beef Orzo",
     price: "19.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description:
       "Pulled Slow-Cooked Beef Shortribs, Truffle, Carrot, Mushroom, Parsley, Seared Foie Gras, and Parmesan Cheese",
     allergies: "G,D,E",
@@ -328,7 +312,7 @@ export const foodData: FoodItem[] = [
     alt: "SEAFOOD ORZO",
     title: "Seafood Orzo",
     price: "21.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description: "Prawns, Lobster Tail, Slow Roasted Tomato, Fennel, Feta Cheese, and Chives",
     allergies: "S, G, D, E",
     allergies_long: "Fish and Shellfish, Gluten, Dairy, Eggs",
@@ -339,7 +323,7 @@ export const foodData: FoodItem[] = [
     alt: "LOBSTER TAGLIATELLE",
     title: "Lobster Tagliatelle for 2 Guests to Share",
     price: "32.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description:
       "Whole Lobster, Seafood and Saffron Sauce, Roasted Red Peppers, Basil, Chilli and Lemon",
     allergies: "S,G,D,E",
@@ -351,7 +335,7 @@ export const foodData: FoodItem[] = [
     alt: "VOLTO WAGYU SANDWICH",
     title: "Volto Wagyu Sandwich - Volto Signature Dish",
     price: "18.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description:
       "Breaded Wagyu Tenderloin Grade 4/5, 'Burger Patty', Volto 3.0 BBQ Sauce, Milk Bread, and Parmesan Fries",
     allergies: "G, D, SO, E",
@@ -363,7 +347,7 @@ export const foodData: FoodItem[] = [
     alt: "WAGYU STRIPLOIN",
     title: "Wagyu Beef Striploin",
     price: "39.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description:
       "250gr Wagyu Beef Striploin Grade 8/9, Chimichurri and Mushroom Sauce, Choice of 1 Side Dish",
     allergies: "D",
@@ -375,7 +359,7 @@ export const foodData: FoodItem[] = [
     alt: "RIB EYE",
     title: "Wagyu Beef Rib Eye",
     price: "26.500 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description:
       "300gr Wagyu Beef Rib Eye Grade 4/5, Chimichurri and Mushroom Sauce, Choice of 1 Side Dish",
     allergies: "D",
@@ -387,7 +371,7 @@ export const foodData: FoodItem[] = [
     alt: "CORN FED CHICKEN",
     title: "Corn-Fed Chicken Breast",
     price: "10.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description: "Corn-Fed Chicken Breast, Chimichurri and Mushroom Sauce, Choice of 1 Side Dish",
     allergies: "D",
     allergies_long: "Dairy",
@@ -398,7 +382,7 @@ export const foodData: FoodItem[] = [
     alt: "ROCK LOBSTER",
     title: "Rock Lobster",
     price: "35.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description: "Omani Rock Lobster, Chimichurri and Lemon Dill Sauce, Choice of 1 Side Dish",
     allergies: "D, S",
     allergies_long: "Dairy, Fish and Shellfish",
@@ -409,7 +393,7 @@ export const foodData: FoodItem[] = [
     alt: "PRAWNS",
     title: "Prawns U10",
     price: "16.500 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description: "4 Prawns U10, Chimichurri and Lemon Dill Sauce, Choice of 1 Side Dish",
     allergies: "D, S",
     allergies_long: "Dairy, Fish and Shellfish",
@@ -420,7 +404,7 @@ export const foodData: FoodItem[] = [
     alt: "SALMON",
     title: "Salmon Fillet",
     price: "13.500 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description: "Norwegian Salmon Fillet, Chimichurri and Lemon Dill Sauce, Choice of 1 Side Dish",
     allergies: "D, S",
     allergies_long: "Dairy, Fish and Shellfish",
@@ -431,7 +415,7 @@ export const foodData: FoodItem[] = [
     alt: "SEAFOOD PLATTER",
     title: "Grilled Seafood Platter - for 2 Guests to Share - Volto Signature Dish",
     price: "52.000 BD",
-    category: "Mains",
+    category: "MAIN COURSES",
     description:
       "Whole Lobster, U10 Prawns, Salmon Fillet, Chimichurri and Lemon Dill Sauce, Choice of 2 Side Dishes",
     allergies: "D, S",
@@ -443,7 +427,7 @@ export const foodData: FoodItem[] = [
     alt: "GINGER SPONGE",
     title: "Sticky Ginger Sponge",
     price: "5.000 BD",
-    category: "Dessert",
+    category: "DESSERTS",
     description:
       "Ginger and Black Treacle Sponge, Fresh Mango, Toffee Sauce, and Vanilla Ice Cream",
     allergies: "D, E, G",
@@ -455,7 +439,7 @@ export const foodData: FoodItem[] = [
     alt: "VOLTO CHOCOLATE CAKE",
     title: "Volto Chocolate Cake",
     price: "7.000 BD",
-    category: "Dessert",
+    category: "DESSERTS",
     description: "Dark Chocolate Cake, Mixed Berry Sauce, and Vanilla Cream",
     allergies: "D, E, G,",
     allergies_long: "Dairy, Eggs, Gluten,",
@@ -466,7 +450,7 @@ export const foodData: FoodItem[] = [
     alt: "FRUIT PLATTER",
     title: "Fruit Platter",
     price: "6.000 BD",
-    category: "Dessert",
+    category: "DESSERTS",
     description: "Sliced Fresh Exotic Fruits",
     allergies: "V",
     allergies_long: "Vegetarian",
