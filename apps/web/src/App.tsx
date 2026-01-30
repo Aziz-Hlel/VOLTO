@@ -14,8 +14,6 @@ import NotFound from "./components/NotFound/NotFound";
 import { Toaster } from "sonner";
 import CocktailSwiper from "./components/Menu/CocktailSwiper";
 import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
-import { FoodCarousel } from "./components/Menu/food/FoodCarousel";
-import { foodCategories } from "./components/Menu/food/foodData";
 import FoodV2 from "./components/Menu/food/foodV2/FoodV2";
 
 const queryClient = new QueryClient();

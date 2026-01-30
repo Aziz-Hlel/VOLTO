@@ -24,8 +24,8 @@ const CategorySkipper = ({
 
   const handleClick = (index: number) => {
     if (activeImage === index) {
-      const path = images[index].path;
-      navigate("/menu/food/" + path);
+      // const path = images[index].path;
+      // navigate("/menu/food/" + path);
     }
     setActiveImage(index);
   };
@@ -84,7 +84,7 @@ const CategorySkipper = ({
                   {image.name}
                 </div>
               )}
-              <img src={image.src} className="size-full object-cover" alt={image.alt} />
+              {/* <img src={image.src} className="size-full object-cover" alt={image.alt} /> */}
             </motion.div>
           ))}
         </div>
