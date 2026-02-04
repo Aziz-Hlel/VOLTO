@@ -2,6 +2,12 @@ import WhatsAppFloatingButton from "./WhatsAppFloatingButton";
 import IgFloatingButton from "./IgFloatingButton";
 
 const SocialsFloatingButton = () => {
+
+  const pathname = window.location.pathname;
+
+  if (pathname === "/menu/cocktails") {
+    return null;
+  }
   return (
     <div className="fixed bottom-0 right-0 z-50 flex flex-col items-center ">
       <div

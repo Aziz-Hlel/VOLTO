@@ -115,13 +115,13 @@ const Carousel_006 = ({
                       transition={{ duration: 0.5 }}
                       className=" space-y-1 absolute bottom-0 translate-y-full text-white text-center pt-4 w-full "
                     >
-                      <div className="flex flex-col font-['Cinzel'] space-y-1 lg:space-y-2 ">
-                        <h2 className=" text-white text-xl md:text-3xl  font-bold">{img.title}</h2>
-                        <p className="relative text-base pl-2.5 leading-tight z-50 left-1/2 -translate-x-1/2 w-screen  ">
+                      <div className="flex flex-col  space-y-1 lg:space-y-2 ">
+                        <h2 className=" text-white text-xl md:text-3xl  font-bold uppercase">{img.title}</h2>
+                        <p className="relative text-sm lg:text-base pl-2.5 leading-tight z-50 left-1/2 -translate-x-1/2 w-screen  ">
                           {img.description}
                         </p>
                         <span className=" text-lg md:text-xl font-semibold">{img.price}</span>
-                        <p className="relative z-50 text-base pl-2.5 left-1/2 h-0 -translate-x-1/2 w-screen ">
+                        <p className="relative z-50 text-sm lg:text-base pl-2.5 left-1/2 h-0 -translate-x-1/2 w-screen ">
                           {img.phrases}
                         </p>
                       </div>

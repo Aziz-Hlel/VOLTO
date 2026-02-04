@@ -9,7 +9,7 @@ const CocktailSwiper = () => {
       <button
         className="absolute bottom-0 lg:bottom-8 right-16 m-4 bg-[#D4AF37] px-6 py-3 text-black font-semibold hover:bg-yellow-500 transition-color rounded-full"
       >
-        <Link to="all">View the full menu</Link>
+        <Link to="all">VIEW ALL</Link>
       </button>
     </div>
   );
