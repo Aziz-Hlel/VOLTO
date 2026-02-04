@@ -2,8 +2,7 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -13,86 +12,17 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Link } from "react-router-dom";
+import { cocktails, type ICocktail } from "@/data/menuV2/cocktails";
+import HsanBackground from "@/utils/HsanBackground";
 
 const Skiper48 = () => {
-  const cocktails = [
-    {
-      src: "/img/menu/cocktail/sube.jpg",
-      alt: "Sube Cocktail",
-      title: "Sube",
-      price: "8 BD",
-      description: "White rum, Strawberry syrup, Coconut syrup, Lemon juice",
-    },
-    {
-      src: "/img/menu/cocktail/black_volto.jpg",
-      alt: "Black Volto Cocktail",
-      title: "Black Volto",
-      price: "8 BD",
-      description: "Tequila, Triple sec, Lemongrass,  Lemon Juice, Charcoal powder",
-    },
-
-    {
-      src: "/img/menu/cocktail/thyme_time.jpg",
-      alt: "Thyme Time Cocktail",
-      title: "Thyme Time",
-      price: "8 BD",
-      description: "Gin, Fresh thyme, Lemon juice",
-    },
-
-    {
-      src: "/img/menu/cocktail/huka.jpg",
-      alt: "HUKA Cocktail",
-      title: "HUKA",
-      price: "8 BD",
-      description: "White rum, Kiwi fresh, Coconut syrup, Blue curacao, Lemon juice",
-    },
-    {
-      src: "/img/menu/cocktail/butterfly.jpg",
-      alt: "Butterfly Cocktail",
-      title: "Butterfly",
-      price: "8 BD",
-      description: "Gin, Maraschino, Lavender syrup, Lemon juice",
-    },
-
-    {
-      src: "/img/menu/cocktail/LaVolto.png",
-      alt: "La Volto Cocktail",
-      title: "La Volto",
-      price: "8 BD",
-      description: "White rum, Dark rum, Malibu, Blue curacao",
-    },
-    {
-      src: "/img/menu/cocktail/taki69.png",
-      alt: "Taki 69 Cocktail",
-      title: "Taki 69",
-      price: "8 BD",
-      description: "White rum, Dark rum, Overproof rum, Orange juice, Grenadine syrup",
-    },
-    {
-      src: "/img/menu/cocktail/greenHill.png",
-      alt: "Green Hill Cocktail",
-      title: "Green Hill",
-      price: "8 BD",
-      description: "Vodka, Basil, Cucumber, Sour mix",
-    },
-  ];
-
   return (
-    <div className="flex h-full w-screen items-center justify-center overflow-hidden bg-[#f5f4f3]">
-      <Carousel_006
-        images={cocktails}
-        className=""
-        loop={true}
-        showNavigation={true}
-        showPagination={true}
-      />
-    </div>
+    <Carousel_006 images={cocktails} loop={true} showNavigation={true} showPagination={true} />
   );
 };
 
 interface Carousel_006Props {
-  images: { src: string; alt: string; title: string; price: string; description: string }[];
+  images: ICocktail[];
   className?: string;
   autoplay?: boolean;
   loop?: boolean;
@@ -120,49 +50,12 @@ const Carousel_006 = ({
   }, [api]);
 
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#313131] via-[#1a1a1a] to-[#111]">
-      {/* TEXTURE */}
-      <div className="absolute inset-0 bg-[url('/textures/noise.png')] opacity-20 pointer-events-none mix-blend-soft-light" />
+    <div className="w-full min-h-screen flex items-start justify-start pt-20 overflow-hidden bg-gradient-to-br from-[#313131] via-[#1a1a1a] to-[#111]">
+      <HsanBackground />
 
-      {/* GOLD PARTICLES */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0">
-          {[...Array(35)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-[#D4AF37]"
-              style={{
-                width: Math.random() * 6 + 2 + "px",
-                height: Math.random() * 6 + 2 + "px",
-                top: Math.random() * 100 + "%",
-                left: Math.random() * 100 + "%",
-                opacity: Math.random() * 0.4 + 0.1,
-                filter: "blur(1px)",
-                animation: `floatGold ${Math.random() * 6 + 4}s linear infinite`,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="absolute inset-0">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-[#d4af37]/20 blur-3xl"
-              style={{
-                width: Math.random() * 200 + 120 + "px",
-                height: Math.random() * 200 + 120 + "px",
-                top: Math.random() * 100 + "%",
-                left: Math.random() * 100 + "%",
-                animation: `pulseGold ${Math.random() * 4 + 4}s ease-in-out infinite`,
-              }}
-            />
-          ))}
-        </div>
-      </div>
       <Carousel
         setApi={setApi}
-        className={cn("w-full", className)}
+        className={cn("w-full h-[55dvh] lg:h-[55dvh] ", className)}
         opts={{
           loop,
           slidesToScroll: 1,
@@ -179,89 +72,90 @@ const Carousel_006 = ({
             : []
         }
       >
-        <CarouselContent className="flex h-[600px] lg:h-[550px] w-full">
-          {images.map((img, index) => (
-            <CarouselItem
-              key={index}
-              className="relative flex h-[81.5%] w-full basis-[73%] items-center justify-center sm:basis-[50%] md:basis-[30%] lg:basis-[25%] xl:basis-[21%]"
-            >
-              <motion.div
-                initial={false}
-                animate={{
-                  clipPath:
-                    current !== index
-                      ? "inset(15% 0 15% 0 round 2rem)"
-                      : "inset(0 0 0 0 round 2rem)",
-                }}
-                className="h-full w-full overflow-hidden rounded-3xl"
+        <div className="flex h-[68dvh] md:h-[85dvh] xl:h-[85dvh]  w-full">
+          <CarouselContent className="flex h-full w-full">
+            {images.map((img, index) => (
+              <CarouselItem
+                key={index}
+                className=" flex flex-col h-[70%] w-full basis-[73%] items-center justify-center sm:basis-[50%] md:basis-[55%] lg:basis-[50%] xl:basis-[21%]"
               >
-                <div className="relative h-full w-full border">
-                  <img
-                    src={img.src}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    clipPath:
+                      current !== index
+                        ? "inset(15% 0 15% 0 round 2rem)"
+                        : "inset(0 0 0 0 round 2rem)",
+                  }}
+                  className="h-full w-full rounded-3xl"
+                >
+                  {/* <img
+                    src={img.src_original}
                     alt={img.alt}
                     className="h-full w-full scale-105 object-cover"
-                  />
-                </div>
-              </motion.div>
-              <AnimatePresence mode="wait">
-                {current === index && (
-                  <motion.div
-                    initial={{ opacity: 0, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, filter: "blur(0px)" }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute bottom-0 left-2 space-y-1 flex h-[14%] w-full translate-y-full items-center justify-center p-2 text-center font-medium tracking-tight text-white"
-                  >
-                    <div className="">
-                      <h2 className="text-white text-lg md:text-2xl">
-                        {img.title} - {img.price}
-                      </h2>
-                      <p className="text-white/80 text-xs md:text-sm">{img.description}</p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <div className=" w-fit mx-auto text-muted-foreground text-center">
-          *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov. Levy
-        </div>
-        {/* Pagination */}
-        {showPagination && (
-          <div className="flex w-full items-center justify-center mt-4">
-            <div className="flex items-center justify-center gap-2">
-              {Array.from({ length: images.length }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => api?.scrollTo(index)}
-                  className={cn(
-                    "h-3 w-3 md:h-4 md:w-4 rounded-full transition-all",
-                    current === index ? "bg-[#D4AF37]" : "bg-[#D9D9D9]",
+                  /> */}
+                  <picture className=" h-full">
+                    <source srcSet={img.src_avif} type="image/avif" />
+                    <source srcSet={img.src_webp} type="image/webp" />
+                    <img
+                      src={img.src_original}
+                      alt={img.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover"
+                    />
+                  </picture>
+                  <AnimatePresence mode="wait"></AnimatePresence>
+                </motion.div>
+                <div className=" relative w-full  ">
+                  {current === index && (
+                    <motion.div
+                      initial={{ opacity: 0, filter: "blur(10px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      transition={{ duration: 0.5 }}
+                      className=" space-y-1 absolute bottom-0 translate-y-full text-white text-center pt-4 w-full "
+                    >
+                      <div className="flex flex-col font-['Cinzel'] space-y-1 lg:space-y-2 ">
+                        <h2 className=" text-white text-xl md:text-3xl  font-bold">{img.title}</h2>
+                        <p className="relative text-base pl-2.5 leading-tight z-50 left-1/2 -translate-x-1/2 w-screen  ">
+                          {img.description}
+                        </p>
+                        <span className=" text-lg md:text-xl font-semibold">{img.price}</span>
+                        <p className="relative z-50 text-base pl-2.5 left-1/2 h-0 -translate-x-1/2 w-screen ">
+                          {img.phrases}
+                        </p>
+                      </div>
+                    </motion.div>
                   )}
-                />
-              ))}
-            </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </div>
+        <div className=" mt-auto flex-1 flex flex-col">
+          <div className=" w-fit mx-auto text-muted-foreground text-center leading-tight mt-12 sm:-mt-4 lg:mt-0 text-xs lg:text-sm">
+            *All Prices Are In Bahraini Dinars & Subject To 10% Service Charge, 10% Vat & 5% Gov.
+            Levy
           </div>
-        )}
-
+          {/* Pagination */}
+          {showPagination && (
+            <div className="flex w-full items-center justify-center mt-4">
+              <div className="flex items-center justify-center gap-2">
+                {Array.from({ length: images.length }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => api?.scrollTo(index)}
+                    className={cn(
+                      "h-3 w-3 md:h-4 md:w-4 rounded-full transition-all",
+                      current === index ? "bg-[#D4AF37]" : "bg-[#D9D9D9]",
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
         {/* Bouton sous la pagination */}
-
-        <button
-          className=" translate-y-12
-    mr-5              
-    float-right       
-    rounded-full 
-    bg-[#D4AF37] 
-    px-6 py-3 
-    text-black 
-    font-semibold 
-    hover:bg-yellow-500 
-    transition-colors
-    md:mt-0 md:mr-0 md:absolute md:bottom-8 md:right-8 /* desktop : position absolue bas à droite */
-  "
-        >
-          <Link to="all">View the full menu</Link>
-        </button>
       </Carousel>
     </div>
   );
