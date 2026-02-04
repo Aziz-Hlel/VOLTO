@@ -11,7 +11,7 @@ type ImenuCategories = {
 const menuCategories: ImenuCategories[] = [
   {
     title: "Signature Cocktails",
-    image: "/img/menuWallpaper/cocktail_banner.jpeg",
+    image: "/img/menu/cocktailV2/jpeg/copper_rush_menu_display.jpeg",
     color: "transparent",
     menuType: "Cocktails",
   },
