@@ -47,7 +47,7 @@ const MeetTeam = () => {
     <div className="bg-white">
       <div className="mx-auto 2xl:max-w-7xl xl:max-w-6xl lg:max-w-5xl md:max-w-3xl max-w-2xl my-20">
         <div className="text-6xl text-[#1b1b1b] leading-none font-serif font-extralight text-center">
-          Meet Our Team
+          Group Executive Chefs
         </div>
         <p className="mx-auto text-center leading-relaxed max-w-5xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
           The team behind <span className="text-[#C19D60] font-semibold">VOLTO</span> brings
