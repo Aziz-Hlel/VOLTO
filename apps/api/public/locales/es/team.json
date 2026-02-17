@@ -19,8 +19,8 @@
     }
   },
   {
-    "name": "Andy",
-    "role": "Chef Ejecutivo",
+    "name": "Andy Zyla",
+    "role": "Chef Ejecutivo del Grupo",
     "description": "Andy aporta excelencia culinaria y creatividad a la cocina de Volto, creando platos que deleitan los sentidos.",
     "isCeo": false,
     "image": {

@@ -2,12 +2,9 @@ import axiosInstance from "@/api/axiosInstance";
 import { cn } from "@/lib/utils";
 import type { TeamMember } from "@/types/teamMember";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
 
 const TeamMemberCard = ({ teamMember }: { teamMember: TeamMember }) => {
-  const gif =
-    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWlodTF3MjJ3NnJiY3Rlc2J0ZmE0c28yeWoxc3gxY2VtZzA5ejF1NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/syEfLvksYQnmM/giphy.gif";
+  const gif = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWlodTF3MjJ3NnJiY3Rlc2J0ZmE0c28yeWoxc3gxY2VtZzA5ejF1NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/syEfLvksYQnmM/giphy.gif";
 
   const bgImage = teamMember.image.url;
 
@@ -47,7 +44,7 @@ const MeetTeam = () => {
     <div className="bg-white">
       <div className="mx-auto 2xl:max-w-7xl xl:max-w-6xl lg:max-w-5xl md:max-w-3xl max-w-2xl my-20">
         <div className="text-6xl text-[#1b1b1b] leading-none font-serif font-extralight text-center">
-          Group Executive Chefs
+          Meet Our Team
         </div>
         <p className="mx-auto text-center leading-relaxed max-w-5xl mt-4 mb-8 font-[Times_New_Roman] text-[#4a4949] text-base sm:text-lg md:text-xl">
           The team behind <span className="text-[#C19D60] font-semibold">VOLTO</span> brings
