@@ -15,7 +15,7 @@ export class AppSettingsController {
     const res = await this.appSettingsService.updateLadiesNightDrinkQuota(
       updateDrinkQuotaDto.quota,
     );
-
+    
     return res;
   }
 
