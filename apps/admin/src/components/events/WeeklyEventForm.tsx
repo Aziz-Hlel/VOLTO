@@ -11,9 +11,8 @@ import { useFormContext } from "react-hook-form";
 
 import parser from "cron-parser";
 import useCronTimeHook from "./hooks/use-cron-time-hook";
-import { BAHRAIN_TIMEZONE, formatInBahrainTime } from "@/utils/dateUtils";
-import { toDate, toZonedTime, fromZonedTime } from "date-fns-tz";
-import { setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
+import { formatInBahrainTime } from "@/utils/dateUtils";
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
 
 const daysOfTheWeek = [
   { value: 0, label: "Sunday" },
