@@ -34,6 +34,7 @@ function enableCors(app: INestApplication<any>) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.getHttpAdapter().getInstance().set('etag', 'weak');
   // const configService = app.get(ConfigService);
 
   const PORT = ENV.API_PORT;
