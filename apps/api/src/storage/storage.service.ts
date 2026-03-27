@@ -7,6 +7,7 @@ import { UpdateS3Dto } from './dto/update-s3.dto';
 import { PreSignedUrlRequest } from './dto/preSignedUrl.dto';
 
 import type { IStorageProvider } from './interfaces/storage.interface';
+import { FileType } from './types/fileType';
 
 @Injectable()
 export class StorageService {
@@ -15,16 +16,22 @@ export class StorageService {
     private readonly storageService: IStorageProvider,
   ) {}
 
-  generateFileKey(fileName: string, entityType: EntityType): string {
+  generateFileKey(fileName: string, entityType: EntityType, fileType: FileType): string {
     const ext = path.extname(fileName);
     const baseName = path.basename(fileName, ext);
     const safeBase = baseName.replace(/[^a-zA-Z0-9-_]/g, '').slice(0, 50);
     const timestamp = Date.now();
-    return `${entityType}/${safeBase}-${timestamp}${ext}`;
+    return ext === ''
+      ? `${entityType}/${safeBase}-${timestamp}.${fileType}`
+      : `${entityType}/${safeBase}-${timestamp}${ext}`;
   }
 
   async getPresignedUrl(preSignedUrlDto: PreSignedUrlRequest) {
-    const fileKey = this.generateFileKey(preSignedUrlDto.originalName, preSignedUrlDto.entityType);
+    const fileKey = this.generateFileKey(
+      preSignedUrlDto.originalName,
+      preSignedUrlDto.entityType,
+      preSignedUrlDto.fileType,
+    );
     const { mimeType } = preSignedUrlDto;
     const expiresIn = 3600;
 

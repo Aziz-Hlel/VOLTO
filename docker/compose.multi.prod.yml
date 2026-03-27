@@ -9,7 +9,9 @@ services:
       args:
         VITE_NODE_ENV: ${NODE_ENV}
         VITE_API_URL: ${API_URL}
-
+    ports:
+      - "3002:3002"
+      - "3001:3001"
     expose:
       - 3002
       - 3001
