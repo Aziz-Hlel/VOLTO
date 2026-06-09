@@ -1,7 +1,6 @@
-import path from "path";
-import CategorySkipper from "./VerticalCategorySkipper";
+import { foodCategories } from "@/data/menu/foodV2/category";
 import HorizontalCategorySkipper from "./HorizontalCategorySkipper";
-import { foodCategories } from "./foodData";
+import CategorySkipper from "./VerticalCategorySkipper";
 
 export default function CategoryDisplay() {
   const foodArray = Object.values(foodCategories).sort((a, b) => a.sortOrder - b.sortOrder);

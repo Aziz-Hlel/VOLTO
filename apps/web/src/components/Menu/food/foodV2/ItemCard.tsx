@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
-import type { FoodItem } from "../foodData";
+import type { FoodItem } from "../../../../data/menu/foodV2/food";
 
 const ItemCard = ({
   item,

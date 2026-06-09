@@ -2,8 +2,7 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -13,8 +12,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { Link } from "react-router-dom";
-import { foodData } from "./foodData";
+import { foodData } from "@/data/menu/foodV2/food";
 
 const SkipperFood = () => {
   const food = foodData;

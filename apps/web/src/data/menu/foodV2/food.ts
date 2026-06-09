@@ -1,10 +1,5 @@
-export type CategoriesName =
-  | "SNACKS & APPETIZERS"
-  | "SALADS"
-  | "SUSHI"
-  | "CAVIAR & OYSTERS"
-  | "MAIN COURSES"
-  | "DESSERTS";
+import type { Allergies } from "./allergies";
+import type { CategoriesName } from "./category";
 
 export type FoodItem = {
   alt: string;
@@ -13,48 +8,9 @@ export type FoodItem = {
   price: string;
   allergies: string;
   allergies_long: string;
-  allergiesList: string[];
+  allergiesList: Allergies[];
   category: CategoriesName;
   src: string;
-};
-
-export type FoodCategory = {
-  id: CategoriesName;
-  name: string;
-  sortOrder: number;
-};
-
-export const foodCategories: Record<CategoriesName, FoodCategory> = {
-  "SNACKS & APPETIZERS": {
-    id: "SNACKS & APPETIZERS",
-    name: "SNACKS & APPETIZERS",
-    sortOrder: 0,
-  },
-  SALADS: {
-    id: "SALADS",
-    name: "SALADS",
-    sortOrder: 1,
-  },
-  SUSHI: {
-    id: "SUSHI",
-    name: "SUSHI",
-    sortOrder: 2,
-  },
-  "CAVIAR & OYSTERS": {
-    id: "CAVIAR & OYSTERS",
-    name: "CAVIAR & OYSTERS",
-    sortOrder: 2,
-  },
-  "MAIN COURSES": {
-    id: "MAIN COURSES",
-    name: "MAIN COURSES",
-    sortOrder: 3,
-  },
-  DESSERTS: {
-    id: "DESSERTS",
-    name: "DESSERTS",
-    sortOrder: 4,
-  },
 };
 
 export const foodData: FoodItem[] = [
@@ -69,17 +25,6 @@ export const foodData: FoodItem[] = [
     allergies_long: "Vegetarian",
     allergiesList: ["V"],
   },
-  // {
-  //   src: "/img/menu/food_menu/edamame_sweet_miso.jpg",
-  //   alt: "EDAMAME",
-  //   title: "Edamame Miso",
-  //   price: "4.500 BD",
-  //   category: "SNACKS & APPETIZERS",
-  //   description: "Sweet Miso Sauce, Sesame Seeds",
-  //   allergies: "SO, E, SS",
-  //   allergies_long: "Soy, Eggs, Sesame",
-  //   allergiesList: ["SO", "E", "SS"],
-  // },
   {
     src: "/img/menu/food_menu/olives.jpg",
     alt: "OLIVES",
@@ -216,63 +161,73 @@ export const foodData: FoodItem[] = [
     allergies_long: "Dairy, Vegetarian, Soy",
     allergiesList: ["D", "V", "SO"],
   },
+
   {
-    src: "/img/menu/food_menu/california.jpg",
-    alt: "CRAZY SUSHI CALIFORNIA",
-    title: "Crazy Sushi California",
-    price: "7.500 BD",
+    src: "/img/menu/food_menu/california_roll.jpeg",
+    alt: "CALIFORNIA ROLL",
+    title: "California Roll",
+    price: "8.500 BD",
     category: "SUSHI",
-    description: "Crab Stick, Avocado, Cucumber, Tobiko, Spicy Mayonnaise",
-    allergies: "S. E, SO, SS",
-    allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame",
-    allergiesList: ["S", "E", "SO", "SS"],
+    description: "Crab, avocado, cucumber, mayonnaise, tobiko",
+    allergies: "S, E, SO",
+    allergies_long: "Fish and Shellfish, Eggs, Soy",
+    allergiesList: ["S", "E", "SO"],
   },
   {
-    src: "/img/menu/food_menu/jianto_seafood_balls.jpg",
-    alt: "JIANTO SEAFOOD BALLS",
-    title: "Jianto Seafood Balls",
-    price: "8.000 BD",
+    src: "/img/menu/food_menu/crispy_prawn.jpeg",
+    alt: "CRISPY PRAWN",
+    title: "Crispy Prawn",
+    price: "9.000 BD",
     category: "SUSHI",
-    description: "Salmon, Cripsy Shrimp, Avocado, Sriracha Mayonnaise",
-    allergies: "S, E, SO, SS",
-    allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame",
-    allergiesList: ["S", "E", "SO", "SS"],
+    description: "Crispy prawn, salmon, flying fish roe, cucumber, sriracha",
+    allergies: "S, SO, SS, G",
+    allergies_long: "Fish and Shellfish, Soy, Sesame, Gluten",
+    allergiesList: ["S", "SO", "SS", "G"],
   },
   {
-    src: "/img/menu/food_menu/summary_tuna_balls.jpg",
-    alt: "SUMMERY TUNA BALLS",
-    title: "Summery Tuna Balls",
-    price: "8.000 BD",
+    src: "/img/menu/food_menu/spicy_tuna.jpeg",
+    alt: "SPICY TUNA",
+    title: "Spicy Tuna",
+    price: "9.000 BD",
     category: "SUSHI",
-    description: "Tuna, Avocado, Cucumber, Ponzu Sauce",
-    allergies: "S, SO, E, SS",
-    allergies_long: "Fish and Shellfish, Soy, Eggs, Sesame",
-    allergiesList: ["S", "SO", "E", "SS"],
+    description: "Yellow fin tuna, togarashi, QP, jalapeno, asparagus",
+    allergies: "S, SO, SS",
+    allergies_long: "Fish and Shellfish, Soy, Sesame",
+    allergiesList: ["S", "SO", "SS"],
   },
-  // {
-  //   src: "/img/menu/food_menu/fin_de_claire_oysters_half_a_dozen.jpg",
-  //   alt: "FIN DE CLAIRE OYSTERS HALF A DOZEN",
-  //   title: "Fin de Claire Oysters Half a Dozen",
-  //   price: "16.000 BD",
-  //   category: "CAVIAR & OYSTERS",
-  //   description:
-  //     "Pomegranate, Shallots, Mint Oil \n Lemon, Chilli, and Bacon Butter\n Rockefeller-Spinach, Parmesan Cream, Crumbs",
-  //   allergies: "S,D,G",
-  //   allergies_long: "Fish and Shellfish, Dairy, Gluten",
-  //   allergiesList: ["S", "D", "G"],
-  // },
-  // {
-  //   src: "/img/menu/food_menu/fin_de_claire_oysters_dozen.jpg",
-  //   alt: "FIN DE CLAIRE OYSTERS DOZEN",
-  //   title: "Fin de Claire Oysters a Dozen",
-  //   price: "28.000 BD",
-  //   category: "CAVIAR & OYSTERS",
-  //   description:
-  //     "Pomegranate, Shallots, Mint Oil \n Lemon, Chilli, and Bacon Butter\n Rockefeller-Spinach, Parmesan Cream, Crumbs",
-  //   allergies: "S,D,G",
-  //   allergies_long: "Fish and Shellfish, Dairy, Gluten",
-  //   allergiesList: ["S", "D", "G"],
-  // },
+  {
+    src: "/img/menu/food_menu/hamachi_caviar.jpeg",
+    alt: "HAMACHI & CAVIAR",
+    title: "Hamachi & Caviar",
+    price: "12.000 BD",
+    category: "SUSHI",
+    description: "Hamachi, caviar, avocado, sesame seeds, tanuki",
+    allergies: "S, SO, SS, G",
+    allergies_long: "Fish and Shellfish, Soy, Sesame, Gluten",
+    allergiesList: ["S", "SO", "SS", "G"],
+  },
+  {
+    src: "/img/menu/food_menu/vegetarian.jpeg",
+    alt: "VEGETARIAN",
+    title: "Vegetarian",
+    price: "7.000 BD",
+    category: "SUSHI",
+    description: "pickled carrot, cucumber, asparagus, mandarin gel",
+    allergies: "V, SO",
+    allergies_long: "Vegetarian, Soy",
+    allergiesList: ["V", "SO"],
+  },
+  {
+    src: "/img/menu/food_menu/sushi_platter.jpeg",
+    alt: "SUSHI PLATTER",
+    title: "Sushi Platter",
+    price: "24.000 BD",
+    category: "SUSHI",
+    description: "Chef's selection of maki rolls, 24pcs ",
+    allergies: "S,E,SO, SS, G",
+    allergies_long: "Fish and Shellfish, Eggs, Soy, Sesame, Gluten",
+    allergiesList: ["S", "E", "SO", "SS", "G"],
+  },
   {
     src: "/img/menu/food_menu/oscietra_caviar.jpeg",
     alt: "OSCIETRA CAVIAR",
@@ -284,17 +239,6 @@ export const foodData: FoodItem[] = [
     allergies_long: "Eggs, Gluten, Dairy",
     allergiesList: ["E", "G", "D"],
   },
-  // {
-  //   src: "/img/menu/food_menu/oscietra_caviar.jpeg",
-  //   alt: "OSCIETRA CAVIAR",
-  //   title: "Oscietra Caviar - 125gr",
-  //   price: "175.000 BD",
-  //   category: "CAVIAR & OYSTERS",
-  //   description: "Blinis, Shallots, Capers, Sour Cream, Chives, Boiled Egg",
-  //   allergies: "E, G, D",
-  //   allergies_long: "Eggs, Gluten, Dairy",
-  //   allergiesList: ["E", "G", "D"],
-  // },
   {
     src: "/img/menu/food_menu/beef_orzo.jpg",
     alt: "BEEF ORZO",
@@ -410,41 +354,6 @@ export const foodData: FoodItem[] = [
     allergies_long: "Dairy, Fish and Shellfish",
     allergiesList: ["D", "S"],
   },
-  // {
-  //   src: "/img/menu/food_menu/seafood_platter.jpeg",
-  //   alt: "SEAFOOD PLATTER",
-  //   title: "Grilled Seafood Platter - for 2 Guests to Share - Volto Signature Dish",
-  //   price: "52.000 BD",
-  //   category: "MAIN COURSES",
-  //   description:
-  //     "Whole Lobster, U10 Prawns, Salmon Fillet, Chimichurri and Lemon Dill Sauce, Choice of 2 Side Dishes",
-  //   allergies: "D, S",
-  //   allergies_long: "Dairy, Fish and Shellfish",
-  //   allergiesList: ["D", "S"],
-  // },
-  // {
-  //   src: "/img/menu/food_menu/ginger_sponge.jpg",
-  //   alt: "GINGER SPONGE",
-  //   title: "Sticky Ginger Sponge",
-  //   price: "5.000 BD",
-  //   category: "DESSERTS",
-  //   description:
-  //     "Ginger and Black Treacle Sponge, Fresh Mango, Toffee Sauce, and Vanilla Ice Cream",
-  //   allergies: "D, E, G",
-  //   allergies_long: "Dairy, Eggs, Gluten",
-  //   allergiesList: ["D", "E", "G"],
-  // },
-  // {
-  //   src: "/img/menu/food_menu/volto_chocolate_cake.jpeg",
-  //   alt: "VOLTO CHOCOLATE CAKE",
-  //   title: "Volto Chocolate Cake",
-  //   price: "7.000 BD",
-  //   category: "DESSERTS",
-  //   description: "Dark Chocolate Cake, Mixed Berry Sauce, and Vanilla Cream",
-  //   allergies: "D, E, G,",
-  //   allergies_long: "Dairy, Eggs, Gluten,",
-  //   allergiesList: ["D", "E", "G"],
-  // },
   {
     src: "/img/menu/food_menu/fruit_platter.jpeg",
     alt: "FRUIT PLATTER",
@@ -455,5 +364,16 @@ export const foodData: FoodItem[] = [
     allergies: "V",
     allergies_long: "Vegetarian",
     allergiesList: ["V"],
+  },
+  {
+    src: "/img/menu/food_menu/passion_fruit_cheesecake.jpeg",
+    alt: "PASSION FRUIT CHEESECAKE",
+    title: "Passion Fruit Cheesecake",
+    price: "6.000 BD",
+    category: "DESSERTS",
+    description: "Passion Fruit San Sebastian Cheesecake, Grilled Pineapple and Orange Sauce",
+    allergies: "D, E, G",
+    allergies_long: "Dairy, Eggs, Gluten",
+    allergiesList: ["D", "E", "G"],
   },
 ];

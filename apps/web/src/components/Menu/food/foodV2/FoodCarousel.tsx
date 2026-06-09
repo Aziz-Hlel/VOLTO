@@ -1,6 +1,7 @@
-import useEmblaCarousel, { type EmblaViewportRefType } from "embla-carousel-react";
-import React, { useCallback, useMemo, useState } from "react";
-import { foodCategories, foodData, type CategoriesName, type FoodItem } from "../foodData";
+import { foodCategories } from "@/data/menu/foodV2/category";
+import { type EmblaViewportRefType } from "embla-carousel-react";
+import { useMemo } from "react";
+import { foodData, type FoodItem } from "../../../../data/menu/foodV2/food";
 import FoodDisplay from "./FoodDisplay";
 import type { CategoriesSelection } from "./FoodV2";
 

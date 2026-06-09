@@ -1,10 +1,11 @@
-import { foodCategories, type CategoriesName, type FoodItem } from "../foodData";
-import { useCallback, useEffect, useState } from "react";
+import { foodCategories, type CategoriesName } from "@/data/menu/foodV2/category";
 import HsanBackground from "@/utils/HsanBackground";
-import CategoryTab from "./CategoryTabsComp";
-import ItemCard from "./ItemCard";
 import useEmblaCarousel from "embla-carousel-react";
+import { useEffect, useState } from "react";
+import { type FoodItem } from "../../../../data/menu/foodV2/food";
+import CategoryTab from "./CategoryTabsComp";
 import FoodCarousel from "./FoodCarousel";
+import ItemCard from "./ItemCard";
 
 export type CategoriesSelection = CategoriesName | "ALL";
 

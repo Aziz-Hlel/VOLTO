@@ -78,7 +78,7 @@ services:
     volumes:
       - ${PROJECT_ROOT}/apps/admin/src:/app/apps/admin/src
       - ${PROJECT_ROOT}/apps/admin/public:/app/apps/admin/public
-      
+
 
 
   db:

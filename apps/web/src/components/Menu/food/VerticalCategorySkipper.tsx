@@ -9,7 +9,7 @@ import "swiper/css/autoplay";
 
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import type { FoodCategory } from "./foodData";
+import type { FoodCategory } from "../../../data/menu/foodV2/food";
 
 const CategorySkipper = ({ images, className }: { images: FoodCategory[]; className?: string }) => {
   const [activeImage, setActiveImage] = useState<number | null>(0);
