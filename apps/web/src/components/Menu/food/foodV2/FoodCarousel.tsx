@@ -1,7 +1,7 @@
 import { foodCategories } from "@/data/menu/foodV2/category";
 import { type EmblaViewportRefType } from "embla-carousel-react";
 import { useMemo } from "react";
-import { foodData, type FoodItem } from "../../../../data/menu/foodV2/food";
+import { foodData, type FoodItem } from "@/data/menu/foodV2/food";
 import FoodDisplay from "./FoodDisplay";
 import type { CategoriesSelection } from "./FoodV2";
 

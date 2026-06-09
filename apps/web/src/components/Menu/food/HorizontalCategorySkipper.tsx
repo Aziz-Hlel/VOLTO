@@ -9,7 +9,7 @@ import "swiper/css/autoplay";
 
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import type { FoodCategory } from "../../../data/menu/foodV2/food";
+import type { FoodCategory } from "@/data/menu/foodV2/category";
 
 const HorizontalCategorySkipper = ({
   images,

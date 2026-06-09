@@ -2,7 +2,7 @@ import { foodCategories, type CategoriesName } from "@/data/menu/foodV2/category
 import HsanBackground from "@/utils/HsanBackground";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
-import { type FoodItem } from "../../../../data/menu/foodV2/food";
+import { type FoodItem } from "@/data/menu/foodV2/food";
 import CategoryTab from "./CategoryTabsComp";
 import FoodCarousel from "./FoodCarousel";
 import ItemCard from "./ItemCard";

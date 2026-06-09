@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
-import type { FoodItem } from "../../../../data/menu/foodV2/food";
+import type { FoodItem } from "@/data/menu/foodV2/food";
 
 const FoodDisplay = ({
   selectedFood,
