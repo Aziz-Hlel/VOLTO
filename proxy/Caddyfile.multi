@@ -1,6 +1,3 @@
-
-
-
 :3001 {
 
     # -----------------------
@@ -12,18 +9,16 @@
         file_server
     }
 
-
+    # -----------------------
+    # WebSockets & API
+    # -----------------------
     handle /socket.io/* {
         reverse_proxy api:3000
     }
 
-    # -----------------------
-    # API reverse proxy
-    # -----------------------
     handle /api/* {
         reverse_proxy api:3000
     }
-
 
     # -----------------------
     # Web SPA
@@ -31,26 +26,26 @@
     handle {
         root * /srv/web
         encode gzip
-        file_server
+
+        # Match direct .html requests, the root path, or paths without extensions (SPA routes)
+        @html {
+            path *.html /
+            not path *.*
+        }
+
+        # Apply no-cache headers to the matched HTML requests
+        header @html {
+            Cache-Control "no-cache, no-store, must-revalidate"
+            Pragma "no-cache"
+            Expires "0"
+        }
+
         try_files {path} /index.html
+        file_server
     }
 
     log {
-		level ERROR
+        level ERROR
         format console
     }
 }
-
-
-:3002 {
-    root * /srv/admin
-    encode gzip
-    file_server
-    try_files {path} /index.html
-
-    log {
-		level ERROR
-        format console
-    }
-}
-
