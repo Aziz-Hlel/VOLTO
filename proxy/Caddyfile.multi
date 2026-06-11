@@ -49,3 +49,18 @@
         format console
     }
 }
+
+
+
+:3002 {
+    root * /srv/admin
+    encode gzip
+    file_server
+    try_files {path} /index.html
+
+    log {
+		level ERROR
+        format console
+    }
+}
+
