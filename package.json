@@ -1,5 +1,5 @@
 {
-	"dependencies": {
-		"VOLTO": "link:"
+	"scripts": {
+		"dev:docker":""
 	}
 }
