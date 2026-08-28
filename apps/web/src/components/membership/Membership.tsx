@@ -208,20 +208,14 @@ const Membership = () => {
 
             {/* Pricing table */}
             <div className="rounded-xl border border-yellow-600/20 overflow-hidden mb-2">
-              <div className="grid grid-cols-3 bg-gray-900/80 px-4 py-2.5 text-xs font-semibold tracking-widest uppercase text-gray-500">
+              <div className="grid grid-cols-2 bg-gray-900/80 px-4 py-2.5 text-xs font-semibold tracking-widest uppercase text-gray-500">
                 <span>Plan</span>
-                <span className="text-center">Price</span>
-                <span className="text-right">Saving</span>
+                <span className="text-right">Price</span>
               </div>
-              <div className="grid grid-cols-3 items-center px-4 py-4 bg-black/50">
+              <div className="grid grid-cols-2 items-center px-4 py-4 bg-black/50">
                 <span className="text-white font-medium">Monthly</span>
-                <div className="text-center">
-                  <span className="text-yellow-400 text-xl font-bold">BHD 600</span>
-                </div>
                 <div className="text-right">
-                  <span className="text-green-400 text-xs font-semibold bg-green-400/10 border border-green-400/20 rounded-full px-2.5 py-1 whitespace-nowrap">
-                    Save BHD 900
-                  </span>
+                  <span className="text-yellow-400 text-xl font-bold">600 BHD</span>
                 </div>
               </div>
             </div>
