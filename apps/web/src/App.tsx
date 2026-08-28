@@ -15,7 +15,7 @@ import { ResetPassword } from "./components/ResetPassword/reset-password";
 import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
 import NavBar619 from "./components/TopBar/Nav";
 import Membership from "./components/membership/Membership";
-import MembershipRegistration from "./components/membership/registration";
+import MembershipRegistration from "./components/membership/Registration";
 import ScrollToTop from "./utils/ScrollToTop";
 
 const queryClient = new QueryClient();
