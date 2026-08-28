@@ -36,14 +36,65 @@ model User {
   id          String   @id @default(uuid())
   email       String   @unique
   password    String
-  firstName    String
-  lastName     String
+  firstName   String
+  lastName    String
   role        Role     @default(USER)
   phoneNumber String?
   gender      Gender   @default(M)
   tier        Tier     @default(SILVER)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+enum MembershipType {
+  REGULAR
+  VIP
+}
+
+enum MembershipStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model MembershipApplication {
+  id String @id @default(cuid())
+
+  membershipType MembershipType
+
+  // Personal Information
+  fullName String
+  email    String @unique
+
+  cprId        String?
+  nationality  String?
+  dateOfBirth  DateTime?
+  mobileNumber String?
+
+  // Emergency Contact
+  emergencyContactName         String?
+  emergencyContactRelationship String?
+  emergencyContactMobileNumber String?
+
+  // Membership Details
+  membershipStartDate    DateTime? @db.Date
+  membershipExpiryDate   DateTime? @db.Date
+  membershipNumber       String?
+
+  // VOTLO Internal Data 
+  applicationReceivedBy  String?
+  membershipNumberIssued String?
+  membershipCardSerialNumber String?
+  approvalBy             String?
+  dateApproved           DateTime? @db.Date
+  remarks                String?
+
+  seen   Boolean          @default(false)
+  status MembershipStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Worker {
@@ -109,7 +160,7 @@ model Event {
   description   String
   startDate     DateTime?
   endDate       DateTime?
-  cronStartDate String? 
+  cronStartDate String?
   cronEndDate   String?
   isLadiesNight Boolean   @default(false)
 
@@ -169,31 +220,26 @@ model Gallery {
   updatedAt DateTime @updatedAt
 }
 
-
-
-model LadiesNightData{
-  id  String      @id @default(cuid())
-  startDate DateTime @unique
-  totalParticipants Int
+model LadiesNightData {
+  id                               String   @id @default(cuid())
+  startDate                        DateTime @unique
+  totalParticipants                Int
   participantWithAllRedeemedDrinks Int
-  totalDrinksConsumed Int
-  drinkQuota Int
+  totalDrinksConsumed              Int
+  drinkQuota                       Int
 }
 
-
-model SpinningWheelData{
-  id  String      @id @default(cuid())
-  startDate DateTime @unique
-  totalParticipants Int
+model SpinningWheelData {
+  id                       String   @id @default(cuid())
+  startDate                DateTime @unique
+  totalParticipants        Int
   participantsRedeemedCode Int
 }
 
-
 model appSettings {
-  id  String      @id @default(cuid())
+  id    String @id @default(cuid())
   field String @unique
   value String
 
   @@index([field])
-
 }

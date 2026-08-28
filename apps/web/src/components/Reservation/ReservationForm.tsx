@@ -95,7 +95,7 @@ const ReservationForm = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex justify-center items-center px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-black via-gray-900 to-yellow-600">
+    <div className="relative min-h-screen flex justify-center items-center px-4 sm:px-6 lg:px-8 overflow-hidden bg-linear-to-r from-black via-gray-900 to-yellow-600">
       {/* Points lumineux décoratifs */}
       {openModal && <SuccessfulReservationModal />}
       <div className="absolute inset-0">
@@ -290,7 +290,7 @@ const ReservationForm = () => {
               className={`w-full flex items-center justify-between gap-3 p-4 rounded-lg cursor-pointer border transition-all duration-300
               ${
                 isVip
-                  ? "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black border-yellow-400 shadow-lg shadow-yellow-400/40"
+                  ? "bg-linear-to-r from-yellow-400 to-yellow-500 text-black border-yellow-400 shadow-lg shadow-yellow-400/40"
                   : "bg-gray-800 text-white border-gray-700 hover:bg-gray-700 hover:border-yellow-400"
               }`}
             >
@@ -321,7 +321,7 @@ const ReservationForm = () => {
               <button
                 type="submit"
                 disabled={form.formState.isSubmitting}
-                className="w-full sm:w-auto bg-gradient-to-r from-yellow-500 to-yellow-400 hover:opacity-90 text-gray-900 font-semibold py-2 px-5 rounded-lg shadow transition-all"
+                className="w-full sm:w-auto bg-linear-to-r from-yellow-500 to-yellow-400 hover:opacity-90 text-gray-900 font-semibold py-2 px-5 rounded-lg shadow transition-all"
               >
                 {form.formState.isSubmitting ? <Spinner /> : <span>Send ➤</span>}
               </button>

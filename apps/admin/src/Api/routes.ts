@@ -33,6 +33,15 @@ const apiRoutes = {
     delete: (eventId: string) => `/events/${eventId}` as const,
   },
 
+  membership: {
+    list: () => "/members" as const,
+    get: (membershipId: string) => `/members/${membershipId}` as const,
+    create: () => "/members/" as const,
+    update: (membershipId: string) => `/members/${membershipId}` as const,
+    delete: (membershipId: string) => `/members/${membershipId}` as const,
+    updateStatus: (membershipId: string) => `/members/${membershipId}/status` as const,
+  },
+
   ladiesNight: {
     details: () => "/ladies-night/details" as const,
     getQuota: () => "/ladies-night/quota" as const,

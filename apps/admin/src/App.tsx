@@ -1,22 +1,25 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import Home from "./pages/Home";
-import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";
-import { AuthProvider } from "./context/AuthContext";
-import Login from "./components/Login/Login";
-import Events from "./pages/Events";
-import EventMainContent from "./components/events/EventMainContent";
-import AddEventWrapper from "./components/events/AddEventWrapper";
-import Staff from "./pages/Staff";
-import StaffMainContent from "./components/Staff/StaffMainContent";
-import AddStaffWrapper from "./components/Staff/AddStaffWrapper";
-import LadiesNight from "./components/LadiesNight/LadiesNight";
-import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
-import NotFound from "./components/NotFound/NotFound";
-import EditAccountWrapper from "./components/EditAccount/EditAccountWrapper";
-import UsersTable from "./components/Users/Users";
 import { Toaster } from "sonner";
+import EditAccountWrapper from "./components/EditAccount/EditAccountWrapper";
+import AddEventWrapper from "./components/events/AddEventWrapper";
+import EventMainContent from "./components/events/EventMainContent";
+import LadiesNight from "./components/LadiesNight/LadiesNight";
+import Login from "./components/Login/Login";
+import MembershipTable from "./components/membership/membership-table";
+import NotFound from "./components/NotFound/NotFound";
+import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
+import AddStaffWrapper from "./components/Staff/AddStaffWrapper";
+import StaffMainContent from "./components/Staff/StaffMainContent";
+import UsersTable from "./components/Users/Users";
+import { AuthProvider } from "./context/AuthContext";
+import AuthenticatedRoutes from "./guard/AuthenticatedRoutes";
+import Events from "./pages/Events";
+import Home from "./pages/Home";
+import Membership from "./pages/Memebership";
+import Staff from "./pages/Staff";
+import EditMembership from "./components/membership/edit-membership";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +42,9 @@ function App() {
                   <Route index element={<EventMainContent />} />
                   <Route path="create" element={<AddEventWrapper />} />
                   <Route path="edit/:eventId" element={<AddEventWrapper />} />
+                </Route>
+                <Route path="membership" element={<Membership />}>
+                  <Route index element={<MembershipTable />} />
                 </Route>
 
                 <Route path="staff/" element={<Staff />}>

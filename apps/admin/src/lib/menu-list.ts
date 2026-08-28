@@ -1,12 +1,12 @@
 import {
-  Users,
-  Settings,
-  UserCog,
-  type LucideIcon,
   CalendarDays,
-  Images,
   LifeBuoy,
   PartyPopper,
+  Settings,
+  UserCog,
+  Users,
+  UserStar,
+  type LucideIcon,
 } from "lucide-react";
 
 type Submenu = {
@@ -62,6 +62,11 @@ export function getMenuList(pathname: string): Group[] {
           href: "/staff",
           label: "Staff",
           icon: UserCog,
+        },
+        {
+          href: "/membership",
+          label: "Membership",
+          icon: UserStar,
         },
         {
           href: "/account",

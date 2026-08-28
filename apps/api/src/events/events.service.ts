@@ -1,25 +1,18 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EntityType, Event, EventType, MediaPurpose, Prisma } from '@prisma/client';
+import cronParser from 'cron-parser';
+import Redis from 'ioredis';
+import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
+import { WeeklyEventMq } from 'src/bullmq/weeklyEventsMq.service';
+import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
 import { MediaService } from 'src/media/media.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import Redis from 'ioredis';
 import { REDIS_HASHES } from 'src/redis/hashes';
-import { UpdateEventDto } from './dto/update-event.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { GetAllEventsDto } from './dto/get-all-events';
 import { GetEventsPageDto } from './dto/get-evets-page.dto';
-import { SpecialEventMq } from 'src/bullmq/specialEventsMq.service';
-import { WeeklyEventMq } from 'src/bullmq/weeklyEventsMq.service';
-import cronParser from 'cron-parser';
-import { LadiesNightService } from 'src/ladies-night/ladies-night.service';
 import { GetEventsStatusDto } from './dto/get-evets-table.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventsService {
@@ -276,7 +269,6 @@ export class EventsService {
       count,
     };
   }
-  
 
   update = async (updateEventDto: UpdateEventDto) => {
     const { thumbnail, video, ...eventDto } = updateEventDto;

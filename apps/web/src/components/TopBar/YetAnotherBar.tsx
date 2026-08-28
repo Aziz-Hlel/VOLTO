@@ -1,10 +1,9 @@
-import React, { useEffect, useLayoutEffect, useRef, useCallback, useState } from "react";
 import { gsap } from "gsap";
 import { ArrowUpRight as GoArrowUpRight } from "lucide-react";
-import { FaApple } from "react-icons/fa";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiFillAndroid } from "react-icons/ai";
+import { FaApple } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { set } from "zod";
 import DownloadApp from "../DownloadApp/DownloadApp";
 
 type CardNavLink = {
@@ -304,19 +303,19 @@ const CardNav: React.FC<CardNavProps> = ({
 
   return (
     <div
-      className={`card-nav-container mx-auto mt-3 w-[90%] max-w-[800px] z-[90] top-[1.2em] md:top-[2em]  ${className}`}
+      className={`card-nav-container mx-auto mt-3 w-[90%] max-w-200 z-90 top-[1.2em] md:top-[2em]  ${className}`}
     >
       {openDownloadAppDialog && <DownloadApp closeDialog={() => setOpenDownloadAppDialog(false)} />}
 
       <nav
         ref={navRef}
-        className={`card-nav ${isOpen ? "open" : ""} block  h-[60px] p-0 rounded-xl bg-white/75 shadow-md relative overflow-hidden will-change-[height]`}
+        className={`card-nav ${isOpen ? "open" : ""} block  h-15 p-0 rounded-xl bg-white/75 shadow-md relative overflow-hidden will-change-[height]`}
         role="navigation"
         aria-label="Main navigation"
       >
-        <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex bg-transparent  items-center mx-2 justify-between p-2 pl-[1.1rem] z-[2]">
+        <div className="card-nav-top absolute inset-x-0 top-0 h-15 flex bg-transparent  items-center mx-2 justify-between p-2 pl-[1.1rem] z-2">
           <div
-            className={`hamburger-menu ${isOpen ? "open" : ""} group h-full flex flex-col items-center justify-center cursor-pointer gap-[6px] order-2 md:order-none transition-opacity duration-200 ${isAnimating ? "pointer-events-none opacity-75" : ""}`}
+            className={`hamburger-menu ${isOpen ? "open" : ""} group h-full flex flex-col items-center justify-center cursor-pointer gap-1.5 order-2 md:order-0 transition-opacity duration-200 ${isAnimating ? "pointer-events-none opacity-75" : ""}`}
             onClick={handleToggleClick}
             onKeyDown={handleKeyDown}
             role="button"
@@ -326,19 +325,19 @@ const CardNav: React.FC<CardNavProps> = ({
             style={{ color: menuColor || "#000" }}
           >
             <div
-              className={`hamburger-line w-[30px] h-[2px] bg-current text-black transition-transform duration-300 ease-in-out [transform-origin:50%_50%] ${
-                isOpen ? "translate-y-[4px] rotate-45" : ""
+              className={`hamburger-line w-7.5 h-0.5 bg-current text-black transition-transform duration-300 ease-in-out origin-[50%_50%] ${
+                isOpen ? "translate-y-1 rotate-45" : ""
               } group-hover:opacity-75`}
             />
             <div
-              className={`hamburger-line w-[30px] h-[2px] bg-current text-black transition-transform duration-300 ease-in-out [transform-origin:50%_50%] ${
-                isOpen ? "-translate-y-[4px] -rotate-45" : ""
+              className={`hamburger-line w-7.5 h-0.5 bg-current text-black transition-transform duration-300 ease-in-out origin-[50%_50%] ${
+                isOpen ? "-translate-y-1 -rotate-45" : ""
               } group-hover:opacity-75`}
             />
           </div>
 
           <Link
-            className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-none"
+            className="logo-container flex items-center md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 order-1 md:order-0"
             to={"/"}
           >
             <img src={logo} alt={logoAlt} className="logo h-24 md:h-26" />
@@ -357,15 +356,15 @@ const CardNav: React.FC<CardNavProps> = ({
         </div>
 
         <div
-          className={`card-nav-content absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col items-stretch gap-2 justify-start z-[1] ${
+          className={`card-nav-content absolute left-0 right-0 top-15 bottom-0 p-2 flex flex-col items-stretch gap-2 justify-start z-1 ${
             isOpen ? "visible pointer-events-auto" : "invisible pointer-events-none"
-          } md:flex-row md:items-end md:gap-[12px]`}
+          } md:flex-row md:items-end md:gap-3`}
           aria-hidden={!isOpen}
         >
           {items.slice(0, 3).map((item, idx) => (
             <div
               key={`nav-card-${idx}`}
-              className="nav-card select-none  relative flex flex-col gap-2 p-[8px_12px] text-white rounded-sm min-w-0 flex-[1_1_auto] h-auto min-h-[40px] md:h-full md:min-h-0 md:flex-[1_1_0%] md:p-[12px_16px]"
+              className="nav-card select-none  relative flex flex-col gap-2 p-[8px_12px] text-white rounded-sm min-w-0 flex-[1_1_auto] h-auto min-h-10 md:h-full md:min-h-0 md:flex-[1_1_0%] md:p-[12px_16px]"
               ref={setCardRef(idx)}
             >
               {/* Background image */}
@@ -387,13 +386,13 @@ const CardNav: React.FC<CardNavProps> = ({
                 </div>
               )}
               {/* <div className=' w-full h-full absolute  bg-black'></div> */}
-              <div className="nav-card-links mt-auto flex flex-col gap-[2px]">
+              <div className="nav-card-links mt-auto flex flex-col gap-0.5">
                 {item.links?.map((lnk, i) => {
                   if (lnk.type === "a")
                     return (
                       <a
                         key={`link-${idx}-${i}`}
-                        className="group nav-card-link inline-flex items-center gap-[6px] no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 focus:opacity-75 focus:outline-none text-[15px] md:text-[16px]"
+                        className="group nav-card-link inline-flex items-center gap-1.5 no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 focus:opacity-75 focus:outline-none text-[15px] md:text-[16px]"
                         href={lnk.href}
                         aria-label={lnk.ariaLabel}
                         onClick={handleToggleClick}
@@ -411,7 +410,7 @@ const CardNav: React.FC<CardNavProps> = ({
                     return (
                       <Link
                         key={`link-${idx}-${i}`}
-                        className="group nav-card-link inline-flex items-center gap-[6px] no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 focus:opacity-75 focus:outline-none text-[15px] md:text-[16px]"
+                        className="group nav-card-link inline-flex items-center gap-1.5 no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 focus:opacity-75 focus:outline-none text-[15px] md:text-[16px]"
                         to={lnk.href}
                         onClick={handleToggleClick}
                         aria-label={lnk.ariaLabel}
@@ -421,6 +420,25 @@ const CardNav: React.FC<CardNavProps> = ({
                           aria-hidden="true"
                         />
                         {lnk.label}
+                        {lnk.label === "Membership " ? (
+                          <svg
+                            className=" size-8 opacity-100"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 511.984 511.984"
+                            xmlSpace="preserve"
+                            fill="#000"
+                          >
+                            <path
+                              fill="#ffc43e"
+                              d="M511.984 255.992L473.188 197.791 477.688 127.996 414.987 96.981 383.988 34.296 314.193 38.795 255.992 0 197.806 38.795 127.996 34.296 96.997 96.981 34.31 127.996 38.81 197.791 0 255.992 38.81 314.178 34.31 383.988 96.997 414.987 127.996 477.674 197.806 473.174 255.992 511.984 314.193 473.174 383.988 477.674 415.003 414.987 477.688 383.988 473.188 314.178z"
+                            />
+                            <g fill="#fff">
+                              <path d="M160.292 283.663L122.324 221.852 101.715 221.852 101.715 314.115 121.293 314.115 121.293 252.18 159.526 314.115 179.744 314.115 179.744 221.852 160.292 221.852z" />
+                              <path d="M224.962 274.46L270.069 274.46 270.069 258.523 224.962 258.523 224.962 238.43 274.085 238.43 274.085 221.852 204.868 221.852 204.868 314.115 274.991 314.115 274.991 297.147 224.962 297.147z" />
+                              <path d="M390.331 221.852L375.035 285.35 359.083 221.852 340.036 221.852 323.833 284.569 309.068 221.852 288.71 221.852 313.209 314.115 333.817 314.115 349.364 251.133 365.177 314.115 385.394 314.115 410.284 221.852z" />
+                            </g>
+                          </svg>
+                        ) : null}
                       </Link>
                     );
                 })}

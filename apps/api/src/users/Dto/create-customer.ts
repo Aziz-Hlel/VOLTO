@@ -1,6 +1,7 @@
 import { Gender } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
+  IsEmail,
   IsEnum,
   IsOptional,
   IsString,
@@ -21,7 +22,7 @@ export class CreateCustomerDto {
   lastName: string;
 
   @IsString()
-  @MinLength(2)
+  @IsEmail()
   email: string;
 
   @IsOptional()

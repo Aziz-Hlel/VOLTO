@@ -1,0 +1,107 @@
+services:
+  api:
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: ./docker/dev/Dockerfile.dev.api
+
+    env_file:
+      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/.env.local
+      - ${PROJECT_ROOT}/.env
+
+    ports:
+      - "${API_PORT:-3000}:${API_PORT:-3000}"
+
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    volumes:
+      - ${PROJECT_ROOT}/apps/api/src:/app/apps/api/src
+      - ${PROJECT_ROOT}/apps/api/prisma:/app/apps/api/prisma
+
+  db:
+    image: postgres:15
+
+    env_file:
+      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/.env.local
+      - ${PROJECT_ROOT}/.env
+
+    ports:
+      - "${DB_PORT:-5432}:${DB_PORT:-5432}"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} "] # ? make variables dynamic
+      interval: 5s
+      retries: 10
+      timeout: 5s
+
+    volumes:
+      - db_dev_volume:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+
+    ports:
+      - 6379:6379
+
+    volumes:
+      - redis_dev_volume:/data
+
+    command: ["redis-server", "--appendonly", "yes"] # enables persistence
+
+  minio:
+    image: quay.io/minio/minio:latest
+
+    ports:
+      - "${MINIO_PORT:-9000}:${MINIO_PORT:-9000}" # S3 API
+      - 9001:9001 # Web UI
+
+    env_file:
+      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/.env.local
+      - ${PROJECT_ROOT}/.env
+
+    volumes:
+      - minio_dev_volume:/data
+
+    command: server /data --console-address ":9001"
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_started
+
+    env_file:
+      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/.env.local
+      - ${PROJECT_ROOT}/.env
+
+    volumes:
+      - ${PROJECT_ROOT}/apps/api/src/seed/minio_client_seed_files:/seed # Your seed files
+      - ${PROJECT_ROOT}/apps/api/init_minio_client.sh:/init_minio_client.sh # The script
+
+    entrypoint: ["/bin/sh", "/init_minio_client.sh"]
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - 8025:8025 # Web UI
+      - "${SMTP_PORT:-1025}:${SMTP_PORT:-1025}"
+
+volumes:
+  db_dev_volume:
+    driver: local
+  redis_dev_volume:
+    driver: local
+  minio_dev_volume:
+    driver: local

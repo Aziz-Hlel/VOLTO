@@ -1,20 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
-import Home from "./components/Home/Home";
-import Menu from "./components/Menu/Menu";
-import About from "./components/About/About";
-import Events from "./components/Events/Events";
-import ContactUs from "./components/ContactUs/ContactUs";
-import ScrollToTop from "./utils/ScrollToTop";
-import NavBar619 from "./components/TopBar/Nav";
-import { ResetPassword } from "./components/ResetPassword/reset-password";
-import Reservation from "./components/Reservation/Reservation";
-import { MenuCarousel } from "./components/Menu/MenuCarousel";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import NotFound from "./components/NotFound/NotFound";
+import { Outlet, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
+import About from "./components/About/About";
+import ContactUs from "./components/ContactUs/ContactUs";
+import Events from "./components/Events/Events";
+import Home from "./components/Home/Home";
 import CocktailSwiper from "./components/Menu/CocktailSwiper";
-import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
+import Menu from "./components/Menu/Menu";
+import { MenuCarousel } from "./components/Menu/MenuCarousel";
 import FoodV2 from "./components/Menu/food/foodV2/FoodV2";
+import NotFound from "./components/NotFound/NotFound";
+import Reservation from "./components/Reservation/Reservation";
+import { ResetPassword } from "./components/ResetPassword/reset-password";
+import SocialsFloatingButton from "./components/SocialsBubble/SocialsFloatingButton";
+import NavBar619 from "./components/TopBar/Nav";
+import Membership from "./components/membership/Membership";
+import MembershipRegistration from "./components/membership/registration";
+import ScrollToTop from "./utils/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,10 @@ function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/reservation" element={<Reservation />} />
+            <Route path="/membership" element={<Outlet />}>
+              <Route index element={<Membership />} />
+              <Route path="registration" element={<MembershipRegistration />} />
+            </Route>
 
             <Route path="reset-password/" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />

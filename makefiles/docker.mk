@@ -15,13 +15,26 @@ DOCKER_ROOT := $(ROOT)/docker
 # ENVs
 ENV_LOCAL := $(ROOT)/.env.local
 ENV_ROOT := $(ROOT)/.env
+ENV_INFRA := $(ROOT)/config/.env.infra
 ENV_DEV := $(ROOT)/config/.env.dev
 ENV_STAGE := $(ROOT)/config/.env.stage
 ENV_PROD := $(ROOT)/config/.env
 
 
 
+
 .ONESHELL:
+docker-infra-up:
+	@echo "${YELLOW}🚀 Starting Docker in Infra Env..."
+	@cd $(ROOT) 
+	# Ensure local env files exist
+	@touch $(ENV_LOCAL) $(ENV_ROOT) $(ENV_INFRA)
+	@set -a && . $(ENV_INFRA) && . $(ENV_LOCAL) && . $(ENV_ROOT) && set +a;
+	@export PROJECT_ROOT=$(ROOT)
+	@docker compose -f $(DOCKER_ROOT)/compose.infra.yml up --build
+	@echo "${GREEN}✅ "
+
+
 docker-dev-up:
 	@echo "${YELLOW}🚀 Starting Docker in Dev Env..."
 	@cd $(ROOT) 

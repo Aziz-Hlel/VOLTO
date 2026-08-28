@@ -1,13 +1,15 @@
-  import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import tailwindcss from "@tailwindcss/vite";
+import { loadEnv } from "vite";
 
-function getPort(): number | undefined {
-  const NODE_ENV = process.env.VITE_NODE_ENV;
+function getPort(mode: string): number | undefined {
+  const env = loadEnv(mode, process.cwd());
+
+  const NODE_ENV = env.VITE_NODE_ENV;
   if (!NODE_ENV) throw new Error(`❌ Missing required environment variable: NODE_ENV`);
 
-  const value = process.env.VITE_ADMIN_PORT;
+  const value = env.VITE_ADMIN_PORT;
 
   if (!value && ["development", "test"].includes(NODE_ENV))
     throw new Error(`❌ Missing required VITE_ADMIN_PORT when NODE_ENV is ${NODE_ENV}`);
@@ -17,7 +19,7 @@ function getPort(): number | undefined {
   return Number(value) || undefined;
 }
 
-export default defineConfig({
+export default ({ mode }: { mode: string }) => ({
   envPrefix: "VITE_",
 
   plugins: [react(), tailwindcss()],
@@ -30,7 +32,7 @@ export default defineConfig({
   },
 
   server: {
-    port: getPort(),
+    port: getPort(mode),
     host: "0.0.0.0", // allow external access (needed in Docker)
     allowedHosts: ["*"],
   },

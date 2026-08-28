@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CardNav, { type CardNavItem, type CardNavProps } from "./YetAnotherBar";
 
 const NavBar619 = () => {
@@ -90,6 +90,7 @@ const NavBar619 = () => {
         // },
         { label: "Book A Table", href: "/reservation", ariaLabel: "Book A Table", type: "Link" },
         { label: "Contact Us", href: "/contact", ariaLabel: "Contact Us", type: "Link" },
+        { label: "Membership ", href: "/membership", ariaLabel: "Membership", type: "Link" },
 
         // { label: "Whatsapp", href: "https://wa.me/+97334588466", ariaLabel: "Whatsapp", type: "a" },
       ],
