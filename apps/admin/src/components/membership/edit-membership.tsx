@@ -62,6 +62,7 @@ const EditMembershipSchema = z.object({
   emergencyContactRelationship: nullableString,
   emergencyContactMobileNumber: nullableString,
   status: z.enum(membershipStatus),
+  membershipId: nullableString,
   membershipStartDate: nullableDate,
   membershipExpiryDate: nullableDate,
   membershipNumber: nullableString,
@@ -117,6 +118,7 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
       emergencyContactRelationship: membership.emergencyContactRelationship ?? "",
       emergencyContactMobileNumber: membership.emergencyContactMobileNumber ?? "",
       status: membership.status,
+      membershipId: membership.membershipId ?? "",
       membershipStartDate: membership.membershipStartDate,
       membershipExpiryDate: membership.membershipExpiryDate,
       membershipNumber: membership.membershipNumber ?? "",
@@ -376,6 +378,19 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
                     <FormLabel>Membership Number</FormLabel>
                     <FormControl>
                       <Input placeholder="MEM-0001" {...field} value={field.value ?? ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="membershipId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Membership ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Member ID" {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -79,6 +79,7 @@ model MembershipApplication {
   emergencyContactMobileNumber String?
 
   // Membership Details
+  membershipId           String?
   membershipStartDate    DateTime? @db.Date
   membershipExpiryDate   DateTime? @db.Date
   membershipNumber       String?

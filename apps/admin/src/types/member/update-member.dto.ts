@@ -15,6 +15,7 @@ export class UpdateMemberDto {
 
     // Membership Details
     status?: MembershipStatus;
+    membershipId?: string | null;
     membershipStartDate?: string;
     membershipExpiryDate?: string;
     membershipNumber?: string;

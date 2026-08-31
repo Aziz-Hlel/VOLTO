@@ -12,6 +12,7 @@ export type Membership = {
   emergencyContactName: string | null;
   emergencyContactRelationship: string | null;
   emergencyContactMobileNumber: string | null;
+  membershipId: string | null;
   membershipStartDate: string | null;
   membershipExpiryDate: string | null;
   membershipNumber: string | null;

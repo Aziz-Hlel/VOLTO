@@ -68,6 +68,10 @@ export class UpdateMemberDto {
   // Membership Details
 
   @IsOptional()
+  @IsString()
+  membershipId: string | null;
+
+  @IsOptional()
   @IsDateString()
   membershipStartDate: string | null;
 

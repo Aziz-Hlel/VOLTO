@@ -194,6 +194,7 @@ export class MembersService {
           emergencyContactRelationship: updateMemberDto.emergencyContactRelationship,
           emergencyContactMobileNumber: updateMemberDto.emergencyContactMobileNumber,
 
+          membershipId: updateMemberDto.membershipId,
           membershipStartDate: updateMemberDto.membershipStartDate
             ? new Date(updateMemberDto.membershipStartDate)
             : null,
