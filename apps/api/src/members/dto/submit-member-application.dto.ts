@@ -37,7 +37,7 @@ export class SubmitMemberApplicationDto {
       message: 'Please enter a valid date of birth',
     },
   )
-  dateOfBirth: string;
+  dateOfBirth?: string;
 
   @IsOptional()
   @IsString()

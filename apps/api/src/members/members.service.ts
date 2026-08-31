@@ -35,7 +35,7 @@ export class MembersService {
         fullName: createMemberDto.fullName,
         cprId: createMemberDto.cprId,
         nationality: createMemberDto.nationality,
-        dateOfBirth: new Date(createMemberDto.dateOfBirth),
+        dateOfBirth: createMemberDto.dateOfBirth ? new Date(createMemberDto.dateOfBirth) : null,
         mobileNumber: createMemberDto.mobileNumber,
         emergencyContactName: createMemberDto.emergencyContactName,
         emergencyContactRelationship: createMemberDto.emergencyContactRelationship,
@@ -144,7 +144,7 @@ export class MembersService {
     const member = await this.prisma.membershipApplication.findUnique({
       where: { email },
     });
-    
+
 
     if (!member) {
       throw new NotFoundException('Member application not found');
