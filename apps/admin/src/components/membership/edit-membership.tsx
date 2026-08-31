@@ -357,10 +357,11 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={membershipStatus.PENDING}>Pending</SelectItem>
-                        <SelectItem value={membershipStatus.APPROVED}>Approved</SelectItem>
-                        <SelectItem value={membershipStatus.REJECTED}>Rejected</SelectItem>
-                        <SelectItem value={membershipStatus.SUSPENDED}>Suspended</SelectItem>
+                        {Object.values(membershipStatus).map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status.toLowerCase()}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
