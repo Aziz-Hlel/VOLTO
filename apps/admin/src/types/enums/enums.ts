@@ -3,6 +3,7 @@ export const membershipStatus = {
   APPROVED: "APPROVED",
   REJECTED: "REJECTED",
   SUSPENDED: "SUSPENDED",
+  EXPIRED: "EXPIRED",
 } as const;
 export type MembershipStatus = (typeof membershipStatus)[keyof typeof membershipStatus];
 
