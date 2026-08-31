@@ -1,4 +1,4 @@
-import eventService from "@/Api/services/event.service";
+import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
-import React from "react";
 import { toast } from "sonner";
+import staffService from "@/Api/services/staff.service";
 
 interface DeleteConfirmationDialogProps {
   title: string;
@@ -27,27 +27,30 @@ export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> =
   objectId,
   removeObjectFromDeletion,
 }) => {
-  const mutationFn = () => eventService.delete(objectId);
+  const mutationFn = () => staffService.delete(objectId);
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: mutationFn,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["events"], exact: false }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["staff"], exact: false }),
   });
   const handleDelete = async () => {
     try {
       const response = await mutateAsync();
 
       if (response.success) {
-        toast.success("Event deleted successfully");
+        toast.success("Staff Member deleted successfully");
         removeObjectFromDeletion();
       }
     } catch (error: unknown) {
       // const err = error as ApiResponse<any>;
+      console.log(error);
       if (typeof error === "object" && error !== null && "message" in error) {
-        toast.error("Error deleting event: " + String((error as { message: unknown }).message));
+        toast.error(
+          "Error deleting staff member : " + String((error as { message: unknown }).message),
+        );
       } else {
-        toast.error("Error deleting event");
+        toast.error("Error deleting staff member ");
       }
       removeObjectFromDeletion();
     }

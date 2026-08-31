@@ -1,4 +1,4 @@
-import eventService from "@/Api/services/event.service";
+import { membershipService } from "@/Api/services/membership.service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,45 +11,45 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
-import React from "react";
 import { toast } from "sonner";
 
-interface DeleteConfirmationDialogProps {
+interface DeleteMembershipProps {
   title: string;
   description: string;
-  removeObjectFromDeletion: () => void;
-  objectId: string;
+  membershipId: string;
+  removeMembershipFromDeletion: () => void;
 }
 
-export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
+const DeleteMembership = ({
   title,
   description,
-  objectId,
-  removeObjectFromDeletion,
-}) => {
-  const mutationFn = () => eventService.delete(objectId);
+  membershipId,
+  removeMembershipFromDeletion,
+}: DeleteMembershipProps) => {
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: mutationFn,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["events"], exact: false }),
+    mutationFn: () => membershipService.delete(membershipId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memberships"], exact: false }),
   });
+
   const handleDelete = async () => {
     try {
       const response = await mutateAsync();
 
       if (response.success) {
-        toast.success("Event deleted successfully");
-        removeObjectFromDeletion();
+        toast.success("Membership deleted successfully");
+        removeMembershipFromDeletion();
       }
     } catch (error: unknown) {
-      // const err = error as ApiResponse<any>;
       if (typeof error === "object" && error !== null && "message" in error) {
-        toast.error("Error deleting event: " + String((error as { message: unknown }).message));
+        toast.error(
+          "Error deleting membership: " + String((error as { message: unknown }).message),
+        );
       } else {
-        toast.error("Error deleting event");
+        toast.error("Error deleting membership");
       }
-      removeObjectFromDeletion();
+      removeMembershipFromDeletion();
     }
   };
 
@@ -61,12 +61,17 @@ export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> =
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => removeObjectFromDeletion()} className="cursor-pointer">
+          <AlertDialogCancel
+            onClick={removeMembershipFromDeletion}
+            className="cursor-pointer"
+            disabled={isPending}
+          >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white cursor-pointer"
+            disabled={isPending}
           >
             {isPending ? (
               <>
@@ -82,3 +87,5 @@ export const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> =
     </AlertDialog>
   );
 };
+
+export default DeleteMembership;

@@ -43,12 +43,11 @@ export class MembersController {
     console.log('user : ', user);
     return await this.membersService.findOneByEmail(user.email);
   }
-  
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.membersService.findOne(id);
   }
-
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
