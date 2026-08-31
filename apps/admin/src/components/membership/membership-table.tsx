@@ -46,6 +46,7 @@ const getStatusBadgeVariant = (status: string) => {
       return "secondary";
     case membershipStatus.REJECTED:
     case membershipStatus.SUSPENDED:
+    case membershipStatus.EXPIRED:
       return "destructive";
     default:
       return "outline";

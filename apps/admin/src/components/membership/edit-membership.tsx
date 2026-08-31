@@ -61,12 +61,7 @@ const EditMembershipSchema = z.object({
   emergencyContactName: nullableString,
   emergencyContactRelationship: nullableString,
   emergencyContactMobileNumber: nullableString,
-  status: z.enum([
-    membershipStatus.PENDING,
-    membershipStatus.APPROVED,
-    membershipStatus.REJECTED,
-    membershipStatus.SUSPENDED,
-  ]),
+  status: z.enum(membershipStatus),
   membershipStartDate: nullableDate,
   membershipExpiryDate: nullableDate,
   membershipNumber: nullableString,
