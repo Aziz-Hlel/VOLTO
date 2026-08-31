@@ -37,16 +37,18 @@ export class MembersController {
     return await this.membersService.findAll(query);
   }
 
+  @UseGuards(JwtAccessGuard)
+  @Get('/email')
+  async findOneByEmail(@CurrentUser() user: AuthUser) {
+    console.log('user : ', user);
+    return await this.membersService.findOneByEmail(user.email);
+  }
+  
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.membersService.findOne(id);
   }
 
-  @UseGuards(JwtAccessGuard)
-  @Get('/email')
-  async findOneByEmail(@CurrentUser() user: AuthUser) {
-    return await this.membersService.findOneByEmail(user.email);
-  }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {

@@ -144,6 +144,7 @@ export class MembersService {
     const member = await this.prisma.membershipApplication.findUnique({
       where: { email },
     });
+    
 
     if (!member) {
       throw new NotFoundException('Member application not found');
