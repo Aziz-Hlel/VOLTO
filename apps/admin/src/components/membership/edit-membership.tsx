@@ -39,6 +39,10 @@ import z from "zod";
 const uuidSchema = z.string().min(1, "Invalid membership ID");
 
 // ── Helper for nullable string fields ─────────────────────────────────────────
+const requiredString = z
+  .string("This field is required")
+  .nonempty("This field is required")
+  .max(255, "Maximum length of 255 characters exceeded");
 const nullableString = z
   .string()
   .nullish()
@@ -54,13 +58,13 @@ const EditMembershipSchema = z.object({
   membershipType: z.enum([membershipType.REGULAR, membershipType.VIP]),
   fullName: z.string().min(1, "Full name is required"),
   email: z.email("Invalid email"),
-  cprId: nullableString,
-  nationality: nullableString,
+  cprId: requiredString,
+  nationality: requiredString,
   dateOfBirth: nullableDate,
-  mobileNumber: nullableString,
-  emergencyContactName: nullableString,
-  emergencyContactRelationship: nullableString,
-  emergencyContactMobileNumber: nullableString,
+  mobileNumber: requiredString,
+  emergencyContactName: requiredString,
+  emergencyContactRelationship: requiredString,
+  emergencyContactMobileNumber: requiredString,
   status: z.enum(membershipStatus),
   membershipId: nullableString,
   membershipStartDate: nullableDate,

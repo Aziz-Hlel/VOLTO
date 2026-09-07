@@ -3,7 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import QRCode from "qrcode";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaCheckSquare, FaExclamationTriangle, FaRegSquare, FaTimesCircle } from "react-icons/fa";
 import { GiCrown, GiDiamondTrophy } from "react-icons/gi";
@@ -17,40 +18,48 @@ import { Spinner } from "../ui/spinner";
 
 const registrationSchema = z.object({
   membershipType: z.enum(["REGULAR", "VIP"], { error: "Please select a membership type" }),
-  fullName: z.string({ error: "Full name is required" }).max(255, "Please enter a valid name"),
+  fullName: z
+    .string({ error: "Full name is required" })
+    .nonempty("Full name is required")
+    .max(255, "Please enter a valid name"),
   cprId: z
     .string({ error: "CPR / ID number is required" })
-    .max(255, "Please enter a valid CPR / ID number")
-    .optional(),
+    .nonempty("CPR / ID number is required")
+    .max(255, "Please enter a valid CPR / ID number"),
   nationality: z
     .string({ error: "Nationality is required" })
-    .max(255, "Please enter a valid nationality")
-    .optional(),
+    .nonempty("Nationality is required")
+    .max(255, "Please enter a valid nationality"),
   dateOfBirth: z
-    .string()
-    .nullable()
-    .refine((d) => d === null || !isNaN(Date.parse(d)), {
+    .string({ error: "Date of birth is required" })
+    .nonempty("Date of birth is required")
+    .refine((d) => !isNaN(Date.parse(d)), {
       message: "Please enter a valid date of birth",
     }),
   mobileNumber: z
     .string({ error: "Mobile number is required" })
-    .max(255, "Please enter a valid mobile number")
-    .optional(),
+    .nonempty("Mobile number is required")
+    .max(255, "Please enter a valid mobile number"),
   email: z
     .email("Please enter a valid email address")
+    .nonempty("Email is required")
     .max(255, "Please enter a valid email address"),
+  password: z
+    .string({ error: "Password is required" })
+    .min(8, "Password must be at least 8 characters")
+    .max(255, "Password must be 255 characters or fewer"),
   emergencyContactName: z
     .string({ error: "Emergency contact name is required" })
-    .max(255, "Please enter a valid name")
-    .optional(),
+    .nonempty("Emergency contact name is required")
+    .max(255, "Please enter a valid name"),
   emergencyContactRelationship: z
     .string({ error: "Relationship is required" })
-    .max(255, "Please enter a valid relationship")
-    .optional(),
+    .nonempty("Relationship is required")
+    .max(255, "Please enter a valid relationship"),
   emergencyContactMobileNumber: z
     .string({ error: "Emergency mobile number is required" })
-    .max(255, "Please enter a valid mobile number")
-    .optional(),
+    .nonempty("Emergency mobile number is required")
+    .max(255, "Please enter a valid mobile number"),
   declarationAgreed: z
     .boolean()
     .refine((v) => v === true, { message: "You must agree to the member declaration" }),
@@ -101,12 +110,16 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 const inputCls =
   "w-full px-3 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:border-yellow-500 outline-none transition-all";
 
+const playStoreUrl = "https://play.google.com/store/apps/details?id=com.techno.volto";
+const appStoreUrl = "https://apps.apple.com/app/id6753715978";
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const MembershipRegistration = () => {
   const [successModal, setSuccessModal] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [memberExitModal, setMemberExitModal] = useState(false);
+  const [storeQrCodes, setStoreQrCodes] = useState({ playStore: "", appStore: "" });
 
   const form = useForm<IRegistrationForm>({
     resolver: zodResolver(registrationSchema),
@@ -118,6 +131,7 @@ const MembershipRegistration = () => {
       dateOfBirth: null,
       mobileNumber: "",
       email: "",
+      password: "",
       emergencyContactName: "",
       emergencyContactRelationship: "",
       emergencyContactMobileNumber: "",
@@ -130,6 +144,37 @@ const MembershipRegistration = () => {
   const membershipType = watch("membershipType");
   const declarationAgreed = watch("declarationAgreed");
   const termsAgreed = watch("termsAgreed");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const generateQrCodes = async () => {
+      const qrOptions = {
+        errorCorrectionLevel: "H" as const,
+        margin: 1,
+        scale: 8,
+        color: {
+          dark: "#111827",
+          light: "#ffffff",
+        },
+      };
+
+      const [playStore, appStore] = await Promise.all([
+        QRCode.toDataURL(playStoreUrl, qrOptions),
+        QRCode.toDataURL(appStoreUrl, qrOptions),
+      ]);
+
+      if (isMounted) {
+        setStoreQrCodes({ playStore, appStore });
+      }
+    };
+
+    generateQrCodes();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["membership-registration"],
@@ -181,16 +226,55 @@ const MembershipRegistration = () => {
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="bg-gray-900 border border-yellow-500/40 rounded-3xl p-10 max-w-md w-full text-center shadow-2xl shadow-yellow-900/30"
+            className="bg-gray-900 border border-yellow-500/40 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-center shadow-2xl shadow-yellow-900/30"
           >
             <div className="w-16 h-16 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mx-auto mb-6">
               <GiCrown className="text-yellow-400 text-3xl" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-3">Application Received</h3>
-            <p className="text-gray-400 text-sm leading-relaxed mb-8">
+            <p className="text-gray-400 text-sm leading-relaxed mb-7 max-w-md mx-auto">
               Thank you for applying to the VOLTO Membership Collection. Our team will review your
-              application and contact you shortly.
+              application and contact you shortly. You can also check your membership application
+              status in the VOLTO app.
             </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-7">
+              <a
+                className="bg-gray-100 rounded-2xl p-4 flex flex-col items-center justify-center hover:bg-gray-200 focus:outline-none cursor-pointer text-gray-900 transition-colors"
+                href={playStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open VOLTO on Google Play"
+              >
+                {storeQrCodes.playStore && (
+                  <img
+                    src={storeQrCodes.playStore}
+                    alt="Google Play QR code"
+                    className="w-36 h-36 rounded-lg bg-white p-2"
+                  />
+                )}
+                <span className="mt-3 text-xs text-gray-600 font-semibold uppercase">
+                  Google Play
+                </span>
+              </a>
+              <a
+                className="bg-gray-100 rounded-2xl p-4 flex flex-col items-center justify-center hover:bg-gray-200 focus:outline-none cursor-pointer text-gray-900 transition-colors"
+                href={appStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open VOLTO on the App Store"
+              >
+                {storeQrCodes.appStore && (
+                  <img
+                    src={storeQrCodes.appStore}
+                    alt="App Store QR code"
+                    className="w-36 h-36 rounded-lg bg-white p-2"
+                  />
+                )}
+                <span className="mt-3 text-xs text-gray-600 font-semibold uppercase">
+                  App Store
+                </span>
+              </a>
+            </div>
             <button
               onClick={() => setSuccessModal(false)}
               className="w-full py-3 rounded-xl bg-linear-to-r from-yellow-500 to-yellow-400 hover:opacity-90 text-gray-900 font-bold text-sm tracking-wide transition-all cursor-pointer"
@@ -409,9 +493,31 @@ const MembershipRegistration = () => {
                             className={inputCls}
                           />
                         </FormControl>
-                        <p className="text-gray-500 text-xs mt-1 italic">
+                        {/* <p className="text-gray-500 text-xs mt-1 italic">
                           Use the email you registered with on the VOLTO app
-                        </p>
+                        </p> */}
+                        <FormMessage className="text-red-400 text-xs mt-1" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className=" col-span-2">
+                        <FieldLabel>Password</FieldLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            minLength={8}
+                            maxLength={255}
+                            autoComplete="new-password"
+                            {...field}
+                            className={inputCls}
+                          />
+                        </FormControl>
                         <FormMessage className="text-red-400 text-xs mt-1" />
                       </FormItem>
                     )}
