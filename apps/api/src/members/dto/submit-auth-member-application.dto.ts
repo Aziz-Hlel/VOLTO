@@ -3,14 +3,13 @@ import {
   Equals,
   IsBoolean,
   IsDateString,
-  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsString,
   MaxLength,
 } from 'class-validator';
 
-export class SubmitMemberApplicationDto {
+export class SubmitAuthonticatedMemberApplicationDto {
   @IsEnum(MembershipType, { message: 'Please select a membership type' })
   membershipType: MembershipType;
 
@@ -18,16 +17,6 @@ export class SubmitMemberApplicationDto {
   @IsNotEmpty({ message: 'Full name is required' })
   @MaxLength(255, { message: 'Please enter a valid name' })
   fullName: string;
-
-  @IsEmail({}, { message: 'Please enter a valid email address' })
-  @IsNotEmpty({ message: 'Email is required' })
-  @MaxLength(255, { message: 'Please enter a valid email address' })
-  email: string;
-
-  @IsString()
-  @IsNotEmpty({ message: 'Password is required' })
-  @MaxLength(255, { message: 'Please enter a valid password' })
-  password: string;
 
   @IsString()
   @IsNotEmpty({ message: 'CPR / ID number is required' })

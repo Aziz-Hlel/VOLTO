@@ -18,6 +18,7 @@ import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { GetMembersQuery } from './dto/get-members-query.dto';
+import { SubmitAuthonticatedMemberApplicationDto } from './dto/submit-auth-member-application.dto';
 import { SubmitMemberApplicationDto } from './dto/submit-member-application.dto';
 import { UpdateMemberStatusDto } from './dto/update-member-status.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
@@ -30,6 +31,15 @@ export class MembersController {
   @Post()
   async create(@Body() createMemberDto: SubmitMemberApplicationDto) {
     return await this.membersService.create(createMemberDto);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Post('/email')
+  async createAuthonticatedUser(
+    @CurrentUser() user: AuthUser,
+    @Body() createMemberDto: SubmitAuthonticatedMemberApplicationDto,
+  ) {
+    return await this.membersService.createAuthonticatedUser(createMemberDto, user);
   }
 
   @Get()

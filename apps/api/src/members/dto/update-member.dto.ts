@@ -18,17 +18,14 @@ export class UpdateMemberDto {
   @MaxLength(255, { message: 'Please enter a valid name' })
   fullName: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid CPR / ID number' })
   cprId: string | null;
 
-  @IsOptional()
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid nationality' })
   nationality: string | null;
 
-  @IsOptional()
   @IsDateString(
     {},
     {
@@ -37,7 +34,6 @@ export class UpdateMemberDto {
   )
   dateOfBirth: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid mobile number' })
   mobileNumber: string | null;
@@ -46,13 +42,10 @@ export class UpdateMemberDto {
   @MaxLength(255, { message: 'Please enter a valid email address' })
   email: string;
 
-  @IsOptional()
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid name' })
   emergencyContactName: string | null;
 
-  @IsOptional()
-  @IsString()
   @MaxLength(255, { message: 'Please enter a valid relationship' })
   emergencyContactRelationship: string | null;
 

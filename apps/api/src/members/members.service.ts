@@ -4,10 +4,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { MembershipStatus, Prisma } from '@prisma/client';
+import { MembershipStatus, Prisma, Role } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthUser } from 'src/users/Dto/AuthUser';
 import { toCalendarDate } from 'src/utils/dayjs';
 import { GetMembersQuery, SortMember } from './dto/get-members-query.dto';
+import { SubmitAuthonticatedMemberApplicationDto } from './dto/submit-auth-member-application.dto';
 import { SubmitMemberApplicationDto } from './dto/submit-member-application.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 
@@ -29,7 +31,7 @@ export class MembersService {
       throw new ConflictException('Member email already exists');
     }
 
-    const member = await this.prisma.membershipApplication.create({
+    await this.prisma.membershipApplication.create({
       data: {
         email: createMemberDto.email,
         fullName: createMemberDto.fullName,
@@ -53,7 +55,55 @@ export class MembersService {
       },
     });
 
+    if (!user) {
+      await this.prisma.user.create({
+        data: {
+          email: createMemberDto.email,
+          password: createMemberDto.password,
+          firstName: createMemberDto.fullName.split(' ')[0],
+          lastName: createMemberDto.fullName.split(' ').slice(1).join(' '),
+          role: Role.USER,
+          phoneNumber: createMemberDto.mobileNumber,
+        },
+      });
+    }
+
     return { success: true, userExists: !!user };
+  }
+
+  async createAuthonticatedUser(
+    createMemberDto: SubmitAuthonticatedMemberApplicationDto,
+    user: AuthUser,
+  ) {
+    const memberEmail = await this.prisma.membershipApplication.findUnique({
+      where: {
+        email: user.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (memberEmail) {
+      throw new ConflictException('Member email already exists');
+    }
+
+    await this.prisma.membershipApplication.create({
+      data: {
+        email: user.email,
+        fullName: createMemberDto.fullName,
+        cprId: createMemberDto.cprId,
+        nationality: createMemberDto.nationality,
+        dateOfBirth: createMemberDto.dateOfBirth ? new Date(createMemberDto.dateOfBirth) : null,
+        mobileNumber: createMemberDto.mobileNumber,
+        emergencyContactName: createMemberDto.emergencyContactName,
+        emergencyContactRelationship: createMemberDto.emergencyContactRelationship,
+        emergencyContactMobileNumber: createMemberDto.emergencyContactMobileNumber,
+        membershipType: createMemberDto.membershipType,
+      },
+    });
+
+    return { success: true };
   }
 
   async findAll(query: GetMembersQuery) {
@@ -144,7 +194,6 @@ export class MembersService {
     const member = await this.prisma.membershipApplication.findUnique({
       where: { email },
     });
-
 
     if (!member) {
       throw new NotFoundException('Member application not found');
