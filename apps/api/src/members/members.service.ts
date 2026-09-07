@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { MembershipStatus, Prisma, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { toCalendarDate } from 'src/utils/dayjs';
@@ -56,10 +57,11 @@ export class MembersService {
     });
 
     if (!user) {
+      const hashedPassword = await bcrypt.hash(createMemberDto.password, 10);
       await this.prisma.user.create({
         data: {
           email: createMemberDto.email,
-          password: createMemberDto.password,
+          password: hashedPassword,
           firstName: createMemberDto.fullName.split(' ')[0],
           lastName: createMemberDto.fullName.split(' ').slice(1).join(' '),
           role: Role.USER,
