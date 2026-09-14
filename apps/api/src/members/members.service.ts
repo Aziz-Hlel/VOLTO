@@ -233,11 +233,9 @@ export class MembersService {
       const updatedMember = await this.prisma.membershipApplication.update({
         where: { id },
         data: {
-          membershipType: updateMemberDto.membershipType,
           fullName: updateMemberDto.fullName,
           email: updateMemberDto.email,
           cprId: updateMemberDto.cprId,
-          status: updateMemberDto.status,
           nationality: updateMemberDto.nationality,
           dateOfBirth: updateMemberDto.dateOfBirth ? new Date(updateMemberDto.dateOfBirth) : null,
           mobileNumber: updateMemberDto.mobileNumber,
@@ -246,12 +244,6 @@ export class MembersService {
           emergencyContactMobileNumber: updateMemberDto.emergencyContactMobileNumber,
 
           membershipId: updateMemberDto.membershipId,
-          membershipStartDate: updateMemberDto.membershipStartDate
-            ? new Date(updateMemberDto.membershipStartDate)
-            : null,
-          membershipExpiryDate: updateMemberDto.membershipExpiryDate
-            ? new Date(updateMemberDto.membershipExpiryDate)
-            : null,
           membershipNumber: updateMemberDto.membershipNumber,
           applicationReceivedBy: updateMemberDto.applicationReceivedBy,
           membershipNumberIssued: updateMemberDto.membershipNumberIssued,

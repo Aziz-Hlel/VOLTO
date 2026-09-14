@@ -5,4 +5,6 @@ export class UpdateMemberStatusDto {
   @IsNotEmpty({ message: 'Status is required' })
   @IsEnum(MembershipStatus, { message: 'Please provide a valid membership status' })
   status: MembershipStatus;
+
+  
 }

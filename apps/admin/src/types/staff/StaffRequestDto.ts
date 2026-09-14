@@ -1,12 +1,12 @@
 import type { Gender } from "../enums/Gender";
-import type { Roles } from "../enums/Roles";
+import type { StaffRoles } from "../enums/Roles";
 import type { Tier } from "../enums/Tier";
 
 export type StaffRequestDto = {
   email: string;
   firstName: string;
   lastName: string;
-  role: "WAITER" | "ADMIN" | "SUPER_ADMIN";
+  role: StaffRoles;
   phoneNumber?: string;
   gender: Gender;
   tier: Tier;

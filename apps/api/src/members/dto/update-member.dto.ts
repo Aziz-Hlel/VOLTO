@@ -10,9 +10,6 @@ import {
 } from 'class-validator';
 
 export class UpdateMemberDto {
-  @IsEnum(MembershipType, { message: 'Please select a membership type' })
-  membershipType: MembershipType;
-
   @IsString()
   @IsNotEmpty({ message: 'Full name is required' })
   @MaxLength(255, { message: 'Please enter a valid name' })
@@ -54,23 +51,10 @@ export class UpdateMemberDto {
   @MaxLength(255, { message: 'Please enter a valid mobile number' })
   emergencyContactMobileNumber: string | null;
 
-  @IsOptional()
-  @IsEnum(MembershipStatus, { message: 'Please select a valid membership status' })
-  status: MembershipStatus;
-
   // Membership Details
-
   @IsOptional()
   @IsString()
   membershipId: string | null;
-
-  @IsOptional()
-  @IsDateString()
-  membershipStartDate: string | null;
-
-  @IsOptional()
-  @IsDateString()
-  membershipExpiryDate: string | null;
 
   @IsOptional()
   @IsString()

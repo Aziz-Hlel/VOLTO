@@ -1,4 +1,4 @@
-import type { MembershipStatus, MembershipType } from "../enums/enums";
+import type { MembershipType } from "../enums/enums";
 
 export class UpdateMemberDto {
     // Personal Information
@@ -14,10 +14,7 @@ export class UpdateMemberDto {
     emergencyContactMobileNumber?: string;
 
     // Membership Details
-    status?: MembershipStatus;
     membershipId?: string | null;
-    membershipStartDate?: string;
-    membershipExpiryDate?: string;
     membershipNumber?: string;
 
     // VOTLO Internal Data

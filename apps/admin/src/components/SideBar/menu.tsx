@@ -1,23 +1,27 @@
 import { Ellipsis, LogOut } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { getMenuList } from "@/components/SideBar/sidebar-data";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { Link } from "react-router-dom";
-import { CollapseMenuButton } from "./collapse-menu-button";
-import { getMenuList } from "@/lib/menu-list";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/context/AuthContext";
+import { cn } from "@/lib/utils";
+import { AdminRoles } from "@/types/enums/Roles";
+import { Link, useLocation } from "react-router-dom";
+import { CollapseMenuButton } from "./collapse-menu-button";
 
 interface MenuProps {
   isOpen: boolean | undefined;
 }
 
 export function Menu({ isOpen }: MenuProps) {
-  const pathname = ""; //! usePathname();
+  const { pathname } = useLocation();
   const menuList = getMenuList(pathname);
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+
+  const isUserAdmin = Object.values(AdminRoles).includes(user.role as AdminRoles);
+  console.log("isuser admin", menuList[2].roles.includes(user.role));
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -45,8 +49,8 @@ export function Menu({ isOpen }: MenuProps) {
               ) : (
                 <p className="pb-2"></p>
               )}
-              {menus.map(({ href, label, icon: Icon, active, submenus }, index) =>
-                !submenus || submenus.length === 0 ? (
+              {menus.map(({ href, label, icon: Icon, active, submenus, roles }, index) =>
+                isUserAdmin || !roles || roles?.includes(user.role) ? (
                   <div className="w-full" key={index}>
                     <TooltipProvider disableHoverableContent>
                       <Tooltip delayDuration={100}>
@@ -83,13 +87,15 @@ export function Menu({ isOpen }: MenuProps) {
                   </div>
                 ) : (
                   <div className="w-full" key={index}>
-                    <CollapseMenuButton
-                      icon={Icon}
-                      label={label}
-                      active={active === undefined ? pathname.startsWith(href) : active}
-                      submenus={submenus}
-                      isOpen={isOpen}
-                    />
+                    {(isUserAdmin || roles?.includes(user.role)) && (
+                      <CollapseMenuButton
+                        icon={Icon}
+                        label={label}
+                        active={active === undefined ? pathname.startsWith(href) : active}
+                        submenus={submenus}
+                        isOpen={isOpen}
+                      />
+                    )}
                   </div>
                 ),
               )}

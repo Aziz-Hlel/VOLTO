@@ -17,6 +17,9 @@ enum Role {
   USER
   WAITER
   ADMIN
+  MEDIA_MANAGER
+  SECURITY
+  CASHIER
   SUPER_ADMIN
 }
 
@@ -33,17 +36,18 @@ enum Tier {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  password    String
-  firstName   String
-  lastName    String
-  role        Role     @default(USER)
-  phoneNumber String?
-  gender      Gender   @default(M)
-  tier        Tier     @default(SILVER)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                         String                     @id @default(uuid())
+  email                      String                     @unique
+  password                   String
+  firstName                  String
+  lastName                   String
+  role                       Role                       @default(USER)
+  phoneNumber                String?
+  gender                     Gender                     @default(M)
+  tier                       Tier                       @default(SILVER)
+  createdAt                  DateTime                   @default(now())
+  updatedAt                  DateTime                   @updatedAt
+  memberTransactionHistories MemberTransactionHistory[]
 }
 
 enum MembershipType {
@@ -53,16 +57,23 @@ enum MembershipType {
 
 enum MembershipStatus {
   PENDING
-  APPROVED
+  ACTIVE
   REJECTED
   SUSPENDED
   EXPIRED
+}
+
+enum MembershipDuration {
+  MONTH
+  QUARTER
+  YEAR
 }
 
 model MembershipApplication {
   id String @id @default(cuid())
 
   membershipType MembershipType
+  balance        Float          @default(0)
 
   // Personal Information
   fullName String
@@ -79,24 +90,49 @@ model MembershipApplication {
   emergencyContactMobileNumber String?
 
   // Membership Details
-  membershipId           String?
-  membershipStartDate    DateTime? @db.Date
-  membershipExpiryDate   DateTime? @db.Date
-  membershipNumber       String?
+  membershipId         String?
+  membershipStartDate  DateTime?           @db.Date
+  membershipExpiryDate DateTime?           @db.Date
+  membershipDuration   MembershipDuration?
+  membershipNumber     String?
 
   // VOTLO Internal Data 
-  applicationReceivedBy  String?
-  membershipNumberIssued String?
+  applicationReceivedBy      String?
+  membershipNumberIssued     String?
   membershipCardSerialNumber String?
-  approvalBy             String?
-  dateApproved           DateTime? @db.Date
-  remarks                String?
+  approvalBy                 String?
+  dateApproved               DateTime? @db.Date
+  remarks                    String?
 
   seen   Boolean          @default(false)
   status MembershipStatus @default(PENDING)
 
+  memberTransactionHistory MemberTransactionHistory[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum TransactionType {
+  REDEEM
+  RENEWAL
+  EARN
+}
+
+model MemberTransactionHistory {
+  id String @id @default(uuid())
+
+  amount          Float
+  transactionType TransactionType
+  note            String?
+
+  membershipId String
+  membership   MembershipApplication @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  performedById String
+  performedBy   User   @relation(fields: [performedById], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model Worker {

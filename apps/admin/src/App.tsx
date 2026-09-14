@@ -19,7 +19,6 @@ import Events from "./pages/Events";
 import Home from "./pages/Home";
 import Membership from "./pages/Memebership";
 import Staff from "./pages/Staff";
-import EditMembership from "./components/membership/edit-membership";
 
 const queryClient = new QueryClient();
 

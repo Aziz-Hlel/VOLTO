@@ -10,6 +10,7 @@ import { GalleryModule } from 'src/gallery/gallery.module';
 import { LadiesNightStatsModule } from 'src/ladies-night-stats/ladies-night-stats.module';
 import { LadiesNightModule } from 'src/ladies-night/ladies-night.module';
 import { MediaModule } from 'src/media/media.module';
+import { MembersTransactionsModule } from 'src/members-transactions/members-transactions.module';
 import { MembersModule } from 'src/members/members.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { RedisModule } from 'src/redis/redis.module';
@@ -51,6 +52,7 @@ import { AppService } from './app.service';
     GalleryModule,
     EmailModule,
     MembersModule,
+    MembersTransactionsModule,
   ],
 
   controllers: [AppController],

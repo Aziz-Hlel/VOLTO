@@ -1,7 +1,7 @@
+import type { StaffRequestDto } from "@/types/staff/StaffRequestDto";
 import type { StaffResponseDto } from "@/types/staff/StaffResponseDto";
 import { apiService } from "../apiService";
 import apiRoutes from "../routes";
-import type { StaffRequestDto } from "@/types/staff/StaffRequestDto";
 
 const staffService = {
   list: () => apiService.getThrowable<StaffResponseDto[]>(apiRoutes.staff.list()),

@@ -2,16 +2,16 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 
-import * as bcrypt from 'bcrypt';
-import { UserMapper } from 'src/users/Mapper/usersMapper';
-import { AuthUser } from 'src/users/Dto/AuthUser';
-import { UserResponseDto } from 'src/users/Dto/userResponse';
-import ENV from 'src/config/env';
 import { EntityType, MediaPurpose, Role, User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import ENV from 'src/config/env';
+import { MediaService } from 'src/media/media.service';
+import { AuthUser } from 'src/users/Dto/AuthUser';
+import { ChangePasswordRequestDto } from 'src/users/Dto/change-password-request.dto';
 import { CreateCustomerDto } from 'src/users/Dto/create-customer';
 import { UpdateUserDto } from 'src/users/Dto/update-user';
-import { MediaService } from 'src/media/media.service';
-import { ChangePasswordRequestDto } from 'src/users/Dto/change-password-request.dto';
+import { UserResponseDto } from 'src/users/Dto/userResponse';
+import { UserMapper } from 'src/users/Mapper/usersMapper';
 
 @Injectable()
 export class AuthService {
@@ -55,7 +55,9 @@ export class AuthService {
 
   async loginAdmin(email: string, password: string) {
     const validatedUser = await this.validateUser(email, password);
-    if (validatedUser.role !== Role.ADMIN && validatedUser.role !== Role.SUPER_ADMIN) {
+    if (
+      ![Role.ADMIN, Role.SUPER_ADMIN, Role.CASHIER, Role.MEDIA_MANAGER].includes(validatedUser.role as any)
+    ) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

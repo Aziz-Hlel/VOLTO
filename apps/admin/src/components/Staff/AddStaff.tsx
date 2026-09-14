@@ -1,6 +1,5 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import type { ApiResponse } from "@/Api/apiService";
+import staffService from "@/Api/services/staff.service";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,30 +11,31 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { Link, useNavigate } from "react-router-dom";
-import type { ApiResponse } from "@/Api/apiService";
-import { useQueryClient } from "@tanstack/react-query";
 import { Gender } from "@/types/enums/Gender";
+import { Roles, StaffRoles } from "@/types/enums/Roles";
 import { Tier } from "@/types/enums/Tier";
-import { Roles } from "@/types/enums/Roles";
 import type { StaffResponseDto } from "@/types/staff/StaffResponseDto";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import { useQueryClient } from "@tanstack/react-query";
+import { produce } from "immer";
+import { ChevronsUpDown } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Command, CommandGroup, CommandItem } from "../ui/command";
+import { PhoneInput } from "../ui/phone-input";
+import { Popover } from "../ui/popover";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import ImageUpload from "./ImageUpload";
-import { Popover } from "../ui/popover";
-import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { Command, CommandGroup, CommandItem } from "../ui/command";
-import staffService from "@/Api/services/staff.service";
-import { ChevronsUpDown } from "lucide-react";
-import { PhoneInput } from "../ui/phone-input";
-import { produce } from "immer";
 
 const formSchema = z
   .object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
     email: z.email(),
-    role: z.enum(Object.values(Roles)),
+    role: z.enum(StaffRoles),
     phoneNumber: z.string().optional(),
     gender: z.enum(Object.values(Gender)),
     tier: z.enum(Object.values(Tier)),
@@ -77,7 +77,7 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
         firstName: "",
         lastName: "",
         email: "",
-        role: "WAITER",
+        role: "WAITER" as const,
         phoneNumber: "",
         gender: "M",
         tier: "GOLD",

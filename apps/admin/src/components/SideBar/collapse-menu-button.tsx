@@ -1,28 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronDown, Dot, type LucideIcon } from "lucide-react";
+import { useState } from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
 import { Link } from "react-router-dom";
-
-type Submenu = {
-  href: string;
-  label: string;
-  active?: boolean;
-};
+import type { Submenu } from "./sidebar-data";
 
 interface CollapseMenuButtonProps {
   icon: LucideIcon;

@@ -18,15 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { membershipStatus, membershipType } from "@/types/enums/enums";
 import type { UpdateMemberDto } from "@/types/member/update-member.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -55,7 +47,6 @@ const nullableDate = z
 
 // ── Form schema ───────────────────────────────────────────────────────────────
 const EditMembershipSchema = z.object({
-  membershipType: z.enum([membershipType.REGULAR, membershipType.VIP]),
   fullName: z.string().min(1, "Full name is required"),
   email: z.email("Invalid email"),
   cprId: requiredString,
@@ -65,10 +56,7 @@ const EditMembershipSchema = z.object({
   emergencyContactName: requiredString,
   emergencyContactRelationship: requiredString,
   emergencyContactMobileNumber: requiredString,
-  status: z.enum(membershipStatus),
   membershipId: nullableString,
-  membershipStartDate: nullableDate,
-  membershipExpiryDate: nullableDate,
   membershipNumber: nullableString,
   applicationReceivedBy: nullableString,
   membershipNumberIssued: nullableString,
@@ -96,14 +84,6 @@ interface EditMembershipFormProps {
   onClose: (open: boolean) => void;
 }
 
-// ── Helper ────────────────────────────────────────────────────────────────────
-function toDateInputValue(value?: string | Date | null): string {
-  if (!value) return "";
-  const d = new Date(value as string);
-  if (isNaN(d.getTime())) return "";
-  return d.toISOString().split("T")[0];
-}
-
 // ── Form Child Component ──────────────────────────────────────────────────────
 const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFormProps) => {
   const queryClient = useQueryClient();
@@ -111,7 +91,6 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
   const form = useForm<EditMembershipFormValues>({
     resolver: zodResolver(EditMembershipSchema),
     defaultValues: {
-      membershipType: membership.membershipType,
       fullName: membership.fullName,
       email: membership.email,
       cprId: membership.cprId ?? "",
@@ -121,10 +100,7 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
       emergencyContactName: membership.emergencyContactName ?? "",
       emergencyContactRelationship: membership.emergencyContactRelationship ?? "",
       emergencyContactMobileNumber: membership.emergencyContactMobileNumber ?? "",
-      status: membership.status,
       membershipId: membership.membershipId ?? "",
-      membershipStartDate: membership.membershipStartDate,
-      membershipExpiryDate: membership.membershipExpiryDate,
       membershipNumber: membership.membershipNumber ?? "",
       applicationReceivedBy: membership.applicationReceivedBy ?? "",
       membershipNumberIssued: membership.membershipNumberIssued ?? "",
@@ -323,59 +299,6 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="membershipType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Membership Type</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={membershipType.REGULAR}>Regular</SelectItem>
-                        <SelectItem value={membershipType.VIP}>VIP</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Object.values(membershipStatus).map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status.toLowerCase()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="membershipNumber"
                 render={({ field }) => (
                   <FormItem>
@@ -395,32 +318,6 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
                     <FormLabel>Membership ID</FormLabel>
                     <FormControl>
                       <Input placeholder="Member ID" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="membershipStartDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} value={field.value} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="membershipExpiryDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Expiry Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} value={field.value} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

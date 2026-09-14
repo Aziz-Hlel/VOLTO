@@ -1,3 +1,4 @@
+import { StaffRoles } from "@/types/enums/Roles";
 import {
   CalendarDays,
   LifeBuoy,
@@ -9,22 +10,24 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-type Submenu = {
+export type Submenu = {
   href: string;
   label: string;
   active?: boolean;
 };
 
-type Menu = {
+export type Menu = {
   href: string;
   label: string;
   active?: boolean;
   icon: LucideIcon;
   submenus?: Submenu[];
+  roles?:StaffRoles[];
 };
 
 type Group = {
   groupLabel: string;
+  roles?: StaffRoles[];
   menus: Menu[];
 };
 
@@ -32,6 +35,7 @@ export function getMenuList(pathname: string): Group[] {
   return [
     {
       groupLabel: "Contents",
+      roles: [StaffRoles.MEDIA_MANAGER],
       menus: [
         {
           href: "/events",
@@ -42,6 +46,7 @@ export function getMenuList(pathname: string): Group[] {
     },
     {
       groupLabel: "Contents",
+      roles: [StaffRoles.MEDIA_MANAGER],
       menus: [
         {
           href: "/ladies-night",
@@ -57,6 +62,7 @@ export function getMenuList(pathname: string): Group[] {
     },
     {
       groupLabel: "Settings",
+      roles: [StaffRoles.CASHIER],
       menus: [
         {
           href: "/staff",

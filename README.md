@@ -29,5 +29,33 @@ sudo apt install make -y
 Open WSL and run the following command:
 
 ```bash
-make docker-dev-up
+make docker-infra-up
 ```
+
+afterwards run apps locally using for backend :
+
+```bash
+cd apps/api
+
+pnpm run start:dev
+```
+
+and for frontend:
+
+```bash
+cd apps/web
+
+pnpm run dev
+```
+
+and admin dashboard:
+
+```bash
+cd apps/admin
+
+pnpm run dev
+```
+
+### Some technical decisions :
+
+- why i stopped using cuid and migrated to uuid for new tables : because cuid and prisma fcking sucks, this ofrmat doesnt have a validator by default and prisma now recommending cuid2, like aight fck this shit , it s just better to stick with standards and use uuid rather than dealing with this shit

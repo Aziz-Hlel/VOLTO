@@ -1,5 +1,5 @@
 import type { Gender } from "../enums/Gender";
-import type { Roles } from "../enums/Roles";
+import type { StaffRoles } from "../enums/Roles";
 import type { Tier } from "../enums/Tier";
 
 export type StaffResponseDto = {
@@ -7,7 +7,7 @@ export type StaffResponseDto = {
   email: string;
   firstName: string;
   lastName: string;
-  role: Roles;
+  role: StaffRoles;
   phoneNumber?: string;
   gender: Gender;
   tier: Tier;

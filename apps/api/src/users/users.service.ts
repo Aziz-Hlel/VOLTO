@@ -7,24 +7,25 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from 'src/users/Dto/create-user';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { EntityType, MediaPurpose, Prisma, Role } from '@prisma/client';
-import { MediaService } from 'src/media/media.service';
-import { CreateCustomerDto } from './Dto/create-customer';
-import { UserMapper } from './Mapper/usersMapper';
-import { CreateStaffDto } from './Dto/create-staff.dto';
-import { UpdateStaffDto } from './Dto/update-staff.dto';
-import { EmailService } from 'src/email/email.service';
+import * as bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import Redis from 'ioredis';
+import { EmailService } from 'src/email/email.service';
+import { MediaService } from 'src/media/media.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
+import { STAFF_ROLES } from 'src/shared/staffRoles';
+import { CreateUserDto } from 'src/users/Dto/create-user';
+import { ChangePasswordRequestDto } from './Dto/change-password-request.dto';
 import { ConfirmPasswordRequestDto } from './Dto/confirm-password-request.dto';
 import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto';
-import { UpdateUserDto } from './Dto/update-user';
-import { ChangePasswordRequestDto } from './Dto/change-password-request.dto';
+import { CreateCustomerDto } from './Dto/create-customer';
+import { CreateStaffDto } from './Dto/create-staff.dto';
 import { GetUsersQuery, Sort } from './Dto/get-users-query';
+import { UpdateStaffDto } from './Dto/update-staff.dto';
+import { UpdateUserDto } from './Dto/update-user';
+import { UserMapper } from './Mapper/usersMapper';
 
 @Injectable()
 export class UsersService {
@@ -131,10 +132,11 @@ export class UsersService {
     const staff = await this.prisma.user.findMany({
       where: {
         role: {
-          in: [Role.ADMIN, Role.WAITER, Role.SUPER_ADMIN],
+          in: STAFF_ROLES,
         },
       },
     });
+
     const fetchStaffAvatars = staff.map(async (user) => {
       const avatar = await this.mediaService.getMediaKeyAndUrlNoException({
         entityType: EntityType.USER,
