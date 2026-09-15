@@ -13,8 +13,9 @@ export type Membership = {
   emergencyContactRelationship: string | null;
   emergencyContactMobileNumber: string | null;
   membershipId: string | null;
-  membershipStartDate: string | null;
-  membershipExpiryDate: string | null;
+  startDate: string | null;
+  expiryDate: string | null;
+  duration: string | null;
   membershipNumber: string | null;
   applicationReceivedBy: string | null;
   membershipNumberIssued: string | null;

@@ -56,6 +56,11 @@ cd apps/admin
 pnpm run dev
 ```
 
+## How Seed Data
+
+cd to api folder
+run `npx ts-node .\src\seed\seed.ts`
+
 ### Some technical decisions :
 
 - why i stopped using cuid and migrated to uuid for new tables : because cuid and prisma fcking sucks, this ofrmat doesnt have a validator by default and prisma now recommending cuid2, like aight fck this shit , it s just better to stick with standards and use uuid rather than dealing with this shit

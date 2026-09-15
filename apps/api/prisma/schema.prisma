@@ -73,7 +73,6 @@ model MembershipApplication {
   id String @id @default(cuid())
 
   membershipType MembershipType
-  balance        Float          @default(0)
 
   // Personal Information
   fullName String
@@ -89,25 +88,42 @@ model MembershipApplication {
   emergencyContactRelationship String?
   emergencyContactMobileNumber String?
 
+  seen Boolean @default(false)
+
+  membership Membership?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Membership {
+  id String @id @default(uuid())
+
   // Membership Details
-  membershipId         String?
-  membershipStartDate  DateTime?           @db.Date
-  membershipExpiryDate DateTime?           @db.Date
-  membershipDuration   MembershipDuration?
-  membershipNumber     String?
+  membershipId         Int                 @unique @default(autoincrement())
+  startDate  DateTime            @db.Date @map("membershipStartDate")
+  expiryDate DateTime            @db.Date @map("membershipExpiryDate")
+  duration   MembershipDuration
+  membershipNumber     Int                 @unique @default(autoincrement())
 
   // VOTLO Internal Data 
   applicationReceivedBy      String?
   membershipNumberIssued     String?
   membershipCardSerialNumber String?
   approvalBy                 String?
-  dateApproved               DateTime? @db.Date
+  dateApproved               DateTime @db.Date @default(now())
   remarks                    String?
 
-  seen   Boolean          @default(false)
-  status MembershipStatus @default(PENDING)
+  status MembershipStatus @default(ACTIVE)
 
   memberTransactionHistory MemberTransactionHistory[]
+
+  balance Float @default(0)
+
+  current_period_end DateTime
+
+  membershipApplicationId String @unique
+  membershipApplication   MembershipApplication @relation(fields: [membershipApplicationId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,7 +143,7 @@ model MemberTransactionHistory {
   note            String?
 
   membershipId String
-  membership   MembershipApplication @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  membership   Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
 
   performedById String
   performedBy   User   @relation(fields: [performedById], references: [id])

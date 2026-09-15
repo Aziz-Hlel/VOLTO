@@ -1,9 +1,7 @@
-import { MembershipApplication } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsIn, IsNumber, IsOptional, IsPositive, Min } from 'class-validator';
 
-export type SortMember = Pick<
-  MembershipApplication,
+export type SortMember =
   | 'membershipType'
   | 'fullName'
   | 'email'
@@ -11,8 +9,7 @@ export type SortMember = Pick<
   | 'nationality'
   | 'seen'
   | 'status'
-  | 'createdAt'
->;
+  | 'createdAt';
 
 export class GetMembersQuery {
   @IsOptional()
@@ -31,6 +28,16 @@ export class GetMembersQuery {
 
   @IsOptional()
   @Type(() => String)
+  @IsIn([
+    'membershipType',
+    'fullName',
+    'email',
+    'cprId',
+    'nationality',
+    'seen',
+    'status',
+    'createdAt',
+  ])
   sort?: SortMember;
 
   @IsOptional()

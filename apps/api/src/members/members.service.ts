@@ -1,308 +1,96 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { MembershipStatus, Prisma, Role } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { MembershipStatus, TransactionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
-import { toCalendarDate } from 'src/utils/dayjs';
-import { GetMembersQuery, SortMember } from './dto/get-members-query.dto';
-import { SubmitAuthonticatedMemberApplicationDto } from './dto/submit-auth-member-application.dto';
-import { SubmitMemberApplicationDto } from './dto/submit-member-application.dto';
+import { ApproveMembershipDto } from './dto/approve-membership.dto';
+import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { membershipDurationToDays } from './utils/membershipDurationToDays';
+import { membershipTypeBalance } from './utils/membershipTypeBalance';
 
 @Injectable()
 export class MembersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createMemberDto: SubmitMemberApplicationDto) {
-    const memberEmail = await this.prisma.membershipApplication.findUnique({
-      where: {
-        email: createMemberDto.email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (memberEmail) {
-      throw new ConflictException('Member email already exists');
-    }
-
-    await this.prisma.membershipApplication.create({
-      data: {
-        email: createMemberDto.email,
-        fullName: createMemberDto.fullName,
-        cprId: createMemberDto.cprId,
-        nationality: createMemberDto.nationality,
-        dateOfBirth: createMemberDto.dateOfBirth ? new Date(createMemberDto.dateOfBirth) : null,
-        mobileNumber: createMemberDto.mobileNumber,
-        emergencyContactName: createMemberDto.emergencyContactName,
-        emergencyContactRelationship: createMemberDto.emergencyContactRelationship,
-        emergencyContactMobileNumber: createMemberDto.emergencyContactMobileNumber,
-        membershipType: createMemberDto.membershipType,
-      },
-    });
-
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: createMemberDto.email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!user) {
-      const hashedPassword = await bcrypt.hash(createMemberDto.password, 10);
-      await this.prisma.user.create({
-        data: {
-          email: createMemberDto.email,
-          password: hashedPassword,
-          firstName: createMemberDto.fullName.split(' ')[0],
-          lastName: createMemberDto.fullName.split(' ').slice(1).join(' '),
-          role: Role.USER,
-          phoneNumber: createMemberDto.mobileNumber,
-        },
-      });
-    }
-
-    return { success: true, userExists: !!user };
+  create(createMemberDto: CreateMemberDto) {
+    return 'This action adds a new member';
   }
 
-  async createAuthonticatedUser(
-    createMemberDto: SubmitAuthonticatedMemberApplicationDto,
-    user: AuthUser,
-  ) {
-    const memberEmail = await this.prisma.membershipApplication.findUnique({
+  findAll() {
+    return `This action returns all members`;
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} member`;
+  }
+
+  update(id: number, updateMemberDto: UpdateMemberDto) {
+    return `This action updates a #${id} member`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} member`;
+  }
+
+  approveApplication = async (id: string, user: AuthUser, payload: ApproveMembershipDto) => {
+    const membershipApplication = await this.prisma.membershipApplication.findUnique({
       where: {
-        email: user.email,
+        id,
       },
       select: {
         id: true,
+        membershipType: true,
+        membership: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
-    if (memberEmail) {
-      throw new ConflictException('Member email already exists');
+    if (!membershipApplication) {
+      throw new NotFoundException('Membership application not found');
+    }
+    if (membershipApplication.membership) {
+      throw new BadRequestException('Membership application already exists');
     }
 
-    await this.prisma.membershipApplication.create({
-      data: {
-        email: user.email,
-        fullName: createMemberDto.fullName,
-        cprId: createMemberDto.cprId,
-        nationality: createMemberDto.nationality,
-        dateOfBirth: createMemberDto.dateOfBirth ? new Date(createMemberDto.dateOfBirth) : null,
-        mobileNumber: createMemberDto.mobileNumber,
-        emergencyContactName: createMemberDto.emergencyContactName,
-        emergencyContactRelationship: createMemberDto.emergencyContactRelationship,
-        emergencyContactMobileNumber: createMemberDto.emergencyContactMobileNumber,
-        membershipType: createMemberDto.membershipType,
-      },
+    const balance = membershipTypeBalance[membershipApplication.membershipType];
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
+
+    const current_period_end = new Date();
+    current_period_end.setDate(expiryDate.getDate() + 30);
+
+    await this.prisma.$transaction(async (tx) => {
+      const membership = await tx.membership.create({
+        data: {
+          membershipApplicationId: id,
+          status: MembershipStatus.ACTIVE,
+          balance: balance,
+
+          duration: payload.duration,
+          applicationReceivedBy: payload.applicationReceivedBy,
+          membershipNumberIssued: payload.membershipNumberIssued,
+          membershipCardSerialNumber: payload.membershipCardSerialNumber,
+          approvalBy: payload.approvalBy,
+          remarks: payload.remarks,
+          startDate: new Date(),
+          expiryDate: expiryDate,
+          current_period_end,
+        },
+      });
+      await tx.memberTransactionHistory.create({
+        data: {
+          membershipId: membership.id,
+          amount: balance,
+          transactionType: TransactionType.RENEWAL,
+          note: 'Membership renewal',
+          performedById: user.id,
+        },
+      });
     });
 
     return { success: true };
-  }
-
-  async findAll(query: GetMembersQuery) {
-    const skip = (query.page - 1) * query.limit;
-    const take = query.limit;
-
-    const where: Prisma.MembershipApplicationWhereInput = {
-      OR: query.search
-        ? [
-            { fullName: { contains: query.search, mode: 'insensitive' } },
-            { email: { contains: query.search, mode: 'insensitive' } },
-          ]
-        : undefined,
-    };
-
-    const orderBy = () => {
-      if (query.sort) {
-        const sort = String(query.sort) as keyof SortMember;
-        return {
-          [sort]: query.order ?? 'asc',
-        };
-      }
-      return {
-        createdAt: 'desc' as const,
-      };
-    };
-
-    try {
-      const membersQuery = this.prisma.membershipApplication.findMany({
-        where,
-        select: {
-          id: true,
-          membershipType: true,
-          fullName: true,
-          email: true,
-          cprId: true,
-          nationality: true,
-          seen: true,
-          status: true,
-          createdAt: true,
-        },
-        orderBy: orderBy(),
-        skip,
-        take,
-      });
-
-      const countQuery = this.prisma.membershipApplication.count({
-        where,
-      });
-
-      const [members, count] = await Promise.all([membersQuery, countQuery]);
-
-      return {
-        data: members,
-        pagination: {
-          total: count,
-          page: query.page,
-          totalPages: Math.ceil(count / query.limit),
-          limit: query.limit,
-        },
-      };
-    } catch (e) {
-      console.log(e.message);
-      throw new InternalServerErrorException(e.message);
-    }
-  }
-
-  async findOne(id: string) {
-    const member = await this.prisma.membershipApplication.findUnique({
-      where: { id },
-    });
-
-    if (!member) {
-      throw new NotFoundException('Member application not found');
-    }
-    return {
-      ...member,
-      dateOfBirth: toCalendarDate(member.dateOfBirth),
-      membershipStartDate: toCalendarDate(member.membershipStartDate),
-      membershipExpiryDate: toCalendarDate(member.membershipExpiryDate),
-      dateApproved: toCalendarDate(member.dateApproved),
-      createdAt: toCalendarDate(member.createdAt),
-      updatedAt: toCalendarDate(member.updatedAt),
-    };
-  }
-
-  async findOneByEmail(email: string) {
-    const member = await this.prisma.membershipApplication.findUnique({
-      where: { email },
-    });
-
-    if (!member) {
-      throw new NotFoundException('Member application not found');
-    }
-    return {
-      ...member,
-      dateOfBirth: toCalendarDate(member.dateOfBirth),
-      membershipStartDate: toCalendarDate(member.membershipStartDate),
-      membershipExpiryDate: toCalendarDate(member.membershipExpiryDate),
-      dateApproved: toCalendarDate(member.dateApproved),
-      createdAt: toCalendarDate(member.createdAt),
-      updatedAt: toCalendarDate(member.updatedAt),
-    };
-  }
-
-  async update(id: string, updateMemberDto: UpdateMemberDto) {
-    const member = await this.prisma.membershipApplication.findUnique({
-      where: { id },
-    });
-
-    if (!member) {
-      throw new NotFoundException('Member application not found');
-    }
-
-    if (updateMemberDto.email && updateMemberDto.email !== member.email) {
-      const emailExists = await this.prisma.membershipApplication.findUnique({
-        where: { email: updateMemberDto.email },
-      });
-      if (emailExists) {
-        throw new ConflictException('Member email already exists');
-      }
-    }
-
-    try {
-      const updatedMember = await this.prisma.membershipApplication.update({
-        where: { id },
-        data: {
-          fullName: updateMemberDto.fullName,
-          email: updateMemberDto.email,
-          cprId: updateMemberDto.cprId,
-          nationality: updateMemberDto.nationality,
-          dateOfBirth: updateMemberDto.dateOfBirth ? new Date(updateMemberDto.dateOfBirth) : null,
-          mobileNumber: updateMemberDto.mobileNumber,
-          emergencyContactName: updateMemberDto.emergencyContactName,
-          emergencyContactRelationship: updateMemberDto.emergencyContactRelationship,
-          emergencyContactMobileNumber: updateMemberDto.emergencyContactMobileNumber,
-
-          membershipId: updateMemberDto.membershipId,
-          membershipNumber: updateMemberDto.membershipNumber,
-          applicationReceivedBy: updateMemberDto.applicationReceivedBy,
-          membershipNumberIssued: updateMemberDto.membershipNumberIssued,
-          membershipCardSerialNumber: updateMemberDto.membershipCardSerialNumber,
-          approvalBy: updateMemberDto.approvalBy,
-          dateApproved: updateMemberDto.dateApproved
-            ? new Date(updateMemberDto.dateApproved)
-            : null,
-          remarks: updateMemberDto.remarks,
-        },
-      });
-
-      return updatedMember;
-    } catch (e) {
-      console.log(e.message);
-      throw new InternalServerErrorException(e.message);
-    }
-  }
-
-  async updateStatus(id: string, status: MembershipStatus) {
-    const member = await this.prisma.membershipApplication.findUnique({
-      where: { id },
-    });
-
-    if (!member) {
-      throw new NotFoundException('Member application not found');
-    }
-
-    try {
-      const updated = await this.prisma.membershipApplication.update({
-        where: { id },
-        data: { status },
-      });
-
-      return updated;
-    } catch (e) {
-      console.log(e.message);
-      throw new InternalServerErrorException(e.message);
-    }
-  }
-
-  async remove(id: string) {
-    const member = await this.prisma.membershipApplication.findUnique({
-      where: { id },
-    });
-
-    if (!member) {
-      throw new NotFoundException('Member application not found');
-    }
-
-    try {
-      const deleted = await this.prisma.membershipApplication.delete({
-        where: { id },
-      });
-
-      return deleted;
-    } catch (e) {
-      console.log(e.message);
-      throw new InternalServerErrorException(e.message);
-    }
-  }
+  };
 }

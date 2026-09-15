@@ -35,15 +35,8 @@ const requiredString = z
   .string("This field is required")
   .nonempty("This field is required")
   .max(255, "Maximum length of 255 characters exceeded");
-const nullableString = z
-  .string()
-  .nullish()
-  .transform((val) => (val === "" || val === undefined || val === null ? null : val));
 
-const nullableDate = z
-  .string()
-  .nullable()
-  .transform((val) => (val === "" ? null : val));
+const requiredDate = z.string().min(1, "Date of birth is required");
 
 // ── Form schema ───────────────────────────────────────────────────────────────
 const EditMembershipSchema = z.object({
@@ -51,19 +44,11 @@ const EditMembershipSchema = z.object({
   email: z.email("Invalid email"),
   cprId: requiredString,
   nationality: requiredString,
-  dateOfBirth: nullableDate,
+  dateOfBirth: requiredDate,
   mobileNumber: requiredString,
   emergencyContactName: requiredString,
   emergencyContactRelationship: requiredString,
   emergencyContactMobileNumber: requiredString,
-  membershipId: nullableString,
-  membershipNumber: nullableString,
-  applicationReceivedBy: nullableString,
-  membershipNumberIssued: nullableString,
-  membershipCardSerialNumber: nullableString,
-  approvalBy: nullableString,
-  dateApproved: nullableDate,
-  remarks: nullableString,
 });
 
 type EditMembershipFormValues = z.infer<typeof EditMembershipSchema>;
@@ -95,19 +80,11 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
       email: membership.email,
       cprId: membership.cprId ?? "",
       nationality: membership.nationality ?? "",
-      dateOfBirth: membership.dateOfBirth,
+      dateOfBirth: membership.dateOfBirth ?? "",
       mobileNumber: membership.mobileNumber ?? "",
       emergencyContactName: membership.emergencyContactName ?? "",
       emergencyContactRelationship: membership.emergencyContactRelationship ?? "",
       emergencyContactMobileNumber: membership.emergencyContactMobileNumber ?? "",
-      membershipId: membership.membershipId ?? "",
-      membershipNumber: membership.membershipNumber ?? "",
-      applicationReceivedBy: membership.applicationReceivedBy ?? "",
-      membershipNumberIssued: membership.membershipNumberIssued ?? "",
-      membershipCardSerialNumber: membership.membershipCardSerialNumber ?? "",
-      approvalBy: membership.approvalBy ?? "",
-      dateApproved: membership.dateApproved,
-      remarks: membership.remarks ?? "",
     },
   });
 
@@ -142,7 +119,7 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
             Edit Membership
           </DialogTitle>
           <DialogDescription>
-            Update the membership details below. Click <strong>Save changes</strong> when
+            Update the member application details below. Click <strong>Save changes</strong> when
             you&apos;re done.
           </DialogDescription>
         </DialogHeader>
@@ -283,132 +260,6 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
                     <FormLabel>Contact Mobile</FormLabel>
                     <FormControl>
                       <Input placeholder="+973 3300 0001" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </section>
-
-          {/* Membership Details */}
-          <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Membership Details
-            </h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="membershipNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Membership Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="MEM-0001" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="membershipId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Membership ID</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Member ID" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </section>
-
-          {/* VOLTO Internal Data */}
-          <section>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              VOLTO Internal Data
-            </h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="applicationReceivedBy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Application Received By</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Staff name" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="approvalBy"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Approved By</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Manager name" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dateApproved"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date Approved</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} value={field.value} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="membershipNumberIssued"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Membership Number Issued</FormLabel>
-                    <FormControl>
-                      <Input placeholder="MEM-XXXX" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="membershipCardSerialNumber"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
-                    <FormLabel>Card Serial Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="SN-0001" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="remarks"
-                render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
-                    <FormLabel>Remarks</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Any additional notes…"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

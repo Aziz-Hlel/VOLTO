@@ -1,27 +1,12 @@
-import type { MembershipType } from "../enums/enums";
-
 export class UpdateMemberDto {
     // Personal Information
-    membershipType: MembershipType;
     fullName: string;
-    cprId?: string;
-    nationality?: string;
+    cprId: string | null;
+    nationality: string | null;
     dateOfBirth: string;
-    mobileNumber?: string;
+    mobileNumber: string | null;
     email: string;
-    emergencyContactName?: string;
-    emergencyContactRelationship?: string;
-    emergencyContactMobileNumber?: string;
-
-    // Membership Details
-    membershipId?: string | null;
-    membershipNumber?: string;
-
-    // VOTLO Internal Data
-    applicationReceivedBy?: string;
-    membershipNumberIssued?: string;
-    membershipCardSerialNumber?: string;
-    approvalBy?: string;
-    dateApproved?: string;
-    remarks?: string;
+    emergencyContactName: string | null;
+    emergencyContactRelationship: string | null;
+    emergencyContactMobileNumber: string | null;
 }

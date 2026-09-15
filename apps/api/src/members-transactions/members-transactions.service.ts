@@ -11,7 +11,7 @@ export class MembersTransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createMembersTransactionDto: CreateMembersTransactionDto, user: AuthUser) {
-    const membership = await this.prisma.membershipApplication.findUnique({
+    const membership = await this.prisma.membership.findUnique({
       where: {
         id: createMembersTransactionDto.membershipId,
       },
@@ -42,7 +42,7 @@ export class MembersTransactionsService {
           performedById: user.id,
         },
       });
-      await tx.membershipApplication.update({
+      await tx.membership.update({
         where: {
           id: createMembersTransactionDto.membershipId,
         },

@@ -23,7 +23,7 @@ export class AuthService {
 
   static jwtExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '60m' : '1d';
 
-  static refreshExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '7d' : '30d';
+  static refreshExpirationTime = ['production', 'stage'].includes(ENV.NODE_ENV) ? '30d' : '30d';
 
   async registerCustomer(dto: CreateCustomerDto) {
     const user = await this.usersService.registerCustomer(dto);

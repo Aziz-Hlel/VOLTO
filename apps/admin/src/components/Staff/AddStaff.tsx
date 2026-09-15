@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Gender } from "@/types/enums/Gender";
-import { Roles, StaffRoles } from "@/types/enums/Roles";
+import { roleMapperToDisplay, StaffRoles } from "@/types/enums/Roles";
 import { Tier } from "@/types/enums/Tier";
 import type { StaffResponseDto } from "@/types/staff/StaffResponseDto";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -218,17 +218,15 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
                     <PopoverContent className="w-[200px] p-0">
                       <Command>
                         <CommandGroup>
-                          {Object.keys(StaffRoles).map((roleKey) =>
-                            roleKey === "SUPER_ADMIN" || roleKey === "USER" ? null : (
-                              <CommandItem
-                                key={roleKey}
-                                value={StaffRoles[roleKey as keyof typeof Roles]}
-                                onSelect={() => field.onChange(roleKey)}
-                              >
-                                {roleKey}
-                              </CommandItem>
-                            ),
-                          )}
+                          {Object.values(StaffRoles).map((roleKey) => (
+                            <CommandItem
+                              key={roleKey}
+                              value={roleKey}
+                              onSelect={() => field.onChange(roleKey)}
+                            >
+                              {roleMapperToDisplay[roleKey]}
+                            </CommandItem>
+                          ))}
                         </CommandGroup>
                       </Command>
                     </PopoverContent>
