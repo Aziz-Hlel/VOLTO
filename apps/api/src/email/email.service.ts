@@ -76,15 +76,16 @@ export class EmailService {
       }, // required for SMTP
     });
 
-    this.transporter
-      .verify()
-      .then(() => {
-        this.logger.log('✅ Connected to email server');
-      })
-      .catch((error) => {
-        this.logger.fatal('❌ Unable to connect to email server');
-        this.logger.error(error);
-      });
+    // !! comented cuz in dev it s fcking up 
+    // this.transporter
+    //   .verify()
+    //   .then(() => {
+    //     this.logger.log('✅ Connected to email server');
+    //   })
+    //   .catch((error) => {
+    //     this.logger.fatal('❌ Unable to connect to email server');
+    //     this.logger.error(error);
+    //   });
   }
 
   async sendEmail<T extends ISendEmail>(

@@ -1,7 +1,7 @@
-import { membershipService } from "@/Api/services/membership.service";
+import { membershipApplicationService } from "@/Api/services/membership.service";
 import { Button } from "@/components/ui/button";
-import type { MemberResponse, MembershipApplication } from "@/types/member/Membership";
 import { membershipStatus, membershipType } from "@/types/enums/enums";
+import type { MemberResponse, MembershipApplication } from "@/types/member/Membership";
 import { useQuery } from "@tanstack/react-query";
 import {
   AlertCircle,
@@ -26,7 +26,9 @@ import {
   UserCheck,
   UserCircle,
 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ApproveMembershipCard from "./approve-membership-card";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -55,29 +57,36 @@ const fmtDateTime = (dateStr: string | null | undefined) => {
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   [membershipStatus.APPROVED]: {
     label: "Approved",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
+    color:
+      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
   },
   [membershipStatus.PENDING]: {
     label: "Pending",
-    color: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
+    color:
+      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
   },
   [membershipStatus.REJECTED]: {
     label: "Rejected",
-    color: "bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20",
+    color:
+      "bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20",
   },
   [membershipStatus.SUSPENDED]: {
     label: "Suspended",
-    color: "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
+    color:
+      "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
   },
   [membershipStatus.EXPIRED]: {
     label: "Expired",
-    color: "bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-500/10 dark:text-gray-400 dark:border-gray-500/20",
+    color:
+      "bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-500/10 dark:text-gray-400 dark:border-gray-500/20",
   },
 };
 
 const getStatusCfg = (s: string | null) =>
-  (s && STATUS_CONFIG[s]) ??
-  { label: s ?? "—", color: "bg-gray-100 text-gray-600 border-gray-200" };
+  (s && STATUS_CONFIG[s]) ?? {
+    label: s ?? "—",
+    color: "bg-gray-100 text-gray-600 border-gray-200",
+  };
 
 // ── Shared components ─────────────────────────────────────────────────────────
 
@@ -172,31 +181,29 @@ const ActiveMembershipSection = ({ m }: { m: MemberResponse }) => (
       <StatusBadge status={m.status} />
     </div>
 
-    <Field label="Membership #" value={m.membershipNumber ?? null} icon={Hash} mono />
+    <Field label="Membership Number" value={m.membershipNumber ?? null} icon={Hash} mono />
     <Field label="Membership ID" value={m.membershipId ?? null} icon={Hash} mono />
     <Field label="Card Serial #" value={m.membershipCardSerialNumber} icon={CreditCard} />
     <Field label="Issued Number" value={m.membershipNumberIssued} icon={Hash} />
     <Field label="Duration" value={m.duration} icon={Clock} />
-    <Field label="Start Date" value={fmt(m.startDate)} icon={CalendarDays} />
-    <Field label="Expiry Date" value={fmt(m.expiryDate)} icon={CalendarDays} />
-    <Field label="Period End" value={fmt(m.current_period_end)} icon={CalendarDays} />
     <Field
       label="Balance"
       value={m.balance != null ? `BHD ${m.balance.toFixed(3)}` : null}
       icon={CreditCard}
     />
-    <Field label="Approved By" value={m.approvalBy} icon={UserCheck} />
-    <Field label="Date Approved" value={fmtDateTime(m.dateApproved)} icon={CalendarDays} />
     <Field label="Received By" value={m.applicationReceivedBy} icon={UserCircle} />
+    <Field label="Approved By" value={m.approvalBy} icon={UserCheck} />
+    <Field label="Date Approved" value={fmtDateTime(m.startDate)} icon={CalendarDays} />
+    <Field label="Expiry Date" value={fmt(m.expiryDate)} icon={CalendarDays} />
     <Field label="Remarks" value={m.remarks} icon={Shield} />
-    <Field label="Record Created" value={fmtDateTime(m.createdAt)} icon={Clock} />
-    <Field label="Record Updated" value={fmtDateTime(m.updatedAt)} icon={Clock} />
   </Section>
 );
 
 // ── Pending Banner ────────────────────────────────────────────────────────────
 
-const PendingBanner = () => (
+// ── Pending Banner ────────────────────────────────────────────────────────────
+
+const PendingBanner = ({ onAccept }: { onAccept?: () => void }) => (
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 dark:border-amber-500/20 dark:bg-amber-500/5">
     <div className="flex items-start gap-3">
       <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-500/10">
@@ -211,6 +218,7 @@ const PendingBanner = () => (
     </div>
     <Button
       size="sm"
+      onClick={onAccept}
       className="shrink-0 gap-2 bg-amber-500 text-white font-semibold hover:bg-amber-600 transition-colors"
     >
       <BadgeCheck className="h-4 w-4" />
@@ -248,9 +256,11 @@ const TransactionPlaceholder = () => (
 const MembershipOverviewContent = ({
   application,
   onEdit,
+  onApprove,
 }: {
   application: MembershipApplication;
   onEdit: () => void;
+  onApprove: () => void;
 }) => {
   const isVip = application.membershipType === membershipType.VIP;
 
@@ -304,19 +314,14 @@ const MembershipOverviewContent = ({
       </div>
 
       {/* ── Pending banner ── */}
-      {application.membership === null && <PendingBanner />}
+      {application.membership === null && <PendingBanner onAccept={onApprove} />}
 
       {/* ── Application details ── */}
       <Section title="Application Details" icon={User}>
-        <Field label="Application ID" value={application.id} icon={Hash} mono />
         <Field label="Full Name" value={application.fullName} icon={User} />
         <Field label="Email" value={application.email} icon={Mail} />
         <Field label="Mobile Number" value={application.mobileNumber} icon={Phone} />
-        <Field
-          label="Date of Birth"
-          value={fmt(application.dateOfBirth)}
-          icon={CalendarDays}
-        />
+        <Field label="Date of Birth" value={fmt(application.dateOfBirth)} icon={CalendarDays} />
         <Field label="CPR / ID" value={application.cprId} icon={Shield} mono />
         <Field label="Nationality" value={application.nationality} icon={MapPin} />
         <div className="flex items-start justify-between gap-6 py-3 border-b border-border last:border-0">
@@ -326,30 +331,14 @@ const MembershipOverviewContent = ({
           </div>
           <TypeBadge type={application.membershipType} />
         </div>
-        <Field
-          label="Applied On"
-          value={fmtDateTime(application.createdAt)}
-          icon={CalendarDays}
-        />
-        <Field
-          label="Last Updated"
-          value={fmtDateTime(application.updatedAt)}
-          icon={Clock}
-        />
+        <Field label="Applied On" value={fmtDateTime(application.createdAt)} icon={CalendarDays} />
+        <Field label="Last Updated" value={fmtDateTime(application.updatedAt)} icon={Clock} />
       </Section>
 
       {/* ── Emergency Contact ── */}
       <Section title="Emergency Contact" icon={Phone}>
-        <Field
-          label="Contact Name"
-          value={application.emergencyContactName}
-          icon={UserCircle}
-        />
-        <Field
-          label="Relationship"
-          value={application.emergencyContactRelationship}
-          icon={User}
-        />
+        <Field label="Contact Name" value={application.emergencyContactName} icon={UserCircle} />
+        <Field label="Relationship" value={application.emergencyContactRelationship} icon={User} />
         <Field
           label="Contact Mobile"
           value={application.emergencyContactMobileNumber}
@@ -358,9 +347,7 @@ const MembershipOverviewContent = ({
       </Section>
 
       {/* ── Membership record (if exists) ── */}
-      {application.membership && (
-        <ActiveMembershipSection m={application.membership} />
-      )}
+      {application.membership && <ActiveMembershipSection m={application.membership} />}
 
       {/* ── Transaction history ── */}
       <TransactionPlaceholder />
@@ -373,14 +360,15 @@ const MembershipOverviewContent = ({
 const MembershipOverview = () => {
   const { membershipApplicationId } = useParams();
   const navigate = useNavigate();
+  const [showApprove, setShowApprove] = useState(false);
 
   const {
     data: membershipResponse,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["membership", membershipApplicationId],
-    queryFn: () => membershipService.get(membershipApplicationId!),
+    queryKey: ["memberships", membershipApplicationId],
+    queryFn: () => membershipApplicationService.get(membershipApplicationId!),
     retry: false,
   });
 
@@ -423,9 +411,9 @@ const MembershipOverview = () => {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 space-y-5">
       {/* breadcrumb bar */}
-      <div className="mb-5 flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <Button
           variant="ghost"
           size="sm"
@@ -436,13 +424,19 @@ const MembershipOverview = () => {
           Memberships
         </Button>
         <span className="text-border select-none">/</span>
-        <span className="text-sm text-foreground font-medium truncate">
-          {application.fullName}
-        </span>
+        <span className="text-sm text-foreground font-medium truncate">{application.fullName}</span>
       </div>
+
+      {showApprove && (
+        <ApproveMembershipCard
+          application={application}
+          handleCancel={() => setShowApprove(false)}
+        />
+      )}
 
       <MembershipOverviewContent
         application={application}
+        onApprove={() => setShowApprove(true)}
         onEdit={() => {
           /* no logic yet */
         }}

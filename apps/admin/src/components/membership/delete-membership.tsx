@@ -1,4 +1,4 @@
-import { membershipService } from "@/Api/services/membership.service";
+import { membershipApplicationService } from "@/Api/services/membership.service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +29,7 @@ const DeleteMembership = ({
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: () => membershipService.delete(membershipId),
+    mutationFn: () => membershipApplicationService.delete(membershipId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memberships"], exact: false }),
   });
 

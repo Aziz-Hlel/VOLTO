@@ -25,7 +25,7 @@ import { useMemo, useState } from "react";
 import DeleteMembership from "./delete-membership";
 import EditMembership from "./edit-membership";
 
-import { membershipService } from "@/Api/services/membership.service";
+import { membershipApplicationService } from "@/Api/services/membership.service";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -258,7 +258,7 @@ const MembershipTable = () => {
 
   const { data: response } = useQuery({
     queryKey: ["memberships", searchParams.toString()],
-    queryFn: async () => await membershipService.list(searchParams),
+    queryFn: async () => await membershipApplicationService.list(searchParams),
   });
 
   const tableData = response?.data.data ?? [];

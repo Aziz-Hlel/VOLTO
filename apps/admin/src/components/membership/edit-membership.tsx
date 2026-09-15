@@ -1,4 +1,4 @@
-import { membershipService } from "@/Api/services/membership.service";
+import { membershipApplicationService } from "@/Api/services/membership.service";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -88,7 +88,7 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
   });
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (data: UpdateMemberDto) => membershipService.update(targetId, data),
+    mutationFn: (data: UpdateMemberDto) => membershipApplicationService.update(targetId, data),
   });
 
   const onSubmit = async (data: EditMembershipFormValues) => {
@@ -320,7 +320,7 @@ const EditMembership = ({
     error,
   } = useQuery({
     queryKey: ["membership", targetId],
-    queryFn: () => membershipService.get(targetId!),
+    queryFn: () => membershipApplicationService.get(targetId!),
     enabled: isOpen && isValidId,
     retry: false,
   });
