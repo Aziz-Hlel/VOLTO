@@ -1,4 +1,4 @@
-import type { MembershipApplication } from "./MembershipApplication";
+import type { MembershipApplication } from "./Membership";
 
 export type SortMember = Pick<
   MembershipApplication,

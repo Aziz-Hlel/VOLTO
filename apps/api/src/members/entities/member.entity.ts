@@ -18,7 +18,7 @@ export class MemberResponse {
   balance: number;
   current_period_end: string;
   membershipApplicationId: string;
-  membershipApplication?: MembershipApplicationResponse;
+  membershipApplication: MembershipApplicationResponse | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -24,7 +24,7 @@ import { UpdateMemberStatusDto } from './dto/update-member-status.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { MembersService } from './members.service';
 
-@Controller('members')
+@Controller('memberships')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 

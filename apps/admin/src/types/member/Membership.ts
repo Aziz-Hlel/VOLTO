@@ -1,6 +1,6 @@
-import type { MembershipStatus, MembershipType } from "../enums/enums";
+import type { MembershipDuration, MembershipStatus, MembershipType } from "../enums/enums";
 
-export type Membership = {
+export type MembershipApplication = {
   id: string;
   membershipType: MembershipType;
   fullName: string;
@@ -12,21 +12,29 @@ export type Membership = {
   emergencyContactName: string | null;
   emergencyContactRelationship: string | null;
   emergencyContactMobileNumber: string | null;
-  membershipId: string | null;
-  startDate: string | null;
-  expiryDate: string | null;
-  duration: string | null;
-  membershipNumber: string | null;
+  seen: boolean;
+  membership: MemberResponse | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type MemberResponse = {
+  id: string;
+  membershipId: number;
+  startDate: string;
+  expiryDate: string;
+  duration: MembershipDuration | null;
+  membershipNumber: number;
   applicationReceivedBy: string | null;
   membershipNumberIssued: string | null;
   membershipCardSerialNumber: string | null;
-
-  // VOTLO Internal Data
   approvalBy: string | null;
-  dateApproved: string | null;
+  dateApproved: string;
   remarks: string | null;
-
+  status: MembershipStatus;
+  balance: number;
+  current_period_end: string;
+  membershipApplicationId: string;
   createdAt: string;
   updatedAt: string;
-  status: MembershipStatus;
 };

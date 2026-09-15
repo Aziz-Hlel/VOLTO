@@ -32,7 +32,7 @@ export class MemberMapper {
       membershipApplicationId: member.membershipApplicationId,
       membershipApplication: this.hasApplication(member)
         ? this.toApplicationResponse(member.membershipApplication)
-        : undefined,
+        : null,
       createdAt: toCalendarDate(member.createdAt),
       updatedAt: toCalendarDate(member.updatedAt),
     };

@@ -1,14 +1,5 @@
-import type { MembershipApplication } from "@/types/member/MembershipApplication";
-import {
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  flexRender,
-  type Updater,
-} from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,13 +9,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, ArrowUpDown, ChevronDown, MoreHorizontal, Edit, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import type { MembershipApplication } from "@/types/member/Membership";
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type Updater,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { ArrowUp, ArrowUpDown, ChevronDown, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
-import EditMembership from "./edit-membership";
 import DeleteMembership from "./delete-membership";
+import EditMembership from "./edit-membership";
 
+import { membershipService } from "@/Api/services/membership.service";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -32,15 +34,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { membershipService } from "@/Api/services/membership.service";
-import { useSearchParams } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { membershipStatus } from "@/types/enums/enums";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
+import TitleTableColumn from "./components/title-table-column";
 
-const getStatusBadgeVariant = (status: string) => {
+const getStatusBadgeVariant = (status: string | null) => {
   switch (status) {
+    case null:
+      return "secondary";
     case membershipStatus.APPROVED:
       return "default";
     case membershipStatus.PENDING:
@@ -70,7 +80,7 @@ const columnsRowsBase: ColumnDef<MembershipApplication>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="font-medium capitalize">{row.getValue("fullName")}</div>,
+    cell: ({ row }) => <TitleTableColumn title={row.getValue("fullName")} id={row.original.id} />,
     enableSorting: true,
     enableHiding: true,
   },
@@ -117,7 +127,7 @@ const columnsRowsBase: ColumnDef<MembershipApplication>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "status",
+    id: "status",
     header: ({ column }) => {
       return (
         <Button
@@ -132,8 +142,8 @@ const columnsRowsBase: ColumnDef<MembershipApplication>[] = [
       );
     },
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return <Badge variant={getStatusBadgeVariant(status)}>{status}</Badge>;
+      const status = row.original.membership?.status || null;
+      return <Badge variant={getStatusBadgeVariant(status)}>{status ?? "PENDING"}</Badge>;
     },
     enableSorting: true,
     enableHiding: true,
@@ -178,7 +188,7 @@ const columnsRowsBase: ColumnDef<MembershipApplication>[] = [
     enableSorting: true,
     enableHiding: true,
   },
-]
+];
 const MembershipActionsCell = ({
   row,
   onEdit,
@@ -213,7 +223,6 @@ const MembershipActionsCell = ({
   </DropdownMenu>
 );
 
-
 const MembershipTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -237,20 +246,15 @@ const MembershipTable = () => {
         id: "actions",
         header: "Actions",
         cell: ({ row }) => (
-          <MembershipActionsCell
-            row={row}
-            onEdit={handleEdit}
-            onDelete={setMembershipIdToDelete}
-          />
+          <MembershipActionsCell row={row} onEdit={handleEdit} onDelete={setMembershipIdToDelete} />
         ),
         enableSorting: false,
         enableHiding: false,
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
-
 
   const { data: response } = useQuery({
     queryKey: ["memberships", searchParams.toString()],
@@ -392,7 +396,11 @@ const MembershipTable = () => {
         <div className="flex items-center justify-between mb-4">
           <Input
             placeholder="🔍 Search by name or email..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? searchParams.get("search") ?? ""}
+            value={
+              (table.getColumn("email")?.getFilterValue() as string) ??
+              searchParams.get("search") ??
+              ""
+            }
             onChange={(event) => table.getColumn("email")?.setFilterValue(event.target.value)}
             className="max-w-sm border-gray-300 focus:ring-purple-500"
           />
@@ -506,11 +514,7 @@ const MembershipTable = () => {
         </div>
       </div>
 
-      <EditMembership
-        membershipId={selectedMembershipId}
-        open={editOpen}
-        setOpen={setEditOpen}
-      />
+      <EditMembership membershipId={selectedMembershipId} open={editOpen} setOpen={setEditOpen} />
       {membershipIdToDelete && (
         <DeleteMembership
           title="Delete membership"
@@ -524,4 +528,3 @@ const MembershipTable = () => {
 };
 
 export default MembershipTable;
-    

@@ -7,6 +7,7 @@ import AddEventWrapper from "./components/events/AddEventWrapper";
 import EventMainContent from "./components/events/EventMainContent";
 import LadiesNight from "./components/LadiesNight/LadiesNight";
 import Login from "./components/Login/Login";
+import MembershipOverview from "./components/membership/membership-overview";
 import MembershipTable from "./components/membership/membership-table";
 import NotFound from "./components/NotFound/NotFound";
 import SpinningWheel from "./components/SpinningWheel/SpinningWheel";
@@ -44,6 +45,7 @@ function App() {
                 </Route>
                 <Route path="membership" element={<Membership />}>
                   <Route index element={<MembershipTable />} />
+                  <Route path="overview/:membershipApplicationId" element={<MembershipOverview />} />
                 </Route>
 
                 <Route path="staff/" element={<Staff />}>

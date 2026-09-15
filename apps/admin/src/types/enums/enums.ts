@@ -12,3 +12,10 @@ export const membershipType = {
   VIP: "VIP",
 } as const;
 export type MembershipType = (typeof membershipType)[keyof typeof membershipType];
+
+export const membershipDuration = {
+  MONTH: "MONTH",
+  QUARTER: "QUARTER",
+  YEAR: "YEAR",
+} as const;
+export type MembershipDuration = (typeof membershipDuration)[keyof typeof membershipDuration];

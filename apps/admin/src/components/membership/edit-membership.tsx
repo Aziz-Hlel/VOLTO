@@ -19,11 +19,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import type { MembershipApplication } from "@/types/member/Membership";
 import type { UpdateMemberDto } from "@/types/member/update-member.dto";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, ArrowLeft, Loader2, User } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -53,9 +55,6 @@ const EditMembershipSchema = z.object({
 
 type EditMembershipFormValues = z.infer<typeof EditMembershipSchema>;
 
-import type { Membership } from "@/types/member/membership.dto";
-import { useNavigate } from "react-router-dom";
-
 // ── Props ─────────────────────────────────────────────────────────────────────
 interface EditMembershipProps {
   membershipId?: string | null;
@@ -64,7 +63,7 @@ interface EditMembershipProps {
 }
 
 interface EditMembershipFormProps {
-  membership: Membership;
+  membership: MembershipApplication;
   targetId: string;
   onClose: (open: boolean) => void;
 }
