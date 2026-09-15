@@ -22,6 +22,7 @@ export const StaffRoles = {
   SUPER_ADMIN: "SUPER_ADMIN",
   CASHIER: "CASHIER",
   MEDIA_MANAGER: "MEDIA_MANAGER",
+  SECURITY: "SECURITY",
 } as const;
 
 export type StaffRoles = keyof typeof StaffRoles;
