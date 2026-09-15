@@ -218,11 +218,11 @@ export default function StaffAddForm({ staff }: { staff: StaffResponseDto | unde
                     <PopoverContent className="w-[200px] p-0">
                       <Command>
                         <CommandGroup>
-                          {Object.keys(Roles).map((roleKey) =>
+                          {Object.keys(StaffRoles).map((roleKey) =>
                             roleKey === "SUPER_ADMIN" || roleKey === "USER" ? null : (
                               <CommandItem
                                 key={roleKey}
-                                value={Roles[roleKey as keyof typeof Roles]}
+                                value={StaffRoles[roleKey as keyof typeof Roles]}
                                 onSelect={() => field.onChange(roleKey)}
                               >
                                 {roleKey}
