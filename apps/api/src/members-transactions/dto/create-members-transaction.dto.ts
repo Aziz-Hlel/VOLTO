@@ -1,5 +1,5 @@
 import { TransactionType } from '@prisma/client';
-import { IsDefined, IsEnum, IsNotEmpty, IsNumber, IsOptional, Max, MaxLength, Min } from 'class-validator';
+import { IsDefined, IsEnum, IsNumber, IsOptional, Max, MaxLength, Min } from 'class-validator';
 
 export class CreateMembersTransactionDto {
   @IsDefined()
@@ -12,11 +12,6 @@ export class CreateMembersTransactionDto {
   @Max(2000, { message: 'amount must be less than or equal to 2000' })
   amount: number;
 
-  @IsDefined()
-  @IsNotEmpty()
-  @MaxLength(36, { message: 'membershipId too long' })
-  membershipId: string;
-  
   @IsOptional()
   @MaxLength(255, { message: 'note too long' })
   note?: string;

@@ -30,7 +30,7 @@ const DeleteMembership = ({
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: () => membershipApplicationService.delete(membershipId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memberships"], exact: false }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["members"], exact: false }),
   });
 
   const handleDelete = async () => {

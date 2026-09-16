@@ -31,14 +31,9 @@ import { toast } from "sonner";
 interface EditMembershipDetailsProps {
   member: MembershipApplication;
   handleCancel: () => void;
-  open?: boolean;
 }
 
-const EditMembershipDetails = ({
-  member,
-  handleCancel,
-  open = true,
-}: EditMembershipDetailsProps) => {
+const EditMembershipDetails = ({ member, handleCancel }: EditMembershipDetailsProps) => {
   const queryClient = useQueryClient();
 
   const form = useForm<EditMembershipDetailsSchemaType>({
@@ -62,7 +57,7 @@ const EditMembershipDetails = ({
       const response = await mutateAsync(data);
       if (response.success) {
         toast.success("Membership details updated successfully!");
-        await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
+        await queryClient.refetchQueries({ queryKey: ["members"], exact: false });
         handleCancel();
       }
     } catch (err: unknown) {
@@ -73,7 +68,7 @@ const EditMembershipDetails = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleCancel()}>
+    <Dialog open onOpenChange={(isOpen) => !isOpen && handleCancel()}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-semibold">

@@ -1,11 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsPositive, IsString, Min } from 'class-validator';
-import { IsCuid } from 'src/validators/is-cuid';
+import { IsNumber, IsOptional, IsPositive, IsString, IsUUID, Min } from 'class-validator';
 
-export class GetTransactionsQueryDto {
+export class ListMyStaffTransactionHistoryCursorParam {
   @IsOptional()
   @IsString()
-  @IsCuid()
+  @IsUUID()
   transactionId?: string;
 
   @IsOptional()

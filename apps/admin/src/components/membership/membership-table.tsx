@@ -23,7 +23,7 @@ import {
 import { ArrowUp, ArrowUpDown, ChevronDown, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import DeleteMembership from "./delete-membership";
-import EditApplicationDetails from "./edit-application-details";
+import EditApplicationDetails from "./dialogs/edit-application-details";
 
 import { membershipApplicationService } from "@/Api/services/membership.service";
 import { Badge } from "@/components/ui/badge";
@@ -257,7 +257,7 @@ const MembershipTable = () => {
   );
 
   const { data: response } = useQuery({
-    queryKey: ["memberships", searchParams.toString()],
+    queryKey: ["members", searchParams.toString()],
     queryFn: async () => await membershipApplicationService.list(searchParams),
   });
 

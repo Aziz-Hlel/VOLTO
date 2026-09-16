@@ -8,17 +8,19 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { UsersService } from './users.service';
-import { CreateStaffDto } from './Dto/create-staff.dto';
-import { UpdateStaffDto } from './Dto/update-staff.dto';
 import { AuthUser } from './Dto/AuthUser';
+import { CreateStaffDto } from './Dto/create-staff.dto';
+import { ListMyStaffTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { UpdateStaffDto } from './Dto/update-staff.dto';
+import { UsersService } from './users.service';
 
 @Controller('staff')
 export class StaffController {
@@ -74,6 +76,18 @@ export class StaffController {
     @CurrentUser() user: AuthUser,
   ) {
     const response = await this.usersService.deleteStaff(staffId, user.role);
+    return response;
+  }
+
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @HttpCode(200)
+  @Get('/transactions/')
+  async getStaffTransactionHistory(
+    @CurrentUser() user: AuthUser,
+    @Query() cursorParam: ListMyStaffTransactionHistoryCursorParam,
+  ) {
+    const response = await this.usersService.ListMyStaffTransactionHistory(user, cursorParam);
     return response;
   }
 }

@@ -74,7 +74,7 @@ const EditMembershipStatus = ({
       const response = await mutateAsync(data);
       if (response.success) {
         toast.success("Membership status updated successfully");
-        await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
+        await queryClient.refetchQueries({ queryKey: ["members"], exact: false });
         await queryClient.refetchQueries({
           queryKey: ["membership", membership.id],
           exact: false,

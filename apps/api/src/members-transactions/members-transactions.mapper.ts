@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { FindAllMemberTransactionsResponseDto } from './dto/find-all-membership-dto';
+import { FindAllMemberTransactionsResponseDto } from './dto/membership-response-dto';
 
 export class MembersTransactionsMapper {
   static map(

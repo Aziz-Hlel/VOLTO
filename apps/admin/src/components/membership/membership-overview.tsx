@@ -14,7 +14,6 @@ import {
   Crown,
   Eye,
   Hash,
-  History,
   Loader2,
   Mail,
   MapPin,
@@ -29,11 +28,12 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ApproveMembershipCard from "./approve-membership-card";
-import EditApplicationDetails from "./edit-application-details";
-import EditMembershipDetails from "./edit-membership-details";
-import EditMembershipStatus from "./edit-membership-status";
-import EditMembership from "./edit-membership-type";
+import MemberTransactionCard from "./components/member-transaction-card";
+import ApproveMembershipCard from "./dialogs/approve-membership-card";
+import EditApplicationDetails from "./dialogs/edit-application-details";
+import EditMembershipDetails from "./dialogs/edit-membership-details";
+import EditMembershipStatus from "./dialogs/edit-membership-status";
+import EditMembership from "./dialogs/edit-membership-type";
 import RenewMembership from "./renew-membership";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -298,30 +298,6 @@ const RenewBanner = ({ onRenew }: { onRenew?: () => void }) => (
   </div>
 );
 
-// ── Transaction Placeholder ───────────────────────────────────────────────────
-
-const TransactionPlaceholder = () => (
-  <Section
-    title="Transaction History"
-    icon={History}
-    action={
-      <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground border border-border rounded px-2 py-0.5">
-        Coming soon
-      </span>
-    }
-  >
-    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
-        <CreditCard className="h-5 w-5 text-muted-foreground" />
-      </div>
-      <p className="text-sm text-muted-foreground">No transactions to display</p>
-      <p className="text-xs text-muted-foreground/60 max-w-xs">
-        Payment history will appear here once the API is connected.
-      </p>
-    </div>
-  </Section>
-);
-
 // ── Main Content ──────────────────────────────────────────────────────────────
 
 const MembershipOverviewContent = ({
@@ -338,7 +314,7 @@ const MembershipOverviewContent = ({
   const [editMembershipType, setEditMembershipType] = useState(false);
   return (
     <div className="space-y-4">
-      {/* ── Identity header ── */}
+      {/* ── Identity header — full width ── */}
       <div
         className={`relative overflow-hidden rounded-xl border px-6 py-5 ${
           isVip
@@ -385,54 +361,75 @@ const MembershipOverviewContent = ({
         </div>
       </div>
 
-      {/* ── Pending banner ── */}
+      {/* ── Pending banner — full width ── */}
       {application.membership === null && <PendingBanner onAccept={onApprove} />}
 
-      {/* ── Renew banner ── */}
+      {/* ── Renew banner — full width ── */}
       {application.membership?.status === membershipStatus.EXPIRED && (
         <RenewBanner onRenew={onRenew} />
       )}
 
-      {/* ── Application details ── */}
-      <Section title="Application Details" icon={User}>
-        <Field label="Full Name" value={application.fullName} icon={User} />
-        <Field label="Email" value={application.email} icon={Mail} />
-        <Field label="Mobile Number" value={application.mobileNumber} icon={Phone} />
-        <Field label="Date of Birth" value={fmt(application.dateOfBirth)} icon={CalendarDays} />
-        <Field label="CPR / ID" value={application.cprId} icon={Shield} mono />
-        <Field label="Nationality" value={application.nationality} icon={MapPin} />
-        <div className="flex items-center justify-between gap-6 py-3 border-b border-border last:border-0">
-          <div className="flex items-center gap-2 shrink-0 min-w-[160px]">
-            <Star className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">Membership Type</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <TypeBadge type={application.membershipType} />
-            <Button variant="ghost" size="sm" onClick={() => setEditMembershipType(true)}>
-              <Pencil className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+      {/* ── Two-column grid on desktop ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        {/* Left column */}
+        <div className="flex flex-col gap-4">
+          {/* ── Application details ── */}
+          <Section title="Application Details" icon={User}>
+            <Field label="Full Name" value={application.fullName} icon={User} />
+            <Field label="Email" value={application.email} icon={Mail} />
+            <Field label="Mobile Number" value={application.mobileNumber} icon={Phone} />
+            <Field label="Date of Birth" value={fmt(application.dateOfBirth)} icon={CalendarDays} />
+            <Field label="CPR / ID" value={application.cprId} icon={Shield} mono />
+            <Field label="Nationality" value={application.nationality} icon={MapPin} />
+            <div className="flex items-center justify-between gap-6 py-3 border-b border-border last:border-0">
+              <div className="flex items-center gap-2 shrink-0 min-w-[160px]">
+                <Star className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">Membership Type</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <TypeBadge type={application.membershipType} />
+                <Button variant="ghost" size="sm" onClick={() => setEditMembershipType(true)}>
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+            <Field
+              label="Applied On"
+              value={fmtDateTime(application.createdAt)}
+              icon={CalendarDays}
+            />
+            <Field label="Last Updated" value={fmtDateTime(application.updatedAt)} icon={Clock} />
+          </Section>
+
+          {/* ── Emergency Contact ── */}
+          <Section title="Emergency Contact" icon={Phone}>
+            <Field
+              label="Contact Name"
+              value={application.emergencyContactName}
+              icon={UserCircle}
+            />
+            <Field
+              label="Relationship"
+              value={application.emergencyContactRelationship}
+              icon={User}
+            />
+            <Field
+              label="Contact Mobile"
+              value={application.emergencyContactMobileNumber}
+              icon={Phone}
+            />
+          </Section>
         </div>
-        <Field label="Applied On" value={fmtDateTime(application.createdAt)} icon={CalendarDays} />
-        <Field label="Last Updated" value={fmtDateTime(application.updatedAt)} icon={Clock} />
-      </Section>
 
-      {/* ── Emergency Contact ── */}
-      <Section title="Emergency Contact" icon={Phone}>
-        <Field label="Contact Name" value={application.emergencyContactName} icon={UserCircle} />
-        <Field label="Relationship" value={application.emergencyContactRelationship} icon={User} />
-        <Field
-          label="Contact Mobile"
-          value={application.emergencyContactMobileNumber}
-          icon={Phone}
-        />
-      </Section>
+        {/* Right column */}
+        <div className="flex flex-col gap-4">
+          {/* ── Membership record (if exists) ── */}
+          {application.membership && <ActiveMembershipSection m={application} />}
 
-      {/* ── Membership record (if exists) ── */}
-      {application.membership && <ActiveMembershipSection m={application} />}
-
-      {/* ── Transaction history ── */}
-      <TransactionPlaceholder />
+          {/* ── Transaction history ── */}
+          <MemberTransactionCard membershipApplication={application} />
+        </div>
+      </div>
 
       {edit && (
         <EditApplicationDetails open={edit} setOpen={setEdit} membershipId={application.id} />
@@ -460,7 +457,7 @@ const MembershipOverview = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["memberships", membershipApplicationId],
+    queryKey: ["members", membershipApplicationId],
     queryFn: () => membershipApplicationService.get(membershipApplicationId!),
     retry: false,
   });
@@ -504,7 +501,7 @@ const MembershipOverview = () => {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 space-y-5">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 space-y-5">
       {/* breadcrumb bar */}
       <div className="flex items-center gap-2">
         <Button
@@ -528,10 +525,7 @@ const MembershipOverview = () => {
       )}
 
       {showRenew && (
-        <RenewMembership
-          application={application}
-          handleCancel={() => setShowRenew(false)}
-        />
+        <RenewMembership application={application} handleCancel={() => setShowRenew(false)} />
       )}
 
       <MembershipOverviewContent

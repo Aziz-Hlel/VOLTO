@@ -97,7 +97,7 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
       if (response.success) {
         toast.success("Membership updated successfully");
         onClose(false);
-        await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
+        await queryClient.refetchQueries({ queryKey: ["members"], exact: false });
         if (targetId) {
           queryClient.removeQueries({ queryKey: ["membership", targetId] });
         }

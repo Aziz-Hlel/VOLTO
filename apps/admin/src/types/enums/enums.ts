@@ -18,3 +18,11 @@ export const membershipDuration = {
   YEAR: "YEAR",
 } as const;
 export type MembershipDuration = (typeof membershipDuration)[keyof typeof membershipDuration];
+
+export const transactionType = {
+  REDEEM: "REDEEM",
+  RENEWAL: "RENEWAL",
+  EARN: "EARN",
+} as const;
+
+export type TransactionType = (typeof transactionType)[keyof typeof transactionType];

@@ -52,6 +52,10 @@ const apiRoutes = {
     updateStatus: (membershipApplicationId: string) =>
       `/members/${membershipApplicationId}/status` as const,
   },
+  memberTransaction: {
+    create: (membershipId: string) => `/members/${membershipId}/transactions` as const,
+    list: (membershipId: string) => `/members/${membershipId}/transactions` as const,
+  },
 
   ladiesNight: {
     details: () => "/ladies-night/details" as const,

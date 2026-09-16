@@ -68,9 +68,9 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
       const response = await mutateAsync(data);
       if (response.success) {
         toast.success("Membership application approved successfully!");
-        await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
+        await queryClient.refetchQueries({ queryKey: ["members"], exact: false });
         await queryClient.refetchQueries({
-          queryKey: ["memberships", application.id],
+          queryKey: ["members", application.id],
           exact: false,
         });
         handleCancel?.();

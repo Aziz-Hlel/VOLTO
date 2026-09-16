@@ -68,9 +68,9 @@ const RenewMembership = ({ application, handleCancel }: RenewMembershipProps) =>
       const response = await mutateAsync(data);
       if (response.success) {
         toast.success("Membership renewed successfully!");
-        await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
+        await queryClient.refetchQueries({ queryKey: ["members"], exact: false });
         await queryClient.refetchQueries({
-          queryKey: ["memberships", application.id],
+          queryKey: ["members", application.id],
           exact: false,
         });
         handleCancel?.();
@@ -78,9 +78,7 @@ const RenewMembership = ({ application, handleCancel }: RenewMembershipProps) =>
     } catch (err: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const e = err as any;
-      toast.error(
-        e?.response?.data?.message ?? e?.error ?? "Failed to renew membership",
-      );
+      toast.error(e?.response?.data?.message ?? e?.error ?? "Failed to renew membership");
     }
   };
 

@@ -1,24 +1,31 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { Prisma, TransactionType } from '@prisma/client';
+import { MembershipStatus, Prisma, TransactionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { CreateMembersTransactionDto } from './dto/create-members-transaction.dto';
-import { GetTransactionsQueryDto } from './dto/get-transactions-cursor-dto';
+import { GetTransactionsQueryDto } from './dto/find-all-transactions-cursor-dto';
 import { MembersTransactionsMapper } from './members-transactions.mapper';
 
 @Injectable()
 export class MembersTransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createMembersTransactionDto: CreateMembersTransactionDto, user: AuthUser) {
+  async create(
+    membershipId: string,
+    createMembersTransactionDto: CreateMembersTransactionDto,
+    user: AuthUser,
+  ) {
     const membership = await this.prisma.membership.findUnique({
       where: {
-        id: createMembersTransactionDto.membershipId,
+        id: membershipId,
       },
     });
 
     if (!membership) {
       throw new BadRequestException('Membership not found');
+    }
+    if (membership.status !== MembershipStatus.ACTIVE) {
+      throw new BadRequestException('Membership is not active');
     }
 
     const amount =
@@ -35,7 +42,7 @@ export class MembersTransactionsService {
     await this.prisma.$transaction(async (tx) => {
       await tx.memberTransactionHistory.create({
         data: {
-          membershipId: createMembersTransactionDto.membershipId,
+          membershipId: membershipId,
           amount,
           transactionType: createMembersTransactionDto.type,
           note: createMembersTransactionDto.note,
@@ -44,7 +51,7 @@ export class MembersTransactionsService {
       });
       await tx.membership.update({
         where: {
-          id: createMembersTransactionDto.membershipId,
+          id: membershipId,
         },
         data: {
           balance: newBalance,
@@ -76,7 +83,7 @@ export class MembersTransactionsService {
             },
           },
         },
-        cursor: { id: query.transactionId ?? undefined },
+        ...(query.transactionId && { cursor: { id: query.transactionId } }),
         orderBy: { createdAt: 'desc' },
         take,
       });

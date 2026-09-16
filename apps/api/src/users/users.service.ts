@@ -17,12 +17,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import { STAFF_ROLES } from 'src/shared/staffRoles';
 import { CreateUserDto } from 'src/users/Dto/create-user';
+import { AuthUser } from './Dto/AuthUser';
 import { ChangePasswordRequestDto } from './Dto/change-password-request.dto';
 import { ConfirmPasswordRequestDto } from './Dto/confirm-password-request.dto';
 import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto';
 import { CreateCustomerDto } from './Dto/create-customer';
 import { CreateStaffDto } from './Dto/create-staff.dto';
 import { GetUsersQuery, Sort } from './Dto/get-users-query';
+import { ListMyStaffTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { StaffTransactionHistoryRes } from './Dto/staffTransactionHistoryRes.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
 import { UpdateUserDto } from './Dto/update-user';
 import { UserMapper } from './Mapper/usersMapper';
@@ -490,5 +493,66 @@ export class UsersService {
       console.log(e.message);
       throw new InternalServerErrorException(e.message);
     }
+  }
+
+  ListMyStaffTransactionHistory = async (
+    user: AuthUser,
+    cursorParam: ListMyStaffTransactionHistoryCursorParam,
+  ) => {
+    const transactionsQuery = await this.prisma.memberTransactionHistory.findMany({
+      where: {
+        performedById: user.id,
+      },
+      cursor: cursorParam.transactionId ? { id: cursorParam.transactionId } : undefined,
+      take: cursorParam.limit + 1,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        membership: {
+          select: {
+            membershipId: true,
+            membershipApplication: {
+              select: {
+                fullName: true,
+                membershipType: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const lastItem = transactionsQuery[cursorParam.limit];
+
+    const nextCursor = lastItem?.id || null;
+
+    const data = transactionsQuery.slice(0, cursorParam.limit);
+
+    const dataResponse: StaffTransactionHistoryRes[] = data.map((transaction) => ({
+      id: transaction.id,
+      amount: transaction.amount,
+      transactionType: transaction.transactionType,
+      note: transaction.note,
+      member: {
+        fullName: transaction.membership.membershipApplication.fullName,
+        email: transaction.membership.membershipApplication.email,
+        type: transaction.membership.membershipApplication.membershipType,
+        membershipId: transaction.membership.membershipId,
+      },
+      createdAt: transaction.createdAt.toISOString(),
+    }));
+
+    return {
+      data: dataResponse,
+      nextCursor: nextCursor,
+    };
+  };
+
+  ListMyUserTransactionHistory = async (
+    user: AuthUser,
+    cursorParam: ListMyStaffTransactionHistoryCursorParam,
+  ) => {
   }
 }
