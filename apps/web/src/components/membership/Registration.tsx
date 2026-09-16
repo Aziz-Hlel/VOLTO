@@ -178,7 +178,7 @@ const MembershipRegistration = () => {
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["membership-registration"],
-    mutationFn: async (data: IRegistrationForm) => await axiosInstance.post("/members/", data),
+    mutationFn: async (data: IRegistrationForm) => await axiosInstance.post("/memberships", data),
     onSuccess: () => {},
     onError: () => {},
   });

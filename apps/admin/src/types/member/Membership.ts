@@ -33,7 +33,7 @@ export type MemberResponse = {
   remarks: string | null;
   status: MembershipStatus;
   balance: number;
-  current_period_end: string;
+  currentPeriodEnd: string;
   membershipApplicationId: string;
   createdAt: string;
   updatedAt: string;

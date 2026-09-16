@@ -28,7 +28,7 @@ export class MemberMapper {
       remarks: member.remarks,
       status: member.status,
       balance: member.balance,
-      current_period_end: toCalendarDate(member.current_period_end),
+      currentPeriodEnd: toCalendarDate(member.currentPeriodEnd),
       membershipApplicationId: member.membershipApplicationId,
       membershipApplication: this.hasApplication(member)
         ? this.toApplicationResponse(member.membershipApplication)

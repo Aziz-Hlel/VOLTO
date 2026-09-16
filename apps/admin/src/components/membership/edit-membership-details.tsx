@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -16,141 +17,77 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { membershipDuration, membershipType } from "@/types/enums/enums";
-import {
-  approveMembershipSchema,
-  type ApproveMembershipDto,
-} from "@/types/member/approve-membership";
+import type { EditMembershipDetailsSchemaType } from "@/types/member/edit-memebership-details";
+import { editMembershipDetailsSchema } from "@/types/member/edit-memebership-details";
 import type { MembershipApplication } from "@/types/member/Membership";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-interface ApproveMembershipCardProps {
-  application: MembershipApplication;
+interface EditMembershipDetailsProps {
+  member: MembershipApplication;
   handleCancel: () => void;
+  open?: boolean;
 }
 
-const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipCardProps) => {
+const EditMembershipDetails = ({
+  member,
+  handleCancel,
+  open = true,
+}: EditMembershipDetailsProps) => {
   const queryClient = useQueryClient();
 
-  const form = useForm<ApproveMembershipDto>({
-    resolver: zodResolver(approveMembershipSchema),
+  const form = useForm<EditMembershipDetailsSchemaType>({
+    resolver: zodResolver(editMembershipDetailsSchema),
     defaultValues: {
-      membershipType: application.membershipType,
-      duration: undefined,
-      applicationReceivedBy: "",
-      membershipNumberIssued: "",
-      membershipCardSerialNumber: "",
-      approvalBy: "",
-      remarks: null,
+      applicationReceivedBy: member.membership?.applicationReceivedBy ?? "",
+      membershipNumberIssued: member.membership?.membershipNumberIssued ?? "",
+      membershipCardSerialNumber: member.membership?.membershipCardSerialNumber ?? "",
+      approvalBy: member.membership?.approvalBy ?? "",
+      remarks: member.membership?.remarks ?? "",
     },
   });
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (data: ApproveMembershipDto) =>
-      membershipService.approveApplication(application.id, data),
+    mutationFn: (data: EditMembershipDetailsSchemaType) =>
+      membershipService.editDetails(member.membership.id, data),
   });
 
-  const onSubmit = async (data: ApproveMembershipDto) => {
+  const onSubmit = async (data: EditMembershipDetailsSchemaType) => {
     try {
       const response = await mutateAsync(data);
       if (response.success) {
-        toast.success("Membership application approved successfully!");
+        toast.success("Membership details updated successfully!");
         await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
-        await queryClient.refetchQueries({
-          queryKey: ["memberships", application.id],
-          exact: false,
-        });
-        handleCancel?.();
+        handleCancel();
       }
     } catch (err: unknown) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const e = err as any;
-      toast.error(
-        e?.response?.data?.message ?? e?.error ?? "Failed to approve membership application",
-      );
+      toast.error(e?.response?.data?.message ?? e?.error ?? "Failed to update membership details");
     }
   };
 
   return (
-    <Dialog open onOpenChange={(isOpen) => !isOpen && handleCancel?.()}>
+    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleCancel()}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
-            <CheckCircle2 className="h-5 w-5 text-green-500" />
-            Approve Membership Application
+            <Pencil className="h-5 w-5 text-purple-500" />
+            Edit Membership Details
           </DialogTitle>
           <DialogDescription>
-            Fill in the approval details to issue a membership for{" "}
-            <strong>{application.fullName}</strong>.
+            Update the membership details for <strong>{member.fullName}</strong> below.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="membershipType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Membership Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select membership type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Object.entries(membershipType).map(([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {key.charAt(0) + key.slice(1).toLowerCase()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Duration</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Object.entries(membershipDuration).map(([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {key.charAt(0) + key.slice(1).toLowerCase()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="applicationReceivedBy"
@@ -201,7 +138,7 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
                 control={form.control}
                 name="approvalBy"
                 render={({ field }) => (
-                  <FormItem className="sm:col-span-2">
+                  <FormItem>
                     <FormLabel>Approval By</FormLabel>
                     <FormControl>
                       <Input
@@ -234,20 +171,18 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              {handleCancel && (
-                <Button type="button" variant="outline" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              )}
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="outline" onClick={handleCancel}>
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 disabled={isPending}
                 className="bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:opacity-90 transition-opacity"
               >
-                {isPending ? <Spinner /> : "Approve Application"}
+                {isPending ? <Spinner /> : "Save Changes"}
               </Button>
-            </div>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
@@ -255,4 +190,4 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
   );
 };
 
-export default ApproveMembershipCard;
+export default EditMembershipDetails;

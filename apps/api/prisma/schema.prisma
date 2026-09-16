@@ -56,7 +56,6 @@ enum MembershipType {
 }
 
 enum MembershipStatus {
-  PENDING
   ACTIVE
   REJECTED
   SUSPENDED
@@ -120,7 +119,7 @@ model Membership {
 
   balance Float @default(0)
 
-  current_period_end DateTime
+  currentPeriodEnd DateTime 
 
   membershipApplicationId String @unique
   membershipApplication   MembershipApplication @relation(fields: [membershipApplicationId], references: [id], onDelete: Cascade)

@@ -33,26 +33,26 @@ import {
 import type { MembershipApplication } from "@/types/member/Membership";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2 } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-interface ApproveMembershipCardProps {
+interface RenewMembershipProps {
   application: MembershipApplication;
   handleCancel: () => void;
 }
 
-const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipCardProps) => {
+const RenewMembership = ({ application, handleCancel }: RenewMembershipProps) => {
   const queryClient = useQueryClient();
 
   const form = useForm<ApproveMembershipDto>({
     resolver: zodResolver(approveMembershipSchema),
     defaultValues: {
       membershipType: application.membershipType,
-      duration: undefined,
+      duration: application.membership?.duration ?? undefined,
       applicationReceivedBy: "",
-      membershipNumberIssued: "",
-      membershipCardSerialNumber: "",
+      membershipNumberIssued: application.membership?.membershipNumberIssued ?? "",
+      membershipCardSerialNumber: application.membership?.membershipCardSerialNumber ?? "",
       approvalBy: "",
       remarks: null,
     },
@@ -60,14 +60,14 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (data: ApproveMembershipDto) =>
-      membershipService.approveApplication(application.id, data),
+      membershipService.renewApplication(application.membership.id, data),
   });
 
   const onSubmit = async (data: ApproveMembershipDto) => {
     try {
       const response = await mutateAsync(data);
       if (response.success) {
-        toast.success("Membership application approved successfully!");
+        toast.success("Membership renewed successfully!");
         await queryClient.refetchQueries({ queryKey: ["memberships"], exact: false });
         await queryClient.refetchQueries({
           queryKey: ["memberships", application.id],
@@ -79,7 +79,7 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const e = err as any;
       toast.error(
-        e?.response?.data?.message ?? e?.error ?? "Failed to approve membership application",
+        e?.response?.data?.message ?? e?.error ?? "Failed to renew membership",
       );
     }
   };
@@ -89,12 +89,11 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
-            <CheckCircle2 className="h-5 w-5 text-green-500" />
-            Approve Membership Application
+            <RefreshCw className="h-5 w-5 text-blue-500" />
+            Renew Membership
           </DialogTitle>
           <DialogDescription>
-            Fill in the approval details to issue a membership for{" "}
-            <strong>{application.fullName}</strong>.
+            Fill in the renewal details for <strong>{application.fullName}</strong>.
           </DialogDescription>
         </DialogHeader>
 
@@ -245,7 +244,7 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
                 disabled={isPending}
                 className="bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:opacity-90 transition-opacity"
               >
-                {isPending ? <Spinner /> : "Approve Application"}
+                {isPending ? <Spinner /> : "Renew Membership"}
               </Button>
             </div>
           </form>
@@ -255,4 +254,4 @@ const ApproveMembershipCard = ({ application, handleCancel }: ApproveMembershipC
   );
 };
 
-export default ApproveMembershipCard;
+export default RenewMembership;

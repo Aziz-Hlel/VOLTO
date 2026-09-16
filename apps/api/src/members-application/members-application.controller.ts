@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   Param,
@@ -22,7 +21,8 @@ import { SubmitAuthonticatedMemberApplicationDto } from './dto/submit-auth-membe
 import { SubmitMemberApplicationDto } from './dto/submit-member-application.dto';
 import { UpdateMemberStatusDto } from './dto/update-member-status.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { MembersService } from './members.service';
+import { UpdateMembershipTypeDto } from './dto/update-membership-type.dto';
+import { MembersService } from './members-application.service';
 
 @Controller('memberships')
 export class MembersController {
@@ -74,9 +74,8 @@ export class MembersController {
 
   @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @HttpCode(200)
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.membersService.remove(id);
+  @Patch(':id/type')
+  updateType(@Param('id') id: string, @Body() updateMembershipTypeDto: UpdateMembershipTypeDto) {
+    return this.membersService.updateMemebershipType(id, updateMembershipTypeDto);
   }
 }

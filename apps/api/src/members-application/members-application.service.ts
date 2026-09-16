@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { MembershipStatus, Prisma, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UpdateMembershipTypeDto } from 'src/members-application/dto/update-membership-type.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { GetMembersQuery, SortMember } from './dto/get-members-query.dto';
@@ -282,24 +283,28 @@ export class MembersService {
     }
   }
 
-  async remove(id: string) {
-    const member = await this.prisma.membershipApplication.findUnique({
-      where: { id },
+  updateMemebershipType = async (id: string, payload: UpdateMembershipTypeDto) => {
+    const membershipApplication = await this.prisma.membershipApplication.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        membershipType: true,
+      },
+    });
+    if (!membershipApplication) {
+      throw new NotFoundException('Membership not found');
+    }
+    await this.prisma.membershipApplication.update({
+      where: {
+        id,
+      },
+      data: {
+        membershipType: payload.membershipType,
+      },
     });
 
-    if (!member) {
-      throw new NotFoundException('Member application not found');
-    }
-
-    try {
-      const deleted = await this.prisma.membershipApplication.delete({
-        where: { id },
-      });
-
-      return deleted;
-    } catch (e) {
-      console.log(e.message);
-      throw new InternalServerErrorException(e.message);
-    }
-  }
+    return { success: true, message: 'Membership type updated successfully' };
+  };
 }

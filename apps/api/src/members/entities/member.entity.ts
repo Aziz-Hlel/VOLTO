@@ -16,7 +16,7 @@ export class MemberResponse {
   remarks: string | null;
   status: MembershipStatus;
   balance: number;
-  current_period_end: string;
+  currentPeriodEnd: string;
   membershipApplicationId: string;
   membershipApplication: MembershipApplicationResponse | null;
   createdAt: string;

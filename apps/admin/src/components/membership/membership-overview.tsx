@@ -1,7 +1,7 @@
 import { membershipApplicationService } from "@/Api/services/membership.service";
 import { Button } from "@/components/ui/button";
 import { membershipStatus, membershipType } from "@/types/enums/enums";
-import type { MemberResponse, MembershipApplication } from "@/types/member/Membership";
+import type { MembershipApplication } from "@/types/member/Membership";
 import { useQuery } from "@tanstack/react-query";
 import {
   AlertCircle,
@@ -20,6 +20,7 @@ import {
   MapPin,
   Pencil,
   Phone,
+  RefreshCw,
   Shield,
   Star,
   User,
@@ -29,6 +30,11 @@ import {
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ApproveMembershipCard from "./approve-membership-card";
+import EditApplicationDetails from "./edit-application-details";
+import EditMembershipDetails from "./edit-membership-details";
+import EditMembershipStatus from "./edit-membership-status";
+import EditMembership from "./edit-membership-type";
+import RenewMembership from "./renew-membership";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -55,15 +61,10 @@ const fmtDateTime = (dateStr: string | null | undefined) => {
 // ── Status & type configs ─────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  [membershipStatus.APPROVED]: {
-    label: "Approved",
+  [membershipStatus.ACTIVE]: {
+    label: "Active",
     color:
       "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
-  },
-  [membershipStatus.PENDING]: {
-    label: "Pending",
-    color:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
   },
   [membershipStatus.REJECTED]: {
     label: "Rejected",
@@ -125,11 +126,13 @@ const Field = ({
   value,
   icon: Icon,
   mono = false,
+  edit,
 }: {
   label: string;
   value: React.ReactNode;
   icon?: React.ElementType;
   mono?: boolean;
+  edit?: React.ReactNode;
 }) => (
   <div className="flex items-start justify-between gap-6 py-3 border-b border-border last:border-0">
     <div className="flex items-center gap-2 shrink-0 min-w-[160px]">
@@ -140,6 +143,7 @@ const Field = ({
       className={`text-right text-sm font-medium text-foreground break-all ${mono ? "font-mono text-xs" : ""}`}
     >
       {value ?? <span className="text-muted-foreground/50">—</span>}
+      {edit}
     </div>
   </div>
 );
@@ -171,33 +175,74 @@ const Section = ({
 
 // ── Active Membership section ─────────────────────────────────────────────────
 
-const ActiveMembershipSection = ({ m }: { m: MemberResponse }) => (
-  <Section title="Membership Record" icon={BadgeCheck}>
-    <div className="flex items-start justify-between gap-6 py-3 border-b border-border">
-      <div className="flex items-center gap-2 shrink-0 min-w-[160px]">
-        <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs font-medium text-muted-foreground">Status</span>
-      </div>
-      <StatusBadge status={m.status} />
-    </div>
+const ActiveMembershipSection = ({ m }: { m: MembershipApplication }) => {
+  const [editDetails, setEditDetails] = useState(false);
+  const [editMembershipStatus, setEditMembershipStatus] = useState(false);
+  return (
+    <>
+      {editDetails && (
+        <EditMembershipDetails member={m} handleCancel={() => setEditDetails(false)} />
+      )}
+      {editMembershipStatus && (
+        <EditMembershipStatus membership={m} handleCancel={() => setEditMembershipStatus(false)} />
+      )}
 
-    <Field label="Membership Number" value={m.membershipNumber ?? null} icon={Hash} mono />
-    <Field label="Membership ID" value={m.membershipId ?? null} icon={Hash} mono />
-    <Field label="Card Serial #" value={m.membershipCardSerialNumber} icon={CreditCard} />
-    <Field label="Issued Number" value={m.membershipNumberIssued} icon={Hash} />
-    <Field label="Duration" value={m.duration} icon={Clock} />
-    <Field
-      label="Balance"
-      value={m.balance != null ? `BHD ${m.balance.toFixed(3)}` : null}
-      icon={CreditCard}
-    />
-    <Field label="Received By" value={m.applicationReceivedBy} icon={UserCircle} />
-    <Field label="Approved By" value={m.approvalBy} icon={UserCheck} />
-    <Field label="Date Approved" value={fmtDateTime(m.startDate)} icon={CalendarDays} />
-    <Field label="Expiry Date" value={fmt(m.expiryDate)} icon={CalendarDays} />
-    <Field label="Remarks" value={m.remarks} icon={Shield} />
-  </Section>
-);
+      <Section
+        title="Membership Record"
+        icon={BadgeCheck}
+        action={
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => setEditDetails(true)}>
+              Edit Details
+            </Button>
+          </div>
+        }
+      >
+        <div className="flex items-center justify-between gap-6 py-3 border-b border-border">
+          <div className="flex items-center gap-2 shrink-0 min-w-[160px]">
+            <CheckCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Status</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <StatusBadge status={m.membership.status} />
+            <Button variant="ghost" size="sm" onClick={() => setEditMembershipStatus(true)}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </div>
+
+        <Field
+          label="Membership Number"
+          value={m.membership.membershipNumber ?? null}
+          icon={Hash}
+          mono
+        />
+        <Field label="Membership ID" value={m.membership.membershipId ?? null} icon={Hash} mono />
+        <Field
+          label="Card Serial #"
+          value={m.membership.membershipCardSerialNumber}
+          icon={CreditCard}
+        />
+        <Field label="Issued Number" value={m.membership.membershipNumberIssued} icon={Hash} />
+        <Field label="Duration" value={m.membership.duration} icon={Clock} />
+        <Field
+          label="Balance"
+          value={m.membership.balance != null ? `${m.membership.balance.toFixed(3)} POINTS` : null}
+          icon={CreditCard}
+        />
+        <Field label="Received By" value={m.membership.applicationReceivedBy} icon={UserCircle} />
+        <Field label="Approved By" value={m.membership.approvalBy} icon={UserCheck} />
+        <Field
+          label="Date Approved"
+          value={fmtDateTime(m.membership.startDate)}
+          icon={CalendarDays}
+        />
+        <Field label="Expiry Date" value={fmt(m.membership.expiryDate)} icon={CalendarDays} />
+        <Field label="Remarks" value={m.membership.remarks} icon={Shield} />
+      </Section>
+    </>
+  );
+};
 
 // ── Pending Banner ────────────────────────────────────────────────────────────
 
@@ -223,6 +268,32 @@ const PendingBanner = ({ onAccept }: { onAccept?: () => void }) => (
     >
       <BadgeCheck className="h-4 w-4" />
       Accept Membership
+    </Button>
+  </div>
+);
+
+// ── Renew Banner ──────────────────────────────────────────────────────────────
+
+const RenewBanner = ({ onRenew }: { onRenew?: () => void }) => (
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4 dark:border-blue-500/20 dark:bg-blue-500/5">
+    <div className="flex items-start gap-3">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-500/10">
+        <RefreshCw className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">Membership Expired</p>
+        <p className="text-xs text-blue-700/70 dark:text-blue-400/70 mt-0.5">
+          This membership has expired. Renew the application to issue a new membership period.
+        </p>
+      </div>
+    </div>
+    <Button
+      size="sm"
+      onClick={onRenew}
+      className="shrink-0 gap-2 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+    >
+      <RefreshCw className="h-4 w-4" />
+      Renew Membership
     </Button>
   </div>
 );
@@ -255,15 +326,16 @@ const TransactionPlaceholder = () => (
 
 const MembershipOverviewContent = ({
   application,
-  onEdit,
   onApprove,
+  onRenew,
 }: {
   application: MembershipApplication;
-  onEdit: () => void;
   onApprove: () => void;
+  onRenew: () => void;
 }) => {
   const isVip = application.membershipType === membershipType.VIP;
-
+  const [edit, setEdit] = useState(false);
+  const [editMembershipType, setEditMembershipType] = useState(false);
   return (
     <div className="space-y-4">
       {/* ── Identity header ── */}
@@ -305,7 +377,7 @@ const MembershipOverviewContent = ({
             variant="outline"
             size="sm"
             className="self-start sm:self-auto gap-2"
-            onClick={onEdit}
+            onClick={() => setEdit(true)}
           >
             <Pencil className="h-3.5 w-3.5" />
             Edit Details
@@ -316,6 +388,11 @@ const MembershipOverviewContent = ({
       {/* ── Pending banner ── */}
       {application.membership === null && <PendingBanner onAccept={onApprove} />}
 
+      {/* ── Renew banner ── */}
+      {application.membership?.status === membershipStatus.EXPIRED && (
+        <RenewBanner onRenew={onRenew} />
+      )}
+
       {/* ── Application details ── */}
       <Section title="Application Details" icon={User}>
         <Field label="Full Name" value={application.fullName} icon={User} />
@@ -324,12 +401,17 @@ const MembershipOverviewContent = ({
         <Field label="Date of Birth" value={fmt(application.dateOfBirth)} icon={CalendarDays} />
         <Field label="CPR / ID" value={application.cprId} icon={Shield} mono />
         <Field label="Nationality" value={application.nationality} icon={MapPin} />
-        <div className="flex items-start justify-between gap-6 py-3 border-b border-border last:border-0">
+        <div className="flex items-center justify-between gap-6 py-3 border-b border-border last:border-0">
           <div className="flex items-center gap-2 shrink-0 min-w-[160px]">
             <Star className="h-3.5 w-3.5 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground">Membership Type</span>
           </div>
-          <TypeBadge type={application.membershipType} />
+          <div className="flex items-center gap-2">
+            <TypeBadge type={application.membershipType} />
+            <Button variant="ghost" size="sm" onClick={() => setEditMembershipType(true)}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
         <Field label="Applied On" value={fmtDateTime(application.createdAt)} icon={CalendarDays} />
         <Field label="Last Updated" value={fmtDateTime(application.updatedAt)} icon={Clock} />
@@ -347,10 +429,20 @@ const MembershipOverviewContent = ({
       </Section>
 
       {/* ── Membership record (if exists) ── */}
-      {application.membership && <ActiveMembershipSection m={application.membership} />}
+      {application.membership && <ActiveMembershipSection m={application} />}
 
       {/* ── Transaction history ── */}
       <TransactionPlaceholder />
+
+      {edit && (
+        <EditApplicationDetails open={edit} setOpen={setEdit} membershipId={application.id} />
+      )}
+      {editMembershipType && (
+        <EditMembership
+          membershipApplication={application}
+          handleCancel={() => setEditMembershipType(false)}
+        />
+      )}
     </div>
   );
 };
@@ -361,6 +453,7 @@ const MembershipOverview = () => {
   const { membershipApplicationId } = useParams();
   const navigate = useNavigate();
   const [showApprove, setShowApprove] = useState(false);
+  const [showRenew, setShowRenew] = useState(false);
 
   const {
     data: membershipResponse,
@@ -434,12 +527,17 @@ const MembershipOverview = () => {
         />
       )}
 
+      {showRenew && (
+        <RenewMembership
+          application={application}
+          handleCancel={() => setShowRenew(false)}
+        />
+      )}
+
       <MembershipOverviewContent
         application={application}
         onApprove={() => setShowApprove(true)}
-        onEdit={() => {
-          /* no logic yet */
-        }}
+        onRenew={() => setShowRenew(true)}
       />
     </div>
   );

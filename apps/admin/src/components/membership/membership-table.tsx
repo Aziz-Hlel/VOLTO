@@ -23,7 +23,7 @@ import {
 import { ArrowUp, ArrowUpDown, ChevronDown, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import DeleteMembership from "./delete-membership";
-import EditMembership from "./edit-membership";
+import EditApplicationDetails from "./edit-application-details";
 
 import { membershipApplicationService } from "@/Api/services/membership.service";
 import { Badge } from "@/components/ui/badge";
@@ -514,7 +514,11 @@ const MembershipTable = () => {
         </div>
       </div>
 
-      <EditMembership membershipId={selectedMembershipId} open={editOpen} setOpen={setEditOpen} />
+      <EditApplicationDetails
+        membershipId={selectedMembershipId}
+        open={editOpen}
+        setOpen={setEditOpen}
+      />
       {membershipIdToDelete && (
         <DeleteMembership
           title="Delete membership"

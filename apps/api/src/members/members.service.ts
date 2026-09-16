@@ -3,7 +3,7 @@ import { MembershipStatus, TransactionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { ApproveMembershipDto } from './dto/approve-membership.dto';
-import { CreateMemberDto } from './dto/create-member.dto';
+import { UpdateMemberStatusDto } from './dto/update-member-status.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { membershipDurationToDays } from './utils/membershipDurationToDays';
 import { membershipTypeBalance } from './utils/membershipTypeBalance';
@@ -12,21 +12,28 @@ import { membershipTypeBalance } from './utils/membershipTypeBalance';
 export class MembersService {
   constructor(private prisma: PrismaService) {}
 
-  create(createMemberDto: CreateMemberDto) {
-    return 'This action adds a new member';
-  }
-
-  findAll() {
-    return `This action returns all members`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} member`;
-  }
-
-  update(id: number, updateMemberDto: UpdateMemberDto) {
-    return `This action updates a #${id} member`;
-  }
+  updateDetails = async (id: string, updateMemberDto: UpdateMemberDto) => {
+    try {
+      const membership = await this.prisma.membership.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!membership) {
+        throw new NotFoundException('Membership not found');
+      }
+      await this.prisma.membership.update({
+        where: {
+          id,
+        },
+        data: updateMemberDto,
+      });
+      return { success: true, message: 'Membership updated successfully' };
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
 
   remove(id: number) {
     return `This action removes a #${id} member`;
@@ -55,14 +62,21 @@ export class MembersService {
       throw new BadRequestException('Membership application already exists');
     }
 
-    const balance = membershipTypeBalance[membershipApplication.membershipType];
+    const balance = membershipTypeBalance[payload.membershipType];
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
 
-    const current_period_end = new Date();
-    current_period_end.setDate(expiryDate.getDate() + 30);
+    const currentPeriodEnd = new Date();
+    currentPeriodEnd.setDate(expiryDate.getDate() + 30);
 
     await this.prisma.$transaction(async (tx) => {
+      await this.prisma.membershipApplication.update({
+        where: { id },
+        data: {
+          membershipType: payload.membershipType,
+        },
+      });
+
       const membership = await tx.membership.create({
         data: {
           membershipApplicationId: id,
@@ -77,12 +91,83 @@ export class MembersService {
           remarks: payload.remarks,
           startDate: new Date(),
           expiryDate: expiryDate,
-          current_period_end,
+          currentPeriodEnd: currentPeriodEnd,
         },
       });
       await tx.memberTransactionHistory.create({
         data: {
           membershipId: membership.id,
+          amount: balance,
+          transactionType: TransactionType.RENEWAL,
+          note: 'Membership Initialization',
+          performedById: user.id,
+        },
+      });
+    });
+
+    return { success: true };
+  };
+
+  renewApplication = async (id: string, user: AuthUser, payload: ApproveMembershipDto) => {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        status: true,
+        membershipApplication: {
+          select: {
+            id: true,
+            membershipType: true,
+          },
+        },
+      },
+    });
+
+    if (!membership) {
+      throw new NotFoundException('Membership not found');
+    }
+
+    if (membership.status !== MembershipStatus.EXPIRED) {
+      throw new BadRequestException('Membership is not expired yet');
+    }
+
+    const balance = membershipTypeBalance[payload.membershipType];
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
+
+    const currentPeriodEnd = new Date();
+    currentPeriodEnd.setDate(expiryDate.getDate() + 30);
+
+    await this.prisma.$transaction(async (tx) => {
+      const updatedMembership = await tx.membership.update({
+        where: {
+          id: membership.id,
+        },
+        data: {
+          status: MembershipStatus.ACTIVE,
+          balance: balance,
+
+          duration: payload.duration,
+          applicationReceivedBy: payload.applicationReceivedBy,
+          membershipNumberIssued: payload.membershipNumberIssued,
+          membershipCardSerialNumber: payload.membershipCardSerialNumber,
+          approvalBy: payload.approvalBy,
+          remarks: payload.remarks,
+          startDate: new Date(),
+          expiryDate: expiryDate,
+          currentPeriodEnd: currentPeriodEnd,
+          membershipApplication: {
+            update: {
+              membershipType: payload.membershipType,
+            },
+          },
+        },
+      });
+      await tx.memberTransactionHistory.create({
+        data: {
+          membershipId: updatedMembership.id,
           amount: balance,
           transactionType: TransactionType.RENEWAL,
           note: 'Membership renewal',
@@ -92,5 +177,23 @@ export class MembersService {
     });
 
     return { success: true };
+  };
+
+  updateStatus = async (id: string, payload: UpdateMemberStatusDto) => {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!membership) {
+      throw new NotFoundException('Membership not found');
+    }
+    await this.prisma.membership.update({
+      where: {
+        id,
+      },
+      data: payload,
+    });
+    return { success: true, message: 'Membership status updated successfully' };
   };
 }

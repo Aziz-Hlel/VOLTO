@@ -40,9 +40,17 @@ const apiRoutes = {
     update: (membershipId: string) => `/memberships/${membershipId}` as const,
     delete: (membershipId: string) => `/memberships/${membershipId}` as const,
     updateStatus: (membershipId: string) => `/memberships/${membershipId}/status` as const,
+    updateType: (membershipId: string) => `/memberships/${membershipId}/type` as const,
   },
   member: {
-    approveApplication: (membershipApplicationId: string) => `/members/${membershipApplicationId}/approve` as const,
+    approveApplication: (membershipApplicationId: string) =>
+      `/members/${membershipApplicationId}/approve` as const,
+    renewMemebership: (membershipApplicationId: string) =>
+      `/members/${membershipApplicationId}/renew` as const,
+    editDetails: (membershipApplicationId: string) =>
+      `/members/${membershipApplicationId}/details` as const,
+    updateStatus: (membershipApplicationId: string) =>
+      `/members/${membershipApplicationId}/status` as const,
   },
 
   ladiesNight: {

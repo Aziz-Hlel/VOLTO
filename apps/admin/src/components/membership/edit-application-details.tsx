@@ -289,7 +289,7 @@ const EditMembershipForm = ({ membership, targetId, onClose }: EditMembershipFor
 };
 
 // ── Main Component ────────────────────────────────────────────────────────────
-const EditMembership = ({
+const EditApplicationDetails = ({
   membershipId: propMembershipId,
   open: propOpen,
   setOpen: propSetOpen,
@@ -375,4 +375,4 @@ const EditMembership = ({
   );
 };
 
-export default EditMembership;
+export default EditApplicationDetails;

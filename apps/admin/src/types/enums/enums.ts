@@ -1,6 +1,5 @@
 export const membershipStatus = {
-  PENDING: "PENDING",
-  APPROVED: "APPROVED",
+  ACTIVE: "ACTIVE",
   REJECTED: "REJECTED",
   SUSPENDED: "SUSPENDED",
   EXPIRED: "EXPIRED",

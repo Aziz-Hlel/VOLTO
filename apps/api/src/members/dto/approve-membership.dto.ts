@@ -1,31 +1,34 @@
-import { MembershipDuration } from '@prisma/client';
-import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { MembershipDuration, MembershipType } from '@prisma/client';
+import { IsEnum, IsString, MaxLength, ValidateIf } from 'class-validator';
 
 export class ApproveMembershipDto {
+  @IsEnum(MembershipType, { message: 'Please select a membership type' })
+  membershipType: MembershipType;
+
   @IsEnum(MembershipDuration, { message: 'Please select a membership duration' })
   duration: MembershipDuration;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid receiver name' })
   applicationReceivedBy: string | null;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid membership number issued' })
   membershipNumberIssued: string | null;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid card serial number' })
   membershipCardSerialNumber: string | null;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(255, { message: 'Please enter a valid approver name' })
   approvalBy: string | null;
 
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(255, { message: 'Please enter valid remarks' })
   remarks: string | null;

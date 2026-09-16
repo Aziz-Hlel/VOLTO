@@ -1,6 +1,7 @@
 import type { MembershipApplication } from "@/types/member/Membership";
 import type { UpdateMemberStatusDto } from "@/types/member/update-member-status.dto";
 import type { UpdateMemberDto } from "@/types/member/update-member.dto";
+import type { UpdateMembershipType } from "@/types/member/update-memebership-type";
 import { apiService } from "../apiService";
 import apiRoutes from "../routes";
 
@@ -20,4 +21,6 @@ export const membershipApplicationService = {
     apiService.deleteThrowable(apiRoutes.membershipApplication.delete(membershipId)),
   updateStatus: (membershipId: string, status: UpdateMemberStatusDto) =>
     apiService.patchThrowable(apiRoutes.membershipApplication.updateStatus(membershipId), status),
+  updateType: (membershipId: string, payload: UpdateMembershipType) =>
+    apiService.patchThrowable(apiRoutes.membershipApplication.updateType(membershipId), payload),
 };

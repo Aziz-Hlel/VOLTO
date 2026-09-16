@@ -50,7 +50,7 @@ CREATE TABLE "Membership" (
     "remarks" TEXT NOT NULL,
     "status" "MembershipStatus" NOT NULL DEFAULT 'ACTIVE',
     "balance" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "current_period_end" TIMESTAMP(3) NOT NULL,
+    "currentPeriodEnd" TIMESTAMP(3) NOT NULL,
     "membershipApplicationId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

@@ -1,14 +1,6 @@
 import z from "zod";
-import { membershipDuration, membershipType } from "../enums/enums";
 
-export const approveMembershipSchema = z.object({
-  membershipType: z.enum(membershipType, {
-    message: "Please select a membership type",
-  }),
-  duration: z.enum(membershipDuration, {
-    message: "Please select a membership duration",
-  }),
-
+export const editMembershipDetailsSchema = z.object({
   applicationReceivedBy: z
     .string("Please enter a valid receiver name")
     .nonempty("Please enter a valid receiver name")
@@ -24,6 +16,7 @@ export const approveMembershipSchema = z.object({
   membershipCardSerialNumber: z
     .string("Please enter a valid card serial number")
     .nonempty("Please enter a valid card serial number")
+
     .max(255, "Cannot exceed 255 characters")
     .nullable(),
 
@@ -37,4 +30,4 @@ export const approveMembershipSchema = z.object({
     .nullable(),
 });
 
-export type ApproveMembershipDto = z.infer<typeof approveMembershipSchema>;
+export type EditMembershipDetailsSchemaType = z.infer<typeof editMembershipDetailsSchema>;
