@@ -20,7 +20,7 @@ import {
   type Updater,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUp, ArrowUpDown, ChevronDown, Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { ArrowUp, ArrowUpDown, ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import DeleteMembership from "./delete-membership";
 import EditApplicationDetails from "./dialogs/edit-application-details";
@@ -31,7 +31,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -188,40 +187,47 @@ const columnsRowsBase: ColumnDef<MembershipApplication>[] = [
     enableSorting: true,
     enableHiding: true,
   },
+  {
+    id: "expires",
+    header: "Expires",
+    cell: ({ row }) => {
+      const expiryDate = row.original.membership?.expiryDate;
+      if (!expiryDate) return null;
+
+      const now = new Date();
+      const expiry = new Date(expiryDate);
+      const diffMs = expiry.getTime() - now.getTime();
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        return (
+          <Badge variant="destructive" className="text-xs whitespace-nowrap">
+            Expired {Math.abs(diffDays)}d ago
+          </Badge>
+        );
+      }
+
+      const badgeColor = diffDays <= 7 ? "destructive" : diffDays <= 30 ? "outline" : "default";
+
+      const label =
+        diffDays === 0 ? "Expires today" : diffDays === 1 ? "1 day left" : `${diffDays} days left`;
+
+      return (
+        <Badge
+          variant={badgeColor}
+          className={
+            diffDays > 7 && diffDays <= 30
+              ? "text-xs whitespace-nowrap border-yellow-400 text-yellow-700 bg-yellow-50"
+              : "text-xs whitespace-nowrap"
+          }
+        >
+          {label}
+        </Badge>
+      );
+    },
+    enableHiding: true,
+  },
 ];
-const MembershipActionsCell = ({
-  row,
-  onEdit,
-  onDelete,
-}: {
-  row: { original: MembershipApplication };
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-}) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="ghost" className="h-8 w-8 p-0">
-        <MoreHorizontal className="h-4 w-4" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-md">
-      <DropdownMenuItem
-        className="flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
-        onClick={() => onEdit(row.original.id)}
-      >
-        <Edit className="h-4 w-4" />
-        Edit
-      </DropdownMenuItem>
-      <DropdownMenuItem
-        className="flex items-center gap-2 text-destructive hover:bg-destructive/10 cursor-pointer"
-        onClick={() => onDelete(row.original.id)}
-      >
-        <Trash2 className="h-4 w-4" />
-        Delete
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
 
 const MembershipTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -240,18 +246,7 @@ const MembershipTable = () => {
   };
 
   const columnsRows = useMemo<ColumnDef<MembershipApplication>[]>(
-    () => [
-      ...columnsRowsBase,
-      {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => (
-          <MembershipActionsCell row={row} onEdit={handleEdit} onDelete={setMembershipIdToDelete} />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
-    ],
+    () => [...columnsRowsBase],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

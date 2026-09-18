@@ -5,7 +5,7 @@ services:
   #     dockerfile: ./docker/dev/Dockerfile.dev.api
 
   #   env_file:
-  #     - ${PROJECT_ROOT}/config/.env.dev
+  #     - ${PROJECT_ROOT}/config/.env.infra
   #     - ${PROJECT_ROOT}/.env.local
   #     - ${PROJECT_ROOT}/.env
 
@@ -30,7 +30,7 @@ services:
     image: postgres:15
     restart: no
     env_file:
-      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/config/.env.infra
       - ${PROJECT_ROOT}/.env.local
       - ${PROJECT_ROOT}/.env
 
@@ -65,7 +65,7 @@ services:
       - 9001:9001 # Web UI
 
     env_file:
-      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/config/.env.infra
       - ${PROJECT_ROOT}/.env.local
       - ${PROJECT_ROOT}/.env
 
@@ -82,7 +82,7 @@ services:
         condition: service_started
 
     env_file:
-      - ${PROJECT_ROOT}/config/.env.dev
+      - ${PROJECT_ROOT}/config/.env.infra
       - ${PROJECT_ROOT}/.env.local
       - ${PROJECT_ROOT}/.env
 

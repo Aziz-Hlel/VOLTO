@@ -1,5 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { MembershipStatus, TransactionType } from '@prisma/client';
+import axios from 'axios';
+import ENV from 'src/config/env';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { toCalendarDate } from 'src/utils/dayjs';
@@ -7,6 +9,7 @@ import { ApproveMembershipDto } from './dto/approve-membership.dto';
 import { UpdateMemberStatusDto } from './dto/update-member-status.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { MinimalMembershipInfo } from './entities/minimal-member-info';
+import { ApproveMembershipNotificationData } from './utils/approveMembershipNotificationData';
 import { membershipDurationToDays } from './utils/membershipDurationToDays';
 import { membershipTypeBalance } from './utils/membershipTypeBalance';
 
@@ -14,6 +17,8 @@ import { membershipTypeBalance } from './utils/membershipTypeBalance';
 export class MembersService {
   constructor(private prisma: PrismaService) {}
   static RESET_TIME = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+  private readonly oneSignalUrl = 'https://api.onesignal.com/notifications';
+  private readonly logger = new Logger(MembersService.name);
 
   updateDetails = async (id: string, updateMemberDto: UpdateMemberDto) => {
     try {
@@ -110,6 +115,26 @@ export class MembersService {
         },
       });
     });
+
+    const notificationPayload = {
+      app_id: ENV.ONE_SIGNAL_APP_ID,
+      target_channel: 'push',
+      headings: ApproveMembershipNotificationData.getHeading(),
+      included_segments: ['All'],
+      data: { screen: 'home' },
+      contents: ApproveMembershipNotificationData.getContent(),
+    };
+
+    try {
+      await axios.post(this.oneSignalUrl, notificationPayload, {
+        headers: {
+          Authorization: `Bearer ${ENV.ONE_SIGNAL_APP_SECRET}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      this.logger.error(`❌ Notification for application approval failed : ${error.message}`);
+    }
 
     return { success: true };
   };

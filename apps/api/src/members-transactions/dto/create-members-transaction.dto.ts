@@ -3,7 +3,7 @@ import { IsDefined, IsEnum, IsNumber, IsOptional, Max, MaxLength, Min } from 'cl
 
 export class CreateMembersTransactionDto {
   @IsDefined()
-  @IsEnum([TransactionType.EARN, TransactionType.REDEEM])
+  @IsEnum([TransactionType.REDEEM])
   type: TransactionType;
 
   @IsDefined()

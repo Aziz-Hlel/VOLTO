@@ -1,19 +1,19 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Put,
-  Param,
   HttpCode,
+  Param,
+  Post,
+  Put,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Role } from '@prisma/client';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { AuthUser } from 'src/users/Dto/AuthUser';
 import { UpdateSpinnigWheelDto } from './dto/update-spinnig-wheel.dto';
 import { SpinnigWheelService } from './spinnig-wheel.service';
@@ -40,7 +40,7 @@ export class SpinnigWheelController {
   }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.MEDIA_MANAGER)
   @HttpCode(200)
   @Get('admin/instance')
   async adminGetSpinnigWheel() {
@@ -50,7 +50,7 @@ export class SpinnigWheelController {
   }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.MEDIA_MANAGER)
   @HttpCode(200)
   @Put('admin/instance')
   async update(@Param('id') id: string, @Body() updateSpinnigWheelDto: UpdateSpinnigWheelDto) {

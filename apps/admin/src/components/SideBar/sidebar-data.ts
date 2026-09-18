@@ -22,7 +22,6 @@ export type Menu = {
   active?: boolean;
   icon: LucideIcon;
   submenus?: Submenu[];
-  roles?:StaffRoles[];
 };
 
 type Group = {
@@ -83,6 +82,8 @@ export function getMenuList(pathname: string): Group[] {
     },
     {
       groupLabel: "Management",
+      roles: [],
+
       menus: [
         {
           href: "/users",
