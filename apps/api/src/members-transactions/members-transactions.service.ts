@@ -79,10 +79,16 @@ export class MembersTransactionsService {
       },
     });
     if (!membership) {
-      throw new BadRequestException('Membership not found');
+      throw new BadRequestException({message: 'Membership not found',reason:'MEMBERSHIP_NOT_FOUND'});
     }
-    if (membership.status !== MembershipStatus.ACTIVE) {
-      throw new BadRequestException('Membership is not active');
+    if (membership.status === MembershipStatus.EXPIRED) {
+      throw new BadRequestException({message: 'Membership is expired',reason:'MEMBERSHIP_EXPIRED'});
+    }
+    if (membership.status === MembershipStatus.REJECTED) {
+      throw new BadRequestException({message: 'Membership is rejected',reason:'MEMBERSHIP_REJECTED'});
+    }
+    if (membership.status === MembershipStatus.SUSPENDED) {
+      throw new BadRequestException({message: 'Membership is suspended',reason:'MEMBERSHIP_SUSPENDED'});
     }
 
     const amount =
@@ -93,7 +99,7 @@ export class MembersTransactionsService {
     const newBalance = membership.balance + amount;
 
     if (newBalance < 0) {
-      throw new BadRequestException('Insufficient balance');
+      throw new BadRequestException({message: 'Insufficient balance',reason:'INSUFFICIENT_BALANCE'});
     }
 
     await this.prisma.$transaction(async (tx) => {

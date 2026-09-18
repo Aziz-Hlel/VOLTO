@@ -55,7 +55,7 @@ export class MembersController {
   }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.WAITER, Role.CASHIER)
+  @Roles(Role.WAITER, Role.SECURITY)
   @HttpCode(200)
   @Get(':membershipUid')
   getMinimalMembershipInfo(@Param() params: GetMinimalMembershipInfoQueryParam) {
