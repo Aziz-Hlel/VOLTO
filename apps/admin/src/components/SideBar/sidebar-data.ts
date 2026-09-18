@@ -61,18 +61,14 @@ export function getMenuList(pathname: string): Group[] {
     },
     {
       groupLabel: "Settings",
-      roles: [StaffRoles.CASHIER],
+      roles: [],
       menus: [
         {
           href: "/staff",
           label: "Staff",
           icon: UserCog,
         },
-        {
-          href: "/membership",
-          label: "Membership",
-          icon: UserStar,
-        },
+
         {
           href: "/account",
           label: "Account",
@@ -82,13 +78,18 @@ export function getMenuList(pathname: string): Group[] {
     },
     {
       groupLabel: "Management",
-      roles: [],
+      roles: [StaffRoles.CASHIER],
 
       menus: [
         {
           href: "/users",
           label: "Users",
           icon: Users,
+        },
+        {
+          href: "/membership",
+          label: "Membership",
+          icon: UserStar,
         },
       ],
     },

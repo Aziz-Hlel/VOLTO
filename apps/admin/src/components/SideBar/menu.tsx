@@ -90,7 +90,7 @@ export function Menu({ isOpen }: MenuProps) {
                   </div>
                 ) : (
                   <div className="w-full" key={index}>
-                    {(isUserAdmin || roles?.some((r) => r === user.role)) && (
+                    {(isUserAdmin || !roles || roles?.some((r) => r === user.role)) && (
                       <CollapseMenuButton
                         icon={Icon}
                         label={label}

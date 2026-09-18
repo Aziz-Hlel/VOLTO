@@ -14,7 +14,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN,Role.CASHIER)
   @HttpCode(200)
   @Get()
   async getUsers(@Query() query: GetUsersQuery) {
