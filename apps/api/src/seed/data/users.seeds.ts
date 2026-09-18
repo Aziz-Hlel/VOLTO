@@ -64,6 +64,17 @@ const userSeeds = async (): Promise<IUserSeeds[]> => [
     tier: Tier.SILVER,
     phoneNumber: null,
   },
+  {
+    id: '4e8fddf0-c2cf-4c5e-bff4-2f83d9f4b1a7',
+    firstName: 'System',
+    lastName: 'Volto',
+    email: 'system@volto.com',
+    password: await hashPassword(''),
+    role: Role.SYSTEM,
+    gender: Gender.F,
+    tier: Tier.PLATINUM,
+    phoneNumber: null,
+  },
 ];
 
 const seedUsers = async () => {

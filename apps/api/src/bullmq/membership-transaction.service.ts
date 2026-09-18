@@ -1,9 +1,10 @@
 import { Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { TransactionType } from '@prisma/client';
-import { Queue, Worker, Job } from 'bullmq';
+import { MembershipStatus, Role, TransactionType } from '@prisma/client';
+import { Job, Queue, Worker } from 'bullmq';
 import Redis from 'ioredis';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { MembersService } from 'src/members/members.service';
 import { membershipTypeBalance } from 'src/members/utils/membershipTypeBalance';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 interface MembershipExpiryJobData {
   triggeredAt: string;
@@ -19,7 +20,7 @@ export class MembershipTransactionEventMq implements OnModuleInit, OnModuleDestr
 
   private queue: Queue<MembershipExpiryJobData>;
   private worker: Worker<MembershipExpiryJobData>;
-//   private static RESET_TIME = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+  private static = 3 * 60 * 1000; // 30 days in milliseconds
 
   public constructor(
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
@@ -86,17 +87,19 @@ export class MembershipTransactionEventMq implements OnModuleInit, OnModuleDestr
   // ---------------------------------------------------------------------------
 
   private async processExpiredMemberships(job: Job<MembershipExpiryJobData>) {
-    this.logger.debug(`🔍 Running membership expiry check — triggered at ${job.data.triggeredAt}`);
+    this.logger.debug(
+      `🔍 Running membership expiry cron job — triggered at ${job.data.triggeredAt}`,
+    );
 
     const now = new Date();
 
     const { count } = await this.prisma.membership.updateMany({
       where: {
         expiryDate: { lt: now },
-        status: { not: 'EXPIRED' },
+        status: { not: MembershipStatus.EXPIRED },
       },
       data: {
-        status: 'EXPIRED',
+        status: MembershipStatus.EXPIRED,
       },
     });
 
@@ -112,18 +115,18 @@ export class MembershipTransactionEventMq implements OnModuleInit, OnModuleDestr
   // ---------------------------------------------------------------------------
 
   private async processBalanceReset(job: Job<MembershipExpiryJobData>) {
-    this.logger.debug(`💰 Running balance reset check — triggered at ${job.data.triggeredAt}`);
+    this.logger.debug(`💰 Running balance reset cron job — triggered at ${job.data.triggeredAt}`);
 
     const now = new Date();
 
-    // Find a system performer (first SUPER_ADMIN) to attach to the transaction
+    // Find a system performer (first SYSTEM) to attach to the transaction
     const systemUser = await this.prisma.user.findFirst({
-      where: { role: 'SUPER_ADMIN' },
+      where: { role: Role.SYSTEM },
       select: { id: true },
     });
 
     if (!systemUser) {
-      this.logger.warn('⚠️ No SUPER_ADMIN user found — skipping balance reset');
+      this.logger.warn('⚠️ No SYSTEM user found — skipping balance reset');
       return;
     }
 
@@ -131,7 +134,9 @@ export class MembershipTransactionEventMq implements OnModuleInit, OnModuleDestr
     const memberships = await this.prisma.membership.findMany({
       where: {
         currentPeriodEnd: { lt: now },
-        status: 'ACTIVE',
+        status: {
+          in: [MembershipStatus.ACTIVE, MembershipStatus.EXPIRED, MembershipStatus.REJECTED],
+        },
       },
       select: {
         id: true,
@@ -153,8 +158,10 @@ export class MembershipTransactionEventMq implements OnModuleInit, OnModuleDestr
       const balance = membershipTypeBalance[membership.membershipApplication.membershipType];
 
       // Advance currentPeriodEnd by exactly 30 days from its current value
-      const nextPeriodEnd = new Date(membership.currentPeriodEnd);
-      nextPeriodEnd.setDate(nextPeriodEnd.getDate() + 30);
+      //   const nextPeriodEnd = new Date(membership.currentPeriodEnd);
+      //   nextPeriodEnd.setDate(nextPeriodEnd.getDate() + 30);
+
+      const nextPeriodEnd = new Date(Date.now() + MembersService.RESET_TIME);
 
       await this.prisma.$transaction(async (tx) => {
         await tx.membership.update({
@@ -188,10 +195,7 @@ export class MembershipTransactionEventMq implements OnModuleInit, OnModuleDestr
     // Remove any stale schedulers for both jobs before re-registering
     const existing = await this.queue.getJobSchedulers();
     for (const scheduler of existing) {
-      if (
-        scheduler.name === this.jobName ||
-        scheduler.name === this.balanceResetJobName
-      ) {
+      if (scheduler.name === this.jobName || scheduler.name === this.balanceResetJobName) {
         await this.queue.removeJobScheduler(scheduler.key);
         this.logger.debug(`Removed stale scheduler: ${scheduler.key}`);
       }

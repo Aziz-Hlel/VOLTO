@@ -1,4 +1,5 @@
 export const Roles = {
+  SYSTEM: "SYSTEM",
   WAITER: "WAITER",
   ADMIN: "ADMIN",
   SUPER_ADMIN: "SUPER_ADMIN",
@@ -34,4 +35,5 @@ export const roleMapperToDisplay: Record<Roles, string> = {
   [Roles.CASHIER]: "Cashier",
   [Roles.MEDIA_MANAGER]: "Media Manager",
   [Roles.SECURITY]: "Security",
+  [Roles.SYSTEM]: "System",
 } as const;

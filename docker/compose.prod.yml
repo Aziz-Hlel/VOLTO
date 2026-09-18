@@ -1,3 +1,4 @@
+# ! no in sync wit the muti whici is the lastest one you use fix that shit example db-backup, and inspect other services idk
 services:
   reverse-proxy:
     build:

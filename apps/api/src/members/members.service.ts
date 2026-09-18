@@ -13,6 +13,7 @@ import { membershipTypeBalance } from './utils/membershipTypeBalance';
 @Injectable()
 export class MembersService {
   constructor(private prisma: PrismaService) {}
+  static RESET_TIME = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
   updateDetails = async (id: string, updateMemberDto: UpdateMemberDto) => {
     try {
@@ -65,11 +66,14 @@ export class MembersService {
     }
 
     const balance = membershipTypeBalance[payload.membershipType];
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
+    // const expiryDate = new Date();
+    // expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
 
-    const currentPeriodEnd = new Date();
-    currentPeriodEnd.setDate(expiryDate.getDate() + 30);
+    const expiryDate = new Date(Date.now() + membershipDurationToDays[payload.duration]);
+    // const currentPeriodEnd = new Date();
+    // currentPeriodEnd.setDate(expiryDate.getDate() + 30);
+
+    const currentPeriodEnd = new Date(Date.now() + MembersService.RESET_TIME);
 
     await this.prisma.$transaction(async (tx) => {
       await this.prisma.membershipApplication.update({
@@ -136,11 +140,15 @@ export class MembersService {
     }
 
     const balance = membershipTypeBalance[payload.membershipType];
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
+    // const expiryDate = new Date();
+    // expiryDate.setDate(expiryDate.getDate() + membershipDurationToDays[payload.duration]);
 
-    const currentPeriodEnd = new Date();
-    currentPeriodEnd.setDate(expiryDate.getDate() + 30);
+    const expiryDate = new Date(Date.now() + membershipDurationToDays[payload.duration]);
+
+    // const currentPeriodEnd = new Date();
+    // currentPeriodEnd.setDate(expiryDate.getDate() + 30);
+
+    const currentPeriodEnd = new Date(Date.now() + MembersService.RESET_TIME);
 
     await this.prisma.$transaction(async (tx) => {
       const updatedMembership = await tx.membership.update({

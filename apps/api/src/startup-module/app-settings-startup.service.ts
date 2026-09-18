@@ -1,4 +1,6 @@
 import { Inject, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { Role } from '@prisma/client';
+import bcrypt from 'bcrypt';
 import Redis from 'ioredis';
 import { AppSettingsService } from 'src/app-settings/app-settings.service';
 import {
@@ -6,6 +8,7 @@ import {
   appSettingsKeys,
   IAppSettings,
 } from 'src/app-settings/types/AppSettings';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 
 export class AppSettingsServiceStartup implements OnApplicationBootstrap {
@@ -14,9 +17,32 @@ export class AppSettingsServiceStartup implements OnApplicationBootstrap {
   constructor(
     private readonly appSettingsService: AppSettingsService,
     @Inject('REDIS_CLIENT') private readonly redis: Redis,
+    private readonly prisma: PrismaService,
   ) {}
 
+  hashPassword = async (rawPassword: string): Promise<string> => bcrypt.hash(rawPassword, 10);
+
+  createSystemAccountIfNotExist = async () => {
+    const systemUser = await this.prisma.user.findFirst({
+      where: { role: Role.SYSTEM },
+      select: { id: true },
+    });
+    if (systemUser) return;
+
+    await this.prisma.user.create({
+      data: {
+        firstName: 'System',
+        lastName: 'Volto',
+        email: 'system@volto.com',
+        password: await this.hashPassword(''),
+        role: Role.SYSTEM,
+        phoneNumber: null,
+      },
+    });
+  };
+
   async onApplicationBootstrap() {
+    await this.createSystemAccountIfNotExist();
     const appSettingsRaw = await this.appSettingsService.findAll();
 
     const appSettings = appSettingsRaw.reduce(
