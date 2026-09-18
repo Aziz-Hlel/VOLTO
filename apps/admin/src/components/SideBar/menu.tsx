@@ -20,8 +20,11 @@ export function Menu({ isOpen }: MenuProps) {
 
   const { logout, user } = useAuth();
 
-  const isUserAdmin = Object.values(AdminRoles).includes(user.role as AdminRoles);
-  console.log("isuser admin", menuList[2].roles.includes(user.role));
+  const isUserAdmin = Object.values(AdminRoles).some((r) => r === user.role);
+  console.log(
+    "isuser admin",
+    menuList[2].roles.some((r) => r === user.role),
+  );
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -50,7 +53,7 @@ export function Menu({ isOpen }: MenuProps) {
                 <p className="pb-2"></p>
               )}
               {menus.map(({ href, label, icon: Icon, active, submenus, roles }, index) =>
-                isUserAdmin || !roles || roles?.includes(user.role) ? (
+                isUserAdmin || !roles || roles.some((r) => r === user.role) ? (
                   <div className="w-full" key={index}>
                     <TooltipProvider disableHoverableContent>
                       <Tooltip delayDuration={100}>
@@ -87,7 +90,7 @@ export function Menu({ isOpen }: MenuProps) {
                   </div>
                 ) : (
                   <div className="w-full" key={index}>
-                    {(isUserAdmin || roles?.includes(user.role)) && (
+                    {(isUserAdmin || roles?.some((r) => r === user.role)) && (
                       <CollapseMenuButton
                         icon={Icon}
                         label={label}

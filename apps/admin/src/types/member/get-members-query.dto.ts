@@ -2,14 +2,7 @@ import type { MembershipApplication } from "./Membership";
 
 export type SortMember = Pick<
   MembershipApplication,
-  | "membershipType"
-  | "fullName"
-  | "email"
-  | "cprId"
-  | "nationality"
-  | "seen"
-  | "status"
-  | "createdAt"
+  "membershipType" | "fullName" | "email" | "cprId" | "nationality" | "seen" | "createdAt"
 >;
 
 export class GetMembersQuery {

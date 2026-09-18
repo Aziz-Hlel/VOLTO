@@ -51,10 +51,10 @@ const getStatusBadgeVariant = (status: string | null) => {
   switch (status) {
     case null:
       return "secondary";
-    case membershipStatus.APPROVED:
+    case membershipStatus.ACTIVE:
       return "default";
-    case membershipStatus.PENDING:
-      return "secondary";
+    // case membershipStatus.PENDING:
+    //   return "secondary";
     case membershipStatus.REJECTED:
     case membershipStatus.SUSPENDED:
     case membershipStatus.EXPIRED:
