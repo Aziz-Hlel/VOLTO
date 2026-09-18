@@ -11,7 +11,7 @@ export class StaffTransactionHistoryRes {
     fullName: string;
     email: string;
     type: MembershipType;
-    membershipId: number;
+    membershipUid: number;
   };
 
   createdAt: string;

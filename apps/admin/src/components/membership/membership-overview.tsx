@@ -217,7 +217,7 @@ const ActiveMembershipSection = ({ m }: { m: MembershipApplication }) => {
           icon={Hash}
           mono
         />
-        <Field label="Membership ID" value={m.membership.membershipId ?? null} icon={Hash} mono />
+        <Field label="Membership ID" value={m.membership.membershipUid ?? null} icon={Hash} mono />
         <Field
           label="Card Serial #"
           value={m.membership.membershipCardSerialNumber}

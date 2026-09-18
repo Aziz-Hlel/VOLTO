@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsPositive, IsString, IsUUID, Min } from 'class-validator';
 
-export class ListMyStaffTransactionHistoryCursorParam {
+export class ListMyTransactionHistoryCursorParam {
   @IsOptional()
   @IsString()
   @IsUUID()

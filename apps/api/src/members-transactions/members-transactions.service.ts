@@ -63,6 +63,63 @@ export class MembersTransactionsService {
     };
   }
 
+  async createByMembershipUid(
+    membershipUid: number,
+    createMembersTransactionDto: CreateMembersTransactionDto,
+    user: AuthUser,
+  ) {
+    const membership = await this.prisma.membership.findUnique({
+      where: {
+        membershipUid: membershipUid,
+      },
+      select: {
+        id: true,
+        status: true,
+        balance: true,
+      },
+    });
+    if (!membership) {
+      throw new BadRequestException('Membership not found');
+    }
+    if (membership.status !== MembershipStatus.ACTIVE) {
+      throw new BadRequestException('Membership is not active');
+    }
+
+    const amount =
+      createMembersTransactionDto.type === TransactionType.EARN
+        ? createMembersTransactionDto.amount
+        : -createMembersTransactionDto.amount;
+
+    const newBalance = membership.balance + amount;
+
+    if (newBalance < 0) {
+      throw new BadRequestException('Insufficient balance');
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.memberTransactionHistory.create({
+        data: {
+          membershipId: membership.id,
+          amount,
+          transactionType: createMembersTransactionDto.type,
+          note: createMembersTransactionDto.note,
+          performedById: user.id,
+        },
+      });
+      await tx.membership.update({
+        where: {
+          id: membership.id,
+        },
+        data: {
+          balance: newBalance,
+        },
+      });
+    });
+    return {
+      success: true,
+    };
+  }
+
   async findAllByMembershipId(membershipId: string, query: GetTransactionsQueryDto) {
     const take = query.limit + 1;
 
@@ -93,7 +150,7 @@ export class MembersTransactionsService {
       const lastItem = transactionsQueryResponse[query.limit];
       const nextCursor = lastItem?.id || null;
       const transactionsData = transactionsQueryResponse.slice(0, query.limit);
-      const data = transactionsData.map(MembersTransactionsMapper.map);
+      const data = transactionsData.map(MembersTransactionsMapper.toResponse);
 
       return {
         data,

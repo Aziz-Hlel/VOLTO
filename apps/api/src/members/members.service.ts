@@ -2,9 +2,11 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { MembershipStatus, TransactionType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthUser } from 'src/users/Dto/AuthUser';
+import { toCalendarDate } from 'src/utils/dayjs';
 import { ApproveMembershipDto } from './dto/approve-membership.dto';
 import { UpdateMemberStatusDto } from './dto/update-member-status.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { MinimalMembershipInfo } from './entities/minimal-member-info';
 import { membershipDurationToDays } from './utils/membershipDurationToDays';
 import { membershipTypeBalance } from './utils/membershipTypeBalance';
 
@@ -195,5 +197,44 @@ export class MembersService {
       data: payload,
     });
     return { success: true, message: 'Membership status updated successfully' };
+  };
+
+  findByMembershipUid = async (membershipUid: number) => {
+    const membershipQuery = await this.prisma.membership.findUnique({
+      where: {
+        membershipUid,
+      },
+      select: {
+        id: true,
+        membershipUid: true,
+        balance: true,
+        status: true,
+        expiryDate: true,
+        membershipApplication: {
+          select: {
+            fullName: true,
+            email: true,
+            membershipType: true,
+          },
+        },
+      },
+    });
+
+    if (!membershipQuery) {
+      throw new NotFoundException('Membership not found');
+    }
+
+    const membership: MinimalMembershipInfo = {
+      id: membershipQuery.id,
+      membershipUid: membershipQuery.membershipUid,
+      balance: membershipQuery.balance,
+      status: membershipQuery.status,
+      type: membershipQuery.membershipApplication.membershipType,
+      expiryDate: toCalendarDate(membershipQuery.expiryDate),
+      fullName: membershipQuery.membershipApplication.fullName,
+      email: membershipQuery.membershipApplication.email,
+    };
+
+    return { success: true, data: membership };
   };
 }

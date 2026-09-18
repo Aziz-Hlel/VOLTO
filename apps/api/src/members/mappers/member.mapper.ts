@@ -15,7 +15,7 @@ export class MemberMapper {
   static toResponse(member: Member | MemberWithoutApplication): MemberResponse {
     return {
       id: member.id,
-      membershipId: member.membershipId,
+      membershipUid: member.membershipUid,
       startDate: toCalendarDate(member.startDate),
       expiryDate: toCalendarDate(member.expiryDate),
       duration: member.duration,

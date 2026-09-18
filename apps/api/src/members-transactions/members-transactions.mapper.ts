@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { FindAllMemberTransactionsResponseDto } from './dto/membership-response-dto';
 
 export class MembersTransactionsMapper {
-  static map(
+  static toResponse(
     transaction: Prisma.MemberTransactionHistoryGetPayload<{ include: { performedBy: true } }>,
   ): FindAllMemberTransactionsResponseDto {
     return {

@@ -99,18 +99,18 @@ model Membership {
   id String @id @default(uuid())
 
   // Membership Details
-  membershipId         Int                 @unique @default(autoincrement())
-  startDate  DateTime            @db.Date @map("membershipStartDate")
-  expiryDate DateTime            @db.Date @map("membershipExpiryDate")
-  duration   MembershipDuration
-  membershipNumber     Int                 @unique @default(autoincrement())
+  membershipUid    Int                @unique @default(autoincrement())
+  startDate        DateTime           @map("membershipStartDate") @db.Date
+  expiryDate       DateTime           @map("membershipExpiryDate") @db.Date
+  duration         MembershipDuration
+  membershipNumber Int                @unique @default(autoincrement())
 
   // VOTLO Internal Data 
   applicationReceivedBy      String?
   membershipNumberIssued     String?
   membershipCardSerialNumber String?
   approvalBy                 String?
-  dateApproved               DateTime @db.Date @default(now())
+  dateApproved               DateTime @default(now()) @db.Date
   remarks                    String?
 
   status MembershipStatus @default(ACTIVE)
@@ -119,9 +119,9 @@ model Membership {
 
   balance Float @default(0)
 
-  currentPeriodEnd DateTime 
+  currentPeriodEnd DateTime
 
-  membershipApplicationId String @unique
+  membershipApplicationId String                @unique
   membershipApplication   MembershipApplication @relation(fields: [membershipApplicationId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -148,6 +148,8 @@ model MemberTransactionHistory {
   performedBy   User   @relation(fields: [performedById], references: [id])
 
   createdAt DateTime @default(now())
+
+  @@index([membershipId])
 }
 
 model Worker {

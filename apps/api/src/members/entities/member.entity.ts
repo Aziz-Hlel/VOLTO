@@ -3,7 +3,7 @@ import type { MembershipApplicationResponse } from 'src/members-application/enti
 
 export class MemberResponse {
   id: string;
-  membershipId: number;
+  membershipUid: number;
   startDate: string;
   expiryDate: string;
   duration: MembershipDuration | null;

@@ -37,7 +37,7 @@ DROP COLUMN "status";
 -- CreateTable
 CREATE TABLE "Membership" (
     "id" TEXT NOT NULL,
-    "membershipId" SERIAL NOT NULL,
+    "membershipUid" SERIAL NOT NULL,
     "membershipStartDate" DATE NOT NULL,
     "membershipExpiryDate" DATE NOT NULL,
     "membershipDuration" "MembershipDuration",
@@ -58,11 +58,11 @@ CREATE TABLE "Membership" (
     CONSTRAINT "Membership_pkey" PRIMARY KEY ("id")
 );
 
--- Reset membershipId sequence to start from 1000
-ALTER SEQUENCE "Membership_membershipId_seq" RESTART WITH 1000;
+-- Reset membershipUid sequence to start from 1000
+ALTER SEQUENCE "Membership_membershipUid_seq" RESTART WITH 1000;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Membership_membershipId_key" ON "Membership"("membershipId");
+CREATE UNIQUE INDEX "Membership_membershipUid_key" ON "Membership"("membershipUid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Membership_membershipNumber_key" ON "Membership"("membershipNumber");

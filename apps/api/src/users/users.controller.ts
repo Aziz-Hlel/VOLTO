@@ -1,24 +1,13 @@
-import { UsersService } from './users.service';
+import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { AuthUser } from './Dto/AuthUser';
 import { GetUsersQuery } from './Dto/get-users-query';
+import { ListMyTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -30,6 +19,17 @@ export class UsersController {
   @Get()
   async getUsers(@Query() query: GetUsersQuery) {
     const response = await this.usersService.getUsers(query);
+    return response;
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @HttpCode(200)
+  @Get(['', '/'])
+  async getUserTransactions(
+    @CurrentUser() user: AuthUser,
+    @Query() query: ListMyTransactionHistoryCursorParam,
+  ) {
+    const response = await this.usersService.ListMyUserTransactionHistory(user, query);
     return response;
   }
 }

@@ -13,6 +13,8 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import { EmailService } from 'src/email/email.service';
 import { MediaService } from 'src/media/media.service';
+import { FindAllMemberTransactionsResponseDto } from 'src/members-transactions/dto/membership-response-dto';
+import { MembersTransactionsMapper } from 'src/members-transactions/members-transactions.mapper';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
 import { STAFF_ROLES } from 'src/shared/staffRoles';
@@ -24,7 +26,7 @@ import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto'
 import { CreateCustomerDto } from './Dto/create-customer';
 import { CreateStaffDto } from './Dto/create-staff.dto';
 import { GetUsersQuery, Sort } from './Dto/get-users-query';
-import { ListMyStaffTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { ListMyTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
 import { StaffTransactionHistoryRes } from './Dto/staffTransactionHistoryRes.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
 import { UpdateUserDto } from './Dto/update-user';
@@ -497,7 +499,7 @@ export class UsersService {
 
   ListMyStaffTransactionHistory = async (
     user: AuthUser,
-    cursorParam: ListMyStaffTransactionHistoryCursorParam,
+    cursorParam: ListMyTransactionHistoryCursorParam,
   ) => {
     const transactionsQuery = await this.prisma.memberTransactionHistory.findMany({
       where: {
@@ -511,7 +513,7 @@ export class UsersService {
       include: {
         membership: {
           select: {
-            membershipId: true,
+            membershipUid: true,
             membershipApplication: {
               select: {
                 fullName: true,
@@ -539,7 +541,7 @@ export class UsersService {
         fullName: transaction.membership.membershipApplication.fullName,
         email: transaction.membership.membershipApplication.email,
         type: transaction.membership.membershipApplication.membershipType,
-        membershipId: transaction.membership.membershipId,
+        membershipUid: transaction.membership.membershipUid,
       },
       createdAt: transaction.createdAt.toISOString(),
     }));
@@ -552,7 +554,56 @@ export class UsersService {
 
   ListMyUserTransactionHistory = async (
     user: AuthUser,
-    cursorParam: ListMyStaffTransactionHistoryCursorParam,
+    cursorParam: ListMyTransactionHistoryCursorParam,
   ) => {
-  }
+    const membershipApplication = await this.prisma.membershipApplication.findUnique({
+      where: {
+        email: user.email,
+      },
+      select: {
+        membership: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (!membershipApplication?.membership?.id) throw new NotFoundException('Membership not found');
+
+    const transactionsQuery = await this.prisma.memberTransactionHistory.findMany({
+      where: {
+        membershipId: membershipApplication.membership.id,
+      },
+      cursor: cursorParam.transactionId ? { id: cursorParam.transactionId } : undefined,
+      take: cursorParam.limit + 1,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        performedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    const lastItem = transactionsQuery[cursorParam.limit];
+
+    const nextCursor = lastItem?.id || null;
+
+    const data = transactionsQuery.slice(0, cursorParam.limit);
+
+    const dataResponse: FindAllMemberTransactionsResponseDto[] = data.map(
+      MembersTransactionsMapper.toResponse,
+    );
+
+    return {
+      data: dataResponse,
+      nextCursor: nextCursor,
+    };
+  };
 }
