@@ -80,9 +80,9 @@ export class StaffController {
   }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.WAITER)
   @HttpCode(200)
-  @Get('/transactions/')
+  @Get('/transactions/me')
   async getStaffTransactionHistory(
     @CurrentUser() user: AuthUser,
     @Query() cursorParam: ListMyTransactionHistoryCursorParam,
