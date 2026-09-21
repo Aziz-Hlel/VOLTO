@@ -18,7 +18,7 @@ import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthUser } from './Dto/AuthUser';
 import { CreateStaffDto } from './Dto/create-staff.dto';
-import { ListMyTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { ListTransactionHistoryCursorParam } from './Dto/list-transaction-history-param.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
 import { UsersService } from './users.service';
 
@@ -85,9 +85,20 @@ export class StaffController {
   @Get('/transactions/me')
   async getStaffTransactionHistory(
     @CurrentUser() user: AuthUser,
-    @Query() cursorParam: ListMyTransactionHistoryCursorParam,
+    @Query() cursorParam: ListTransactionHistoryCursorParam,
   ) {
     const response = await this.usersService.ListMyStaffTransactionHistory(user, cursorParam);
+    return response;
+  }
+
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.CASHIER)
+  @HttpCode(200)
+  @Get('/transactions')
+  async getAllTransactionHistory(
+    @Query() cursorParam: ListTransactionHistoryCursorParam,
+  ) {
+    const response = await this.usersService.ListAllTransactionHistory(cursorParam);
     return response;
   }
 }

@@ -6,7 +6,7 @@ import { JwtAccessGuard } from 'src/auth/guards/jwt.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthUser } from './Dto/AuthUser';
 import { GetUsersQuery } from './Dto/get-users-query';
-import { ListMyTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { ListTransactionHistoryCursorParam } from './Dto/list-transaction-history-param.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -14,7 +14,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN,Role.CASHIER)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.CASHIER)
   @HttpCode(200)
   @Get()
   async getUsers(@Query() query: GetUsersQuery) {
@@ -27,7 +27,7 @@ export class UsersController {
   @Get(['', '/'])
   async getUserTransactions(
     @CurrentUser() user: AuthUser,
-    @Query() query: ListMyTransactionHistoryCursorParam,
+    @Query() query: ListTransactionHistoryCursorParam,
   ) {
     const response = await this.usersService.ListMyUserTransactionHistory(user, query);
     return response;

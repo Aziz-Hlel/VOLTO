@@ -13,7 +13,8 @@ import crypto from 'crypto';
 import Redis from 'ioredis';
 import { EmailService } from 'src/email/email.service';
 import { MediaService } from 'src/media/media.service';
-import { FindAllMemberTransactionsResponseDto } from 'src/members-transactions/dto/membership-response-dto';
+import { FindAllMemberTransactionsResponseDto } from 'src/members-transactions/dto/membership-transaction-response-dto';
+import { TransactionResponse } from 'src/members-transactions/dto/transaction-response';
 import { MembersTransactionsMapper } from 'src/members-transactions/members-transactions.mapper';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { REDIS_HASHES } from 'src/redis/hashes';
@@ -26,7 +27,7 @@ import { ConfirmPasswordResponseDto } from './Dto/confirm-password-response.dto'
 import { CreateCustomerDto } from './Dto/create-customer';
 import { CreateStaffDto } from './Dto/create-staff.dto';
 import { GetUsersQuery, Sort } from './Dto/get-users-query';
-import { ListMyTransactionHistoryCursorParam } from './Dto/list-transaction-history.dto';
+import { ListTransactionHistoryCursorParam } from './Dto/list-transaction-history-param.dto';
 import { StaffTransactionHistoryRes } from './Dto/staffTransactionHistoryRes.dto';
 import { UpdateStaffDto } from './Dto/update-staff.dto';
 import { UpdateUserDto } from './Dto/update-user';
@@ -499,7 +500,7 @@ export class UsersService {
 
   ListMyStaffTransactionHistory = async (
     user: AuthUser,
-    cursorParam: ListMyTransactionHistoryCursorParam,
+    cursorParam: ListTransactionHistoryCursorParam,
   ) => {
     const transactionsQuery = await this.prisma.memberTransactionHistory.findMany({
       where: {
@@ -554,7 +555,7 @@ export class UsersService {
 
   ListMyUserTransactionHistory = async (
     user: AuthUser,
-    cursorParam: ListMyTransactionHistoryCursorParam,
+    cursorParam: ListTransactionHistoryCursorParam,
   ) => {
     const membershipApplication = await this.prisma.membershipApplication.findUnique({
       where: {
@@ -600,6 +601,69 @@ export class UsersService {
     const dataResponse: FindAllMemberTransactionsResponseDto[] = data.map(
       MembersTransactionsMapper.toResponse,
     );
+
+    return {
+      data: dataResponse,
+      nextCursor: nextCursor,
+    };
+  };
+
+  ListAllTransactionHistory = async (cursorParam: ListTransactionHistoryCursorParam) => {
+    const transactionsQuery = await this.prisma.memberTransactionHistory.findMany({
+      cursor: cursorParam.transactionId ? { id: cursorParam.transactionId } : undefined,
+      take: cursorParam.limit + 1,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        performedBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+          },
+        },
+        membership: {
+          select: {
+            membershipUid: true,
+            membershipApplication: {
+              select: {
+                fullName: true,
+                membershipType: true,
+                email: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const lastItem = transactionsQuery[cursorParam.limit];
+
+    const nextCursor = lastItem?.id || null;
+
+    const data = transactionsQuery.slice(0, cursorParam.limit);
+
+    const dataResponse: TransactionResponse[] = data.map((transaction) => ({
+      id: transaction.id,
+      amount: transaction.amount,
+      transactionType: transaction.transactionType,
+      note: transaction.note,
+      performedBy: {
+        id: transaction.performedBy.id,
+        firstName: transaction.performedBy.firstName,
+        lastName: transaction.performedBy.lastName,
+        role: transaction.performedBy.role,
+      },
+      member: {
+        fullName: transaction.membership.membershipApplication.fullName,
+        email: transaction.membership.membershipApplication.email,
+        type: transaction.membership.membershipApplication.membershipType,
+        membershipUid: transaction.membership.membershipUid,
+      },
+      createdAt: transaction.createdAt.toISOString(),
+    }));
 
     return {
       data: dataResponse,
