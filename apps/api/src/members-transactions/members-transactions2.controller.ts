@@ -9,7 +9,7 @@ import { AuthUser } from 'src/users/Dto/AuthUser';
 import { CreateMembersTransactionDto } from './dto/create-members-transaction.dto';
 import { MembersTransactionsService } from './members-transactions.service';
 
-@Controller('members/:membershipUid/transactions')
+@Controller('members/by-uid//:membershipUid/transactions')
 export class MembersTransactionsController2 {
   constructor(private readonly membersTransactionsService: MembersTransactionsService) {}
 
