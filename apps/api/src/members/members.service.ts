@@ -54,6 +54,7 @@ export class MembersService {
       },
       select: {
         id: true,
+        email: true,
         membershipType: true,
         membership: {
           select: {
@@ -105,6 +106,7 @@ export class MembersService {
           currentPeriodEnd: currentPeriodEnd,
         },
       });
+
       await tx.memberTransactionHistory.create({
         data: {
           membershipId: membership.id,
@@ -116,24 +118,34 @@ export class MembersService {
       });
     });
 
-    const notificationPayload = {
-      app_id: ENV.ONE_SIGNAL_APP_ID,
-      target_channel: 'push',
-      headings: ApproveMembershipNotificationData.getHeading(),
-      included_segments: ['All'],
-      data: { screen: 'home' },
-      contents: ApproveMembershipNotificationData.getContent(),
-    };
+    const userMember = await this.prisma.user.findUnique({
+      where: {
+        email: membershipApplication.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (userMember) {
+      const notificationPayload = {
+        app_id: ENV.ONE_SIGNAL_APP_ID,
+        target_channel: 'push',
+        headings: ApproveMembershipNotificationData.getHeading(),
+        include_aliases: { external_id: [userMember.id] },
+        data: { screen: 'home' },
+        contents: ApproveMembershipNotificationData.getContent(),
+      };
 
-    try {
-      await axios.post(this.oneSignalUrl, notificationPayload, {
-        headers: {
-          Authorization: `Bearer ${ENV.ONE_SIGNAL_APP_SECRET}`,
-          'Content-Type': 'application/json',
-        },
-      });
-    } catch (error) {
-      this.logger.error(`❌ Notification for application approval failed : ${error.message}`);
+      try {
+        await axios.post(this.oneSignalUrl, notificationPayload, {
+          headers: {
+            Authorization: `Bearer ${ENV.ONE_SIGNAL_APP_SECRET}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        this.logger.error(`❌ Notification for application approval failed : ${error.message}`);
+      }
     }
 
     return { success: true };
