@@ -55,6 +55,18 @@ export class StaffController {
   }
 
   @UseGuards(JwtAccessGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.WAITER)
+  @HttpCode(200)
+  @Get('/transactions/me')
+  async getStaffTransactionHistory(
+    @CurrentUser() user: AuthUser,
+    @Query() cursorParam: ListTransactionHistoryCursorParam,
+  ) {
+    const response = await this.usersService.ListMyStaffTransactionHistory(user, cursorParam);
+    return response;
+  }
+
+  @UseGuards(JwtAccessGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @HttpCode(200)
   @Get('/:id')
@@ -85,18 +97,6 @@ export class StaffController {
     @CurrentUser() user: AuthUser,
   ) {
     const response = await this.usersService.deleteStaff(staffId, user.role);
-    return response;
-  }
-
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.WAITER)
-  @HttpCode(200)
-  @Get('/transactions/me')
-  async getStaffTransactionHistory(
-    @CurrentUser() user: AuthUser,
-    @Query() cursorParam: ListTransactionHistoryCursorParam,
-  ) {
-    const response = await this.usersService.ListMyStaffTransactionHistory(user, cursorParam);
     return response;
   }
 }
